@@ -1,0 +1,133 @@
+﻿
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+    <title>驾校网上报名管理平台</title>
+    <link href="~/Styles/css/amazeui.css" rel="stylesheet" />
+    @Styles.Render("~/Content/Admin")
+    @RenderSection("linkcss", required: false)
+</head>
+<body>
+    <header class="am-topbar am-topbar-inverse admin-header">
+        <div class="am-topbar-brand">
+            <a href="/store/index"><strong>驾校网上报名管理平台</strong></a>
+        </div>
+        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+        <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+            <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
+                <li><a href="javascript:;"><span  class="am-icon-user">@(Core.CookieHelper.GetCurrentUser()?.Account)</span></a></li>
+
+                <li><a href="javascript:;"><span>@(Core.CookieHelper.GetCurrentUser()?.ExpireTime!=null? "到期时间：" +Core.CookieHelper.GetCurrentUser()?.ExpireTime.Value.ToString("yyyy-MM-dd"):"")</span></a></li>
+                <li><a href="javascript:changePassword()"><span class="am-icon-download">修改密码</span></a></li>
+                <li><a href="/accout/Quit" class="admin-quit"><span class="am-icon-sign-out"></span> <span>注销</span></a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="am-cf admin-main am-text-left">
+        <!-- sidebar start -->
+        <div class="admin-sidebar">
+            <ul class="am-list admin-sidebar-list">
+                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 1) != 0|| Core.CookieHelper.GetCurrentUser().MenuFlag==-1)
+                {
+                    <li><a href="/Order"><span class="am-icon-shopping-basket"></span>在线订单</a></li>
+                }
+
+                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 16) != 0 || Core.CookieHelper.GetCurrentUser().MenuFlag == -1)
+                {
+                    <li><a href="/Pay"><span class="am-icon-bank"></span>支付方式</a></li>
+                }
+                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 2) != 0 || Core.CookieHelper.GetCurrentUser().MenuFlag == -1)
+                {
+                    <li><a href="/Theme"><span class="am-icon-file-zip-o"></span>主题管理</a></li>
+                }
+                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 4) != 0 || Core.CookieHelper.GetCurrentUser().MenuFlag == -1)
+                {
+                    <li><a href="/Store"><span class="am-icon-sitemap"></span>密室管理</a></li>
+                }
+                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 8) != 0 || Core.CookieHelper.GetCurrentUser().MenuFlag == -1)
+                {
+                    <li><a href="/Report"><span class="am-icon-line-chart"></span>统计报表</a></li>
+                }
+
+                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 32) != 0 || Core.CookieHelper.GetCurrentUser().MenuFlag == -1)
+                {
+                    <li><a href="/User "><span class="am-icon-user"></span>管理员管理</a></li>
+                }
+                @if ((int)Core.CookieHelper.GetCurrentUser()?.IsAdmin == 1 && ((Core.CookieHelper.GetCurrentUser().MenuFlag & 128) != 0 || (Core.CookieHelper.GetCurrentUser().MenuFlag == -1)))
+                {
+                    <li><a href="/Drink "><span class="am-icon-leaf"></span>饮料管理</a></li>
+                }
+                @if((int)Core.CookieHelper.GetCurrentUser()?.IsAdmin==1&& ((Core.CookieHelper.GetCurrentUser().MenuFlag & 64) != 0|| (Core.CookieHelper.GetCurrentUser().MenuFlag == -1)))
+                {
+                    <li><a href="/Admin "><span class="am-icon-users"></span>公司管理</a></li>
+                }
+            </ul>
+        </div>
+        <!-- sidebar end -->
+        <!-- content start -->
+        <div class="admin-content">
+            <div>
+                @RenderBody()
+            </div>
+
+        </div>
+        <!-- content end -->
+    </div>
+    <a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+
+    @Scripts.Render("~/Scripts/Admin")
+    <script>
+        function changePassword()
+        {
+
+                $.Nuoya.ajaxDialog({
+                    closeViaDimmer: false,
+                    width: "800px",
+                    height: "280px",
+                    ajaxUrl: "/HtmlTemplates/User/ChangePassword.html",
+                    title: "修改密码",
+                    buttons: [{
+                        label: "保存",
+                        callback: function (e) {
+
+                            var oldPassword = $("[name='OldPassword']").val();
+                            var newPassword = $("[name='NewPassword']").val();
+                            var cfmPassword = $("[name='ConfirmPassword']").val();
+
+                            if (oldPassword != "" && newPassword != "" && cfmPassword != "")
+                            {
+                                if (newPassword != cfmPassword)
+                                {
+                                    $.Nuoya.alert("密码不能为空");
+                                    return false;
+                                }
+                                $.Nuoya.action("/accout/ChangePassword", { oldPassword: oldPassword, newPassword: newPassword, cfmPassword: cfmPassword }, function (data) {
+                                    if (!data.ErrorDesc) {
+                                        $.Nuoya.alert("修改密码成功");
+                                        e.hide();
+                                    }
+                                    else
+                                        $.Nuoya.alert(data.ErrorDesc);
+
+                                });
+                            }
+                            else
+                                $.Nuoya.alert("密码不能为空");                   
+                        }
+                    }]
+                });
+        }
+    </script>
+    @RenderSection("scripts", false)
+</body>
+</html>
+
+
+
