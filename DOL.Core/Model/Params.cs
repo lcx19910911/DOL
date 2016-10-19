@@ -11,6 +11,11 @@ namespace DOL.Core
     public class Params
     {
         /// <summary>
+        /// 缓存前缀
+        /// </summary>
+        public static readonly string Cache_Prefix_Key = "WOL";
+
+        /// <summary>
         /// 公司名称
         /// </summary>
         public static readonly string CompanyName = ConfigurationManager.AppSettings["CompanyName"];               

@@ -122,7 +122,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="HtmlTemplates\Drink\Update.html" />
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
     <Content Include="HtmlTemplates\User\Update.html" />
     <Content Include="Images\404Pic.png" />
@@ -218,6 +217,7 @@
     <Content Include="Styles\fonts\FontAwesome.otf" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Pay\Index.cshtml" />
+    <Content Include="Views\Base\PartialMenu.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -227,6 +227,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="HtmlTemplates\DataDictionary\" />
+    <Folder Include="HtmlTemplates\Department\" />
+    <Folder Include="HtmlTemplates\Menu\" />
+    <Folder Include="HtmlTemplates\Role\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Home\" />
   </ItemGroup>

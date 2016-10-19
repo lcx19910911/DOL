@@ -5,12 +5,23 @@ namespace DOL.Model
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+    [Table("User")]
     public partial class User: BaseEntity
     {
         /// <summary>
+        /// 部门ID
+        /// </summary>
+        public string DepartmentID { get; set; }
+
+        /// <summary>
+        /// 角色位域值
+        /// </summary>
+        public string RoleID { get; set; }
+
+        /// <summary>
         /// 菜单权限 
         /// </summary>
-        public Nullable<long> MenuFlag { get; set; }
+        public long? MenuFlag { get; set; }
         /// <summary>
         /// 创建者Id
         /// </summary>
@@ -50,6 +61,14 @@ namespace DOL.Model
         [Required(ErrorMessage = "手机号不能为空")]
         [RegularExpression(@"((\d{11})$)", ErrorMessage = "手机格式不正确")]
         public string Mobile { get; set; }
+
+        /// <summary>
+        /// 电话
+        /// </summary>
+        [Display(Name = "电话")]
+        [MaxLength(11)]
+        [RegularExpression(@"((\d{3,4}-\d{3,7})$)", ErrorMessage = "电话格式不正确")]
+        public string Telephone { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

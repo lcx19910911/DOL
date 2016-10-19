@@ -33,40 +33,7 @@
         <!-- sidebar start -->
         <div class="admin-sidebar">
             <ul class="am-list admin-sidebar-list">
-                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 1) != 0|| Core.CookieHelper.GetCurrentUser().MenuFlag==-1)
-                {
-                    <li><a href="/Order"><span class="am-icon-shopping-basket"></span>在线订单</a></li>
-                }
-
-                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 16) != 0 || Core.CookieHelper.GetCurrentUser().MenuFlag == -1)
-                {
-                    <li><a href="/Pay"><span class="am-icon-bank"></span>支付方式</a></li>
-                }
-                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 2) != 0 || Core.CookieHelper.GetCurrentUser().MenuFlag == -1)
-                {
-                    <li><a href="/Theme"><span class="am-icon-file-zip-o"></span>主题管理</a></li>
-                }
-                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 4) != 0 || Core.CookieHelper.GetCurrentUser().MenuFlag == -1)
-                {
-                    <li><a href="/Store"><span class="am-icon-sitemap"></span>密室管理</a></li>
-                }
-                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 8) != 0 || Core.CookieHelper.GetCurrentUser().MenuFlag == -1)
-                {
-                    <li><a href="/Report"><span class="am-icon-line-chart"></span>统计报表</a></li>
-                }
-
-                @if ((Core.CookieHelper.GetCurrentUser().MenuFlag & 32) != 0 || Core.CookieHelper.GetCurrentUser().MenuFlag == -1)
-                {
-                    <li><a href="/User "><span class="am-icon-user"></span>管理员管理</a></li>
-                }
-                @if ((int)Core.CookieHelper.GetCurrentUser()?.IsAdmin == 1 && ((Core.CookieHelper.GetCurrentUser().MenuFlag & 128) != 0 || (Core.CookieHelper.GetCurrentUser().MenuFlag == -1)))
-                {
-                    <li><a href="/Drink "><span class="am-icon-leaf"></span>饮料管理</a></li>
-                }
-                @if((int)Core.CookieHelper.GetCurrentUser()?.IsAdmin==1&& ((Core.CookieHelper.GetCurrentUser().MenuFlag & 64) != 0|| (Core.CookieHelper.GetCurrentUser().MenuFlag == -1)))
-                {
-                    <li><a href="/Admin "><span class="am-icon-users"></span>公司管理</a></li>
-                }
+               @Html.Action("PartialMenu", "Base")
             </ul>
         </div>
         <!-- sidebar end -->

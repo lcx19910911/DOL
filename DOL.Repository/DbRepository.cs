@@ -48,6 +48,19 @@ namespace DOL.Repository
 
 
         public DbSet<User> User { get; set; }
+
+        public DbSet<DataDictionary> DataDictionary { get; set; }
+
+        public DbSet<Department> Department { get; set; }
+
+        public DbSet<Menu> Menu { get; set; }
+        public DbSet<Role> Role { get; set; }
+
+        public DbSet<SiteMessage> SiteMessage { get; set; }
+
+
+
+        public DbSet<Theme> Theme { get; set; }
     }
 
 }

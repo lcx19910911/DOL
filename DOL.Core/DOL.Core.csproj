@@ -62,6 +62,7 @@
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\JsonExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Helper\CacheHelper.cs" />
     <Compile Include="Helper\CookieHelper.cs" />
     <Compile Include="Helper\CryptoHelper.cs" />
     <Compile Include="Helper\EnumHelper.cs" />
