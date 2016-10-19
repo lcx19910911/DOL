@@ -47,11 +47,11 @@ namespace DOL.Service
                 var query = Cache_Get_DataDictionaryList().AsQueryable().AsNoTracking();
                 if (name.IsNotNullOrEmpty())
                 {
-                    query = query.Where(x => x.Name.Contains(name));
+                    query = query.Where(x => x.Key .Contains(name));
                 }
 
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.Sort).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
@@ -63,24 +63,15 @@ namespace DOL.Service
         /// <returns></returns>
         public WebResult<bool> Add_DataDictionary(DataDictionary model)
         {
-            if (model == null
-                || !model.Name.IsNotNullOrEmpty()
-                )
-                return Result(false, ErrorCode.sys_param_format_error);
             using (DbRepository entities = new DbRepository())
             {
-                if (entities.DataDictionary.AsNoTracking().Where(x => x.Name.Equals(model.Name)).Any())
-                    return Result(false, ErrorCode.datadatabase_name_had);
                 model.ID = Guid.NewGuid().ToString("N");
-                model.CreatedTime = DateTime.Now;
-                model.UpdatedTime = DateTime.Now;
-                model.Flag = (long)GlobalFlag.Normal;
                 entities.DataDictionary.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_DataDictionaryList();
                     list.Add(model);
-                    CacheHelper.Insert<List<DataDictionary>>(DataDictionaryKey, list);
+                    CacheHelper.Insert<List<DataDictionary>>(dataDictionaryKey, list);
                     return Result(true);
                 }
                 else
@@ -99,19 +90,13 @@ namespace DOL.Service
         /// <returns></returns>
         public WebResult<bool> Update_DataDictionary(DataDictionary model)
         {
-            if (model == null
-                 || !model.Name.IsNotNullOrEmpty()
-                )
-                return Result(false, ErrorCode.sys_param_format_error);
             using (DbRepository entities = new DbRepository())
             {
                 var oldEntity = entities.DataDictionary.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    if (entities.DataDictionary.AsNoTracking().Where(x => x.Name.Equals(model.Name) && !x.ID.Equals(model.ID)).Any())
-                        return Result(false, ErrorCode.datadatabase_name_had);
-                    oldEntity.Name = model.Name;
-                    oldEntity.UpdatedTime = DateTime.Now;
+                    oldEntity.Key = model.Key;
+                    oldEntity.Value = model.Value;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -123,7 +108,7 @@ namespace DOL.Service
                     if (cachItem != null)
                     {
                         cachItem = oldEntity;
-                        CacheHelper.Insert<List<DataDictionary>>(DataDictionaryKey, list);
+                        CacheHelper.Insert<List<DataDictionary>>(dataDictionaryKey, list);
                     }
                     return Result(true);
                 }
@@ -151,14 +136,12 @@ namespace DOL.Service
                 //找到实体
                 entities.DataDictionary.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
-                    x.Flag = x.Flag | (long)GlobalFlag.Removed;
-                    var cachItem = list.FirstOrDefault(y => y.ID.Equals(x.ID));
-                    if (cachItem != null)
-                        cachItem.Flag = x.Flag;
+                    entities.DataDictionary.Remove(x);
+                    list.Remove(x);
                 });
                 if (entities.SaveChanges() > 0)
                 {
-                    CacheHelper.Insert<List<DataDictionary>>(DataDictionaryKey, list);
+                    CacheHelper.Insert<List<DataDictionary>>(dataDictionaryKey, list);
                     return Result(true);
                 }
                 else
@@ -183,76 +166,7 @@ namespace DOL.Service
                 return Cache_Get_DataDictionaryList().FirstOrDefault(x => x.ID.Equals(id));
             }
         }
-
-
-        /// <summary>
-        /// 启用
-        /// </summary>
-        /// <param name="ids">id，多个id用逗号分隔</param>
-        /// <returns>影响条数</returns>
-        public WebResult<bool> Enable_DataDictionary(string ids)
-        {
-            if (string.IsNullOrEmpty(ids))
-                return Result(false, ErrorCode.sys_param_format_error);
-            using (DbRepository entities = new DbRepository())
-            {
-                //按逗号分隔符分隔开得到unid列表
-                var unidArray = ids.Split(',');
-                var list = Cache_Get_DataDictionaryList();
-                entities.DataDictionary.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
-                {
-                    x.Flag = x.Flag & ~(long)GlobalFlag.Unabled;
-                    var cachItem = list.FirstOrDefault(y => y.ID.Equals(x.ID));
-                    if (cachItem != null)
-                        cachItem.Flag = x.Flag;
-                });
-
-                if (entities.SaveChanges() > 0)
-                {
-                    CacheHelper.Insert<List<DataDictionary>>(DataDictionaryKey, list);
-                    return Result(true);
-                }
-                else
-                {
-                    return Result(false, ErrorCode.sys_fail);
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// 禁用
-        /// </summary>
-        /// <param name="ids">ids，多个id用逗号分隔</param>
-        /// <returns>影响条数</returns>
-        public WebResult<bool> Disable_DataDictionary(string ids)
-        {
-            if (string.IsNullOrEmpty(ids))
-                return Result(false, ErrorCode.sys_param_format_error);
-            using (DbRepository entities = new DbRepository())
-            {
-                //按逗号分隔符分隔开得到unid列表
-                var unidArray = ids.Split(',');
-                var list = Cache_Get_DataDictionaryList();
-                entities.DataDictionary.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
-                {
-                    x.Flag = x.Flag | (long)GlobalFlag.Unabled;
-                    var cachItem = list.FirstOrDefault(y => y.ID.Equals(x.ID));
-                    if (cachItem != null)
-                        cachItem.Flag = x.Flag;
-                });
-
-                if (entities.SaveChanges() > 0)
-                {
-                    CacheHelper.Insert<List<DataDictionary>>(DataDictionaryKey, list);
-                    return Result(true);
-                }
-                else
-                {
-                    return Result(false, ErrorCode.sys_fail);
-                }
-            }
-        }
+        
 
     }
 }
