@@ -16,7 +16,7 @@ namespace DOL.Service
         string menuKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "Menu");
 
         /// <summary>
-        /// 站内通知全局缓存
+        /// 缓存
         /// </summary>
         /// <returns></returns>
         private List<Menu> Cache_Get_MenuList()
@@ -33,7 +33,7 @@ namespace DOL.Service
         }
 
         /// <summary>
-        /// 站内通知全局缓存 dic
+        /// 缓存 dic
         /// </summary>
         /// <returns></returns>
         private Dictionary<string,Menu> Cache_Get_MenuList_Dic()
@@ -163,7 +163,7 @@ namespace DOL.Service
         {
             if (!id.IsNotNullOrEmpty())
                 return null;
-             return Cache_Get_MenuList().FirstOrDefault(x=>x.ID.Equals(id));
+             return Cache_Get_MenuList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(id));
         }
 
 
@@ -207,11 +207,11 @@ namespace DOL.Service
         /// 获取菜单
         /// </summary>
         /// <returns></returns>
-        public List<DOL.Model.MenuItem> Get_ChildrenMenu(string parentId)
+        public List<DOL.Model.MenuItem> Get_UserMenu(string parentId)
         {
             List<DOL.Model.MenuItem> menuList = new List<DOL.Model.MenuItem>();
-            var group = Cache_Get_MenuList().AsQueryable().GroupBy(x => x.ParentID).ToList();
-            return Get_ChildrenMenu(parentId, group);
+            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().GroupBy(x => x.ParentID).ToList();
+            return Get_UserMenu(parentId, group);
         }
 
 
@@ -219,7 +219,7 @@ namespace DOL.Service
         /// 获取菜单
         /// </summary>
         /// <returns></returns>
-        private List<DOL.Model.MenuItem> Get_ChildrenMenu(string parentId, List<IGrouping<string, Menu>> groups)
+        private List<DOL.Model.MenuItem> Get_UserMenu(string parentId, List<IGrouping<string, Menu>> groups)
         {
             List<DOL.Model.MenuItem> menuList = new List<DOL.Model.MenuItem>();
             var group = groups.FirstOrDefault(x => x.Key == parentId);
@@ -236,7 +236,7 @@ namespace DOL.Service
                             ClassName = x.ClassName,
                             Name = x.Name,
                             Link = x.Link,
-                            Children = Get_ChildrenMenu(x.ID, groups)
+                            Children = Get_UserMenu(x.ID, groups)
                         };
                     }
                     else
@@ -254,7 +254,7 @@ namespace DOL.Service
         /// <param name="parentId">父级id</param>
         /// <param name="groups">分组数据</param>
         /// <returns></returns>
-        private List<ZTreeNode> Get_ZTreeChildren(string parentId, List<IGrouping<string, Menu>> groups)
+        private List<ZTreeNode> Get_MenuZTreeChildren(string parentId, List<IGrouping<string, Menu>> groups)
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
             var group = groups.FirstOrDefault(x => x.Key == parentId);
@@ -265,7 +265,7 @@ namespace DOL.Service
                     {
                         name = x.Name,
                         value = x.ID,
-                        children = Get_ZTreeChildren(x.ID, groups)
+                        children = Get_MenuZTreeChildren(x.ID, groups)
                     }).ToList();
             }
             return ztreeNodes;
@@ -277,11 +277,11 @@ namespace DOL.Service
         /// <param name="parentId">父级id</param>
         /// <param name="groups">分组数据</param>
         /// <returns></returns>
-        public List<ZTreeNode> Get_ZTreeChildren(string parentId)
+        public List<ZTreeNode> Get_MenuZTreeChildren(string parentId)
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var group = Cache_Get_MenuList().AsQueryable().GroupBy(x=>x.ParentID).ToList();
-            return Get_ZTreeChildren(parentId, group);
+            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().GroupBy(x=>x.ParentID).ToList();
+            return Get_MenuZTreeChildren(parentId, group);
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace DOL.Service
         public List<ZTreeNode> Get_MenuZTreeFlagChildren(string parentId)
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var group = Cache_Get_MenuList().AsQueryable().GroupBy(x => x.ParentID).ToList();
+            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().GroupBy(x => x.ParentID).ToList();
             return Get_MenuZTreeFlagChildren(parentId, group);
         }
 

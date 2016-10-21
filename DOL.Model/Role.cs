@@ -12,10 +12,6 @@ namespace DOL.Model
     [Table("Role")]
     public class Role : BaseEntity
     {
-        /// <summary>
-        /// 角色位域值
-        /// </summary>
-        public long? RoleFlag { get; set; }
 
         /// <summary>
         /// 名称
@@ -26,9 +22,9 @@ namespace DOL.Model
         public string Name { get; set; }
 
         /// <summary>
-        /// 权限位域值
+        /// 页面权限
         /// </summary>
-        public long? LimitFlag { get; set; }
+        public long? MenuFlag { get; set; }
 
         /// <summary>
         /// 备注

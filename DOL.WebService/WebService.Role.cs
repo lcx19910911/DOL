@@ -25,7 +25,7 @@ namespace DOL.Service
             {
                 using (var db = new DbRepository())
                 {
-                    List<Role> list = db.Role.OrderByDescending(x => x.LimitFlag).ThenBy(x => x.ID).ToList();
+                    List<Role> list = db.Role.ToList();
                     return list;
                 }
             });
@@ -50,7 +50,7 @@ namespace DOL.Service
                 }
 
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.LimitFlag).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
@@ -64,21 +64,6 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var roleFlags = entities.Role.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).Select(x => x.RoleFlag ?? 0).ToList();
-                var roleFlagAll = 0L;
-                // 获取所有角色位值并集
-                roleFlags.ForEach(x => roleFlagAll |= x);
-                var roleFlag = 0L;
-                // 从低位遍历是否为空
-                for (var i = 0; i < 64; i++)
-                {
-                    if ((roleFlagAll & (1 << i)) == 0)
-                    {
-                        roleFlag = 1 << i;
-                        break;
-                    }
-                }
-                model.RoleFlag = roleFlag;
                 model.ID = Guid.NewGuid().ToString("N");
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
@@ -111,6 +96,7 @@ namespace DOL.Service
                 var oldEntity = entities.Role.Find(model.ID);
                 if (oldEntity != null)
                 {
+                    oldEntity.MenuFlag = model.MenuFlag;
                     oldEntity.Remark = model.Remark;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.Name = model.Name;
@@ -136,15 +122,72 @@ namespace DOL.Service
 
         }
 
-   
-        ///// <summary>
-        ///// 获取选择项
-        ///// </summary>
-        ///// <param name="roleFlag">角色flag值</param>
-        ///// <returns></returns>
-        //public List<SelectItem> GetSelectItem(long roleFlag)
-        //{
-        //    return FlagHelper.GetSelectItem(roleFlag, typeof(Role), "RoleFlag", "Name");
-        //}
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Role Find_Role(string id)
+        {
+            if (!id.IsNotNullOrEmpty())
+                return null;
+                return Cache_Get_RoleList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public WebResult<bool> Delete_Role(string ids)
+        {
+            if (!ids.IsNotNullOrEmpty())
+            {
+                return Result(false, ErrorCode.sys_param_format_error);
+            }
+            using (DbRepository entities = new DbRepository())
+            {
+                var list = Cache_Get_RoleList();
+                //找到实体
+                entities.Role.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
+                {
+                    x.Flag = x.Flag | (long)GlobalFlag.Removed;
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list[index] = x;
+                    }
+                });
+                if (entities.SaveChanges() > 0)
+                {
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 获取选择项
+        /// </summary>
+        /// <param name="roleFlag">角色flag值</param>
+        /// <returns></returns>
+        public List<SelectItem> GetSelectItem()
+        {
+            List<SelectItem> list = new List<SelectItem>();
+
+            Cache_Get_RoleList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+            {
+                list.Add(new SelectItem()
+                {
+                    Text = x.Name,
+                    Value = x.ID
+                });
+            });
+            return list;
+        }
     }
 }

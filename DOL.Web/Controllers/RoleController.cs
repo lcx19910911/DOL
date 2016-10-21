@@ -9,7 +9,7 @@ using System.Web.Mvc;
 namespace DOL.Web.Controllers
 {
     [LoginFilter]
-    public class MenuController : BaseController
+    public class RoleController : BaseController
     {
 
         public ViewResult Index()
@@ -22,14 +22,14 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Add(Menu entity)
+        public JsonResult Add(Role entity)
         {
             ModelState.Remove("ID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Add_Menu(entity);
+                var result = WebService.Add_Role(entity);
                 return JResult(result);
             }
             else
@@ -43,13 +43,13 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Update(Menu entity)
+        public JsonResult Update(Role entity)
         {
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Update_Menu(entity);
+                var result = WebService.Update_Role(entity);
                 return JResult(result);
             }
             else
@@ -69,35 +69,16 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult GetPageList(int pageIndex, int pageSize, string name, string no)
         {
-            return JResult(WebService.Get_MenuPageList(pageIndex, pageSize, name, no));
-        }
-
-        /// <summary>
-        /// 菜单页
-        /// </summary>
-        /// <returns></returns>
-        public PartialViewResult PartialMenu()
-        {
-            var menuList = WebService.Get_UserMenu(null);
-            return PartialView(menuList);
+            return JResult(WebService.Get_RolePageList(pageIndex, pageSize, name, no));
         }
 
         /// <summary>
         /// 获取下拉框 
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetZTreeChildren()
+        public ActionResult GetSelectItem()
         {
-            return JResult(WebService.Get_MenuZTreeChildren(null));
-        }
-
-        /// <summary>
-        /// 获取下拉框 flag
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetZTreeFlagChildren()
-        {
-            return JResult(WebService.Get_MenuZTreeFlagChildren(null));
+            return JResult(WebService.GetSelectItem());
         }
 
         /// <summary>
@@ -107,7 +88,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Find(string id)
         {
-            return JResult(WebService.Find_Menu(id));
+            return JResult(WebService.Find_Role(id));
         }
 
         /// <summary>
@@ -117,7 +98,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Delete(string ids)
         {
-            return JResult(WebService.Delete_Menu(ids));
+            return JResult(WebService.Delete_Role(ids));
         }
     }
 }

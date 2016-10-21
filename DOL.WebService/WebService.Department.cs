@@ -13,24 +13,34 @@ namespace DOL.Service
 {
     public partial class WebService
     {
-        string dataDictionaryKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "DataDictionary");
+        string departmentKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "Department");
 
         /// <summary>
         /// 站内通知全局缓存
         /// </summary>
         /// <returns></returns>
-        private List<DataDictionary> Cache_Get_DataDictionaryList()
+        private List<Department> Cache_Get_DepartmentList()
         {
 
-            return CacheHelper.Get<List<DataDictionary>>(dataDictionaryKey, () =>
+            return CacheHelper.Get<List<Department>>(departmentKey, () =>
             {
                 using (var db = new DbRepository())
                 {
-                    List<DataDictionary> list = db.DataDictionary.OrderByDescending(x => x.Sort).ThenBy(x => x.ID).ToList();
+                    List<Department> list = db.Department.OrderByDescending(x => x.Sort).ThenBy(x => x.ID).ToList();
                     return list;
                 }
             });
         }
+
+        /// <summary>
+        /// 站内通知全局缓存 dic
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, Department> Cache_Get_DepartmentList_Dic()
+        {
+            return Cache_Get_DepartmentList().ToDictionary(x => x.ID);
+        }
+
 
         /// <summary>
         /// 获取分页列表
@@ -40,18 +50,25 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<DataDictionary>> Get_DataDictionaryPageList(int pageIndex, int pageSize, string name, string no)
+        public WebResult<PageList<Department>> Get_DepartmentPageList(int pageIndex, int pageSize, string name, string no)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_DataDictionaryList().AsQueryable().AsNoTracking();
+                var query = Cache_Get_DepartmentList().AsQueryable().AsNoTracking().Where(x=>(x.Flag|(long)GlobalFlag.Normal)==0);
                 if (name.IsNotNullOrEmpty())
                 {
-                    query = query.Where(x => x.Key .Contains(name));
+                    query = query.Where(x => x.Name .Contains(name));
                 }
 
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.Sort).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                list.ForEach(x =>
+                {
+                    if (!string.IsNullOrEmpty(x.ParentID))
+                    {
+                        x.ParentName = Cache_Get_DepartmentList_Dic()[x.ParentID]?.Name;
+                    }
+                });
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
@@ -61,15 +78,18 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Add_DataDictionary(DataDictionary model)
+        public WebResult<bool> Add_Department(Department model)
         {
             using (DbRepository entities = new DbRepository())
             {
                 model.ID = Guid.NewGuid().ToString("N");
-                entities.DataDictionary.Add(model);
+                model.CreatedTime = DateTime.Now;
+                model.UpdatedTime = DateTime.Now;
+                model.Flag = (long)GlobalFlag.Normal;
+                entities.Department.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_DataDictionaryList();
+                    var list = Cache_Get_DepartmentList();
                     list.Add(model);
                     return Result(true);
                 }
@@ -87,22 +107,24 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Update_DataDictionary(DataDictionary model)
+        public WebResult<bool> Update_Department(Department model)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var oldEntity = entities.DataDictionary.Find(model.ID);
+                var oldEntity = entities.Department.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    oldEntity.Key = model.Key;
-                    oldEntity.Value = model.Value;
+                    oldEntity.Name = model.Name;
+                    oldEntity.Sort = model.Sort;
+                    oldEntity.ParentID = model.ParentID;
+                    oldEntity.Remark = model.Remark;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
 
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_DataDictionaryList();
+                    var list = Cache_Get_DepartmentList();
                     var index = list.FindIndex(x => x.ID.Equals(model.ID));
                     if (index > -1)
                     {
@@ -122,7 +144,7 @@ namespace DOL.Service
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public WebResult<bool> Delete_DataDictionary(string ids)
+        public WebResult<bool> Delete_Department(string ids)
         {
             if (!ids.IsNotNullOrEmpty())
             {
@@ -130,12 +152,16 @@ namespace DOL.Service
             }
             using (DbRepository entities = new DbRepository())
             {
-                var list = Cache_Get_DataDictionaryList();
+                var list = Cache_Get_DepartmentList();
                 //找到实体
-                entities.DataDictionary.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
+                entities.Department.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
-                    entities.DataDictionary.Remove(x);
-                    list.Remove(x);
+                    x.Flag = x.Flag | (long)GlobalFlag.Removed;
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list[index] = x;
+                    }
                 });
                 if (entities.SaveChanges() > 0)
                 {
@@ -154,16 +180,49 @@ namespace DOL.Service
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public DataDictionary Find_DataDictionary(string id)
+        public Department Find_Department(string id)
         {
             if (!id.IsNotNullOrEmpty())
                 return null;
-            using (DbRepository entities = new DbRepository())
-            {
-                return Cache_Get_DataDictionaryList().FirstOrDefault(x => x.ID.Equals(id));
-            }
+
+                return Cache_Get_DepartmentList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
         }
-        
+
+        /// <summary>
+        /// 获取ZTree子节点
+        /// </summary>
+        /// <param name="parentId">父级id</param>
+        /// <param name="groups">分组数据</param>
+        /// <returns></returns>
+        private List<ZTreeNode> Get_DepartmentZTreeChildren(string parentId, List<IGrouping<string, Department>> groups)
+        {
+            List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
+            var group = groups.FirstOrDefault(x => x.Key == parentId);
+            if (group != null)
+            {
+                ztreeNodes = group.Select(
+                    x => new ZTreeNode()
+                    {
+                        name = x.Name,
+                        value = x.ID,
+                        children = Get_DepartmentZTreeChildren(x.ID, groups)
+                    }).ToList();
+            }
+            return ztreeNodes;
+        }
+
+        /// <summary>
+        /// 获取ZTree子节点
+        /// </summary>
+        /// <param name="parentId">父级id</param>
+        /// <param name="groups">分组数据</param>
+        /// <returns></returns>
+        public List<ZTreeNode> Get_DepartmentZTreeChildren(string parentId)
+        {
+            List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
+            var group = Cache_Get_DepartmentList().AsQueryable().AsNoTracking().Where(x=>(x.Flag|(long)GlobalFlag.Normal)==0).GroupBy(x => x.ParentID).ToList();
+            return Get_DepartmentZTreeChildren(parentId, group);
+        }
 
     }
 }

@@ -122,7 +122,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="HtmlTemplates\Department\Update.html" />
     <Content Include="HtmlTemplates\Menu\Update.html" />
+    <Content Include="HtmlTemplates\Role\Update.html" />
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
     <Content Include="HtmlTemplates\User\Update.html" />
     <Content Include="Images\404Pic.png" />
@@ -200,6 +202,8 @@
     <Content Include="Styles\zTreeStyle\img\zTreeStandard.png" />
     <Content Include="Styles\zTreeStyle\zTreeStyle.css" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Department\Index.cshtml" />
+    <Content Include="Views\Role\Index.cshtml" />
     <None Include="Views\Menu\Update.cshtml" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -211,7 +215,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccoutController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Global.asax.cs">
@@ -250,8 +256,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="HtmlTemplates\DataDictionary\" />
-    <Folder Include="HtmlTemplates\Department\" />
-    <Folder Include="HtmlTemplates\Role\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

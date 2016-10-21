@@ -9,7 +9,7 @@ using System.Web.Mvc;
 namespace DOL.Web.Controllers
 {
     [LoginFilter]
-    public class MenuController : BaseController
+    public class DepartmentController : BaseController
     {
 
         public ViewResult Index()
@@ -22,14 +22,14 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Add(Menu entity)
+        public JsonResult Add(Department entity)
         {
             ModelState.Remove("ID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Add_Menu(entity);
+                var result = WebService.Add_Department(entity);
                 return JResult(result);
             }
             else
@@ -43,13 +43,13 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Update(Menu entity)
+        public JsonResult Update(Department entity)
         {
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Update_Menu(entity);
+                var result = WebService.Update_Department(entity);
                 return JResult(result);
             }
             else
@@ -69,17 +69,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult GetPageList(int pageIndex, int pageSize, string name, string no)
         {
-            return JResult(WebService.Get_MenuPageList(pageIndex, pageSize, name, no));
-        }
-
-        /// <summary>
-        /// 菜单页
-        /// </summary>
-        /// <returns></returns>
-        public PartialViewResult PartialMenu()
-        {
-            var menuList = WebService.Get_UserMenu(null);
-            return PartialView(menuList);
+            return JResult(WebService.Get_DepartmentPageList(pageIndex, pageSize, name, no));
         }
 
         /// <summary>
@@ -88,16 +78,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult GetZTreeChildren()
         {
-            return JResult(WebService.Get_MenuZTreeChildren(null));
-        }
-
-        /// <summary>
-        /// 获取下拉框 flag
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetZTreeFlagChildren()
-        {
-            return JResult(WebService.Get_MenuZTreeFlagChildren(null));
+            return JResult(WebService.Get_DepartmentZTreeChildren(null));
         }
 
         /// <summary>
@@ -107,7 +88,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Find(string id)
         {
-            return JResult(WebService.Find_Menu(id));
+            return JResult(WebService.Find_Department(id));
         }
 
         /// <summary>
@@ -117,7 +98,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Delete(string ids)
         {
-            return JResult(WebService.Delete_Menu(ids));
+            return JResult(WebService.Delete_Department(ids));
         }
     }
 }

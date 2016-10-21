@@ -38,5 +38,11 @@ namespace DOL.Model
         [MaxLength(128)]
         [Column("Remark", TypeName = "varchar")]
         public string Remark { get; set; }
+
+        /// <summary>
+        /// 所属部门
+        /// </summary>
+        [NotMapped]
+        public string ParentName { get; set; }
     }
 }
