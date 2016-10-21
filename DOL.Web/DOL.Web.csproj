@@ -121,6 +121,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="File\dol.sql" />
     <Content Include="Global.asax" />
     <Content Include="HtmlTemplates\Department\Update.html" />
     <Content Include="HtmlTemplates\Menu\Update.html" />
