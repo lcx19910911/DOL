@@ -15,6 +15,8 @@ namespace DOL.Core
         /// </summary>
         public static readonly string Cache_Prefix_Key = "WOL";
 
+        public static readonly string Mobile = ConfigurationManager.AppSettings["Mobile"];
+
         /// <summary>
         /// 公司名称
         /// </summary>
@@ -28,7 +30,7 @@ namespace DOL.Core
         /// <summary>
         /// 登陆cookie
         /// </summary>
-        public static readonly string UserCookieName = "site_user";
+        public static readonly string UserCookieName = "dol_user";
 
         /// <summary>
         /// cookie 过期时间

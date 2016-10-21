@@ -1,0 +1,59 @@
+﻿@model DOL.Model.Menu
+<div class="admin-content">
+    <form id="form" class="am-form am-form-horizontal">
+        <div class="admin-content-body">
+            <div class="am-margin">
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        @Html.LabelFor(x=>x.Name) :            
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="Name" value="@(Model?.Name)" class="am-input-sm" maxlength="32" placeholder="请输入@(Html.LabelFor(x=>x.Name))">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm"><strong class="am-text-danger am-text-sm">*</strong></strong>@Html.ValidationMessageFor(x=>x.Name)</div>
+                </div>
+
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        @Html.LabelFor(x => x.Link) :
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="Link" value="@(Model?.Link)" class="am-input-sm" maxlength="32" placeholder="请输入@(Html.LabelFor(x=>x.Link))">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm"><strong class="am-text-danger am-text-sm">*</strong></strong>@Html.ValidationMessageFor(x => x.Link)</div>
+                </div>
+
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        @Html.LabelFor(x => x.ParentID) :
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="hidden" name="ParentID" />
+                        <input type="text" name="ParentIDSelect" />
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>@Html.ValidationMessageFor(x => x.ParentID)</div>
+                </div>
+
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        @Html.LabelFor(x => x.ClassName) :
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="ClassName" value="@(Model?.ClassName)" class="am-input-sm" maxlength="32" placeholder="请输入@(Html.LabelFor(x=>x.ClassName))">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left">@Html.ValidationMessageFor(x => x.ClassName)</div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        @Html.LabelFor(x => x.Sort) :
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="number" name="Sort" value="@(Model?.Sort)" class="am-input-sm" maxlength="32">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left">@Html.ValidationMessageFor(x => x.Sort)</div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>

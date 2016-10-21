@@ -14,14 +14,15 @@ namespace DOL.Web
                 "~/Styles/css/amazeui.css",
                 "~/Scripts/tipso/css/tipso.min.css",
                 "~/Styles/admin.css",
-                "~/Scripts/My97DatePicker/skin/WdatePicker.css"));
-
+                "~/Scripts/My97DatePicker/skin/WdatePicker.css",
+                "~/Styles/zTreeStyle/zTreeStyle.css"
+                ));
             #endregion
 
             #region 脚本
 
             bundles.Add(new ScriptBundle("~/Scripts/Admin").Include(
-               "~/Scripts/jquery-2.2.3.min.js",
+               "~/Scripts/jquery-1.10.2.js",
                "~/Scripts/jquery.form.js",
                "~/Scripts/amazeui.min.js",
                "~/Scripts/jquery-validation/js/jquery.validate.js",
@@ -36,7 +37,9 @@ namespace DOL.Web
                "~/Scripts/My97DatePicker/config.js",
                "~/Scripts/My97DatePicker/lang/zh-cn.js",
 
-               "~/Scripts/file_upload_plug-in.js"
+               "~/Scripts/file_upload_plug-in.js",
+               "~/Scripts/jquery.ztree.all-3.5.min.js",
+               "~/Scripts/ztree-select.js"
                ));
 
             #endregion

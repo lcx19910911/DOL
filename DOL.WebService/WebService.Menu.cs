@@ -33,6 +33,15 @@ namespace DOL.Service
         }
 
         /// <summary>
+        /// 站内通知全局缓存 dic
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string,Menu> Cache_Get_MenuList_Dic()
+        {
+            return Cache_Get_MenuList().ToDictionary(x => x.ID);
+        }
+
+        /// <summary>
         /// 获取分页列表
         /// </summary>
         /// <param name="pageIndex">页码</param>
@@ -44,14 +53,19 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_MenuList().AsQueryable().AsNoTracking();
+               var query = Cache_Get_MenuList().AsQueryable().AsNoTracking();
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
                 }
 
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.Sort).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderBy(x => x.Sort).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                list.ForEach(x =>
+                {
+                    if(!string.IsNullOrEmpty(x.ParentID))
+                        x.ParentName = Cache_Get_MenuList_Dic()[x.ParentID]?.Name;
+                });
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
@@ -89,7 +103,6 @@ namespace DOL.Service
                 {
                     var list = Cache_Get_MenuList();
                     list.Add(model);
-                    CacheHelper.Insert<List<Menu>>(menuKey, list);
                     return Result(true);
                 }
                 else
@@ -117,6 +130,7 @@ namespace DOL.Service
                     oldEntity.Name = model.Name;
                     oldEntity.ClassName = model.ClassName;
                     oldEntity.Link = model.Link;
+                    oldEntity.Sort = model.Sort;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -124,11 +138,10 @@ namespace DOL.Service
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_MenuList();
-                    var cachItem = list.FirstOrDefault(x => x.ID.Equals(model.ID));
-                    if (cachItem != null)
+                    var index = list.FindIndex(x => x.ID.Equals(model.ID));
+                    if (index>-1)
                     {
-                        cachItem = oldEntity;
-                        CacheHelper.Insert<List<Menu>>(menuKey, list);
+                        list[index] = oldEntity;
                     }
                     return Result(true);
                 }
@@ -141,6 +154,99 @@ namespace DOL.Service
         }
 
 
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Menu Find_Menu(string id)
+        {
+            if (!id.IsNotNullOrEmpty())
+                return null;
+             return Cache_Get_MenuList().FirstOrDefault(x=>x.ID.Equals(id));
+        }
+
+
+        /// <summary>
+        /// 删除分类
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public WebResult<bool> Delete_Menu(string ids)
+        {
+            if (!ids.IsNotNullOrEmpty())
+            {
+                return Result(false, ErrorCode.sys_param_format_error);
+            }
+            using (DbRepository entities = new DbRepository())
+            {
+                var list = Cache_Get_MenuList();
+                //找到实体
+                entities.Menu.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
+                {
+                    entities.Menu.Remove(x);
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list.RemoveAt(index);
+                    }
+                });
+                if (entities.SaveChanges() > 0)
+                {
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 获取菜单
+        /// </summary>
+        /// <returns></returns>
+        public List<DOL.Model.MenuItem> Get_ChildrenMenu(string parentId)
+        {
+            List<DOL.Model.MenuItem> menuList = new List<DOL.Model.MenuItem>();
+            var group = Cache_Get_MenuList().AsQueryable().GroupBy(x => x.ParentID).ToList();
+            return Get_ChildrenMenu(parentId, group);
+        }
+
+
+        /// <summary>
+        /// 获取菜单
+        /// </summary>
+        /// <returns></returns>
+        private List<DOL.Model.MenuItem> Get_ChildrenMenu(string parentId, List<IGrouping<string, Menu>> groups)
+        {
+            List<DOL.Model.MenuItem> menuList = new List<DOL.Model.MenuItem>();
+            var group = groups.FirstOrDefault(x => x.Key == parentId);
+            if (group != null)
+            {
+                menuList = group.Select(
+                    x =>
+                {
+
+                    if (this.Client.LoginUser.MenuFlag == -1 || (this.Client.LoginUser.MenuFlag & x.LimitFlag) != 1)
+                    {
+                        return new DOL.Model.MenuItem()
+                        {
+                            ClassName = x.ClassName,
+                            Name = x.Name,
+                            Link = x.Link,
+                            Children = Get_ChildrenMenu(x.ID, groups)
+                        };
+                    }
+                    else
+                        return null;
+                }).ToList();
+            }
+            return menuList;
+        }
+
+
 
         /// <summary>
         /// 获取ZTree子节点
@@ -148,7 +254,7 @@ namespace DOL.Service
         /// <param name="parentId">父级id</param>
         /// <param name="groups">分组数据</param>
         /// <returns></returns>
-        public List<ZTreeNode> GetZTreeChildren(string parentId, List<IGrouping<string, Menu>> groups)
+        private List<ZTreeNode> Get_ZTreeChildren(string parentId, List<IGrouping<string, Menu>> groups)
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
             var group = groups.FirstOrDefault(x => x.Key == parentId);
@@ -159,7 +265,7 @@ namespace DOL.Service
                     {
                         name = x.Name,
                         value = x.ID,
-                        children = GetZTreeChildren(x.ID, groups)
+                        children = Get_ZTreeChildren(x.ID, groups)
                     }).ToList();
             }
             return ztreeNodes;
@@ -171,7 +277,33 @@ namespace DOL.Service
         /// <param name="parentId">父级id</param>
         /// <param name="groups">分组数据</param>
         /// <returns></returns>
-        public List<ZTreeNode> GetZTreeFlagChildren(string parentId, List<IGrouping<string, Menu>> groups)
+        public List<ZTreeNode> Get_ZTreeChildren(string parentId)
+        {
+            List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
+            var group = Cache_Get_MenuList().AsQueryable().GroupBy(x=>x.ParentID).ToList();
+            return Get_ZTreeChildren(parentId, group);
+        }
+
+        /// <summary>
+        /// 获取ZTree子节点
+        /// </summary>
+        /// <param name="parentId">父级id</param>
+        /// <param name="groups">分组数据</param>
+        /// <returns></returns>
+        public List<ZTreeNode> Get_MenuZTreeFlagChildren(string parentId)
+        {
+            List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
+            var group = Cache_Get_MenuList().AsQueryable().GroupBy(x => x.ParentID).ToList();
+            return Get_MenuZTreeFlagChildren(parentId, group);
+        }
+
+        /// <summary>
+        /// 获取ZTree子节点
+        /// </summary>
+        /// <param name="parentId">父级id</param>
+        /// <param name="groups">分组数据</param>
+        /// <returns></returns>
+        private List<ZTreeNode> Get_MenuZTreeFlagChildren(string parentId, List<IGrouping<string, Menu>> groups)
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
             var group = groups.FirstOrDefault(x => x.Key == parentId);
@@ -182,7 +314,7 @@ namespace DOL.Service
                     {
                         name = x.Name,
                         value = x.LimitFlag.ToString(),
-                        children = GetZTreeFlagChildren(x.ID, groups)
+                        children = Get_MenuZTreeFlagChildren(x.ID, groups)
                     }).ToList();
             }
             return ztreeNodes;

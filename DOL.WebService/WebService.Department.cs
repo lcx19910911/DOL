@@ -71,7 +71,6 @@ namespace DOL.Service
                 {
                     var list = Cache_Get_DataDictionaryList();
                     list.Add(model);
-                    CacheHelper.Insert<List<DataDictionary>>(dataDictionaryKey, list);
                     return Result(true);
                 }
                 else
@@ -104,11 +103,10 @@ namespace DOL.Service
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_DataDictionaryList();
-                    var cachItem = list.FirstOrDefault(x => x.ID.Equals(model.ID));
-                    if (cachItem != null)
+                    var index = list.FindIndex(x => x.ID.Equals(model.ID));
+                    if (index > -1)
                     {
-                        cachItem = oldEntity;
-                        CacheHelper.Insert<List<DataDictionary>>(dataDictionaryKey, list);
+                        list[index] = oldEntity;
                     }
                     return Result(true);
                 }
@@ -141,7 +139,6 @@ namespace DOL.Service
                 });
                 if (entities.SaveChanges() > 0)
                 {
-                    CacheHelper.Insert<List<DataDictionary>>(dataDictionaryKey, list);
                     return Result(true);
                 }
                 else

@@ -13,16 +13,18 @@ namespace DOL.Model
     public class Menu : BaseEntity
     {
         /// <summary>
-        /// 名称
+        /// 菜单名称
         /// </summary>
         [Required(ErrorMessage = "名称不能为空")]
         [MaxLength(32)]
+        [Display(Name= "菜单名称")]
         [Column("Name", TypeName = "varchar")]
         public string Name { get; set; }
 
         /// <summary>
         /// 排序
         /// </summary>
+        [Display(Name = "排序")]
         public int? Sort { get; set; }
 
         /// <summary>
@@ -33,8 +35,8 @@ namespace DOL.Model
         /// <summary>
         /// 链接
         /// </summary>
-        [Required(ErrorMessage = "链接不能为空")]
         [MaxLength(64)]
+        [Display(Name = "链接")]
         [Column("Link", TypeName = "varchar")]
         public string Link { get; set; }
 
@@ -42,6 +44,7 @@ namespace DOL.Model
         /// 父级ID
         /// </summary>
         [MaxLength(32)]
+        [Display(Name = "所属菜单")]
         [Column("ParentID", TypeName = "char")]
         public string ParentID { get; set; }
 
@@ -49,7 +52,15 @@ namespace DOL.Model
         /// 类名称
         /// </summary>
         [MaxLength(32)]
+        [Display(Name = "类名称")]
         [Column("ClassName", TypeName = "varchar")]
         public string ClassName { get; set; }
+
+
+        /// <summary>
+        /// 所属菜单
+        /// </summary>
+        [NotMapped]
+        public string ParentName { get; set; }
     }
 }

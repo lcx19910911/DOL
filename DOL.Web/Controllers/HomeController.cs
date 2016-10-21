@@ -9,10 +9,10 @@ using System.Web.Mvc;
 namespace DOL.Web.Controllers
 {
     /// <summary>
-    /// 密室
+    /// 首页
     /// </summary>
     [LoginFilter]
-    public class PayController : BaseController
+    public class HomeController : BaseController
     {
         // GET: 
         public ActionResult Index()

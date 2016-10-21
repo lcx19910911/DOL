@@ -80,7 +80,6 @@ namespace DOL.Service
                 {
                     var list = Cache_Get_ThemeList();
                     list.Add(model);
-                    CacheHelper.Insert<List<Theme>>(themeKey, list);
                     return Result(true);
                 }
                 else
@@ -119,11 +118,10 @@ namespace DOL.Service
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_ThemeList();
-                    var cachItem = list.FirstOrDefault(x => x.ID.Equals(model.ID));
-                    if (cachItem != null)
+                    var index = list.FindIndex(x => x.ID.Equals(model.ID));
+                    if (index > -1)
                     {
-                        cachItem = oldEntity;
-                        CacheHelper.Insert<List<Theme>>(themeKey, list);
+                        list[index] = oldEntity;
                     }
                     return Result(true);
                 }
@@ -152,13 +150,14 @@ namespace DOL.Service
                 entities.Theme.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     x.Flag = x.Flag | (long)GlobalFlag.Removed;
-                    var cachItem = list.FirstOrDefault(y => y.ID.Equals(x.ID));
-                    if (cachItem != null)
-                        cachItem.Flag = x.Flag;
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list[index] = x;
+                    }
                 });
                 if (entities.SaveChanges() > 0)
                 {
-                    CacheHelper.Insert<List<Theme>>(themeKey, list);
                     return Result(true);
                 }
                 else
@@ -202,14 +201,15 @@ namespace DOL.Service
                 entities.Theme.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     x.Flag = x.Flag & ~(long)GlobalFlag.Unabled;
-                    var cachItem = list.FirstOrDefault(y => y.ID.Equals(x.ID));
-                    if (cachItem != null)
-                        cachItem.Flag = x.Flag;
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list[index] = x;
+                    }
                 });
 
                 if (entities.SaveChanges() > 0)
                 {
-                    CacheHelper.Insert<List<Theme>>(themeKey, list);
                     return Result(true);
                 }
                 else
@@ -237,14 +237,15 @@ namespace DOL.Service
                 entities.Theme.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     x.Flag = x.Flag | (long)GlobalFlag.Unabled;
-                    var cachItem = list.FirstOrDefault(y => y.ID.Equals(x.ID));
-                    if (cachItem != null)
-                        cachItem.Flag = x.Flag;
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list[index] = x;
+                    }
                 });
 
                 if (entities.SaveChanges() > 0)
                 {
-                    CacheHelper.Insert<List<Theme>>(themeKey, list);
                     return Result(true);
                 }
                 else
