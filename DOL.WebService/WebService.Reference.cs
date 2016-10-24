@@ -8,27 +8,37 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 namespace DOL.Service
 {
     public partial class WebService
     {
-        string roleKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "Role");
+        string referenceKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "Reference");
 
         /// <summary>
         /// 缓存
         /// </summary>
         /// <returns></returns>
-        private List<Role> Cache_Get_RoleList()
+        private List<Reference> Cache_Get_ReferenceList()
         {
 
-            return CacheHelper.Get<List<Role>>(roleKey, () =>
+            return CacheHelper.Get<List<Reference>>(referenceKey, () =>
             {
                 using (var db = new DbRepository())
                 {
-                    List<Role> list = db.Role.ToList();
+                    List<Reference> list = db.Reference.OrderByDescending(x => x.CreatedTime).ThenBy(x => x.ID).ToList();
                     return list;
                 }
             });
+        }
+
+        /// <summary>
+        /// 缓存 dic
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string,Reference> Cache_Get_ReferenceList_Dic()
+        {
+            return Cache_Get_ReferenceList().ToDictionary(x => x.ID);
         }
 
         /// <summary>
@@ -39,11 +49,11 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Role>> Get_RolePageList(int pageIndex, int pageSize, string name, string no)
+        public WebResult<PageList<Reference>> Get_ReferencePageList(int pageIndex, int pageSize, string name, string no)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_RoleList().AsQueryable().AsNoTracking();
+               var query = Cache_Get_ReferenceList().AsQueryable().AsNoTracking();
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -60,7 +70,7 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Add_Role(Role model)
+        public WebResult<bool> Add_Reference(Reference model)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -68,10 +78,10 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.UpdatedTime = DateTime.Now;
-                entities.Role.Add(model);
+                entities.Reference.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_RoleList();
+                    var list = Cache_Get_ReferenceList();
                     list.Add(model);
                     return Result(true);
                 }
@@ -89,26 +99,26 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Update_Role(Role model)
+        public WebResult<bool> Update_Reference(Reference model)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var oldEntity = entities.Role.Find(model.ID);
+                var oldEntity = entities.Reference.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    oldEntity.MenuFlag = model.MenuFlag;
-                    oldEntity.Remark = model.Remark;
-                    oldEntity.UpdatedTime = DateTime.Now;
+                    oldEntity.Mobile = model.Mobile;
                     oldEntity.Name = model.Name;
+                    oldEntity.ShopIDStr = model.ShopIDStr;
+                    oldEntity.GenderCode = model.GenderCode;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
 
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_RoleList();
+                    var list = Cache_Get_ReferenceList();
                     var index = list.FindIndex(x => x.ID.Equals(model.ID));
-                    if (index > -1)
+                    if (index>-1)
                     {
                         list[index] = oldEntity;
                     }
@@ -126,24 +136,53 @@ namespace DOL.Service
 
         }
 
+
         /// <summary>
         /// 查找实体
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Role Find_Role(string id)
+        public Reference Find_Reference(string id)
         {
             if (!id.IsNotNullOrEmpty())
                 return null;
-                return Cache_Get_RoleList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+             return Cache_Get_ReferenceList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(id));
+        }
+
+
+        /// <summary>
+        /// 下拉框集合
+        /// </summary>
+        /// <param name="">门店id</param>
+        /// <returns></returns>
+        public List<SelectItem> Get_ReferenceSelectItem(string id)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                List<SelectItem> list = new List<SelectItem>();
+
+                var query = Cache_Get_ReferenceList().AsQueryable().AsNoTracking();
+
+                query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                {
+                    list.Add(new SelectItem()
+                    {
+                        Selected = x.ID.Equals(id),
+                        Text = x.Name,
+                        Value = x.ID
+                    });
+                });
+                return list;
+
+            }
         }
 
         /// <summary>
-        /// 删除
+        /// 删除分类
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public WebResult<bool> Delete_Role(string ids)
+        public WebResult<bool> Delete_Reference(string ids)
         {
             if (!ids.IsNotNullOrEmpty())
             {
@@ -151,19 +190,15 @@ namespace DOL.Service
             }
             using (DbRepository entities = new DbRepository())
             {
-                var list = Cache_Get_RoleList();
+                var list = Cache_Get_ReferenceList();
                 //找到实体
-                entities.Role.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
+                entities.Reference.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
-                    x.Flag = x.Flag | (long)GlobalFlag.Removed;
+                    entities.Reference.Remove(x);
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
                     if (index > -1)
                     {
-                        list[index] = x;
-                    }
-                    else
-                    {
-                        list.Add(x);
+                        list.RemoveAt(index);
                     }
                 });
                 if (entities.SaveChanges() > 0)
@@ -175,28 +210,6 @@ namespace DOL.Service
                     return Result(false, ErrorCode.sys_fail);
                 }
             }
-        }
-
-
-        /// <summary>
-        /// 获取选择项
-        /// </summary>
-        /// <param name="roleFlag">角色flag值</param>
-        /// <returns></returns>
-        public List<SelectItem> Get_RoleSelectItem(string id)
-        {
-            List<SelectItem> list = new List<SelectItem>();
-
-            Cache_Get_RoleList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
-            {
-                list.Add(new SelectItem()
-                {
-                    Selected = x.ID.Equals(id),
-                    Text = x.Name,
-                    Value = x.ID
-                });
-            });
-            return list;
         }
     }
 }

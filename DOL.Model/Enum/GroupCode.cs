@@ -17,18 +17,18 @@ namespace DOL.Model
         /// 地区
         /// </summary>
         [Description("地区")]
-        Region = 1,
+        Area = 1,
 
-        [Description("行业")]
-        InvestField = 2,
+        [Description("支付方式")]
+        PayMethod = 2,
 
-        [Description("投资理念")]
-        InvestmentConcept = 3,
+        [Description("支付途径")]
+        PayType = 3,
 
-        [Description("提供帮助")]
-        ProvideHelp = 4,
+        [Description("培训方式")]
+        Train = 4,
 
-        [Description("分享文字")]
-        ShareText =5,
+        [Description("证书类型")]
+        Certificate = 4,
     }
 }

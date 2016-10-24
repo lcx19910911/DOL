@@ -41,7 +41,7 @@ namespace DOL.Model
         /// 名称
         /// </summary>
         [Display(Name = "名称")]
-        [MaxLength(100)]
+        [MaxLength(32)]
         [Required(ErrorMessage = "名称不能为空")]
         [Column("Name", TypeName = "varchar")]
         public string Name { get; set; }
@@ -61,14 +61,6 @@ namespace DOL.Model
         [Required(ErrorMessage = "手机号不能为空")]
         [RegularExpression(@"((\d{11})$)", ErrorMessage = "手机格式不正确")]
         public string Mobile { get; set; }
-
-        /// <summary>
-        /// 电话
-        /// </summary>
-        [Display(Name = "电话")]
-        [MaxLength(11)]
-        [RegularExpression(@"((\d{3,4}-\d{3,7})$)", ErrorMessage = "电话格式不正确")]
-        public string Telephone { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
@@ -92,18 +84,7 @@ namespace DOL.Model
         [MaxLength(12), MinLength(6),Compare("NewPassword",ErrorMessage="两次密码输入不一致")]
         [NotMapped]
         public string ConfirmPassword { get; set; }
-
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        [Display(Name = "账号到期时间")]       
-        public Nullable<System.DateTime> ExpireTime { get; set; }
-
-        /// <summary>
-        /// 是否是管理员
-        /// </summary>
-        public YesOrNoCode IsAdmin { get; set; }
+       
 
         /// <summary>
         /// 状态

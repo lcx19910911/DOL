@@ -58,9 +58,13 @@ namespace DOL.Repository
 
         public DbSet<SiteMessage> SiteMessage { get; set; }
 
-
-
         public DbSet<Theme> Theme { get; set; }
+
+        public DbSet<Reference> Reference { get; set; }
+
+        public DbSet<EnteredPoint> EnteredPoint { get; set; }
+
+        public DbSet<DriverShop> DriverShop { get; set; }
     }
 
 }

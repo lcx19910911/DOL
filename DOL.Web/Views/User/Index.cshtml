@@ -1,13 +1,13 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "管理员管理";
+    ViewBag.Title = "用户管理";
 }
 <style>
     #menuFlagDiv,#storeFlagDiv input{ float:left;}
     #menuFlagDiv,#storeFlagDiv label{ float:left;}
 </style>
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>管理员管理</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>用户管理</small></div>
 </div>
 <div id="searchDomain">
 
@@ -15,19 +15,26 @@
         <div class="am-u-lg-3">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">名称：</span>
-                <input type="text" class="am-form-field" placeholder="按管理员名称搜索" style="width:100px;" name="name" ;>
+                <input type="text" class="am-form-field" placeholder="按用户名称搜索" style="width:100px;" name="name" ;>
             </div>
         </div>
         <div class="am-u-lg-3">
             <div class="am-input-group am-input-group-sm">
-                <span class="am-input-group-label">账号：</span>
-                <input type="text" class="am-form-field" placeholder="按管理员账号搜索" style="width:100px;" name="accout" ;>
+                <span class="am-input-group-label">手机：</span>
+                <input type="text" class="am-form-field" placeholder="按用户手机搜索" style="width:100px;" name="mobile" ;>
             </div>
         </div>
         <div class="am-u-lg-6 am-u-end">
             <div class="am-input-group am-input-group-sm">
-                <span class="am-input-group-label">手机：</span>
-                <input type="text" class="am-form-field" placeholder="按管理员手机搜索" style="width:100px;" name="phone" ;>
+
+                <span class="am-input-group-label  am-margin-left-sm">创建日期</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="startTimeStart" readonly style="width:auto;">
+                <span class="am-input-group-label"> - </span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="endTimeEnd" readonly style="width:auto;">
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
 
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
@@ -73,6 +80,8 @@
 {
     <script type="text/javascript">
 
+        $('[name=EntryTime]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name=EntryTime]').datepicker({ format: 'yyyy-mm-dd' });
         function ClearFilter() {
             $("#searchDomain input").val("");
         }
@@ -110,7 +119,6 @@
         }
 
         function formInit(dataitem) {
-
             //添加表单验证
             $.Nuoya.form("form").validate({
                 rules: {
@@ -125,9 +133,6 @@
                     Mobile: {
                         required: true,
                         maxlength: 11
-                    },
-                    ExpireTime: {
-                        required: true
                     },
                     Remark: {
                         maxlength: 128
@@ -146,43 +151,22 @@
                         required: "不允许为空",
                         maxlength: "最多{0}个字符"
                     },
-                    ExpireTime: {
-                        required: "不允许为空"
-                    },
                     Remark: {
                         maxlength: "最多{0}个字符"
                     },
                 }
             });
 
-            $.Nuoya.action("/Store/GetFlagZTreeNodes", { }, function (json) {
-               // debugger
-                $(json).each(function (index, item) {
-                    var checkState = false;
-                    if (dataitem != null)
-                    {
-                        if ((dataitem.StoreFlag &parseInt(item.value)) != 0)
-                            checkState = true;
-                    }
-                    
-                    if (checkState)
-                        $("#storeFlagDiv").append('<input type="checkbox"  value="' + item.value + '"  checked="checked"  /> <label>' + item.name + '</label> ');
-                    else
-                        $("#storeFlagDiv").append('<input type="checkbox"  value="' + item.value + '"  /><label>' + item.name + '</label>');
-                    if (index / 4 == 1)
-                        $("#storeFlagDiv").append('<br/>');
-                })
-            });
-
-            if (dataitem != null)
-            {
-                $("#menuFlagDiv input").each(function (index, item) {
-                    
-                    if ((parseInt($(item).val()) & dataitem.MenuFlag) != 0)
-                        $(item).prop("checked", true);
+            $.Nuoya.action("/Role/GetSelectItem", { id: dataitem ? dataitem.RoleId : "" }, function (json) {
+                $(json).each(function () {
+                    $("select[name='RoleId']").append("<option " + (this.Selected == true ? "selected" : "") + " value='" + this.Value + "'>" + this.Text + "</option>");
                 });
-                
-            }
+            });
+            $.Nuoya.action("/Department/GetSelectItem", { id: dataitem ? dataitem.DepartmentID : "" }, function (json) {
+                $(json).each(function () {
+                    $("select[name='DepartmentID']").append("<option " + (this.Selected == true ? "selected" : "") + " value='" + this.Value + "'>" + this.Text + "</option>");
+                });
+            });
         }
 
         //新增
@@ -192,30 +176,13 @@
                 width: "1000px",
                 height: "600px",
                 ajaxUrl: "/HtmlTemplates/User/Update.html",
-                title: "添加管理员",
+                title: "添加用户",
                 callback: function (e) {
                     formInit();//表单初始化
                 },
                 buttons: [{
                     label: "保存",
                     callback: function (e) {
-
-                        var menuFlag = 0                  
-                        $("#menuFlagDiv input").each(function (index, item) {
-                            if ($(item).prop("checked"))
-                            {
-                                menuFlag = menuFlag | parseInt($(item).val());
-                            }
-                        });
-                        document.forms[0].MenuFlag.value = menuFlag;
-
-                        var storeFlag = 0
-                        $("#storeFlagDiv input").each(function (index, item) {
-                            if ($(item).prop("checked")) {
-                                storeFlag = storeFlag | parseInt($(item).val());
-                            }
-                        });
-                        document.forms[0].StoreFlag.value = storeFlag;
 
                         $.Nuoya.form("form").ajaxSubmit({
                             ajaxUrl: "/User/Add",
@@ -255,14 +222,14 @@
                             width: "1000px",
                             height: "600px",
                             ajaxUrl: "/HtmlTemplates/User/Update.html",
-                            title: "编辑管理员",
+                            title: "编辑用户",
                             callback: function (e) {
                                 $.Nuoya.action("/User/Find", { id: item.ID }, function (model) {
+                                    formInit(model);//表单初始化
                                     //载入数据
                                     $.Nuoya.form("form").dataLoad({
                                         data: model
                                     });
-                                    formInit(model);//表单初始化
                                 });
                                 $("[name='password']").hide();
                                 $("[name='Account']").attr("readonly", true);
@@ -270,21 +237,7 @@
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
-                                    var menuFlag = 0
-                                    $("#menuFlagDiv input").each(function (index, item) {
-                                        if ($(item).prop("checked")) {
-                                            menuFlag = menuFlag | parseInt($(item).val());
-                                        }
-                                    });
-                                    document.forms[0].MenuFlag.value = menuFlag;
 
-                                    var storeFlag = 0
-                                    $("#storeFlagDiv input").each(function (index, item) {
-                                        if ($(item).prop("checked")) {
-                                            storeFlag = storeFlag | parseInt($(item).val());
-                                        }
-                                    });
-                                    document.forms[0].StoreFlag.value = storeFlag;
                                     $.Nuoya.form("form").ajaxSubmit({
                                         ajaxUrl: "/User/Update",
                                         params: {
@@ -303,6 +256,45 @@
                             }]
                         })
                     }
+                },
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "编辑权限",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "500px",
+                            height: "500px",
+                            ajaxUrl: "/HtmlTemplates/User/SelectMenu.html",
+                            title: "编辑权限",
+                            callback: function (e) {
+                                $.Nuoya.action("/User/Find", { id: item.ID }, function (model) {
+                                    $("#form [name=MenuFlagSelect]").ztreeSelect($("[name=MenuFlag]"), "/Menu/GetZTreeFlagChildren", model != null ? model.MenuFlag : 0, true, true);
+                                });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/User/UpdateMenu",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }                    
                 },
                 {
                     className: "am-text-danger",
@@ -366,11 +358,4 @@
 
     </script>
 
-    @if ((CookieHelper.GetCurrentUser().IsAdmin == YesOrNoCode.No))
-    {
-        <script type="text/javascript">
-            $("#companyChk").hide();
-            $("#companyChk").prop("checked", false);
-        </script>
-    }
 }

@@ -1,10 +1,10 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "角色管理";
+    ViewBag.Title = "推荐人管理";
 }
 
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>角色管理</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>推荐人管理</small></div>
 </div>
 <div id="searchDomain">
 
@@ -12,7 +12,7 @@
         <div class="am-u-lg-6 am-u-end">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">名称：</span>
-                <input type="text" class="am-form-field" placeholder="按角色名称搜索" style="width:100px;" name="name" ;>
+                <input type="text" class="am-form-field" placeholder="按推荐人名称搜索" style="width:100px;" name="name" ;>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -40,7 +40,9 @@
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
-                <th dataname="Name">角色名称</th>
+                <th dataname="Name">推荐人名称</th>
+                <th render="Gender">性别</th>
+                <th dataname="Mobile">手机</th>
                 <th dataname="Remark">备注</th>
                 <th dataname="CreatedTime" datatype="jsondate">创建日期</th>
                 <th dataname="UpdatedTime" datatype="jsondate">编辑日期</th>
@@ -54,6 +56,16 @@
 {
     <script type="text/javascript">
 
+        function Gender(item)
+        {
+            if (item.GenderCode == 1)
+                return "男";
+            else if (item.GenderCode == 2)
+                return "女";
+            else
+                return "未知";
+        }
+
         function ClearFilter() {
             $("#searchDomain input").val("");
         }
@@ -61,16 +73,17 @@
         function batchDelete() {
             $.Nuoya.confirm("确认删除？", function () {
                 grid.del({
-                    ajaxUrl: "/Role/Delete",
+                    ajaxUrl: "/Reference/Delete",
                     callback: function (json) {
                         grid.reload();
                     }
                 });
             });
         }
-        function formInit(dataitem) {
 
-            $("[name=MenuFlagSelect]").ztreeSelect($("[name=MenuFlag]"), "/Menu/GetZTreeFlagChildren", dataitem != null ? dataitem.MenuFlag : 0, true, true);
+        function formInit(dataitem) {
+            $("[name=ShopIDStrSelect]").ztreeSelect($("[name=ShopIDStr]"), "/EnteredPoint/GetZTreeFlagChildren", dataitem != null ? dataitem.ShopIDStr : 0, true, false);
+
             //添加表单验证
             $.Nuoya.form("form").validate({
                 rules: {
@@ -80,10 +93,18 @@
                     },
                     Remark: {
                         maxlength: 128
+                    },
+                    Mobile: {
+                        required: true,
+                        maxlength: 11
                     }
                 },
                 messages: {
                     Name: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
+                    Mobile: {
                         required: "不允许为空",
                         maxlength: "最多{0}个字符"
                     },
@@ -98,10 +119,10 @@
         function add() {
             $.Nuoya.ajaxDialog({
                 closeViaDimmer: false,
-                ajaxUrl: "/HtmlTemplates/Role/Update.html",
-                title: "添加角色",
+                ajaxUrl: "/HtmlTemplates/Reference/Update.html",
+                title: "添加推荐人",
                 width: "1000px",
-                height: "340px",
+                height: "540px",
                 callback: function (e) {
                     formInit();//表单初始化
                 },
@@ -109,7 +130,7 @@
                     label: "保存",
                     callback: function (e) {
                         $.Nuoya.form("form").ajaxSubmit({
-                            ajaxUrl: "/Role/Add",
+                            ajaxUrl: "/Reference/Add",
                             callback: function (data) {
                                 if (!data.ErrorDesc) {
                                     e.hide();
@@ -131,7 +152,7 @@
                 domainId: "searchDomain",
                 subId: "btnSearch"
             },
-            ajaxUrl: "/Role/GetPageList",
+            ajaxUrl: "/Reference/GetPageList",
             //数据请求地址
             pageSize: 10,
             events: [
@@ -142,12 +163,12 @@
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,
-                            ajaxUrl: "/HtmlTemplates/Role/Update.html",
-                            title: "编辑角色",
+                            ajaxUrl: "/HtmlTemplates/Reference/Update.html",
+                            title: "编辑推荐人",
                             width: "1000px",
-                            height: "340px",
+                            height: "540px",
                             callback: function (e) {
-                                $.Nuoya.action("/Role/Find", { id: item.ID }, function (model) {
+                                $.Nuoya.action("/Reference/Find", { id: item.ID }, function (model) {
                                     //载入数据
                                     $.Nuoya.form("form").dataLoad({
                                         data: model
@@ -160,7 +181,7 @@
                                 callback: function (e) {
 
                                     $.Nuoya.form("form").ajaxSubmit({
-                                        ajaxUrl: "/Role/Update",
+                                        ajaxUrl: "/Reference/Update",
                                         params: {
                                             ID: item.ID
                                         },
@@ -184,7 +205,7 @@
                     name: "删除",
                     click: function (item) {
                         $.Nuoya.confirm("确认删除？", function () {
-                            $.Nuoya.deleteAction("/Role/Delete", {
+                            $.Nuoya.deleteAction("/Reference/Delete", {
                                 ids: item.ID
                             },
                             function () {

@@ -123,6 +123,10 @@ namespace DOL.Service
                     {
                         list[index] = oldEntity;
                     }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
                     return Result(true);
                 }
                 else
@@ -154,6 +158,10 @@ namespace DOL.Service
                     if (index > -1)
                     {
                         list[index] = x;
+                    }
+                    else
+                    {
+                        list.Add(x);
                     }
                 });
                 if (entities.SaveChanges() > 0)
@@ -206,6 +214,10 @@ namespace DOL.Service
                     {
                         list[index] = x;
                     }
+                    else
+                    {
+                        list.Add(x);
+                    }
                 });
 
                 if (entities.SaveChanges() > 0)
@@ -241,6 +253,10 @@ namespace DOL.Service
                     if (index > -1)
                     {
                         list[index] = x;
+                    }
+                    else
+                    {
+                        list.Add(x);
                     }
                 });
 

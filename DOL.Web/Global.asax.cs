@@ -49,9 +49,7 @@ namespace DOL.Web
                         Account = "admin",                        
                         Password = CryptoHelper.MD5_Encrypt("123456"),
                         MenuFlag = -1,
-                        IsAdmin = YesOrNoCode.Yes,
-                        CreaterId = "1",
-                        ExpireTime = DateTime.Now.AddYears(100)
+                        CreaterId = "1"
                     });
                     dbcontext.SaveChanges();
                 }

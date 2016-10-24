@@ -1,5 +1,4 @@
-﻿
-using DOL.Model;
+﻿using DOL.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +7,11 @@ using System.Web.Mvc;
 
 namespace DOL.Web.Controllers
 {
+    /// <summary>
+    /// 驾校
+    /// </summary>
     [LoginFilter]
-    public class DepartmentController : BaseController
+    public class DriverShopController : BaseController
     {
 
         public ViewResult Index()
@@ -22,14 +24,14 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Add(Department entity)
+        public JsonResult Add(DriverShop entity)
         {
             ModelState.Remove("ID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Add_Department(entity);
+                var result = WebService.Add_DriverShop(entity);
                 return JResult(result);
             }
             else
@@ -43,13 +45,13 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Update(Department entity)
+        public JsonResult Update(DriverShop entity)
         {
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Update_Department(entity);
+                var result = WebService.Update_DriverShop(entity);
                 return JResult(result);
             }
             else
@@ -62,23 +64,29 @@ namespace DOL.Web.Controllers
         /// <summary>
         /// 获取分页列表
         /// </summary>
-        /// <param name="pageIndex">页码</param>
-        /// <param name="pageSize">分页大小</param>
-        /// <param name="name">名称 - 搜索项</param>
-        /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public ActionResult GetPageList(int pageIndex, int pageSize, string name, string no)
+        public ActionResult GetPageList(int pageIndex, int pageSize, string name, string provinceCode, string cityCode, string districtCode, string no)
         {
-            return JResult(WebService.Get_DepartmentPageList(pageIndex, pageSize, name, no));
+            return JResult(WebService.Get_DriverShopPageList(pageIndex, pageSize, name, provinceCode, cityCode, districtCode, no));
+        }
+
+       
+        /// <summary>
+        /// 获取下拉框 flag
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetZTreeFlagChildren()
+        {
+            return JResult(WebService.Get_DriverShopZTreeStr());
         }
 
         /// <summary>
         /// 获取下拉框 
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetZTreeChildren()
+        public ActionResult SelectItem(string ID)
         {
-            return JResult(WebService.Get_DepartmentZTreeChildren(null));
+            return JResult(WebService.Get_DriverShopSelectItem(ID));
         }
 
         /// <summary>
@@ -88,7 +96,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Find(string id)
         {
-            return JResult(WebService.Find_Department(id));
+            return JResult(WebService.Find_DriverShop(id));
         }
 
         /// <summary>
@@ -98,18 +106,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Delete(string ids)
         {
-            return JResult(WebService.Delete_Department(ids));
-        }
-
-
-
-        /// <summary>
-        /// 获取部门选择项
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetSelectItem(string id)
-        {
-            return JResult(WebService.Get_DepartmentSelectItem(id));
+            return JResult(WebService.Delete_DriverShop(ids));
         }
     }
 }

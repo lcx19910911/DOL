@@ -58,23 +58,10 @@ namespace DOL.Model
         datadatabase_name_had = 61,
 
         /// <summary>
-        /// 版本号已存在
+        /// 编码已存在
         /// </summary>
         [Description("版本号已存在.")]
-        datadatabase_version_had = 62,
-
-        /// <summary>
-        /// 数据库连接失败
-        /// </summary>
-        [Description("数据库连接失败.")]
-        datadatabase_connect_failed = 63,
-
-
-        /// <summary>
-        /// 编号已存在
-        /// </summary>
-        [Description("编号已存在.")]
-        datadatabase_no_had = 64,
+        datadatabase_key__had = 62,
 
         #endregion
 

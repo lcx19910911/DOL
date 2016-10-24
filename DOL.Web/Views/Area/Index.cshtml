@@ -1,18 +1,19 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "角色管理";
+    ViewBag.Title = "地区管理";
 }
 
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>角色管理</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>地区管理</small></div>
 </div>
 <div id="searchDomain">
 
     <div class="am-g">   
         <div class="am-u-lg-6 am-u-end">
+            <input type="hidden" name="parentkey" value="@Request["parentkey"]"/>
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">名称：</span>
-                <input type="text" class="am-form-field" placeholder="按角色名称搜索" style="width:100px;" name="name" ;>
+                <input type="text" class="am-form-field" placeholder="按地区名称搜索" style="width:100px;" name="value" ;>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -27,7 +28,6 @@
             <div class="am-btn-toolbar">
                 <div class="am-btn-group am-btn-group-sm">
                     <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
-                    <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
                 </div>
             </div>
         </div>
@@ -40,10 +40,12 @@
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
-                <th dataname="Name">角色名称</th>
-                <th dataname="Remark">备注</th>
-                <th dataname="CreatedTime" datatype="jsondate">创建日期</th>
-                <th dataname="UpdatedTime" datatype="jsondate">编辑日期</th>
+                <th dataname="Value">地区名称</th>
+                <th dataname="Key">编码</th>
+                @if(!string.IsNullOrEmpty(Request["parentkey"]))
+                {
+                    <th dataname="ParentName">所属地区</th>
+                }
                 <th type="eventlist"></th>
             </tr>
         </thead>
@@ -54,6 +56,8 @@
 {
     <script type="text/javascript">
 
+        var parentKey = '@Request["parentkey"]';
+
         function ClearFilter() {
             $("#searchDomain input").val("");
         }
@@ -61,7 +65,7 @@
         function batchDelete() {
             $.Nuoya.confirm("确认删除？", function () {
                 grid.del({
-                    ajaxUrl: "/Role/Delete",
+                    ajaxUrl: "/Area/Delete",
                     callback: function (json) {
                         grid.reload();
                     }
@@ -69,26 +73,36 @@
             });
         }
         function formInit(dataitem) {
-
-            $("[name=MenuFlagSelect]").ztreeSelect($("[name=MenuFlag]"), "/Menu/GetZTreeFlagChildren", dataitem != null ? dataitem.MenuFlag : 0, true, true);
             //添加表单验证
             $.Nuoya.form("form").validate({
                 rules: {
-                    Name: {
+                    Key: {
                         required: true,
-                        maxlength: 64
+                        maxlength: 32
                     },
-                    Remark: {
-                        maxlength: 128
+                    Value: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    Sort: {
+                        digits: true,
+                        max: 2147483647,
+                        min: -2147483647
                     }
                 },
                 messages: {
-                    Name: {
+                    Key: {
                         required: "不允许为空",
                         maxlength: "最多{0}个字符"
                     },
-                    Remark: {
+                    Value: {
+                        required: "不允许为空",
                         maxlength: "最多{0}个字符"
+                    },
+                    Sort: {
+                        digits: "请输入数字",
+                        max: "必须小于{0}",
+                        min: "必须大于{0}"
                     }
                 }
             });
@@ -98,18 +112,20 @@
         function add() {
             $.Nuoya.ajaxDialog({
                 closeViaDimmer: false,
-                ajaxUrl: "/HtmlTemplates/Role/Update.html",
-                title: "添加角色",
+                ajaxUrl: "/HtmlTemplates/Area/Update.html",
+                title: "添加地区",
                 width: "1000px",
                 height: "340px",
                 callback: function (e) {
-                    formInit();//表单初始化
+                    formInit();//表单初始化              
                 },
                 buttons: [{
                     label: "保存",
                     callback: function (e) {
+                        $("#form [name='ParentKey']").val(parentKey);
+                        $("#form [name='GroupCode']").val(1);
                         $.Nuoya.form("form").ajaxSubmit({
-                            ajaxUrl: "/Role/Add",
+                            ajaxUrl: "/Area/Add",
                             callback: function (data) {
                                 if (!data.ErrorDesc) {
                                     e.hide();
@@ -131,7 +147,7 @@
                 domainId: "searchDomain",
                 subId: "btnSearch"
             },
-            ajaxUrl: "/Role/GetPageList",
+            ajaxUrl: "/Area/GetPageList",
             //数据请求地址
             pageSize: 10,
             events: [
@@ -142,12 +158,12 @@
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,
-                            ajaxUrl: "/HtmlTemplates/Role/Update.html",
-                            title: "编辑角色",
+                            ajaxUrl: "/HtmlTemplates/Area/Update.html",
+                            title: "编辑地区",
                             width: "1000px",
                             height: "340px",
                             callback: function (e) {
-                                $.Nuoya.action("/Role/Find", { id: item.ID }, function (model) {
+                                $.Nuoya.action("/Area/Find", { id: item.ID }, function (model) {
                                     //载入数据
                                     $.Nuoya.form("form").dataLoad({
                                         data: model
@@ -158,9 +174,10 @@
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
-
+                                    $("#form [name='ParentKey']").val(parentKey);
+                                    $("#form [name='GroupCode']").val(1);
                                     $.Nuoya.form("form").ajaxSubmit({
-                                        ajaxUrl: "/Role/Update",
+                                        ajaxUrl: "/Area/Update",
                                         params: {
                                             ID: item.ID
                                         },
@@ -180,12 +197,20 @@
                 },
                 {
                     className: "am-text-danger",
+                    icon: "icon-pencil-square-o",
+                    name: "管理下级地区",
+                    click: function (item) {
+                        window.location.href = "/Area/index?parentkey=" + item.Key;
+                    }
+                },
+                {
+                    className: "am-text-danger",
                     icon: "icon-trash-o",
                     name: "删除",
                     click: function (item) {
                         $.Nuoya.confirm("确认删除？", function () {
-                            $.Nuoya.deleteAction("/Role/Delete", {
-                                ids: item.ID
+                            $.Nuoya.deleteAction("/Area/Delete", {
+                                ID: item.ID
                             },
                             function () {
                                 grid.reload();

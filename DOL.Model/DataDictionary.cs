@@ -36,7 +36,6 @@ namespace DOL.Model
         /// <summary>
         /// 键
         /// </summary>
-        [Required(ErrorMessage = "键不能为空")]
         [MaxLength(32)]
         [Column("Key", TypeName = "varchar")]
         public string Key { get; set; }
@@ -60,5 +59,8 @@ namespace DOL.Model
         /// 排序
         /// </summary>
         public int? Sort { get; set; }
+
+        [NotMapped]
+        public string ParentName { get; set; }
     }
 }

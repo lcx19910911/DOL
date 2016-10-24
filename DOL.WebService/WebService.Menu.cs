@@ -143,6 +143,10 @@ namespace DOL.Service
                     {
                         list[index] = oldEntity;
                     }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
                     return Result(true);
                 }
                 else
@@ -225,7 +229,7 @@ namespace DOL.Service
             var group = groups.FirstOrDefault(x => x.Key == parentId);
             if (group != null)
             {
-                menuList = group.Select(
+                menuList = group.OrderBy(x=>x.Sort).Select(
                     x =>
                 {
 

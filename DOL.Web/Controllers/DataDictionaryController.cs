@@ -9,7 +9,7 @@ using System.Web.Mvc;
 namespace DOL.Web.Controllers
 {
     [LoginFilter]
-    public class DepartmentController : BaseController
+    public class DataDictionaryController : BaseController
     {
 
         public ViewResult Index()
@@ -22,14 +22,12 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Add(Department entity)
+        public JsonResult Add(DataDictionary entity)
         {
             ModelState.Remove("ID");
-            ModelState.Remove("UpdatedTime");
-            ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Add_Department(entity);
+                var result = WebService.Add_DataDictionary(entity);
                 return JResult(result);
             }
             else
@@ -43,13 +41,11 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Update(Department entity)
+        public JsonResult Update(DataDictionary entity)
         {
-            ModelState.Remove("UpdatedTime");
-            ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Update_Department(entity);
+                var result = WebService.Update_DataDictionary(entity);
                 return JResult(result);
             }
             else
@@ -58,37 +54,29 @@ namespace DOL.Web.Controllers
             }
         }
 
-        
+
         /// <summary>
         /// 获取分页列表
         /// </summary>
         /// <param name="pageIndex">页码</param>
         /// <param name="pageSize">分页大小</param>
-        /// <param name="name">名称 - 搜索项</param>
-        /// <param name="no">编号 - 搜索项</param>
+        /// <param name="key"> 搜索项</param>
+        /// <param name="value">搜索项</param>
         /// <returns></returns>
-        public ActionResult GetPageList(int pageIndex, int pageSize, string name, string no)
+        public ActionResult GetPageList(int pageIndex, int pageSize, string key, string value, GroupCode group)
         {
-            return JResult(WebService.Get_DepartmentPageList(pageIndex, pageSize, name, no));
+            return JResult(WebService.Get_DataDictionaryPageList(pageIndex, pageSize, group, key, value));
         }
 
-        /// <summary>
-        /// 获取下拉框 
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetZTreeChildren()
-        {
-            return JResult(WebService.Get_DepartmentZTreeChildren(null));
-        }
 
         /// <summary>
         /// 查找实体
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult Find(string id)
+        public ActionResult Find(string ID)
         {
-            return JResult(WebService.Find_Department(id));
+            return JResult(WebService.Find_DataDictionary(ID));
         }
 
         /// <summary>
@@ -96,20 +84,25 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public ActionResult Delete(string ids)
+        public ActionResult Delete(string ID)
         {
-            return JResult(WebService.Delete_Department(ids));
+            return JResult(WebService.Delete_DataDictionary(ID));
         }
 
 
 
         /// <summary>
-        /// 获取部门选择项
+        /// 获取支付方式选择项
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetSelectItem(string id)
+        public ActionResult GetSelectItem(GroupCode group)
         {
-            return JResult(WebService.Get_DepartmentSelectItem(id));
+            if (group == GroupCode.PayType)
+                return JResult(WebService.Get_PayTypeList());
+            else if (group == GroupCode.PayMethod)
+                return JResult(WebService.Get_PayMethodList());
+            else
+                return Content("");
         }
     }
 }

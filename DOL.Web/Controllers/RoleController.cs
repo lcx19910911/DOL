@@ -73,15 +73,6 @@ namespace DOL.Web.Controllers
         }
 
         /// <summary>
-        /// 获取下拉框 
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetSelectItem()
-        {
-            return JResult(WebService.GetSelectItem());
-        }
-
-        /// <summary>
         /// 查找实体
         /// </summary>
         /// <param name="id"></param>
@@ -99,6 +90,16 @@ namespace DOL.Web.Controllers
         public ActionResult Delete(string ids)
         {
             return JResult(WebService.Delete_Role(ids));
+        }
+
+
+        /// <summary>
+        /// 获取角色选择项
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetSelectItem(string id)
+        {
+            return JResult(WebService.Get_RoleSelectItem(id));
         }
     }
 }

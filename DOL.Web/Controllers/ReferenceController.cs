@@ -8,8 +8,11 @@ using System.Web.Mvc;
 
 namespace DOL.Web.Controllers
 {
+    /// <summary>
+    /// 推荐人
+    /// </summary>
     [LoginFilter]
-    public class DepartmentController : BaseController
+    public class ReferenceController : BaseController
     {
 
         public ViewResult Index()
@@ -22,14 +25,14 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Add(Department entity)
+        public JsonResult Add(Reference entity)
         {
             ModelState.Remove("ID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Add_Department(entity);
+                var result = WebService.Add_Reference(entity);
                 return JResult(result);
             }
             else
@@ -43,13 +46,13 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Update(Department entity)
+        public JsonResult Update(Reference entity)
         {
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Update_Department(entity);
+                var result = WebService.Update_Reference(entity);
                 return JResult(result);
             }
             else
@@ -69,16 +72,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult GetPageList(int pageIndex, int pageSize, string name, string no)
         {
-            return JResult(WebService.Get_DepartmentPageList(pageIndex, pageSize, name, no));
-        }
-
-        /// <summary>
-        /// 获取下拉框 
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetZTreeChildren()
-        {
-            return JResult(WebService.Get_DepartmentZTreeChildren(null));
+            return JResult(WebService.Get_ReferencePageList(pageIndex, pageSize, name, no));
         }
 
         /// <summary>
@@ -88,7 +82,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Find(string id)
         {
-            return JResult(WebService.Find_Department(id));
+            return JResult(WebService.Find_Reference(id));
         }
 
         /// <summary>
@@ -98,18 +92,17 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Delete(string ids)
         {
-            return JResult(WebService.Delete_Department(ids));
+            return JResult(WebService.Delete_Reference(ids));
         }
 
 
-
         /// <summary>
-        /// 获取部门选择项
+        /// 获取角色选择项
         /// </summary>
         /// <returns></returns>
         public ActionResult GetSelectItem(string id)
         {
-            return JResult(WebService.Get_DepartmentSelectItem(id));
+            return JResult(WebService.Get_ReferenceSelectItem(id));
         }
     }
 }

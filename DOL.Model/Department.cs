@@ -28,6 +28,23 @@ namespace DOL.Model
         public string Name { get; set; }
 
         /// <summary>
+        /// 座机号码
+        /// </summary>
+        [Display(Name = "座机号码")]
+        [MaxLength(16)]
+        [RegularExpression(@"((\d{3,4}-\d{6,8})$)", ErrorMessage = "座机号码不正确")]
+        public string Telephone { get; set; }
+
+        /// <summary>
+        /// 座机号码
+        /// </summary>
+        [Display(Name = "座机号码")]
+        [MaxLength(16)]
+        [RegularExpression(@"((\d{3,4}-\d{6,8})$)", ErrorMessage = "座机号码不正确")]
+        public string No { get; set; }
+
+
+        /// <summary>
         /// 排序
         /// </summary>
         public int? Sort { get; set; }

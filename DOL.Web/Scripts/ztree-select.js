@@ -123,7 +123,7 @@
 
                     var valueNodes;
                     if (isFlag) {
-                        var flag = parseInt($(valueInput).val());
+                        var flag = parseInt(selfValue);
                         valueNodes = ztreeObj.getNodesByFilter(function (node) {
                             if ((parseInt(node.value) & flag) != 0)
                                 return true;
@@ -144,9 +144,11 @@
                         }
                     }
                     if (isMulitSelect) {
-                        $(dom).val("选中了" + valueNodes.length + "项");
-                        for (var i = 0; i < valueNodes.length; i++) {
-                            ztreeObj.checkNode(valueNodes[i]);
+                        if (valueNodes != null) {
+                            $(dom).val("选中了" + valueNodes.length + "项");
+                            for (var i = 0; i < valueNodes.length; i++) {
+                                ztreeObj.checkNode(valueNodes[i]);
+                            }
                         }
                     }
                     else {

@@ -123,10 +123,16 @@
   <ItemGroup>
     <Content Include="File\dol.sql" />
     <Content Include="Global.asax" />
+    <Content Include="HtmlTemplates\DataDictionary\Update.html" />
     <Content Include="HtmlTemplates\Department\Update.html" />
+    <Content Include="HtmlTemplates\Area\Update.html" />
+    <Content Include="HtmlTemplates\DriverShop\Update.html" />
+    <Content Include="HtmlTemplates\EnteredPoint\Update.html" />
     <Content Include="HtmlTemplates\Menu\Update.html" />
+    <Content Include="HtmlTemplates\Reference\Update.html" />
     <Content Include="HtmlTemplates\Role\Update.html" />
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
+    <Content Include="HtmlTemplates\User\SelectMenu.html" />
     <Content Include="HtmlTemplates\User\Update.html" />
     <Content Include="Images\404Pic.png" />
     <Content Include="Images\login-sprite.png" />
@@ -205,7 +211,9 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Department\Index.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
-    <None Include="Views\Menu\Update.cshtml" />
+    <Content Include="Views\Area\Index.cshtml" />
+    <Content Include="Views\DataDictionary\Index.cshtml" />
+    <Content Include="Views\EnteredPoint\Index.cshtml" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -215,12 +223,18 @@
     <Compile Include="App_Start\LoginFilterAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccoutController.cs" />
+    <Compile Include="Controllers\DataDictionaryController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\AreaController.cs" />
+    <Compile Include="Controllers\DriverShopController.cs" />
+    <Compile Include="Controllers\EnteredPointController.cs" />
+    <Compile Include="Controllers\ReferenceController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -247,6 +261,8 @@
     <Content Include="Views\Pay\Index.cshtml" />
     <Content Include="Views\Menu\PartialMenu.cshtml" />
     <Content Include="Views\Menu\Index.cshtml" />
+    <Content Include="Views\Reference\Index.cshtml" />
+    <Content Include="Views\DriverShop\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -256,7 +272,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="HtmlTemplates\DataDictionary\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

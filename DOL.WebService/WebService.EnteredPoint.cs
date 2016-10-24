@@ -12,20 +12,20 @@ namespace DOL.Service
 {
     public partial class WebService
     {
-        string roleKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "Role");
+        string enteredPointKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "EnteredPoint");
 
         /// <summary>
         /// 缓存
         /// </summary>
         /// <returns></returns>
-        private List<Role> Cache_Get_RoleList()
+        private List<EnteredPoint> Cache_Get_EnteredPointList()
         {
 
-            return CacheHelper.Get<List<Role>>(roleKey, () =>
+            return CacheHelper.Get<List<EnteredPoint>>(enteredPointKey, () =>
             {
                 using (var db = new DbRepository())
                 {
-                    List<Role> list = db.Role.ToList();
+                    List<EnteredPoint> list = db.EnteredPoint.ToList();
                     return list;
                 }
             });
@@ -39,18 +39,40 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Role>> Get_RolePageList(int pageIndex, int pageSize, string name, string no)
+        public WebResult<PageList<EnteredPoint>> Get_EnteredPointPageList(int pageIndex, int pageSize, string name,string provinceCode,string cityCode, string districtCode, string no)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_RoleList().AsQueryable().AsNoTracking();
+                var query = Cache_Get_EnteredPointList().AsQueryable().AsNoTracking();
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
                 }
-
+                if (provinceCode.IsNotNullOrEmpty()&&!provinceCode.Equals("0"))
+                {
+                    query = query.Where(x => x.ProvinceCode.Equals(provinceCode));
+                }
+                if (cityCode.IsNotNullOrEmpty() && !cityCode.Equals("0"))
+                {
+                    query = query.Where(x => x.CityCode.Equals(cityCode));
+                }
+                if (districtCode.IsNotNullOrEmpty() && !districtCode.Equals("0"))
+                {
+                    query = query.Where(x => x.DistrictCode.Equals(districtCode));
+                }
+                
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                list.ForEach(x =>
+                {
+                    if (!string.IsNullOrEmpty(x.ProvinceCode))
+                        x.ProvinceName = GetValue(GroupCode.Area, x.ProvinceCode);
+                    if (!string.IsNullOrEmpty(x.CityCode))
+                        x.CityName = GetValue(GroupCode.Area, x.CityCode);
+                    if (!string.IsNullOrEmpty(x.DistrictCode))
+                        x.DistrictName = GetValue(GroupCode.Area, x.DistrictCode);
+                });
+
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
@@ -60,7 +82,7 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Add_Role(Role model)
+        public WebResult<bool> Add_EnteredPoint(EnteredPoint model)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -68,10 +90,10 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.UpdatedTime = DateTime.Now;
-                entities.Role.Add(model);
+                entities.EnteredPoint.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_RoleList();
+                    var list = Cache_Get_EnteredPointList();
                     list.Add(model);
                     return Result(true);
                 }
@@ -89,15 +111,21 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Update_Role(Role model)
+        public WebResult<bool> Update_EnteredPoint(EnteredPoint model)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var oldEntity = entities.Role.Find(model.ID);
+                var oldEntity = entities.EnteredPoint.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    oldEntity.MenuFlag = model.MenuFlag;
-                    oldEntity.Remark = model.Remark;
+                    oldEntity.ProvinceCode = model.ProvinceCode;
+                    oldEntity.CityCode = model.CityCode;
+                    oldEntity.DistrictCode = model.DistrictCode;
+                    oldEntity.Address = model.Address;
+                    oldEntity.ConnactPeople = model.ConnactPeople;
+                    oldEntity.Mobile = model.Mobile;
+                    oldEntity.Telephone = model.Telephone;
+                    oldEntity.Sort = model.Sort;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.Name = model.Name;
                 }
@@ -106,7 +134,7 @@ namespace DOL.Service
 
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_RoleList();
+                    var list = Cache_Get_EnteredPointList();
                     var index = list.FindIndex(x => x.ID.Equals(model.ID));
                     if (index > -1)
                     {
@@ -131,11 +159,11 @@ namespace DOL.Service
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Role Find_Role(string id)
+        public EnteredPoint Find_EnteredPoint(string id)
         {
             if (!id.IsNotNullOrEmpty())
                 return null;
-                return Cache_Get_RoleList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+                return Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
         }
 
         /// <summary>
@@ -143,7 +171,7 @@ namespace DOL.Service
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public WebResult<bool> Delete_Role(string ids)
+        public WebResult<bool> Delete_EnteredPoint(string ids)
         {
             if (!ids.IsNotNullOrEmpty())
             {
@@ -151,9 +179,9 @@ namespace DOL.Service
             }
             using (DbRepository entities = new DbRepository())
             {
-                var list = Cache_Get_RoleList();
+                var list = Cache_Get_EnteredPointList();
                 //找到实体
-                entities.Role.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
+                entities.EnteredPoint.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     x.Flag = x.Flag | (long)GlobalFlag.Removed;
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
@@ -181,13 +209,13 @@ namespace DOL.Service
         /// <summary>
         /// 获取选择项
         /// </summary>
-        /// <param name="roleFlag">角色flag值</param>
+        /// <param name="enteredPointFlag">角色flag值</param>
         /// <returns></returns>
-        public List<SelectItem> Get_RoleSelectItem(string id)
+        public List<SelectItem> Get_EnteredPointSelectItem(string id)
         {
             List<SelectItem> list = new List<SelectItem>();
 
-            Cache_Get_RoleList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+            Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
             {
                 list.Add(new SelectItem()
                 {
@@ -197,6 +225,21 @@ namespace DOL.Service
                 });
             });
             return list;
+        }
+
+        /// <summary>
+        /// 获取ZTree节点
+        /// </summary>
+        /// <returns></returns>
+        public List<ZTreeNode> Get_EnteredPointZTreeStr()
+        {
+            List<ZTreeNode> ztreeNodes = Cache_Get_EnteredPointList().Select(
+                    x => new ZTreeNode()
+                    {
+                        name = x.Name,
+                        value=x.ID
+                    }).ToList();
+            return ztreeNodes;
         }
     }
 }

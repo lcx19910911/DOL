@@ -41,8 +41,10 @@
             <tr>
                 <th dataname="ID" type="checkbox"></th>
                 <th dataname="Name">部门名称</th>
-                <th dataname="Sort">排序</th>
                 <th dataname="ParentName">所属部门</th>
+                <th dataname="Telephone">电话</th>
+                <th dataname="No">房间号</th>
+                <th dataname="Sort">排序</th>
                 <th dataname="CreatedTime" datatype="jsondate">创建日期</th>
                 <th dataname="UpdatedTime" datatype="jsondate">编辑日期</th>
                 <th type="eventlist"></th>
@@ -83,7 +85,6 @@
                         maxlength: 128
                     },
                     Sort: {
-                        required: true,
                         digits: true,
                         max: 2147483647,
                         min: -2147483647
@@ -98,7 +99,6 @@
                         maxlength: "最多{0}个字符"
                     },
                     Sort: {
-                        required: "不允许为空",
                         digits: "请输入数字",
                         max: "必须小于{0}",
                         min: "必须大于{0}"
@@ -114,7 +114,7 @@
                 ajaxUrl: "/HtmlTemplates/Department/Update.html",
                 title: "添加部门",
                 width: "1000px",
-                height: "340px",
+                height: "360px",
                 callback: function (e) {
                     formInit();//表单初始化
                 },
@@ -158,7 +158,7 @@
                             ajaxUrl: "/HtmlTemplates/Department/Update.html",
                             title: "编辑部门",
                             width: "1000px",
-                            height: "340px",
+                            height: "360px",
                             callback: function (e) {
                                 $.Nuoya.action("/Department/Find", { id: item.ID }, function (model) {
                                     //载入数据

@@ -16,7 +16,7 @@ namespace DOL.Service
         string departmentKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "Department");
 
         /// <summary>
-        /// 站内通知全局缓存
+        /// 全局缓存
         /// </summary>
         /// <returns></returns>
         private List<Department> Cache_Get_DepartmentList()
@@ -33,7 +33,7 @@ namespace DOL.Service
         }
 
         /// <summary>
-        /// 站内通知全局缓存 dic
+        /// 全局缓存 dic
         /// </summary>
         /// <returns></returns>
         private Dictionary<string, Department> Cache_Get_DepartmentList_Dic()
@@ -118,6 +118,8 @@ namespace DOL.Service
                     oldEntity.Sort = model.Sort;
                     oldEntity.ParentID = model.ParentID;
                     oldEntity.Remark = model.Remark;
+                    oldEntity.No = model.No;
+                    oldEntity.Telephone = model.Telephone;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -129,6 +131,10 @@ namespace DOL.Service
                     if (index > -1)
                     {
                         list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
                     }
                     return Result(true);
                 }
@@ -162,6 +168,10 @@ namespace DOL.Service
                     {
                         list[index] = x;
                     }
+                    else
+                    {
+                        list.Add(list[index]);
+                    }
                 });
                 if (entities.SaveChanges() > 0)
                 {
@@ -171,6 +181,34 @@ namespace DOL.Service
                 {
                     return Result(false, ErrorCode.sys_fail);
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// 获取分类下拉框集合
+        /// </summary>
+        /// <param name="">门店id</param>
+        /// <returns></returns>
+        public List<SelectItem> Get_DepartmentSelectItem(string storeId)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                List<SelectItem> list = new List<SelectItem>();
+
+                var query = Cache_Get_DepartmentList().AsQueryable().AsNoTracking();
+
+                query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                {
+                    list.Add(new SelectItem()
+                    {
+                        Selected = x.ID.Equals(storeId),
+                        Text = x.Name,
+                        Value = x.ID
+                    });
+                });
+                return list;
+
             }
         }
 

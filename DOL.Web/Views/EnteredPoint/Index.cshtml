@@ -1,0 +1,336 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "报名点管理";
+}
+
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>报名点管理</small></div>
+</div>
+<div id="searchDomain">
+
+    <div class="am-g">   
+        <div class="am-u-lg-7">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">省份：</span>
+                <select name="ProvinceCode" data-am-selected="{btnSize: 'sm'}" onchange="showCity(true)" style="width:120px;"></select>
+                <span class="am-input-group-label">市：</span>
+                <select name="CityCode" data-am-selected="{btnSize: 'sm'}" onchange="showArea(true)" style="width:120px;"></select>
+                <span class="am-input-group-label">县区：</span>
+                <select name="DistrictCode" data-am-selected="{btnSize: 'sm'}" style="width:120px;"></select>
+            </div>
+        </div>
+        <div class="am-u-lg-5 am-u-end">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">名称：</span>
+                <input type="text" class="am-form-field" placeholder="按报名点名称搜索" style="width:100px;" name="name" ;>
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="am-g am-margin-top-sm">
+        <div class="am-u-lg-6">
+            <div class="am-btn-toolbar">
+                <div class="am-btn-group am-btn-group-sm">
+                    <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                    <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="grid_container">
+    <table id="dataTable" class="am-table am-table-striped am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th dataname="Name">报名点名称</th>
+                <th dataname="ProvinceName">省份</th>
+                <th dataname="CityName">城市</th>
+                <th dataname="DistrictName">县区</th>
+                <th dataname="Sort">排序</th>
+                <th dataname="CreatedTime" datatype="jsondate">创建日期</th>
+                <th dataname="UpdatedTime" datatype="jsondate">编辑日期</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+        }
+        //批量删除
+        function batchDelete() {
+            $.Nuoya.confirm("确认删除？", function () {
+                grid.del({
+                    ajaxUrl: "/EnteredPoint/Delete",
+                    callback: function (json) {
+                        grid.reload();
+                    }
+                });
+            });
+        }
+
+        $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
+            $(json).each(function () {
+                $("select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+            });
+        });
+
+        function formInit(dataitem) {
+            $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
+                $(json).each(function () {
+                    if (dataitem != null) {
+                        if (dataitem.ProvinceCode == this.Value)
+                            $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                        else
+                            $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                    }
+                    else
+                        $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                });
+            });
+
+            if (dataitem != null) {
+                if (dataitem.ProvinceCode != null) {
+                    $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: dataitem.ProvinceCode }, function (json) {
+                        $(json).each(function () {
+                            if (dataitem.CityCode == this.Value)
+                                $("#form select[name='CityCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                            else
+                                $("#form select[name='CityCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                        });
+                    });
+                }
+                if (dataitem.CityCode != null) {
+                    $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: dataitem.CityCode }, function (json) {
+                        $(json).each(function () {
+                            if (dataitem.DistrictCode == this.Value)
+                                $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                            else
+                                $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                        });
+                    });
+                }
+            }
+
+            //添加表单验证
+            $.Nuoya.form("form").validate({
+                rules: {
+                    Name: {
+                        required: true,
+                        maxlength: 64
+                    },
+                    Sort: {
+                        digits: true,
+                        max: 2147483647,
+                        min: -2147483647
+                    }
+                },
+                messages: {
+                    Name: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
+                    Sort: {
+                        digits: "请输入数字",
+                        max: "必须小于{0}",
+                        min: "必须大于{0}"
+                    }
+                }
+            });
+        }
+
+        //新增
+        function add() {
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                ajaxUrl: "/HtmlTemplates/EnteredPoint/Update.html",
+                title: "添加报名点",
+                width: "1000px",
+                height: "560px",
+                callback: function (e) {
+                    formInit();//表单初始化
+                },
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+                        $.Nuoya.form("form").ajaxSubmit({
+                            ajaxUrl: "/EnteredPoint/Add",
+                            callback: function (data) {
+                                if (!data.ErrorDesc) {
+                                    e.hide();
+                                    grid.reload();
+                                }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+                            }
+                        });
+                    }
+                }]
+            })
+        }
+
+        var grid = $.Nuoya.grid({
+            tableId: "dataTable",
+            //表格id
+            search: {
+                domainId: "searchDomain",
+                subId: "btnSearch"
+            },
+            ajaxUrl: "/EnteredPoint/GetPageList",
+            //数据请求地址
+            pageSize: 10,
+            events: [
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "编辑",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/EnteredPoint/Update.html",
+                            title: "编辑报名点",
+                            width: "1000px",
+                            height: "560px",
+                            callback: function (e) {
+                                $.Nuoya.action("/EnteredPoint/Find", { id: item.ID }, function (model) {
+                                    formInit(model);//表单初始化
+                                    //载入数据
+                                    $.Nuoya.form("form").dataLoad({
+                                        data: model
+                                    });
+                                });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/EnteredPoint/Update",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-danger",
+                    icon: "icon-trash-o",
+                    name: "删除",
+                    click: function (item) {
+                        $.Nuoya.confirm("确认删除？", function () {
+                            $.Nuoya.deleteAction("/EnteredPoint/Delete", {
+                                ids: item.ID
+                            },
+                            function () {
+                                grid.reload();
+                            });
+                        });
+                    }
+                }
+            ]
+        });
+
+
+
+        //显示省份下方的市
+        function showCity(isIndex) {
+            index = 0;
+            if (isIndex) {
+                $("#searchDomain select[name='CityCode']").empty();
+            }
+            else {
+                $("#form select[name='CityCode']").empty();
+            }
+            var value = isIndex ? $("#searchDomain select[name='ProvinceCode']").val() : $("#form select[name='ProvinceCode']").val();
+            if (value == "0")
+                return false;
+            $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
+                $(json).each(function () {
+                    if (index == 0) {
+                        if (isIndex) {
+                            $("#searchDomain select[name='CityCode']").val(this.Value);
+                            $("#searchDomain select[name='CityCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='CityCode']").val(this.Value);
+                            $("#form select[name='CityCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                        }
+                    }
+                    else {
+                        if (isIndex) {
+                            $("#searchDomain select[name='CityCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='CityCode']").append("<option value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                    }
+                    index++;
+                });
+            });
+            //if (isIndex) {
+            //    $("#searchDomain select[name='CityCode']").selected();
+            //}
+            //else {
+            //    $("#form select[name='CityCode']").selected();
+            //}
+        }
+
+        //显示市下方的县区
+        function showArea(isIndex) {
+            index = 0;
+            if (isIndex) {
+                $("#searchDomain select[name='DistrictCode']").empty();
+            }
+            else {
+                $("#form select[name='DistrictCode']").empty();
+            }
+            var value = isIndex ? $("#searchDomain select[name='CityCode']").val() : $("#form select[name='CityCode']").val();
+
+            $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
+                $(json).each(function () {
+                    if (index == 0) {
+                        if (isIndex) {
+                            $("#searchDomain select[name='DistrictCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                        }
+                    }
+                    else {
+                        if (isIndex) {
+                            $("#searchDomain select[name='DistrictCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                        }
+                    }
+                    index++;
+                });
+            });
+        }
+</script>
+}

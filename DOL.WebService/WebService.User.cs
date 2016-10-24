@@ -14,6 +14,34 @@ namespace DOL.Service
 {
     public partial class WebService
     {
+        string userKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "User");
+
+        /// <summary>
+        /// 全局缓存
+        /// </summary>
+        /// <returns></returns>
+        private List<User> Cache_Get_UserList()
+        {
+
+            return CacheHelper.Get<List<User>>(userKey, () =>
+            {
+                using (var db = new DbRepository())
+                {
+                    List<User> list = db.User.OrderByDescending(x => x.CreatedTime).ThenBy(x => x.ID).ToList();
+                    return list;
+                }
+            });
+        }
+
+        /// <summary>
+        /// 全局缓存 dic
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, User> Cache_Get_UserDict()
+        {
+            return Cache_Get_UserList().ToDictionary(x => x.ID);
+        }
+
         /// <summary>
         /// 用户登录
         /// </summary>
@@ -31,15 +59,9 @@ namespace DOL.Service
                 using (var db = new DbRepository())
                 {
                     string md5Password = CryptoHelper.MD5_Encrypt(password);
-                    var user = db.User.Where(x => x.Password.Equals(md5Password) && x.Account.Equals(loginName)).FirstOrDefault();
+                    var user = Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Password.Equals(md5Password) && x.Account.Equals(loginName)).FirstOrDefault();
                     if (user == null)
                         return Result(false, ErrorCode.user_login_error);
-                    else if (user.ExpireTime < DateTime.Now)
-                    {
-                        user.Flag = user.Flag & (long)GlobalFlag.Unabled;
-                        db.SaveChanges();
-                        return Result(false, ErrorCode.user_expire);
-                    }
                     else if ((user.Flag & (long)GlobalFlag.Unabled) != 0)
                     {
                         return Result(false, ErrorCode.user_disabled);
@@ -95,7 +117,24 @@ namespace DOL.Service
                     user.Password = newPassword;
 
                     CookieHelper.CreateCookie(user);
-                    return db.SaveChanges() > 0 ? Result(true) : Result(false, ErrorCode.sys_fail); ;
+                    if (db.SaveChanges() > 0)
+                    {
+                        var list = Cache_Get_UserList();
+                        var index = list.FindIndex(x => x.ID.Equals(user.ID));
+                        if (index > -1)
+                        {
+                            list[index] = user;
+                        }
+                        else
+                        {
+                            list.Add(user);
+                        }
+                        return Result(true);
+                    }
+                    else
+                    {
+                        return Result(false, ErrorCode.sys_fail);
+                    }
                 }
             }
             catch (Exception ex)
@@ -113,33 +152,28 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<User>> Get_UserPageList(int pageIndex, int pageSize, string name, string account, string phone, bool isShowAdmin, DateTime? exprieTimeStart, DateTime? exprieTimeEnd)
+        public WebResult<PageList<User>> Get_UserPageList(int pageIndex, int pageSize, string name,string mobile, DateTime? startTimeStart, DateTime? endTimeEnd)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.User.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && !x.ID.Equals(this.Client.LoginUser.ID));
+                var query = Cache_Get_UserList().AsQueryable().AsNoTracking().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && !x.ID.Equals(this.Client.LoginUser.ID)&&x.MenuFlag!=-1);
 
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
                 }
-                if (account.IsNotNullOrEmpty())
+                if (mobile.IsNotNullOrEmpty())
                 {
-                    query = query.Where(x => x.Account.Contains(account));
+                    query = query.Where(x => x.Mobile.Contains(mobile));
                 }
-
-                if (phone.IsNotNullOrEmpty())
+                if (startTimeStart != null)
                 {
-                    query = query.Where(x => x.Mobile.Contains(phone));
+                    query = query.Where(x => x.CreatedTime >= startTimeStart);
                 }
-                if (exprieTimeStart != null)
+                if (endTimeEnd != null)
                 {
-                    query = query.Where(x => x.ExpireTime >= exprieTimeStart);
-                }
-                if (exprieTimeEnd != null)
-                {
-                    exprieTimeEnd = exprieTimeEnd.Value.AddDays(1);
-                    query = query.Where(x => x.ExpireTime < exprieTimeEnd);
+                    endTimeEnd = endTimeEnd.Value.AddDays(1);
+                    query = query.Where(x => x.CreatedTime < endTimeEnd);
                 }
                 
                 var count = query.Count();
@@ -162,22 +196,29 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.User.AsQueryable();
-
-                if (entities.User.AsNoTracking().Where(x => x.Account.Equals(model.Account)).Any())
+                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Account.Equals(model.Account)).Any())
                     return Result(false, ErrorCode.user_name_already_exist);
+                var role = Cache_Get_RoleList().Where(x => x.ID.Equals(model.RoleID)).FirstOrDefault();
+                if(role==null)
+                    return Result(false, ErrorCode.datadatabase_primarykey_not_found);
+                model.MenuFlag = role.MenuFlag;
                 model.Password = CryptoHelper.MD5_Encrypt(model.ConfirmPassword);
                 model.ID = Guid.NewGuid().ToString("N");
                 model.CreaterId = Client.LoginUser.ID;
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
-                if (Client.LoginUser.IsAdmin == YesOrNoCode.Yes)
-                    model.IsAdmin = YesOrNoCode.Yes;
-                else
-                    model.IsAdmin = YesOrNoCode.No;
                 entities.User.Add(model);
-                return entities.SaveChanges() > 0 ? Result(true) : Result(false, ErrorCode.sys_fail);
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_UserList();
+                    list.Add(model);
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
             }
 
         }
@@ -192,7 +233,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var oldEntity = entities.User.Find(model.ID);
+                var oldEntity = Cache_Get_UserList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(model.ID));
                 if (oldEntity != null)
                 {
                     oldEntity.Mobile = model.Mobile;
@@ -204,35 +245,24 @@ namespace DOL.Service
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
 
-                return entities.SaveChanges() > 0 ? Result(true) : Result(false, ErrorCode.sys_fail);
-            }
-
-        }
-
-
-        /// <summary>
-        /// 增加
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        public WebResult<bool> Add_Admin(User model)
-        {
-            using (DbRepository entities = new DbRepository())
-            {
-                var query = entities.User.AsQueryable();
-
-                if (entities.User.AsNoTracking().Where(x => x.Account.Equals(model.Account)).Any())
-                    return Result(false, ErrorCode.user_name_already_exist);
-                model.ID = Guid.NewGuid().ToString("N");
-                model.CreaterId = Client.LoginUser.ID;
-                model.CreatedTime = DateTime.Now;
-                model.UpdatedTime = DateTime.Now;
-                model.Flag = (long)GlobalFlag.Normal;
-                model.IsAdmin = YesOrNoCode.No;
-                model.Password = CryptoHelper.MD5_Encrypt(model.ConfirmPassword);
-                model.MenuFlag = -1;
-                entities.User.Add(model);
-                return entities.SaveChanges() > 0 ? Result(true) : Result(false, ErrorCode.sys_fail);
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_UserList();
+                    var index = list.FindIndex(x => x.ID.Equals(model.ID));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
             }
 
         }
@@ -243,22 +273,36 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Update_Admin(User model)
+        public WebResult<bool> Update_UserMenu(string ID,long MenuFlag)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var oldEntity = entities.User.Find(model.ID);
+                var oldEntity = entities.User.Find(ID);
                 if (oldEntity != null)
                 {
-                    oldEntity.Mobile = model.Mobile;
-                    oldEntity.Remark = model.Remark;
-                    oldEntity.ExpireTime = model.ExpireTime;
-                    oldEntity.UpdatedTime = DateTime.Now;
+                    oldEntity.MenuFlag = MenuFlag;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
 
-                return entities.SaveChanges() > 0 ? Result(true) : Result(false, ErrorCode.sys_fail);
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_UserList();
+                    var index = list.FindIndex(x => x.ID.Equals(ID));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
             }
 
         }
@@ -276,10 +320,20 @@ namespace DOL.Service
             }
             using (DbRepository entities = new DbRepository())
             {
+                var list = Cache_Get_UserList();
                 //找到实体
                 entities.User.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     x.Flag = x.Flag | (long)GlobalFlag.Removed;
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list[index] = x;
+                    }
+                    else
+                    {
+                        list.Add(x);
+                    }
                 });
                 return entities.SaveChanges() > 0 ? Result(true) : Result(false, ErrorCode.sys_fail);
             }
@@ -297,7 +351,7 @@ namespace DOL.Service
                 return null;
             using (DbRepository entities = new DbRepository())
             {
-                var entity = entities.User.Find(id);
+                var entity = Cache_Get_UserList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
                 return entity;
             }
         }
@@ -316,10 +370,20 @@ namespace DOL.Service
             {
                 //按逗号分隔符分隔开得到unid列表
                 var unidArray = ids.Split(',');
+                var list = Cache_Get_UserList();
 
                 entities.User.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     x.Flag = x.Flag & ~(long)GlobalFlag.Unabled;
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list[index] = x;
+                    }
+                    else
+                    {
+                        list.Add(x);
+                    }
                 });
 
                 return entities.SaveChanges() > 0 ? Result(true) : Result(false, ErrorCode.sys_fail);
@@ -340,10 +404,19 @@ namespace DOL.Service
             {
                 //按逗号分隔符分隔开得到unid列表
                 var unidArray = ids.Split(',');
-
+                var list = Cache_Get_UserList();
                 entities.User.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     x.Flag = x.Flag | (long)GlobalFlag.Unabled;
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list[index] = x;
+                    }
+                    else
+                    {
+                        list.Add(x);
+                    }
                 });
 
                 return entities.SaveChanges() > 0 ? Result(true) : Result(false, ErrorCode.sys_fail);

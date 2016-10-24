@@ -1,0 +1,82 @@
+﻿<div class="admin-content">
+    <form id="form" class="am-form am-form-horizontal">
+        <div class="admin-content-body">
+            <div class="am-margin">
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        驾校名称：
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="Name" class="am-input-sm" maxlength="32" placeholder="请输入驾校名称">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm"><strong class="am-text-danger am-text-sm">*</strong></strong>必填，不能超过32个字符</div>
+                </div>
+
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        地区：
+                    </div>
+                    <div class="am-u-md-2">
+                        <select name="ProvinceCode" onchange="showCity(false)" style="width:140px;"></select>
+                    </div>
+                    <div class="am-u-md-2">
+                        <select name="CityCode" onchange="showArea(false)" style="width:140px;"></select>
+                    </div>
+                    <div class="am-u-md-2">
+                        <select name="DistrictCode" style="width:140px;"></select>
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-1 am-text-left"></div>
+                </div>
+
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        所在地址：
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="Address" class="am-input-sm" maxlength="128" placeholder="请输入所在地址">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left">不能超过128个字符</div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        联系人 :
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="ConnactPeople" class="am-input-sm" maxlength="32" placeholder="请输入联系人">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left">不能超过32个字符</div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        联系手机 :
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="Mobile" class="am-input-sm" maxlength="11" placeholder="请输入联系手机">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left">不能超过11个字符</div>
+                </div>
+
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        联系电话 :
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="Telephone"  class="am-input-sm" maxlength="13" placeholder="请输入联系电话样式">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left">不能超过13个字符</div>
+                </div>
+
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        排序 :
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="number" name="Sort"  class="am-input-sm" min="0">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"></div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
