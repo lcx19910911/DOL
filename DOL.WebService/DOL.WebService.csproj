@@ -68,6 +68,7 @@
     <Compile Include="WebService.EnteredPoint.cs" />
     <Compile Include="WebService.Role.cs" />
     <Compile Include="WebService.cs" />
+    <Compile Include="WebService.Student.cs" />
     <Compile Include="WebService.Theme.cs" />
     <Compile Include="WebService.User.cs" />
   </ItemGroup>

@@ -32,6 +32,16 @@ namespace DOL.Service
         }
 
         /// <summary>
+        /// 缓存 dic
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, DriverShop> Cache_Get_DriverShopList_Dic()
+        {
+            return Cache_Get_DriverShopList().ToDictionary(x => x.ID);
+        }
+
+
+        /// <summary>
         /// 获取分页列表
         /// </summary>
         /// <param name="pageIndex">页码</param>

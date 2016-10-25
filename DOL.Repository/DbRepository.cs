@@ -74,6 +74,8 @@ namespace DOL.Repository
 
 
         public DbSet<PayOrder> PayOrder { get; set; }
+
+        public DbSet<Coach> Coach { get; set; }
     }
 
 }

@@ -267,6 +267,8 @@
     <Content Include="Views\Reference\Index.cshtml" />
     <Content Include="Views\DriverShop\Index.cshtml" />
     <Content Include="Views\Operate\Index.cshtml" />
+    <Content Include="Views\Student\Index.cshtml" />
+    <Content Include="Views\Student\Add.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

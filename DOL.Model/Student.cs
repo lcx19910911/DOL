@@ -11,6 +11,9 @@ namespace DOL.Model
     public partial class Student : BaseEntity
     {
 
+
+        #region 基本信息
+  
         /// <summary>
         /// 学员姓名
         /// </summary>
@@ -64,12 +67,39 @@ namespace DOL.Model
         /// <summary>
         /// 地址
         /// </summary>
-        [MaxLength(128)]
+        [MaxLength(512)]
         [Display(Name = "地址")]
         [Column("Address", TypeName = "varchar")]
         public string Address { get; set; }
 
 
+
+        /// <summary>
+        /// 手机号
+        /// </summary>
+        [Display(Name = "手机号")]
+        [MaxLength(11)]
+        [Required(ErrorMessage = "手机号不能为空")]
+        [RegularExpression(@"((\d{11})$)", ErrorMessage = "手机格式不正确")]
+        public string Mobile { get; set; }
+
+        /// <summary>
+        /// 证书ID
+        /// </summary>
+        [Column("CertificateID", TypeName = "char"), MaxLength(32)]
+        public string CertificateID { get; set; }
+
+
+        /// <summary>
+        /// 证书名称
+        /// </summary>
+        [NotMapped]
+        public string CertificateName { get; set; }
+
+        #endregion
+
+
+        #region 学车事宜
         /// <summary>
         /// 报名点ID
         /// </summary>
@@ -220,28 +250,89 @@ namespace DOL.Model
         [Column("MakeCardRemark", TypeName = "varchar")]
         public string MakeCardRemark { get; set; }
 
+        #endregion
+
+        #region 科目情况
+
+
+
         /// <summary>
-        /// 手机号
+        /// 科目一时间
         /// </summary>
-        [Display(Name = "手机号")]
-        [MaxLength(11)]
-        [Required(ErrorMessage = "手机号不能为空")]
-        [RegularExpression(@"((\d{11})$)", ErrorMessage = "手机格式不正确")]
-        public string Mobile { get; set; }
+        public Nullable<DateTime> ThemeOneDate { get; set; }
 
         /// <summary>
-        /// 证书ID
+        /// 科目一教练
         /// </summary>
-        [Column("CertificateID", TypeName = "char"), MaxLength(32)]
-        public string CertificateID { get; set; }
-
+        [Column("ThemeOneCoachID", TypeName = "char"), MaxLength(32)]
+        public string ThemeOneCoachID { get; set; }
 
         /// <summary>
-        /// 证书名称
+        ///  科目一教练名称
         /// </summary>
         [NotMapped]
-        public string CertificateName { get; set; }
+        public string ThemeOneCoachName { get; set; }
 
+        /// <summary>
+        /// 科目二时间
+        /// </summary>
+        public Nullable<DateTime> ThemeTwoDate { get; set; }
+
+        /// <summary>
+        /// 科目二教练
+        /// </summary>
+        [Column("ThemeTwoCoachID", TypeName = "char"), MaxLength(32)]
+        public string ThemeTwoCoachID { get; set; }
+
+        /// <summary>
+        ///  科目二教练名称
+        /// </summary>
+        [NotMapped]
+        public string ThemeTwoCoachName { get; set; }
+
+        /// <summary>
+        /// 科目三时间
+        /// </summary>
+        public Nullable<DateTime> ThemeThreeDate { get; set; }
+        /// <summary>
+        /// 科目三教练
+        /// </summary>
+        [Column("ThemeThreeCoachID", TypeName = "char"), MaxLength(32)]
+        public string ThemeThreeCoachID { get; set; }
+
+        /// <summary>
+        ///  科目三教练名称
+        /// </summary>
+        [NotMapped]
+        public string ThemeThreeCoachName { get; set; }
+        /// <summary>
+        /// 科目四时间
+        /// </summary>
+        public Nullable<DateTime> ThemeFourDate { get; set; }
+
+        /// <summary>
+        /// 科目四教练
+        /// </summary>
+        [Column("ThemeFourCoachID", TypeName = "char"), MaxLength(32)]
+        public string ThemeFourCoachID { get; set; }
+
+        /// <summary>
+        ///  科目四教练名称
+        /// </summary>
+        [NotMapped]
+        public string ThemeFourCoachName { get; set; }
+
+        /// <summary>
+        /// 当前科目
+        /// </summary>
+        public ThemeCode NowTheme { get; set; }
+
+        #endregion
+
+
+        /// <summary>
+        /// 学员状态
+        /// </summary>
         public StudentCode State { get; set; }
     }
 }

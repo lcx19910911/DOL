@@ -90,6 +90,14 @@
                     }]
                 });
         }
+
+    function unState() {
+        var state = $(".admin-sidebar").css("display");
+        if (state == "none")
+            $('.admin-sidebar').show();
+        else
+            $('.admin-sidebar').hide();
+    }
     </script>
     @RenderSection("scripts", false)
 </body>

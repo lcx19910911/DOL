@@ -1,0 +1,306 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "学员管理";
+}
+
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a onclick="unState()"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>学员管理</small></div>
+</div>
+<div id="searchDomain">
+
+    <div class="am-g">   
+        <div class="am-u-lg-2">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">姓名：</span>
+                <input type="text" class="am-form-field" placeholder="按姓名搜索" style="width:100px;" name="name" ;>
+            </div>
+        </div>
+        <div class="am-u-lg-2">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">身份证：</span>
+                <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:100px;" name="no" ;>
+            </div>
+        </div>
+        <div class="am-u-lg-2">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">手机号码：</span>
+                <input type="text" class="am-form-field" placeholder="按手机号码搜索" style="width:100px;" name="mobile" ;>
+            </div>
+        </div>
+        <div class="am-u-lg-3">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">报名点：</span>
+                <select name="enteredPointId" data-am-selected="{btnSize: 'sm'}" style="width:120px;" onchange="LoadReference()"><option value="">不限</option></select>
+            </div>
+        </div>
+        <div class="am-u-lg-3">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">推荐人：</span>
+                <select name="referenceId" data-am-selected="{btnSize: 'sm'}" style="width:120px;"><option value="">不限</option></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="am-g am-margin-top">
+        <div class="am-u-lg-3">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">制卡驾校：</span>
+                <select name="makeDriverShopId" data-am-selected="{btnSize: 'sm'}" style="width:120px;"><option value="">不限</option></select>
+            </div>
+        </div>
+        <div class="am-u-lg-4">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label  am-margin-left-sm">报名日期</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="enteredTimeStart" readonly style="width:auto;">
+                <span class="am-input-group-label"> - </span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="enteredTimeEnd" readonly style="width:auto;">
+            </div>
+        </div>
+        <div class="am-u-lg-5">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label  am-margin-left-sm">制卡日期</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="makedTimeStart" readonly style="width:auto;">
+                <span class="am-input-group-label"> - </span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="makeTimeEnd" readonly style="width:auto;">
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <div class="am-g am-margin-top-sm">
+        <div class="am-u-lg-6">
+            <div class="am-btn-toolbar">
+                <div class="am-btn-group am-btn-group-sm">
+                    <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                    <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="grid_container">
+    <table id="dataTable" class="am-table am-table-striped am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th dataname="EnteredDate" datatype="jsondate">报名日期</th>
+                <th dataname="MakeCardDate" datatype="jsondate">制卡日期</th>
+                <th dataname="EnteredCityName">报名地点</th>
+                <th dataname="MakeCardCityName">制卡地</th>
+                <th dataname="TrianName">培训方式</th>
+                <th dataname="MakeDriverShopName">制卡驾校</th>
+                <th dataname="PayMethodName">缴费方式</th>
+                <th dataname="Money">总价</th>
+                <th dataname="HadPayMoney">已缴</th>
+                <th dataname="Name">姓名</th>
+                <th dataname="ProvinceName">户籍省份</th>
+                <th dataname="CityName">户籍城市</th>
+                <th dataname="IDCard">身份证</th>
+                <th dataname="mobile">电话号码</th>
+                <th dataname="CertificateName">车型</th>
+                <th dataname="ReferenceName">推荐人</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        $('.admin-sidebar').hide();
+        $('[name=enteredTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name=enteredTimeEnd]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name=makedTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name=makeTimeEnd]').datepicker({ format: 'yyyy-mm-dd' });
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+            $('#searchDomain select').find('option').eq(0).attr('selected', true);
+        }
+        //批量删除
+        function batchDelete() {
+            $.Nuoya.confirm("确认删除？", function () {
+                grid.del({
+                    ajaxUrl: "/Student/Delete",
+                    callback: function (json) {
+                        grid.reload();
+                    }
+                });
+            });
+        }
+        function formInit(dataitem) {
+            $("[name=ParentIDSelect]").ztreeSelect($("[name=ParentID]"), "/Student/GetZTreeChildren", dataitem != null ? dataitem.ID : null);
+
+            //添加表单验证
+            $.Nuoya.form("form").validate({
+                rules: {
+                    Name: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    Link: {
+                        maxlength: 128
+                    },
+                    ClassName: {
+                        maxlength: 32
+                    },
+                    Sort: {
+                        digits: true,
+                        max: 2147483647,
+                        min: -2147483647
+                    }
+                },
+                messages: {
+                    Name: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
+                    Link: {
+                        maxlength: "最多{0}个字符"
+                    },
+                    ClassName: {
+                        maxlength: "最多{0}个字符"
+                    },
+                    Sort: {
+                        digits: "请输入数字",
+                        max: "必须小于{0}",
+                        min: "必须大于{0}"
+                    }
+                }
+            });
+        }
+
+        function LoadReference()
+        {
+            var enteredPointId = $("select[name='enteredPointId']").val();
+            $.Nuoya.action("/Reference/GetSelectItem", {}, function (json) {
+                $(json).each(function () {
+                    $("select[name='referenceId']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                });
+            });
+        }
+
+        //新增
+        function add() {
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                ajaxUrl: "/HtmlTemplates/Student/Update.html",
+                title: "添加学员",
+                width: "1000px",
+                height: "420px",
+                callback: function (e) {
+                    formInit();//表单初始化
+                },
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+                        $.Nuoya.form("form").ajaxSubmit({
+                            ajaxUrl: "/Student/Add",
+                            callback: function (data) {
+                                if (!data.ErrorDesc) {
+                                    e.hide();
+                                    grid.reload();
+                                }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+                            }
+                        });
+                    }
+                }]
+            })
+        }
+
+        var grid = $.Nuoya.grid({
+            tableId: "dataTable",
+            //表格id
+            search: {
+                domainId: "searchDomain",
+                subId: "btnSearch"
+            },
+            ajaxUrl: "/Student/GetPageList",
+            //数据请求地址
+            pageSize: 10,
+            events: [
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "编辑",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Student/Update.html",
+                            title: "编辑学员",
+                            width: "1000px",
+                            height: "420px",
+                            callback: function (e) {
+                                $.Nuoya.action("/Student/Find", { id: item.ID }, function (model) {
+                                    //载入数据
+                                    $.Nuoya.form("form").dataLoad({
+                                        data: model
+                                    });
+                                    formInit(model);//表单初始化
+                                });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/Student/Update",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-danger",
+                    icon: "icon-trash-o",
+                    name: "删除",
+                    click: function (item) {
+                        $.Nuoya.confirm("确认删除？", function () {
+                            $.Nuoya.deleteAction("/Student/Delete", {
+                                ids: item.ID
+                            },
+                            function () {
+                                grid.reload();
+                            });
+                        });
+                    }
+                }
+            ]
+        });
+
+        $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+            $(json.ReferenceList).each(function () {
+                $("select[name='referenceId']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+            });
+            $(json.DriverShopList).each(function () {
+                $("select[name='makeDriverShopId']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+            });
+            $(json.EnteredPointList).each(function () {
+                $("select[name='enteredPointId']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+            });
+        });
+    </script>
+}

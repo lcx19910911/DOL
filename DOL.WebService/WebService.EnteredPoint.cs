@@ -32,6 +32,15 @@ namespace DOL.Service
         }
 
         /// <summary>
+        /// 缓存 dic
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, EnteredPoint> Cache_Get_EnteredPoint_Dic()
+        {
+            return Cache_Get_EnteredPointList().ToDictionary(x => x.ID);
+        }
+
+        /// <summary>
         /// 获取分页列表
         /// </summary>
         /// <param name="pageIndex">页码</param>
