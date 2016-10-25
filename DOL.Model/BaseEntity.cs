@@ -14,8 +14,15 @@ namespace DOL.Model
         [Key]
         [Required]
         [MaxLength(32)]
-        [Column("ID", TypeName ="char")]
+        [Column("ID", TypeName = "char")]
         public string ID { get; set; }
+
+        /// <summary>
+        /// 更新时间
+        /// </summary>
+        [Display(Name = "更新时间")]
+        [Timestamp]
+        public byte[] TimeStamp { get; set; }
 
         /// <summary>
         /// 创建时间

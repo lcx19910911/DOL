@@ -89,7 +89,12 @@ namespace DOL.Web.Controllers
             return JResult(WebService.Update_UserMenu(ID, MenuFlag));
         }
 
+        public ActionResult UpdateOperate(string ID, long OperateFlag)
+        {
+            return JResult(WebService.Update_UserOperate(ID, OperateFlag));
+        }
 
+        
 
         /// <summary>
         /// 删除

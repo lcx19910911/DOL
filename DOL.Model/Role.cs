@@ -27,6 +27,11 @@ namespace DOL.Model
         public long? MenuFlag { get; set; }
 
         /// <summary>
+        /// 操作权限
+        /// </summary>
+        public long? OperateFlag { get; set; }
+
+        /// <summary>
         /// 备注
         /// </summary>
         [MaxLength(128)]

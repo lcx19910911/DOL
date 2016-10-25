@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
+using DOL.Core;
 
 namespace DOL.Repository
 {
@@ -36,6 +37,7 @@ namespace DOL.Repository
             }
             catch (Exception ex)
             {
+                LogHelper.WriteException(ex);
                 //并发冲突数据
                 if (ex.GetType() == typeof(DbUpdateConcurrencyException))
                 {
@@ -56,6 +58,8 @@ namespace DOL.Repository
         public DbSet<Menu> Menu { get; set; }
         public DbSet<Role> Role { get; set; }
 
+        public DbSet<Operate> Operate { get; set; }
+
         public DbSet<SiteMessage> SiteMessage { get; set; }
 
         public DbSet<Theme> Theme { get; set; }
@@ -65,6 +69,11 @@ namespace DOL.Repository
         public DbSet<EnteredPoint> EnteredPoint { get; set; }
 
         public DbSet<DriverShop> DriverShop { get; set; }
+
+        public DbSet<Student> Student { get; set; }
+
+
+        public DbSet<PayOrder> PayOrder { get; set; }
     }
 
 }

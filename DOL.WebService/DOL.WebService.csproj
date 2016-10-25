@@ -58,6 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="WebService.DataDictionary.cs" />
+    <Compile Include="WebService.Operate.cs" />
+    <Compile Include="WebService.PayOrder.cs" />
     <Compile Include="WebService.Department.cs" />
     <Compile Include="WebService.DriverShop.cs" />
     <Compile Include="WebService.Reference.cs" />

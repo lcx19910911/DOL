@@ -8,8 +8,11 @@ using System.Web.Mvc;
 
 namespace DOL.Web.Controllers
 {
+    /// <summary>
+    /// 操作权限
+    /// </summary>
     [LoginFilter]
-    public class RoleController : BaseController
+    public class OperateController : BaseController
     {
 
         public ViewResult Index()
@@ -22,14 +25,14 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Add(Role entity)
+        public JsonResult Add(Operate entity)
         {
             ModelState.Remove("ID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Add_Role(entity);
+                var result = WebService.Add_Operate(entity);
                 return JResult(result);
             }
             else
@@ -43,13 +46,13 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Update(Role entity)
+        public JsonResult Update(Operate entity)
         {
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Update_Role(entity);
+                var result = WebService.Update_Operate(entity);
                 return JResult(result);
             }
             else
@@ -69,7 +72,17 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult GetPageList(int pageIndex, int pageSize, string name, string no)
         {
-            return JResult(WebService.Get_RolePageList(pageIndex, pageSize, name, no));
+            return JResult(WebService.Get_OperatePageList(pageIndex, pageSize, name, no));
+        }
+
+
+        /// <summary>
+        /// 获取下拉框 flag
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetZTreeFlagChildren()
+        {
+            return JResult(WebService.Get_OperateZTreeFlagChildren());
         }
 
         /// <summary>
@@ -79,7 +92,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Find(string id)
         {
-            return JResult(WebService.Find_Role(id));
+            return JResult(WebService.Find_Operate(id));
         }
 
         /// <summary>
@@ -89,26 +102,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Delete(string ids)
         {
-            return JResult(WebService.Delete_Role(ids));
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult UpdateOperate(string ID, long OperateFlag)
-        {
-            return JResult(WebService.Update_RoleOperate(ID, OperateFlag));
-        }
-
-        
-
-        /// <summary>
-        /// 获取角色选择项
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetSelectItem(string id)
-        {
-            return JResult(WebService.Get_RoleSelectItem(id));
+            return JResult(WebService.Delete_Operate(ids));
         }
     }
 }

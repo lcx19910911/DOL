@@ -1,6 +1,7 @@
 ﻿
 using DOL.Core;
 using DOL.Model;
+using DOL.Service;
 using DOL.Web.Controllers;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,16 @@ namespace DOL.Web
                 {
                     int enumKey = EnumHelper.GetEnumKey(typeof(MenuFlag), controllerName);
                     if ((user.MenuFlag & enumKey) == 0)
+                    {
+                        RedirectResult redirectResult = new RedirectResult("/Base/Forbidden");
+                        filterContext.Result = redirectResult;
+                    }
+                }
+                if (user.OperateFlag != -1)
+                {
+                    var url = filterContext.HttpContext.Request.RawUrl;
+                    var operateFlag = user.OperateFlag.HasValue ? user.OperateFlag.Value : 0;
+                    if (!new WebService(new WebClient(filterContext.HttpContext)).IsHaveAuthority(operateFlag, url))
                     {
                         RedirectResult redirectResult = new RedirectResult("/Base/Forbidden");
                         filterContext.Result = redirectResult;

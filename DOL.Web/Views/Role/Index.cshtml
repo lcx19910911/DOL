@@ -69,8 +69,7 @@
             });
         }
         function formInit(dataitem) {
-
-            $("[name=MenuFlagSelect]").ztreeSelect($("[name=MenuFlag]"), "/Menu/GetZTreeFlagChildren", dataitem != null ? dataitem.MenuFlag : 0, true, true);
+           $("[name=MenuFlagSelect]").ztreeSelect($("[name=MenuFlag]"), "/Menu/GetZTreeFlagChildren", dataitem != null ? dataitem.MenuFlag : 0, true, true);
             //添加表单验证
             $.Nuoya.form("form").validate({
                 rules: {
@@ -92,6 +91,7 @@
                     }
                 }
             });
+           
         }
 
         //新增
@@ -101,7 +101,7 @@
                 ajaxUrl: "/HtmlTemplates/Role/Update.html",
                 title: "添加角色",
                 width: "1000px",
-                height: "340px",
+                height: "380px",
                 callback: function (e) {
                     formInit();//表单初始化
                 },
@@ -145,7 +145,7 @@
                             ajaxUrl: "/HtmlTemplates/Role/Update.html",
                             title: "编辑角色",
                             width: "1000px",
-                            height: "340px",
+                            height: "380px",
                             callback: function (e) {
                                 $.Nuoya.action("/Role/Find", { id: item.ID }, function (model) {
                                     //载入数据
@@ -161,6 +161,45 @@
 
                                     $.Nuoya.form("form").ajaxSubmit({
                                         ajaxUrl: "/Role/Update",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "操作权限",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/User/SelectOperate.html",
+                            title: "操作权限",
+                            width: "1000px",
+                            height: "380px",
+                            callback: function (e) {
+                                $.Nuoya.action("/Role/Find", { id: item.ID }, function (model) {
+                                    $("[name=OperateFlagSelect]").ztreeSelect($("[name=OperateFlag]"), "/Operate/GetZTreeFlagChildren", model != null ? model.OperateFlag : 0, true, true);
+                                });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/Role/UpdateOperate",
                                         params: {
                                             ID: item.ID
                                         },

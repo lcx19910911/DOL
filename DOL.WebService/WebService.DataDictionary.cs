@@ -111,7 +111,8 @@ namespace DOL.Service
                 if(entities.DataDictionary.Where(x=>x.GroupCode==GroupCode.Area&&x.Key.Equals(model.Key)).Any())
                     return Result(false, ErrorCode.datadatabase_key__had);
                 model.ID = Guid.NewGuid().ToString("N");
-                model.Key = model.ID;
+                if(string.IsNullOrEmpty(model.Key))
+                    model.Key = model.ID;
                 entities.DataDictionary.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -170,6 +171,8 @@ namespace DOL.Service
                 var oldEntity = entities.DataDictionary.Find(model.ID);
                 if (oldEntity != null)
                 {
+                    if (string.IsNullOrEmpty(model.Key))
+                        oldEntity.Key = model.ID;
                     oldEntity.ParentKey = model.ParentKey;
                     oldEntity.Sort = model.Sort;
                     oldEntity.Key = model.Key;

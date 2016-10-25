@@ -260,14 +260,14 @@
                 {
                     className: "am-text-secondary",
                     icon: "icon-pencil-square-o",
-                    name: "编辑权限",
+                    name: "页面权限",
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,
                             width: "500px",
                             height: "500px",
                             ajaxUrl: "/HtmlTemplates/User/SelectMenu.html",
-                            title: "编辑权限",
+                            title: "页面权限",
                             callback: function (e) {
                                 $.Nuoya.action("/User/Find", { id: item.ID }, function (model) {
                                     $("#form [name=MenuFlagSelect]").ztreeSelect($("[name=MenuFlag]"), "/Menu/GetZTreeFlagChildren", model != null ? model.MenuFlag : 0, true, true);
@@ -295,6 +295,46 @@
                             }]
                         })
                     }                    
+                }
+                ,
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "操作权限",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "500px",
+                            height: "500px",
+                            ajaxUrl: "/HtmlTemplates/User/SelectOperate.html",
+                            title: "操作权限",
+                            callback: function (e) {
+                                $.Nuoya.action("/User/Find", { id: item.ID }, function (model) {
+                                    $("#form [name=OperateFlagSelect]").ztreeSelect($("[name=OperateFlag]"), "/Operate/GetZTreeFlagChildren", model != null ? model.OperateFlag : 0, true, true);
+                                });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/User/UpdateOperate",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
                 },
                 {
                     className: "am-text-danger",

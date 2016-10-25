@@ -202,6 +202,7 @@ namespace DOL.Service
                 if(role==null)
                     return Result(false, ErrorCode.datadatabase_primarykey_not_found);
                 model.MenuFlag = role.MenuFlag;
+                model.OperateFlag = role.OperateFlag;
                 model.Password = CryptoHelper.MD5_Encrypt(model.ConfirmPassword);
                 model.ID = Guid.NewGuid().ToString("N");
                 model.CreaterId = Client.LoginUser.ID;
@@ -236,6 +237,11 @@ namespace DOL.Service
                 var oldEntity = Cache_Get_UserList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(model.ID));
                 if (oldEntity != null)
                 {
+                    var role = Cache_Get_RoleList().Where(x => x.ID.Equals(model.RoleID)).FirstOrDefault();
+                    if (role == null)
+                        return Result(false, ErrorCode.datadatabase_primarykey_not_found);
+                    oldEntity.MenuFlag = role.MenuFlag;
+                    oldEntity.OperateFlag = role.OperateFlag;
                     oldEntity.Mobile = model.Mobile;
                     oldEntity.Name = model.Name;
                     oldEntity.MenuFlag = model.MenuFlag;
@@ -307,6 +313,46 @@ namespace DOL.Service
 
         }
 
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> Update_UserOperate(string ID, long OperateFlag)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var oldEntity = entities.User.Find(ID);
+                if (oldEntity != null)
+                {
+                    oldEntity.OperateFlag = OperateFlag;
+                }
+                else
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_UserList();
+                    var index = list.FindIndex(x => x.ID.Equals(ID));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+        
         /// <summary>
         /// 删除分类
         /// </summary>
@@ -422,6 +468,5 @@ namespace DOL.Service
                 return entities.SaveChanges() > 0 ? Result(true) : Result(false, ErrorCode.sys_fail);
             }
         }
-
     }
 }

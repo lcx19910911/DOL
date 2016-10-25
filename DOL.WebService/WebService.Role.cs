@@ -83,6 +83,45 @@ namespace DOL.Service
 
         }
 
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> Update_RoleOperate(string ID, long OperateFlag)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var oldEntity = entities.Role.Find(ID);
+                if (oldEntity != null)
+                {
+                    oldEntity.OperateFlag = OperateFlag;
+                }
+                else
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_RoleList();
+                    var index = list.FindIndex(x => x.ID.Equals(ID));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+
 
         /// <summary>
         /// 修改

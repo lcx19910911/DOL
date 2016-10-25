@@ -22,13 +22,16 @@ namespace DOL.Model
         [Description("支付方式")]
         PayMethod = 2,
 
-        [Description("支付途径")]
+        [Description("支付渠道")]
         PayType = 3,
 
         [Description("培训方式")]
         Train = 4,
 
         [Description("证书类型")]
-        Certificate = 4,
+        Certificate = 5,
+
+        [Description("收款账户")]
+        Account = 6,
     }
 }

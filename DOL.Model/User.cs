@@ -11,17 +11,28 @@ namespace DOL.Model
         /// <summary>
         /// 部门ID
         /// </summary>
+        [Required(ErrorMessage = "部门ID不能为空")]
+        [Column("DepartmentID", TypeName = "char"), MaxLength(32)]
         public string DepartmentID { get; set; }
 
         /// <summary>
-        /// 角色位域值
+        /// 角色
         /// </summary>
+        [Required(ErrorMessage = "角色不能为空")]
+        [Column("RoleID", TypeName = "char"), MaxLength(32)]
         public string RoleID { get; set; }
 
         /// <summary>
         /// 菜单权限 
         /// </summary>
         public long? MenuFlag { get; set; }
+
+        /// <summary>
+        /// 操作权限
+        /// </summary>
+        public long? OperateFlag { get; set; } 
+
+
         /// <summary>
         /// 创建者Id
         /// </summary>
