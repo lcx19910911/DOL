@@ -86,6 +86,7 @@ namespace DOL.Model
         /// <summary>
         /// 证书ID
         /// </summary>
+        [Required(ErrorMessage = "证书不能为空")]
         [Column("CertificateID", TypeName = "char"), MaxLength(32)]
         public string CertificateID { get; set; }
 
@@ -191,6 +192,12 @@ namespace DOL.Model
         [Column("Remark", TypeName = "varchar")]
         public string Remark { get; set; }
 
+        /// <summary>
+        /// 报名地点（省份）
+        /// </summary>
+        [MaxLength(6)]
+        [Column("EnteredProvinceCode", TypeName = "varchar")]
+        public string EnteredProvinceCode { get; set; }
 
         /// <summary>
         /// 报名地点（市）
@@ -249,6 +256,20 @@ namespace DOL.Model
         [MaxLength(128)]
         [Column("MakeCardRemark", TypeName = "varchar")]
         public string MakeCardRemark { get; set; }
+
+
+        /// <summary>
+        /// 是否增驾
+        /// </summary>
+
+        public YesOrNoCode IsAddCertificate { get; set; }
+
+        /// <summary>
+        /// 原驾车型
+        /// </summary>
+        [MaxLength(32)]
+        [Column("OldCertificate", TypeName = "varchar")]
+        public string OldCertificate { get; set; }
 
         #endregion
 
@@ -334,5 +355,12 @@ namespace DOL.Model
         /// 学员状态
         /// </summary>
         public StudentCode State { get; set; }
+
+
+        /// <summary>
+        /// 缴费记录
+        /// </summary>
+        [NotMapped]
+        public List<PayOrder> PayOrderList { get; set; }
     }
 }

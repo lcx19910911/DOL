@@ -132,13 +132,9 @@
                 ajaxUrl: "/HtmlTemplates/DataDictionary/Update.html",
                 title: "添加@(title)",
                 width: "800px",
-                height: "360px",
+                height: "460px",
                 callback: function (e) {
                     formInit();//表单初始化
-                    if(@type==6)
-                    {
-                        $("#name").parent().show();
-                    }
                 },
                 buttons: [{
                     label: "保存",
@@ -181,7 +177,7 @@
                             ajaxUrl: "/HtmlTemplates/DataDictionary/Update.html",
                             title: "编辑@(title)",
                             width: "800px",
-                            height: "360px",
+                            height: "460px",
                             callback: function (e) {
                                 $.Nuoya.action("/DataDictionary/Find", { id: item.ID }, function (model) {
                                     //载入数据

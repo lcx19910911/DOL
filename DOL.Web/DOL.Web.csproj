@@ -135,6 +135,7 @@
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
     <Content Include="HtmlTemplates\User\SelectOperate.html" />
     <Content Include="HtmlTemplates\User\SelectMenu.html" />
+    <Content Include="HtmlTemplates\User\Pay.html" />
     <Content Include="HtmlTemplates\User\Update.html" />
     <Content Include="Images\404Pic.png" />
     <Content Include="Images\login-sprite.png" />
@@ -228,6 +229,7 @@
     <Compile Include="Controllers\DataDictionaryController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\AreaController.cs" />
+    <Compile Include="Controllers\PayOrderController.cs" />
     <Compile Include="Controllers\DriverShopController.cs" />
     <Compile Include="Controllers\EnteredPointController.cs" />
     <Compile Include="Controllers\StudentController.cs" />

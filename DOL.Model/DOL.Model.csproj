@@ -44,7 +44,6 @@
     <Compile Include="BaseEntity.cs" />
     <Compile Include="DataDictionary.cs" />
     <Compile Include="Department.cs" />
-    <Compile Include="Dto\StudentIndexModel.cs" />
     <Compile Include="Dto\MenuItem.cs" />
     <Compile Include="DriverShop.cs" />
     <Compile Include="Enum\ErrorCode.cs" />

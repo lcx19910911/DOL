@@ -199,5 +199,14 @@ namespace DOL.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 根据页面获取权限集合
+        /// </summary>
+        /// <param name="pageUrl"></param>
+        /// <returns></returns>
+        public ActionResult GetPageOperate(string pageUrl)
+        {
+            return JResult(WebService.Get_OperateUrlByPageUrl(pageUrl));
+        }
     }
 }

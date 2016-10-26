@@ -1,4 +1,5 @@
-﻿using DOL.Model;
+﻿
+using DOL.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Web.Mvc;
 namespace DOL.Web.Controllers
 {
     [LoginFilter]
-    public class EnteredPointController : BaseController
+    public class PayOrderController : BaseController
     {
 
         public ViewResult Index()
@@ -21,14 +22,14 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Add(EnteredPoint entity)
+        public JsonResult Add(PayOrder entity)
         {
             ModelState.Remove("ID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Add_EnteredPoint(entity);
+                var result = WebService.Add_PayOrder(entity);
                 return JResult(result);
             }
             else
@@ -42,13 +43,13 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Update(EnteredPoint entity)
+        public JsonResult Update(PayOrder entity)
         {
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Update_EnteredPoint(entity);
+                var result = WebService.Update_PayOrder(entity);
                 return JResult(result);
             }
             else
@@ -62,30 +63,11 @@ namespace DOL.Web.Controllers
         /// 获取分页列表
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetPageList(int pageIndex, int pageSize, string name, string provinceCode, string cityCode, string districtCode, string no)
+        public ActionResult GetList(int pageIndex,
+            int pageSize, string studentID)
         {
-            return JResult(WebService.Get_EnteredPointPageList(pageIndex, pageSize, name, provinceCode, cityCode, districtCode, no));
+            return JResult(WebService.Get_PayOrderByStudentId(pageIndex, pageSize,studentID));
         }
-
-       
-        /// <summary>
-        /// 获取下拉框 flag
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetZTreeFlagChildren()
-        {
-            return JResult(WebService.Get_EnteredPointZTreeStr());
-        }
-
-        /// <summary>
-        /// 获取下拉框 
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetSelectItem(string cityCode)
-        {
-            return JResult(WebService.Get_EnteredPointSelectItem(cityCode));
-        }
-
         /// <summary>
         /// 查找实体
         /// </summary>
@@ -93,7 +75,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Find(string id)
         {
-            return JResult(WebService.Find_EnteredPoint(id));
+            return JResult(WebService.Find_PayOrder(id));
         }
 
         /// <summary>
@@ -103,7 +85,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Delete(string ids)
         {
-            return JResult(WebService.Delete_EnteredPoint(ids));
+            return JResult(WebService.Delete_PayOrder(ids));
         }
     }
 }

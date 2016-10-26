@@ -18,6 +18,12 @@ namespace DOL.Web.Controllers
         }
 
 
+        public ViewResult Add()
+        {
+            return View();
+        }
+
+
         /// <summary>
         /// 获取分页列表
         /// </summary>
@@ -51,14 +57,15 @@ namespace DOL.Web.Controllers
             return JResult(WebService.Get_SelectItemList());
         }
 
-        ///// <summary>
-        ///// 删除
-        ///// </summary>
-        ///// <param name="ids"></param>
-        ///// <returns></returns>
-        //public ActionResult Delete(string ids)
-        //{
-        //    return JResult(WebService.Delete_Student(ids));
-        //}
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Add(Student model)
+        {
+            return JResult(WebService.Add_Student(model));
+        }
     }
 }

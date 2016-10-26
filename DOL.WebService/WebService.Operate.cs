@@ -41,6 +41,9 @@ namespace DOL.Service
             return Cache_Get_OperateList().ToDictionary(x => x.ID);
         }
 
+
+
+
         /// <summary>
         /// 获取分页列表
         /// </summary>
@@ -69,6 +72,28 @@ namespace DOL.Service
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
+
+
+
+        /// <summary>
+        /// 获取权限地址集合
+        /// </summary>
+        /// <returns></returns>
+        public List<string> Get_OperateUrlByPageUrl(string pageUrl)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var menu = Cache_Get_MenuList().FirstOrDefault(x => x.Link.Equals(pageUrl, StringComparison.CurrentCultureIgnoreCase));
+                if (menu != null)
+                {
+                    return Cache_Get_OperateList().AsQueryable().Where(x => x.MenuID.Equals(menu.ID)).Select(x => x.ActionUrl).ToList();
+                }
+                else
+                    return null;
+                
+            }
+        }
+
 
         /// <summary>
         /// 增加
@@ -256,7 +281,7 @@ namespace DOL.Service
         /// <returns></returns>
         public bool IsHaveAuthority(long oprertorFlag, string url)
         {
-            var oprertor = Cache_Get_OperateList().AsQueryable().Where(x => url.ToLower().Contains(x.ActionUrl)).FirstOrDefault();
+            var oprertor = Cache_Get_OperateList().AsQueryable().Where(x => url.Contains(x.ActionUrl)).FirstOrDefault();
 
             if (oprertor != null)
             {

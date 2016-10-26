@@ -73,6 +73,7 @@
     <Compile Include="Model\PageList.cs" />
     <Compile Include="Model\Params.cs" />
     <Compile Include="Model\SelectItem.cs" />
+    <Compile Include="Model\StudentIndexModel.cs" />
     <Compile Include="Model\WebClient.cs" />
     <Compile Include="Model\WebResult.cs" />
     <Compile Include="Model\ZTreeNode.cs" />

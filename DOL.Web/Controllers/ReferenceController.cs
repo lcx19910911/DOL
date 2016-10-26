@@ -100,9 +100,9 @@ namespace DOL.Web.Controllers
         /// 获取角色选择项
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetSelectItem(string id)
+        public ActionResult GetSelectItem(string enteredPointId)
         {
-            return JResult(WebService.Get_ReferenceSelectItem(id));
+            return JResult(WebService.Get_ReferenceSelectItem(enteredPointId));
         }
     }
 }

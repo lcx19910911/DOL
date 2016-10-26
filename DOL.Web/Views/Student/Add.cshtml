@@ -1,306 +1,642 @@
 ﻿<div class="admin-content-body">
     <form id="form" class="am-form  am-form-inline">
-        <input type="hidden" name="UNID" />
+        <input type="hidden" name="ID" value="@(Guid.NewGuid().ToString("N"))" />
         <div class="am-tabs am-margin" data-am-tabs="">
             <ul class="am-tabs-nav am-nav am-nav-tabs" id="selectTabUl">
-                <li class="am-active"><a href="#tab1">基本信息</a></li>
-                <li class=""><a href="#tab2">奖品设置</a></li>
+                <li class="am-active"><a href="#tab1">报名收费</a></li>
+                <li class=""><a href="#tab2">考试信息</a></li>
             </ul>
             <div class="am-tabs-bd" style="touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);overflow-x:hidden">
                 <div class="am-tab-panel am-fade am-in am-active" id="tab1">
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            活动名称
-                        </div>
-                        <div class="am-u-md-5">
-                            <input type="text" name="Name" class="am-input-sm" maxlength="64">
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，不能超过64个字</div>
-                    </div>
 
                     <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            活动时间
+                        <div class="am-u-md-12 am-text-left">
+                            <label for="user-name" class="am-form-label">身份信息：</label>
                         </div>
-                        <div class="am-u-md-5">
-                            <input type="text" name="OngoingTime" style="width:170px;float:left;" readonly onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" datatype="jsondate" />
-                            <label class="am-u-md-1 am-text-left">-</label>
-                            <input type="text" name="OverTime" style="width:170px;float:left;" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss' })" datatype="jsondate" />
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，活动在启动前10分钟进入预热</div>
-                    </div>
-
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            超过抽奖次数提示
-                        </div>
-                        <div class="am-u-md-5">
-                            <input type="text" name="RepeatNotice" class="am-input-sm" maxlength="64">
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，不能超过64个字</div>
-                    </div>
-
-                    <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
-
-                    <div class="am-g am-margin-top am-panel am-panel-default" style="height:306px;">
-                        <div class="am-u-md-3">
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-6 am-text-left">
-                                    <label for="user-name" class="am-form-label">活动即将开始</label>
-                                </div>
-                            </div>
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-9 am-text-left" id="preheatingTime">
-                                    （默认图片）
-                                </div>
-                            </div>
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-12 am-text-left" id="div_preheatingImageShow">
-                                    <img class="am-img-circle am-img-thumbnail" style="max-width:350px;max-height:150px;" src="/Images/ScratchCard/preheating.jpg" alt="">
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="am-u-md-9">
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-3 am-text-right">
-                                    活动预热标题
-                                </div>
-                                <div class="am-u-md-5">
-                                    <input type="text" name="PreheatingTitle" class="am-input-sm" maxlength="64">
-                                </div>
-                                <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，活动预热说明，活动开始前十分钟进行预热,不能超过64个字</div>
-                            </div>
-
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-3 am-text-right">
-                                    预热图片
-                                </div>
-                                <div class="am-u-md-5">
-                                    <a id="preheatingImageFile">上传图片</a>
-                                    <input type="hidden" name="PreheatingImage" value="/Images/ScratchCard/preheating.jpg" />
-                                </div>
-                                <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>参考尺寸：700*300</div>
-                            </div>
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-3 am-text-right">
-                                    预热描述
-                                </div>
-                                <div class="am-u-md-9 am-text-left">
-                                    <textarea name="PreheatingDescribe" rows="7" maxlength="2000"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
-
-                    <div class="am-g am-margin-top am-panel am-panel-default" style="height:306px;">
-                        <div class="am-u-md-3">
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-6 am-text-left">
-                                    <label for="user-name" class="am-form-label">活动正在进行中</label>
-                                </div>
-                            </div>
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-9 am-text-left" id="ongingTime">
-                                    （默认图片）
-                                </div>
-                            </div>
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-12 am-text-left" id="div_ongingImageShow">
-                                    <img class="am-img-circle am-img-thumbnail" style="max-width:350px;max-height:150px;" src="/Images/ScratchCard/ongoing.png" alt="">
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="am-u-md-9">
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-3 am-text-right">
-                                    开始抽奖标题
-                                </div>
-                                <div class="am-u-md-5">
-                                    <input type="text" name="OngoingTitle" class="am-input-sm" maxlength="64">
-                                </div>
-                                <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，不能超过64个字</div>
-                            </div>
-
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-3 am-text-right">
-                                    开始抽奖图片
-                                </div>
-                                <div class="am-u-md-5">
-                                    <a id="ongoingImageFile">上传图片</a>
-                                    <input type="hidden" name="OngoingImage" value="/Images/ScratchCard/ongoing.png" />
-                                </div>
-                                <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>参考尺寸：700*300</div>
-                            </div>
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-3 am-text-right">
-                                    兑奖说明
-                                </div>
-                                <div class="am-u-md-9 am-text-left">
-                                    <textarea name="OngoingDescribe" rows="7" maxlength="2000"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
-
-                    <div class="am-g am-margin-top am-panel am-panel-default" style="height:306px;">
-                        <div class="am-u-md-3">
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-6 am-text-left">
-                                    <label for="user-name" class="am-form-label">活动已经结束</label>
-                                </div>
-                            </div>
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-9 am-text-left" id="overTime">
-                                    （默认图片）
-                                </div>
-                            </div>
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-12 am-text-left" id="div_overImageShow">
-                                    <img class="am-img-circle am-img-thumbnail" style="max-width:350px;max-height:150px;" src="/Images/ScratchCard/over.jpg" alt="">
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="am-u-md-9">
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-3 am-text-right">
-                                    发放完毕通知主题
-                                </div>
-                                <div class="am-u-md-5">
-                                    <input type="text" name="OverTitle" class="am-input-sm" maxlength="64">
-                                </div>
-                                <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，不能超过64个字</div>
-                            </div>
-
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-3 am-text-right">
-                                    发放完毕通知图片
-                                </div>
-                                <div class="am-u-md-5">
-                                    <a id="overImageFile">上传图片</a>
-                                    <input type="hidden" name="OverImage" value="/Images/ScratchCard/over.jpg" />
-                                </div>
-                                <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>参考尺寸：700*300</div>
-                            </div>
-                            <div class="am-g am-margin-top">
-                                <div class="am-u-md-3 am-text-right">
-                                    发放完毕通知内容
-                                </div>
-                                <div class="am-u-md-9 am-text-left">
-                                    <textarea name="OverDescribe" rows="7" maxlength="2000"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="am-tab-panel am-fade" id="tab2">
-
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            一等奖奖品
-                        </div>
-                        <div class="am-u-md-3">
-                            <input type="text" name="OnePrize" class="am-input-sm" maxlength="64">
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm"><strong class="am-text-danger am-text-sm">*</strong></strong>必填，不能超过50个字</div>
                     </div>
                     <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            一等奖奖品数
-                        </div>
-                        <div class="am-u-md-3">
-                            <input type="number" name="OnePrizeCount" class="am-input-sm" min="1" />
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，首次设置后不能修改，数量必须是大于1且小于5000</div>
-                    </div>
-
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            二等奖奖品
-                        </div>
-                        <div class="am-u-md-3">
-                            <input type="text" name="TwoPrize" class="am-input-sm" maxlength="64">
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，不能超过50个字</div>
-                    </div>
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            二等奖奖品数量
-                        </div>
-                        <div class="am-u-md-3">
-                            <input type="number" name="TwoPrizeCount" class="am-input-sm" min="1" />
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，首次设置后不能修改，数量必须是大于1且小于5000</div>
-                    </div>
-
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            三等奖奖品
-                        </div>
-                        <div class="am-u-md-3">
-                            <input type="text" name="ThreePrize" class="am-input-sm" maxlength="64">
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，不能超过50个字</div>
-                    </div>
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            三等奖奖品数量
-                        </div>
-                        <div class="am-u-md-3">
-                            <input type="number" name="ThreePrizeCount" class="am-input-sm" min="1" />
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，首次设置后不能修改，数量必须是大于1且小于5000</div>
-                    </div>
-
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            预计参与人数量
-                        </div>
-                        <div class="am-u-md-3">
-                            <input type="number" name="ExpectedPeopleCount" class="am-input-sm" min="3" />
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填 ，须大于奖品的总数.中奖概率为（奖品总数除预计参与人数）</div>
-                    </div>
-
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            是否显示奖品数量
+                        <div class="am-u-md-2 am-text-right">
+                            学员姓名<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
                         </div>
                         <div class="am-u-md-3 am-text-left">
-                            <input type="checkbox" name="IsShowCount" id="chk_isShowCount" />
-
+                            <input type="text" name="Name" class="am-input-sm" maxlength="32" style="width:160px;">
                         </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>取消选择后在活动页面中将不会显示奖品数量</div>
+                        <div class="am-u-md-1"></div>
+                        <div class="am-u-md-1 am-text-right">
+                            户籍地<strong class="am-text-danger am-text-sm">*</strong>：
+                        </div>
+                        <div class="am-u-md-5 am-text-left am-u-end">
+                            <select name="ProvinceCode" data-am-selected="{btnSize: 'sm'}" onchange="ShowCity(false,this,1)" style="width:120px;"></select>省
+                            <select name="CityCode" data-am-selected="{btnSize: 'sm'}" style="width:120px;"></select>市
+                        </div>
+                    </div>
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            身份证号码<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
+                        </div>
+                        <div class="am-u-md-5 am-text-left  am-u-end">
+                            <input type="text" name="IDCard" class="am-input-sm" maxlength="20">
+                        </div>
+                    </div>
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            手机<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
+                        </div>
+                        <div class="am-u-md-3 am-text-left">
+                            <input type="text" name="Mobile" class="am-input-sm" maxlength="11" style="width:160px;">
+                        </div>
+                        <div class="am-u-md-1"></div>
+                        <div class="am-u-md-1 am-text-right">
+                            性别<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
+                        </div>
+                        <div class="am-u-md-2 am-text-left  am-u-end">
+                            <select name="GenderCode" data-am-selected="{btnSize: 'sm'}" style="width:120px;">
+                                <option value="0">未知</option>
+                                <option value="1">男</option>
+                                <option value="2">女</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            身份证地址<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
+                        </div>
+                        <div class="am-u-md-7 am-text-left  am-u-end">
+                            <input type="text" name="Address" class="am-input-sm" maxlength="512">
+                        </div>
+                    </div>
+
+                    <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
+
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-12 am-text-left">
+                            <label for="user-name" class="am-form-label">培训信息：</label>
+                        </div>
                     </div>
 
                     <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            每天每人刮奖次数
+                        <div class="am-u-md-2 am-text-right">
+                            报名地点<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
                         </div>
-                        <div class="am-u-md-3">
-                            <input type="number" name="DayLimt" class="am-input-sm" min="1" />
+                        <div class="am-u-md-6 am-text-left">
+                            <select name="EnteredProvinceCode" data-am-selected="{btnSize: 'sm'}" onchange="ShowCity(false, this,2)" style="width:120px;"></select>省
+                            <select name="EnteredCityCode" data-am-selected="{btnSize: 'sm'}" onchange="LoadEnteredPoint(false, this)"> style="width:120px;"></select>市
+                            <select name="EnteredPointID" data-am-selected="{btnSize: 'sm'}" onchange="LoadReference(false,this)"> style="width:120px;"></select>
                         </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填 ，数量必须是大于1且小于100000</div>
+                        <div class="am-u-md-1"></div>
+                        <div class="am-u-md-1 am-text-right">
+                            推荐人<strong class="am-text-danger am-text-sm">*</strong>：
+                        </div>
+                        <div class="am-u-md-2 am-u-end">
+                            <select name="ReferenceID" data-am-selected="{btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                    </div>
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            学习车型<strong class="am-text-danger am-text-sm">*</strong>：
+                        </div>
+                        <div class="am-u-md-2">
+                            <select name="CertificateID" data-am-selected="{btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                        <div class="am-u-md-1"></div>
+                        <div class="am-u-md-2 am-text-right">
+                            是否增驾<strong class="am-text-danger am-text-sm">*</strong>：
+                        </div>
+                        <div class="am-u-md-2 am-u-end">
+                            <select name="IsAddCertificate" data-am-selected="{btnSize: 'sm'}" onchange="IsAddCertificate(this)" style="width:120px;">
+                                <option value="1">是</option>
+                                <option value="0">否</option>
+                            </select>
+                        </div>
+                        <div class="am-u-md-1 am-text-right" >
+                            原驾车型<strong class="am-text-danger am-text-sm">*</strong>：
+                        </div>
+                        <div class="am-u-md-2 am-u-end am-text-left">
+                            <input type="text" name="OldCertificate" class="am-input-sm" maxlength="32" placeholder="请输入原驾车型">
+                        </div>
+                    </div>
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            意向驾校：
+                        </div>
+                        <div class="am-u-md-3 am-text-left">
+                            <select name="WantDriverShopID" data-am-selected="{btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                        <div class="am-u-md-1"></div>
+                        <div class="am-u-md-1 am-text-right">
+                            制卡驾校：
+                        </div>
+                        <div class="am-u-md-1">
+                            <select name="MakeDriverShopID" data-am-selected="{btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                        <div class="am-u-md-2 am-text-right">
+                            报名时间<strong class="am-text-danger am-text-sm">*</strong>：
+                        </div>
+                        <div class="am-u-md-2 am-u-end">
+                            <input type="text" name="EnteredDate" class="am-input-sm" style="width:190px;" placeholder="请选择报名时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                        </div>
                     </div>
                     <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            每人总计次数限制
+                        <div class="am-u-md-2 am-text-right">
+                            制卡备注：
                         </div>
-                        <div class="am-u-md-3">
-                            <input type="number" name="AllCountLimt" class="am-input-sm" min="1" />
+                        <div class="am-u-md-7 am-text-left  am-u-end">
+                            <input type="text" name="MakeCardRemark" class="am-input-sm" maxlength="128">
                         </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填 ，数量必须是大于1且不能大于每人可以参与刮奖的总次数</div>
+                    </div>
+
+                    <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-12 am-text-left">
+                            <label for="user-name" class="am-form-label">费用情况：</label>
+                        </div>
+                    </div>
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            学费总价<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
+                        </div>
+                        <div class="am-u-md-2 am-text-left  am-u-end">
+                            <input type="text" name="Money" class="am-input-sm" maxlength="10">
+                        </div>
+                        <div class="am-u-md-2 am-text-right">
+                            培训班别<strong class="am-text-danger am-text-sm">*</strong>：
+                        </div>
+                        <div class="am-u-md-3 am-u-end">
+                            <select name="TrianID" data-am-selected="{btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                    </div>
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            缴费方式<strong class="am-text-danger am-text-sm">*</strong>：
+                        </div>
+                        <div class="am-u-md-2 am-u-end">
+                            <select name="PayMethodID" data-am-selected="{btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                    </div>
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-left am-u-end">
+                            缴费记录
+                        </div>
+                    </div>
+                    <div class="am-g am-margin-top-sm">
+                        <div class="am-u-lg-6">
+                            <div class="am-btn-toolbar">
+                                <div class="am-btn-group am-btn-group-sm">
+                                    <button onclick="addPay()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="paySearchDomain" style="display:none;">
+                    </div>
+                    <button class="am-btn am-btn-default" id="payBtnSearch" type="button" style="display:none;">搜索</button>
+                      
+                        <div class="grid_container">
+                            <table id="payDataTable" class="am-table am-table-striped am-table-hover table-main">
+                                <thead>
+                                    <tr>
+                                        <th dataname="ID" type="checkbox"></th>
+                                        <th dataname="PayTime" datatype="jsondate">缴款日期</th>
+                                        <th dataname="PayMoney">缴款金额</th>
+                                        <th dataname="PayTypeName">支付方式</th>
+                                        <th dataname="AccountName">收款账户</th>
+                                        <th dataname="VoucherNO">凭证号</th>
+                                        <th render="ShowThum">缩略图</th>
+                                        <th type="eventlist"></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                
+
+                    <div class="am-tab-panel am-fade" id="tab2">
+
+                        <div class="am-g am-margin-top">
+                            <div class="am-u-md-3 am-text-right">
+                                一等奖奖品
+                            </div>
+                            <div class="am-u-md-3">
+                                <input type="text" name="OnePrize" class="am-input-sm" maxlength="64">
+                            </div>
+                            <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm"><strong class="am-text-danger am-text-sm">*</strong></strong>必填，不能超过50个字</div>
+                        </div>
+                        <div class="am-g am-margin-top">
+                            <div class="am-u-md-3 am-text-right">
+                                一等奖奖品数
+                            </div>
+                            <div class="am-u-md-3">
+                                <input type="number" name="OnePrizeCount" class="am-input-sm" min="1" />
+                            </div>
+                            <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，首次设置后不能修改，数量必须是大于1且小于5000</div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
     </form>
+    <div class="am-g am-margin-top-sm am-text-center">
+        <button type="button" onclick="AddStudent()" class="am-btn am-btn-primary">保存修改</button>
+    </div>
 </div>
+<script>
+    LoadItemList(false);
+    LoadProvince(false);
+
+    function formInit(dataitem) {
+
+        if (dataitem != null) {
+            //$('#payForm [name=PayTime]').datetimepicker('update', RenderDate(dataitem.PayTime));
+            if (dataitem.VoucherThum != null) {
+                if (dataitem.VoucherThum != null) {
+                    $("#imageDiv").show().find("img").attr("src", dataitem.VoucherThum);
+                }
+
+            }
+        }
+        $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+            $(json.PayTypeList).each(function () {
+                if (dataitem != null) {
+                    $("#payForm select[name='PayTypeID']").append("<option  value='" + this.Value + "' " + (dataitem.PayTypeID == this.Value ? "selected" : "") + " >" + this.Text + "</option>");
+                }
+                else {
+                    $("#payForm select[name='PayTypeID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                }
+            });
+            $(json.AccountList).each(function () {
+                if (dataitem != null) {
+                    $("#payForm select[name='AccountID']").append("<option  value='" + this.Value + "' " + (dataitem.AccountID == this.Value ? "selected" : "") + ">" + this.Text + "</option>");
+                }
+                else {
+                    $("#payForm select[name='AccountID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                }
+            });
+        });
+
+        //添加表单验证
+        $.Nuoya.form("payForm").validate({
+            rules: {
+                PayTypeID: {
+                    required: true
+                },
+                AccountID: {
+                    required: true
+                },
+                VoucherNO: {
+                    required: true,
+                    maxlength: 32
+                },
+                PayMoney: {
+                    required: true,
+                    min: 0,
+                    max: 99999999
+                },
+            },
+            messages: {
+                PayTypeID: {
+                    required: "不允许为空",
+                },
+                AccountID: {
+                    required: "不允许为空",
+                },
+                VoucherNO: {
+                    required: "不允许为空",
+                    maxlength: "最多{0}个字符"
+                },
+                PayMoney: {
+                    required: "请输入数字",
+                    max: "必须小于{0}",
+                    min: "必须大于{0}"
+                }
+            }
+        });
+        UploadImg();
+    }
+
+    function UploadImg() {
+        var headimgbtn = $("#imageFile").uploadFile({
+            url: '/upload/uploadimage?mark=PayOrder',
+            fileSuffixs: ["jpg", "png", "gif"],
+            maximumFilesUpload: 1,//最大文件上传数
+            onComplete: function (data) {
+                if (data) {
+                    $("[name='VoucherThum']").val(data);
+                    $("#imageDiv").show().find("img").attr("src", data);
+                }
+                else {
+                    $.Nuoya.alert("上传错误");
+                }
+
+            },
+            onChosen: function (file, obj, fileSize, errorText) {
+                if (errorText) {
+                    $.Nuoya.alert(errorText);
+                    return false;
+                }
+                //Loading("图片正在上传中...", "请稍等");
+                uploadheadimg.submitUpload();
+                return true;//返回false将取消当前选择的文件
+            },
+        });
+        var uploadheadimg = headimgbtn.data("uploadFileData");
+    }
+
+    //新增
+    function addPay() {
+        $.Nuoya.ajaxDialog({
+            closeViaDimmer: false,
+            ajaxUrl: "/HtmlTemplates/User/Pay.html",
+            title: "新增缴费记录",
+            width: "1000px",
+            height: "800px",
+            callback: function (e) {
+                formInit();//表单初始化
+            },
+            buttons: [{
+                label: "保存",
+                callback: function (e) {
+                    $.Nuoya.form("payForm").ajaxSubmit({
+                        ajaxUrl: "/PayOrder/Add",
+                        params: {
+                            StudentID: $("[name='ID']").val()
+                        },
+                        callback: function (data) {
+                            if (!data.ErrorDesc) {
+                                e.hide();
+                                grid.reload();
+                            }
+                            else
+                                $.Nuoya.alert(data.ErrorDesc);
+                        }
+                    });
+                }
+            }]
+        })
+    }
+
+    function IsAddCertificate(obj)
+    {
+        var value = $(obj).val();
+        if (value == "1")
+        {
+            $("[name='OldCertificate']").attr("disabled", false);
+        }
+        else
+            $("[name='OldCertificate']").attr("disabled", true);
+    }
+
+    var grid = $.Nuoya.grid({
+        tableId: "payDataTable",
+        //表格id
+        search: {
+            domainId: "paySearchDomain",
+            subId: "payBtnSearch"
+        },
+        ajaxUrl: "/PayOrder/GetList?studentID=" + $("[name='ID']").val(),
+        params: {
+            StudentID: $("[name='ID']").val()
+        },
+        //数据请求地址
+        pageSize: 10,
+        events: [
+            {
+                className: "am-text-secondary",
+                icon: "icon-pencil-square-o",
+                name: "编辑",
+                click: function (item) {
+                    $.Nuoya.ajaxDialog({
+                        closeViaDimmer: false,
+                        ajaxUrl: "/HtmlTemplates/User/Pay.html",
+                        title: "编辑缴费记录",
+                        width: "1000px",
+                        height: "800px",
+                        callback: function (e) {
+                            $.Nuoya.action("/PayOrder/Find", { id: item.ID }, function (model) {
+                                //载入数据
+                                $.Nuoya.form("payForm").dataLoad({
+                                    data: model
+                                });
+                                formInit(model);//表单初始化
+                                
+                               
+                            });
+                        },
+                        buttons: [{
+                            label: "保存",
+                            callback: function (e) {
+
+                                $.Nuoya.form("payForm").ajaxSubmit({
+                                    ajaxUrl: "/PayOrder/Update",
+                                    params: {
+                                        ID: item.ID,
+                                        StudentID: $("[name='ID']").val()
+                                    },
+                                    callback: function (data) {
+                                        if (!data.ErrorDesc) {
+                                            e.hide();
+                                            grid.reload();
+                                        }
+                                        else
+                                            $.Nuoya.alert(data.ErrorDesc);
+                                    }
+                                });
+                            }
+                        }]
+                    })
+
+                    event.preventDefault();
+                }
+            },
+            {
+                className: "am-text-danger",
+                icon: "icon-trash-o",
+                name: "删除",
+                click: function (item) {
+                    $.Nuoya.confirm("确认删除？", function () {
+                        $.Nuoya.deleteAction("/PayOrder/Delete", {
+                            ids: item.ID
+                        },
+                        function () {
+                            grid.reload();
+                        });
+                    });
+
+                    event.preventDefault();
+                }
+            }
+        ]
+    });
+
+    function ShowThum(item)
+    {
+        return "<a onclick='ShowImage(\"" + item.VoucherThum + "\")'><img src='" + item.VoucherThum + "' style='width:100px;'/></a>"
+    }
+
+    //添加表单验证
+    $.Nuoya.form("form").validate({
+        rules: {
+            Name: {
+                required: true,
+                maxlength: 32
+            },
+            IDCard: {
+                required: true,
+                maxlength: 20
+            },
+            ProvinceCode: {
+                required: true
+            },
+            CityCode: {
+                required: true
+            },
+            Mobile: {
+                required: true,
+                maxlength: 11
+            },
+            Address: {
+                required: true,
+                maxlength: 512
+            },
+            GenderCode: {
+                required: true
+            },
+            EnteredProvinceCode: {
+                required: true
+            },
+            EnteredCityCode: {
+                required: true
+            },
+            EnteredDate: {
+                required: true
+            },
+            EnteredPointID: {
+                required: true
+            },         
+            ReferenceID: {
+                required: true
+            },
+            TrianID: {
+                required: true
+            },
+            Money: {
+                required: true,
+                min: 0,
+                max: 99999999
+            },
+            PayMethodID: {
+                required: true
+            },
+            MakeDriverShopID: {
+                required: true
+            },
+            MakeCardRemark: {
+                maxlength: 128
+            },
+            CertificateID: {
+                required: true
+            },
+            Remark: {
+                maxlength: 128
+            },
+            IsAddCertificate: {
+                required: true
+            },
+            OldCertificate: {
+                maxlength: 32
+            },
+        },
+        messages: {
+
+            Name: {
+                required: "不允许为空",
+                maxlength: "最多{0}个字符"
+            },
+            IDCard: {
+                required: "不允许为空",
+                maxlength: "最多{0}个字符"
+            },
+            ProvinceCode: {
+                required: "不允许为空",
+            },
+            CityCode: {
+                required: "不允许为空",
+            },
+            Mobile: {
+                required: "不允许为空",
+                maxlength: "最多{0}个字符"
+            },
+            Address: {
+                required: "不允许为空",
+                maxlength: "最多{0}个字符"
+            },
+            GenderCode: {
+                required: "不允许为空",
+            },
+            EnteredProvinceCode: {
+                required: "不允许为空",
+            },
+            EnteredCityCode: {
+                required: "不允许为空",
+            },
+            EnteredDate: {
+                required: "不允许为空",
+            },
+            EnteredPointID: {
+                required: "不允许为空",
+            },
+            ReferenceID: {
+                required: "不允许为空",
+            },
+            TrianID: {
+                required: "不允许为空",
+            },
+            Money: {
+                required: "请输入数字",
+                max: "必须小于{0}",
+                min: "必须大于{0}"
+            },
+            PayMethodID: {
+                required: "不允许为空",
+            },
+            MakeDriverShopID: {
+                required: "不允许为空",
+            },
+            MakeCardRemark: {
+                maxlength: "最多{0}个字符"
+            },
+            CertificateID: {
+                required: "不允许为空",
+            },
+            Remark: {
+                maxlength: "最多{0}个字符"
+            },
+            IsAddCertificate: {
+                required: "不允许为空",
+            },
+            OldCertificate: {
+                maxlength: "最多{0}个字符"
+            },
+        }
+    });
+
+    function AddStudent()
+    {
+        $.Nuoya.form("form").ajaxSubmit({
+            ajaxUrl: "/Student/Add",
+            callback: function (data) {
+                if (!data.ErrorDesc) {
+                    $.Nuoya.alert("保存成功");
+                }
+                else
+                    $.Nuoya.alert(data.ErrorDesc);
+            }
+        });
+    }
+</script>

@@ -264,5 +264,30 @@ namespace DOL.Service
             return dic.Values.ToList();
         }
 
+        /// <summary>
+        /// 获取下拉框
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public List<SelectItem> Get_DataDictorySelectItem(GroupCode group)
+        {
+            var list = new List<SelectItem>();
+            var dataDic = Cache_Get_DataDictionary();
+            if (dataDic.Keys.Contains(group))
+            {
+                var dic = dataDic[group];
+                dic.Values.ToList().ForEach(x =>
+                {
+                    list.Add(new SelectItem()
+                    {
+                        Text = x.Value,
+                        Value = x.Key
+                    });
+                });
+                return list;
+            }
+            else
+                return null;
+        }
     }
 }

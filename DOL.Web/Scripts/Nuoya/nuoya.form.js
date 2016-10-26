@@ -181,6 +181,10 @@
                         type: "post",
                         datatype: "json",
                         success: function (json) {
+                            if (json.Code == -100) {
+                                $.Nuoya.alert("你没有该权限");
+                                return false;
+                            }
                             $.Nuoya.callFunction(options.callback, json);
                         }
                     });

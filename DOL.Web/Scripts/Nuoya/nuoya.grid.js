@@ -10,12 +10,14 @@
             events: [],//事件
             callback: null,//数据加载完成后回调函数
             rowCallback: null,//表格行绘制的回调函数                
-            drawCallback: null//绘制完成回调
+            drawCallback: null,//绘制完成回调
         }
+        var op
         var options = $.extend(true, defaults, options);
         var tableObj = $("#" + options.tableId);
         var searchObj = options.search != null ? $("#" + options.search.domainId) : null;//搜索区域
         var searchSubObj = searchObj != null && options.search.subId != null ? $("#" + options.search.subId) : null;//搜索事件
+        var opreateUrls = [];
         var columns = [];
         var lengthMenu = [];//菜单显示个数
         for (var i = 1; i <= 5; i++) {
@@ -41,24 +43,33 @@
             var eventList = $("<div class='eventList am-btn-group am-btn-group-xs'></div>");
             if ($.isArray(options.events)) {
                 $.each(options.events, function (index, event) {
-                    var eventSetting = { name: "", icon: "", className: "", click: null, formula: null };
+                    var eventSetting = { name: "", icon: "", className: "", click: null, formula: null, url:""};
                     event = $.extend(true, eventSetting, event);
-                    var operate = $('<button class="am-btn am-btn-default am-btn-xs ' + event.className + '"><span class="am-' + event.icon + '"></span> ' + event.name + '</button>');
-                    operate.bind("click", function () {
-                        $.Nuoya.callFunction(event.click, item);
-                    })
+                    if (event.url == "" || (event.url != "" && (isHaveOperate(event.url))))
+                    {
+                        var operate = $('<button class="am-btn am-btn-default am-btn-xs ' + event.className + '"><span class="am-' + event.icon + '"></span> ' + event.name + '</button>');
+                        operate.bind("click", function () {
+                            $.Nuoya.callFunction(event.click, item);
+                        })
 
-                    if (event.formula != null) {
-                        var eventBool = $.Nuoya.callFunction(event.formula, item);
-                        if (eventBool) {
+                        if (event.formula != null) {
+                            var eventBool = $.Nuoya.callFunction(event.formula, item);
+                            if (eventBool) {
+                                eventList.append(operate);
+                            }
+                        } else {
                             eventList.append(operate);
                         }
-                    } else {
-                        eventList.append(operate);
                     }
                 });
             }
             return eventList;
+        
+        }
+
+        var isHaveOperate=function(url)
+        {
+
         }
 
         //获取字段
@@ -231,12 +242,37 @@
             $.Nuoya.action(options.ajaxUrl, _getParams(), function (json) {
                 json.List = json.List == null ? [] : json.List;
                 $.Nuoya.callFunction(options.callback, json);
+
+                getPageIndexOperateList()
+
                 _createContent(json.List);//创建内容
                 _createPaginate(json);//创建页码
                 $.Nuoya.callFunction(options.drawCallback, json);
                 //$.Nuoya.setOperateHideByClass();
                 tableObj.find("thead input:checkbox").prop("checked", false);
             });
+        }
+
+        var getPageIndexOperateList = function ()
+        {
+            if (options.pageUrl != "") {
+
+                var url = document.location.toString();
+                var arrUrl = url.split("//");
+
+                var start = arrUrl[1].indexOf("/");
+                var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符
+
+                if (relUrl.indexOf("?") != -1) {
+                    relUrl = relUrl.split("?")[0];
+                }
+
+                $.Nuoya.action("/base/GetPageOperate", { pageUrl: relUrl }, function (json) {
+                    debugger;
+                    $(json).each(function () { })
+
+                });
+            }
         }
 
         //获取选中节点对象

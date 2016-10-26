@@ -36,10 +36,10 @@ namespace DOL.Model
         sys_token_invalid = 11,
 
         /// <summary>
-        /// 用户角色权限不足
+        /// 你没有该权限
         /// </summary>
-        [Description("用户角色权限不足.")]
-        sys_user_role_error = 12,
+        [Description("你没有该权限.")]
+        sys_user_role_error = -100,
         
 
         #endregion

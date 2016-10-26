@@ -123,7 +123,7 @@ namespace DOL.Service
                         x.TrianName = trianDic[x.TrianID]?.Value;
                     //制卡驾校
                     if (!string.IsNullOrEmpty(x.MakeDriverShopID))
-                        x.MakeDriverShopName = driverShopDic[x.TrianID]?.Name;
+                        x.MakeDriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
 
                     //推荐人
                     if (!string.IsNullOrEmpty(x.ReferenceID))
@@ -156,18 +156,28 @@ namespace DOL.Service
         /// <returns></returns>
         public WebResult<bool> Add_Student(Student model)
         {
-            if (model == null
-                || !model.Name.IsNotNullOrEmpty()
-                )
-                return Result(false, ErrorCode.sys_param_format_error);
             using (DbRepository entities = new DbRepository())
             {
                 if (entities.Student.AsNoTracking().Where(x => x.Name.Equals(model.Name)).Any())
                     return Result(false, ErrorCode.datadatabase_name_had);
-                model.ID = Guid.NewGuid().ToString("N");
+                var makecardShop = Cache_Get_DriverShopList().FirstOrDefault(x => x.ID.Equals(model.MakeDriverShopID));
+                if(makecardShop==null)
+                    return Result(false, ErrorCode.sys_param_format_error);
+                model.MakeCardCityCode = makecardShop.CityCode;            
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
+                model.State = StudentCode.Entered;
+                model.NowTheme = ThemeCode.One;
                 model.Flag = (long)GlobalFlag.Normal;
+                Cache_Get_PayOrderList().Where(x => x.StudentID.Equals(model.ID)).ToList().ForEach(x =>
+                {
+                    model.HadPayMoney += x.PayMoney;
+                });
+                if (model.HadPayMoney == model.Money)
+                    model.MoneyIsFull = YesOrNoCode.Yes;
+                else
+                    model.MoneyIsFull = YesOrNoCode.No;
+
                 entities.Student.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -197,7 +207,12 @@ namespace DOL.Service
             {
                 ReferenceList = referenceList,
                 DriverShopList = driverShopList,
-                EnteredPointList = enteredPointList
+                EnteredPointList = enteredPointList,
+                CertificateList= Get_DataDictorySelectItem(GroupCode.Certificate),
+                PayMethodList= Get_DataDictorySelectItem(GroupCode.PayMethod),
+                TrainList= Get_DataDictorySelectItem(GroupCode.Train),
+                PayTypeList = Get_DataDictorySelectItem(GroupCode.PayType),
+                AccountList = Get_DataDictorySelectItem(GroupCode.Account)
             });
         }
 

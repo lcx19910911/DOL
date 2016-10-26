@@ -97,12 +97,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult GetSelectItem(GroupCode group)
         {
-            if (group == GroupCode.PayType)
-                return JResult(WebService.Get_PayTypeList());
-            else if (group == GroupCode.PayMethod)
-                return JResult(WebService.Get_PayMethodList());
-            else
-                return Content("");
+            return JResult(WebService.Get_DataDictorySelectItem(group));
         }
     }
 }

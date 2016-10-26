@@ -220,19 +220,31 @@ namespace DOL.Service
         /// </summary>
         /// <param name="enteredPointFlag">角色flag值</param>
         /// <returns></returns>
-        public List<SelectItem> Get_EnteredPointSelectItem(string id)
+        public List<SelectItem> Get_EnteredPointSelectItem(string cityCode)
         {
             List<SelectItem> list = new List<SelectItem>();
-
-            Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+            if (!string.IsNullOrEmpty(cityCode))
             {
-                list.Add(new SelectItem()
+                Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x=>x.CityCode.Equals(cityCode)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                 {
-                    Selected = x.ID.Equals(id),
-                    Text = x.Name,
-                    Value = x.ID
+                    list.Add(new SelectItem()
+                    {
+                        Text = x.Name,
+                        Value = x.ID
+                    });
                 });
-            });
+            }
+            else
+            {
+                Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                {
+                    list.Add(new SelectItem()
+                    {
+                        Text = x.Name,
+                        Value = x.ID
+                    });
+                });
+            }
             return list;
         }
 

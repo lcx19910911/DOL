@@ -50,8 +50,12 @@ namespace DOL.Web
                     var operateFlag = user.OperateFlag.HasValue ? user.OperateFlag.Value : 0;
                     if (!new WebService(new WebClient(filterContext.HttpContext)).IsHaveAuthority(operateFlag, url))
                     {
-                        RedirectResult redirectResult = new RedirectResult("/Base/Forbidden");
-                        filterContext.Result = redirectResult;
+                        var result=new WebResult<bool>{ Code = ErrorCode.sys_user_role_error, Result = false };
+
+                        JsonResult jsonResult = new JsonResult();
+                        jsonResult.Data = result;
+                        jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+                        filterContext.Result = jsonResult;
                     }
                 }
             }

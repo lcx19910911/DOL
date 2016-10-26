@@ -43,6 +43,20 @@ namespace DOL.Service
 
 
         /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public PayOrder Find_PayOrder(string id)
+        {
+            if (!id.IsNotNullOrEmpty())
+                return null;
+            return Cache_Get_PayOrderList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+        }
+
+
+
+        /// <summary>
         /// 增加
         /// </summary>
         /// <param name="model"></param>
@@ -53,6 +67,7 @@ namespace DOL.Service
             {
                 model.ID = Guid.NewGuid().ToString("N");
                 model.UpdatedTime = DateTime.Now;
+                model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 entities.PayOrder.Add(model);
                 if (entities.SaveChanges() > 0)
@@ -83,7 +98,7 @@ namespace DOL.Service
                 if (oldEntity != null)
                 {
                     oldEntity.PayMoney = model.PayMoney;
-                    oldEntity.CreatedTime = model.CreatedTime;
+                    oldEntity.PayTime = model.PayTime;
                     oldEntity.PayTypeID = model.PayTypeID;
                     oldEntity.VoucherNO = model.VoucherNO; ;
                     oldEntity.VoucherThum = model.VoucherThum;
@@ -157,15 +172,24 @@ namespace DOL.Service
         /// </summary>
         /// <param name="">门店id</param>
         /// <returns></returns>
-        public List<PayOrder> Get_PayOrderByStudentId(string studentId)
+        public WebResult<PageList<PayOrder>> Get_PayOrderByStudentId(int pageIndex,
+            int pageSize, string studentId)
         {
             using (DbRepository entities = new DbRepository())
             {
-                List<SelectItem> list = new List<SelectItem>();
+                var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId) && x.Flag == (long)GlobalFlag.Normal).OrderBy(x => x.CreatedTime);
+                var count = query.Count();
+                var list=query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var accountList = Get_DataDictorySelectItem(GroupCode.Account);
+                var payTypeList = Get_DataDictorySelectItem(GroupCode.PayType);
+                list.ForEach(x => {
+                    if (!string.IsNullOrEmpty(x.AccountID))
+                        x.AccountName = accountList.FirstOrDefault(y => y.Value.Equals(x.AccountID))?.Text;
+                    if (!string.IsNullOrEmpty(x.PayTypeID))
+                        x.PayTypeName = payTypeList.FirstOrDefault(y => y.Value.Equals(x.PayTypeID))?.Text;
+                });
 
-                return Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId)&&x.Flag==(long)GlobalFlag.Normal).OrderBy(x => x.CreatedTime).ToList();
-
-
+                return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
     }

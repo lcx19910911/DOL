@@ -11,7 +11,245 @@
     <title>驾校网上报名管理平台</title>
     <link href="~/Styles/css/amazeui.css" rel="stylesheet" />
     @Styles.Render("~/Content/Admin")
-    @RenderSection("linkcss", required: false)
+    @RenderSection("linkcss", required: false)    @Scripts.Render("~/Scripts/Admin")
+    <script>
+        function changePassword() {
+
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                width: "800px",
+                height: "280px",
+                ajaxUrl: "/HtmlTemplates/User/ChangePassword.html",
+                title: "修改密码",
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+
+                        var oldPassword = $("[name='OldPassword']").val();
+                        var newPassword = $("[name='NewPassword']").val();
+                        var cfmPassword = $("[name='ConfirmPassword']").val();
+
+                        if (oldPassword != "" && newPassword != "" && cfmPassword != "") {
+                            if (newPassword != cfmPassword) {
+                                $.Nuoya.alert("密码不能为空");
+                                return false;
+                            }
+                            $.Nuoya.action("/accout/ChangePassword", { oldPassword: oldPassword, newPassword: newPassword, cfmPassword: cfmPassword }, function (data) {
+                                if (!data.ErrorDesc) {
+                                    $.Nuoya.alert("修改密码成功");
+                                    e.hide();
+                                }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+
+                            });
+                        }
+                        else
+                            $.Nuoya.alert("密码不能为空");
+                    }
+                }]
+            });
+        }
+
+        function unState() {
+            var state = $(".admin-sidebar").css("display");
+            if (state == "none")
+                $('.admin-sidebar').show();
+            else
+                $('.admin-sidebar').hide();
+        }
+
+        function LoadEnteredPoint(isIndex, obj) {
+            if (isIndex) {
+                $("#searchDomain select[name='EnteredPointID']").empty();
+            }
+            else {
+                $("#form select[name='EnteredPointID']").empty();
+            }
+            var cityCode = $(obj).val();
+            if (cityCode != "") {
+                $.Nuoya.action("/EnteredPoint/GetSelectItem", { cityCode: cityCode }, function (json) {
+                    $(json).each(function () {
+                        if (isIndex) {
+                            $("#searchDomain select[name='EnteredPointID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='EnteredPointID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        }
+                    });
+                });
+            }
+        }
+
+        function RenderDate(data) {
+            var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
+            return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDay() ;
+        }
+        function RenderTime(data) {
+            var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
+            return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDay() + " " + da.getHours() + ":" + da.getSeconds() + ":" + da.getMinutes();
+        }
+
+        function LoadReference(isIndex, obj) {
+            if (isIndex) {
+                $("#searchDomain select[name='ReferenceID']").empty();
+            }
+            else {
+                $("#form select[name='ReferenceID']").empty();
+            }
+            var enteredPointId = $(obj).val();
+            if (enteredPointId != "") {
+                $.Nuoya.action("/Reference/GetSelectItem", { enteredPointId: enteredPointId }, function (json) {
+                    $(json).each(function () {
+                        if (isIndex) {
+                            $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='ReferenceID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        }
+                    });
+                });
+            }
+        }
+
+        function LoadProvince(isIndex) {
+            if (isIndex) {
+                $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
+                    $(json).each(function () {
+                        $("#searchDomain select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                    });
+                });
+            }
+            else {
+                $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
+                    $(json).each(function () {
+                        $("form select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                        $("form select[name='EnteredProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                    });
+                });
+            }
+        }
+
+
+        function LoadItemList(isIndex) {
+            $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+                $(json.ReferenceList).each(function () {
+                    if (isIndex) {
+                        $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+                    }
+                    else {
+                        $("#form select[name='ReferenceID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+                    }
+                });
+                $(json.DriverShopList).each(function () {
+                    if (isIndex) {
+                        $("#searchDomain select[name='MakeDriverShopID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+                    }
+                    else {
+                        $("#form select[name='MakeDriverShopID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+                        $("#form select[name='WantDriverShopID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+                    }
+                });
+                $(json.EnteredPointList).each(function () {
+                    if (isIndex) {
+                        $("#searchDomain select[name='EnteredPointID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+                    }
+                    else {
+                        $("#form select[name='EnteredPointID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+                    }
+                });
+
+                $(json.CertificateList).each(function () {
+                    if (isIndex) {
+
+                    }
+                    else {
+                        $("#form select[name='CertificateID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                    }
+                });
+                $(json.PayMethodList).each(function () {
+                    if (isIndex) {
+                    }
+                    else {
+                        $("#form select[name='PayMethodID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                    }
+                });
+                $(json.TrainList).each(function () {
+                    if (isIndex) {
+                    }
+                    else {
+                        $("#form select[name='TrianID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                    }
+                });
+            });
+        }
+       
+
+        //显示省份下方的市
+        function ShowCity(isIndex, obj, tabe) {
+            if (isIndex) {
+                $("#searchDomain select[name='CityCode']").empty();
+            }
+            else {
+                if (tabe == 1)
+                    $("#form select[name='CityCode']").empty();
+                else if (tabe == 2)
+                    $("#form select[name='EnteredCityCode']").empty();
+            }
+            var value = $(obj).val();
+            if (value == "0")
+                return false;
+            $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
+                $(json).each(function () {
+                    if (isIndex) {
+                        $("#searchDomain select[name='CityCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                    }
+                    else {
+                        if (tabe == 1)
+                            $("#form select[name='CityCode']").append("<option value='" + this.Value + "' >" + this.Text + "</option>");
+                        else if (tabe == 2)
+                            $("#form select[name='EnteredCityCode']").append("<option value='" + this.Value + "' >" + this.Text + "</option>");
+                    }
+                });
+            });
+        }
+
+        //显示市下方的县区
+        function ShowArea(isIndex, obj) {
+            if (isIndex) {
+                $("#searchDomain select[name='DistrictCode']").empty();
+            }
+            else {
+                $("#form select[name='DistrictCode']").empty();
+            }
+            var value = $(obj).val();
+
+            $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
+                $(json).each(function () {
+                    if (isIndex) {
+                        $("#searchDomain select[name='DistrictCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                    }
+                    else {
+                        $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                    }
+                });
+            });
+        }
+
+        function ShowImage(src)
+        {
+            $("#imgDiv img").attr("src", src);
+            $("#imgDiv").show();
+        }
+        $(function () {
+            $("#imgDiv").click(function () {
+                $("#imgDiv").hide();
+            });
+        });
+
+        //权限数据
+        var userOperateFlag =@(CookieHelper.GetCurrentUser().OperateFlag);
+    </script>
 </head>
 <body>
     <header class="am-topbar am-topbar-inverse admin-header">
@@ -21,7 +259,7 @@
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
         <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
             <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
-                <li><a href="javascript:;"><span  class="am-icon-user">@(DOL.Core.CookieHelper.GetCurrentUser()?.Account)</span></a></li>
+                <li><a href="javascript:;"><span class="am-icon-user">@(DOL.Core.CookieHelper.GetCurrentUser()?.Account)</span></a></li>
 
                 <li><a href="javascript:changePassword()"><span class="am-icon-download">修改密码</span></a></li>
                 <li><a href="/accout/Quit" class="admin-quit"><span class="am-icon-sign-out"></span> <span>注销</span></a></li>
@@ -29,16 +267,23 @@
         </div>
     </header>
     <div class="am-cf admin-main am-text-left">
+
+        <div id="imgDiv" style="opacity:1;background-color:black;width:100%;height:100%;z-index:200; display:none; position:absolute;">
+            <div style="width:600px; margin:0 auto; z-index:201;margin-top:10%">
+                <img src="" style="width:100%;" />
+            </div>
+        </div>
+
         <!-- sidebar start -->
         <div class="admin-sidebar">
             <ul class="am-list admin-sidebar-list">
-               @Html.Action("PartialMenu", "Menu")
+                @Html.Action("PartialMenu", "Menu")
             </ul>
         </div>
         <!-- sidebar end -->
         <!-- content start -->
         <div class="admin-content">
-            <div >
+            <div>
                 @RenderBody()
             </div>
 
@@ -48,57 +293,8 @@
     <a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
 
 
-    @Scripts.Render("~/Scripts/Admin")
-    <script>
-        function changePassword()
-        {
 
-                $.Nuoya.ajaxDialog({
-                    closeViaDimmer: false,
-                    width: "800px",
-                    height: "280px",
-                    ajaxUrl: "/HtmlTemplates/User/ChangePassword.html",
-                    title: "修改密码",
-                    buttons: [{
-                        label: "保存",
-                        callback: function (e) {
 
-                            var oldPassword = $("[name='OldPassword']").val();
-                            var newPassword = $("[name='NewPassword']").val();
-                            var cfmPassword = $("[name='ConfirmPassword']").val();
-
-                            if (oldPassword != "" && newPassword != "" && cfmPassword != "")
-                            {
-                                if (newPassword != cfmPassword)
-                                {
-                                    $.Nuoya.alert("密码不能为空");
-                                    return false;
-                                }
-                                $.Nuoya.action("/accout/ChangePassword", { oldPassword: oldPassword, newPassword: newPassword, cfmPassword: cfmPassword }, function (data) {
-                                    if (!data.ErrorDesc) {
-                                        $.Nuoya.alert("修改密码成功");
-                                        e.hide();
-                                    }
-                                    else
-                                        $.Nuoya.alert(data.ErrorDesc);
-
-                                });
-                            }
-                            else
-                                $.Nuoya.alert("密码不能为空");                   
-                        }
-                    }]
-                });
-        }
-
-    function unState() {
-        var state = $(".admin-sidebar").css("display");
-        if (state == "none")
-            $('.admin-sidebar').show();
-        else
-            $('.admin-sidebar').hide();
-    }
-    </script>
     @RenderSection("scripts", false)
 </body>
 </html>

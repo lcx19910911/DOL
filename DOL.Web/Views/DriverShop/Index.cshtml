@@ -12,9 +12,9 @@
         <div class="am-u-lg-7">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">省份：</span>
-                <select name="ProvinceCode" data-am-selected="{btnSize: 'sm'}" onchange="showCity(true)" style="width:120px;"></select>
+                <select name="ProvinceCode" data-am-selected="{btnSize: 'sm'}" onchange="ShowCity(true, this)" style="width:120px;"></select>
                 <span class="am-input-group-label">市：</span>
-                <select name="CityCode" data-am-selected="{btnSize: 'sm'}" onchange="showArea(true)" style="width:120px;"></select>
+                <select name="CityCode" data-am-selected="{btnSize: 'sm'}" onchange="ShowArea(true, this)" style="width:120px;"></select>
                 <span class="am-input-group-label">县区：</span>
                 <select name="DistrictCode" data-am-selected="{btnSize: 'sm'}" style="width:120px;"></select>
             </div>
@@ -257,7 +257,7 @@
 
 
         //显示省份下方的市
-        function showCity(isIndex) {
+        function ShowCity(isIndex,obj) {
             index = 0;
             if (isIndex) {
                 $("#searchDomain select[name='CityCode']").empty();
@@ -265,7 +265,7 @@
             else {
                 $("#form select[name='CityCode']").empty();
             }
-            var value = isIndex ? $("#searchDomain select[name='ProvinceCode']").val() : $("#form select[name='ProvinceCode']").val();
+            var value = i$(obj).val();
             if (value == "0")
                 return false;
             $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
@@ -300,7 +300,7 @@
         }
 
         //显示市下方的县区
-        function showArea(isIndex) {
+        function ShowArea(isIndex, obj) {
             index = 0;
             if (isIndex) {
                 $("#searchDomain select[name='DistrictCode']").empty();
@@ -308,7 +308,7 @@
             else {
                 $("#form select[name='DistrictCode']").empty();
             }
-            var value = isIndex ? $("#searchDomain select[name='CityCode']").val() : $("#form select[name='CityCode']").val();
+            var value = i$(obj).val();
 
             $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
                 $(json).each(function () {

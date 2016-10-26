@@ -28,7 +28,7 @@
             <div class="am-input-group am-input-group-sm">
 
                 <span class="am-input-group-label  am-margin-left-sm">创建日期</span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" name="startTimeStart" readonly style="width:auto;">
+                <input type="text" class="am-form-field"  placeholder="请选择日期" name="startTimeStart" readonly style="width:auto;">
                 <span class="am-input-group-label"> - </span>
                 <input type="text" class="am-form-field" placeholder="请选择日期" name="endTimeEnd" readonly style="width:auto;">
                 <span class="am-input-group-btn am-margin-left-sm">
@@ -80,8 +80,8 @@
 {
     <script type="text/javascript">
 
-        $('[name=EntryTime]').datepicker({ format: 'yyyy-mm-dd' });
-        $('[name=EntryTime]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name=startTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name=endTimeEnd]').datepicker({ format: 'yyyy-mm-dd' });
         function ClearFilter() {
             $("#searchDomain input").val("");
         }

@@ -8,6 +8,7 @@ namespace DOL.Model
     /// <summary>
     /// 转账记录
     /// </summary>
+    [Table("PayOrder")]
     public partial class PayOrder : BaseEntity
     {
 
@@ -50,7 +51,7 @@ namespace DOL.Model
         /// <summary>
         /// 凭证号缩略图
         /// </summary>
-        [MaxLength(32)]
+        [MaxLength(256)]
         [Column("VoucherThum", TypeName = "varchar")]
         public string VoucherThum { get; set; }
 
@@ -68,6 +69,11 @@ namespace DOL.Model
         public string AccountName { get; set; }
 
         
+        /// <summary>
+        /// 支付时间
+        /// </summary>
+
+        public DateTime PayTime { get; set; }
 
     }
 }

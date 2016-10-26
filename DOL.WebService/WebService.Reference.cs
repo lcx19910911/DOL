@@ -155,7 +155,7 @@ namespace DOL.Service
         /// </summary>
         /// <param name="">门店id</param>
         /// <returns></returns>
-        public List<SelectItem> Get_ReferenceSelectItem(string id)
+        public List<SelectItem> Get_ReferenceSelectItem(string enteredPointId)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -163,15 +163,28 @@ namespace DOL.Service
 
                 var query = Cache_Get_ReferenceList().AsQueryable().AsNoTracking();
 
-                query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                if (string.IsNullOrEmpty(enteredPointId))
                 {
-                    list.Add(new SelectItem()
+                    query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
-                        Selected = x.ID.Equals(id),
-                        Text = x.Name,
-                        Value = x.ID
+                        list.Add(new SelectItem()
+                        {
+                            Text = x.Name,
+                            Value = x.ID
+                        });
                     });
-                });
+                }
+                else
+                {
+                    query.Where(x=>x.ShopIDStr.Contains(enteredPointId)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    {
+                        list.Add(new SelectItem()
+                        {
+                            Text = x.Name,
+                            Value = x.ID
+                        });
+                    });
+                }
                 return list;
 
             }
