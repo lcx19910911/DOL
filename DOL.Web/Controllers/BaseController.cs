@@ -198,15 +198,5 @@ namespace DOL.Web.Controllers
                 return _loginUser != null ? _loginUser : new LoginUser(CookieHelper.GetCurrentUser());
             }
         }
-
-        /// <summary>
-        /// 根据页面获取权限集合
-        /// </summary>
-        /// <param name="pageUrl"></param>
-        /// <returns></returns>
-        public ActionResult GetPageOperate(string pageUrl)
-        {
-            return JResult(WebService.Get_OperateUrlByPageUrl(pageUrl));
-        }
     }
 }

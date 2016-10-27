@@ -58,10 +58,10 @@ namespace DOL.Model
         datadatabase_name_had = 61,
 
         /// <summary>
-        /// 编码已存在
+        /// 身份证号码已存在
         /// </summary>
-        [Description("版本号已存在.")]
-        datadatabase_key__had = 62,
+        [Description("身份证号码已存在.")]
+        datadatabase_idcards__had = 62,
 
         #endregion
 

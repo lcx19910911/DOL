@@ -31,7 +31,8 @@ namespace DOL.Service
             pageSize = pageSize <= 0 ? 10 : pageSize;
             int skip = (pageIndex - 1) * pageSize;
             var list = allList?.Skip(skip).Take(pageSize).ToList();
-            return new PageList<T>(list, pageIndex, pageSize, allList == null ? 0 : allList.LongCount());
+            List<string> operateList = Get_OperateUrlList(Client.Request["pageUrl"]);
+            return new PageList<T>(list, pageIndex, pageSize, allList == null ? 0 : allList.LongCount(), operateList);
         }
 
         /// <summary>
@@ -40,11 +41,11 @@ namespace DOL.Service
         /// <typeparam name="T"></typeparam>
         /// <param name="List">需要分页的数据</param>
         /// <returns></returns>
-        private PageList<T> ConvertPageList<T>(List<T> list, int pageIndex, int pageSize,int recoredCount)
+        private PageList<T> ConvertPageList<T>(List<T> list, int pageIndex, int pageSize,int recoredCount,List<string> operateList)
         {
             pageIndex = pageIndex <= 0 ? 1 : pageIndex;
             pageSize = pageSize <= 0 ? 10 : pageSize;
-            return new PageList<T>(list, pageIndex, pageSize, recoredCount);
+            return new PageList<T>(list, pageIndex, pageSize, recoredCount, operateList);
         }
 
 
@@ -69,7 +70,11 @@ namespace DOL.Service
 
         public WebResult<PageList<T>> ResultPageList<T>(List<T> model, int pageIndex, int pageSize,int recoredCount)
         {
-            return Result(ConvertPageList<T>(model, pageIndex, pageSize, recoredCount));
+            //获取页面的权限
+            List<string> operateList = new List<string>();
+            if(!string.IsNullOrEmpty(Client.Request["pageUrl"]))
+                operateList=Get_OperateUrlList(Client.Request["pageUrl"]);
+            return Result(ConvertPageList<T>(model, pageIndex, pageSize, recoredCount, operateList));
         }
 
         public WebResult<PageList<T>> ResultPageList<T>(List<T> model, int pageIndex, int pageSize, ErrorCode code)

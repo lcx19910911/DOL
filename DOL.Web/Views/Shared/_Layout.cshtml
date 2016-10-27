@@ -112,7 +112,7 @@
             }
         }
 
-        function LoadProvince(isIndex) {
+        function LoadProvince(isIndex, dataitem) {
             if (isIndex) {
                 $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
                     $(json).each(function () {
@@ -121,24 +121,41 @@
                 });
             }
             else {
+
                 $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
+
                     $(json).each(function () {
-                        $("form select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                        $("form select[name='EnteredProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                        if (dataitem != null && dataitem.ProvinceCode == this.Value) {
+                            $("#form select[name='ProvinceCode']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        } else {
+                            $("#form select[name='ProvinceCode']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+
+                        if (dataitem != null && dataitem.EnteredProvinceCode == this.Value) {
+                            $("#form select[name='EnteredProvinceCode']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        } else {
+                            $("#form select[name='EnteredProvinceCode']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
                     });
+                    ShowCity(false, 1, dataitem.CityCode);
+                    ShowCity(false, 2, dataitem.EnteredCityCode);
                 });
+
             }
         }
 
-
-        function LoadItemList(isIndex) {
+        function LoadItemList(isIndex, dataitem) {
             $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
                 $(json.ReferenceList).each(function () {
                     if (isIndex) {
                         $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
                     }
                     else {
-                        $("#form select[name='ReferenceID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+                        if (dataitem != null && dataitem.ReferenceID == this.ID) {
+                            $("#form select[name='ReferenceID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                        } else {
+                            $("#form select[name='ReferenceID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                        }
                     }
                 });
                 $(json.DriverShopList).each(function () {
@@ -146,8 +163,16 @@
                         $("#searchDomain select[name='MakeDriverShopID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
                     }
                     else {
-                        $("#form select[name='MakeDriverShopID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
-                        $("#form select[name='WantDriverShopID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+                        if (dataitem != null && dataitem.MakeDriverShopID == this.ID) {
+                            $("#form select[name='MakeDriverShopID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                        } else {
+                            $("#form select[name='MakeDriverShopID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                        }
+                        if (dataitem != null && dataitem.WantDriverShopID == this.ID) {
+                            $("#form select[name='WantDriverShopID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                        } else {
+                            $("#form select[name='WantDriverShopID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                        }
                     }
                 });
                 $(json.EnteredPointList).each(function () {
@@ -155,7 +180,11 @@
                         $("#searchDomain select[name='EnteredPointID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
                     }
                     else {
-                        $("#form select[name='EnteredPointID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
+                        if (dataitem != null && dataitem.EnteredPointID == this.ID) {
+                            $("#form select[name='EnteredPointID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                        } else {
+                            $("#form select[name='EnteredPointID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                        }
                     }
                 });
 
@@ -164,39 +193,60 @@
 
                     }
                     else {
-                        $("#form select[name='CertificateID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        if (dataitem != null && dataitem.CertificateID == this.Value) {
+                            $("#form select[name='CertificateID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        } else {
+                            $("#form select[name='CertificateID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
                     }
                 });
                 $(json.PayMethodList).each(function () {
                     if (isIndex) {
                     }
                     else {
-                        $("#form select[name='PayMethodID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        if (dataitem != null && dataitem.PayMethodID == this.Value) {
+                            $("#form select[name='PayMethodID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        } else {
+                            $("#form select[name='PayMethodID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
                     }
                 });
                 $(json.TrainList).each(function () {
                     if (isIndex) {
                     }
                     else {
-                        $("#form select[name='TrianID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
-                    }
+                        if (dataitem != null && dataitem.TrianID == this.Value) {
+                            $("#form select[name='TrianID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        } else {
+                            $("#form select[name='TrianID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                     }
                 });
             });
         }
-       
 
         //显示省份下方的市
-        function ShowCity(isIndex, obj, tabe) {
+        function ShowCity(isIndex, tabe,setVaule) {
+            var value = "";
             if (isIndex) {
-                $("#searchDomain select[name='CityCode']").empty();
+                {
+                    value = $("#searchDomain select[name='ProvinceCode']").val();
+                    $("#searchDomain select[name='CityCode']").empty();
+                }
             }
             else {
-                if (tabe == 1)
+                if (tabe == 1) {
+                    value = $("#form select[name='ProvinceCode']").val();
                     $("#form select[name='CityCode']").empty();
+                }
                 else if (tabe == 2)
+                {
+                    value = $("#form select[name='EnteredProvinceCode']").val();
                     $("#form select[name='EnteredCityCode']").empty();
+                }
+
             }
-            var value = $(obj).val();
+
             if (value == "0")
                 return false;
             $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
@@ -205,10 +255,21 @@
                         $("#searchDomain select[name='CityCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
                     }
                     else {
-                        if (tabe == 1)
-                            $("#form select[name='CityCode']").append("<option value='" + this.Value + "' >" + this.Text + "</option>");
+                        if (tabe == 1) {
+                            if (setVaule != null && setVaule == this.Value) {
+                                $("#form select[name='CityCode']").append("<option value='" + this.Value + "'  selected='selected' >" + this.Text + "</option>");
+                            }
+                            else {
+                                $("#form select[name='CityCode']").append("<option value='" + this.Value + "' >" + this.Text + "</option>");
+                            }
+                        }
                         else if (tabe == 2)
-                            $("#form select[name='EnteredCityCode']").append("<option value='" + this.Value + "' >" + this.Text + "</option>");
+                            if (setVaule != null && setVaule == this.Value) {
+                                $("#form select[name='EnteredCityCode']").append("<option value='" + this.Value + "'  selected='selected' >" + this.Text + "</option>");
+                            }
+                            else {
+                                $("#form select[name='EnteredCityCode']").append("<option value='" + this.Value + "' >" + this.Text + "</option>");
+                            }
                     }
                 });
             });
@@ -227,15 +288,16 @@
             $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
                 $(json).each(function () {
                     if (isIndex) {
-                        $("#searchDomain select[name='DistrictCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                        $("#searchDomain select[name='DistrictCode']").append("<option value='" + this.Value + "' selected>" + this.Text + "</option>");
                     }
                     else {
-                        $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                        $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "' selected>" + this.Text + "</option>");
                     }
                 });
             });
         }
 
+        //图片方法 缩小
         function ShowImage(src)
         {
             $("#imgDiv img").attr("src", src);
@@ -247,14 +309,32 @@
             });
         });
 
-        //权限数据
-        var userOperateFlag =@(CookieHelper.GetCurrentUser().OperateFlag);
+        function GetUrlRelativePath()
+        {
+            var url = document.location.toString();
+            var arrUrl = url.split("//");
+
+            var start = arrUrl[1].indexOf("/");
+            var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符
+
+            if(relUrl.indexOf("?") != -1){
+                relUrl = relUrl.split("?")[0];
+            }
+            return relUrl;
+        }
+
+        //权限路径集合
+        var operateUrlArray = new Array();
+
+        function ShowThum(item) {
+            return "<a onclick='ShowImage(\"" + item.VoucherThum + "\")'><img src='" + item.VoucherThum + "' style='width:100px; height:40px;'/></a>"
+        }
     </script>
 </head>
 <body>
     <header class="am-topbar am-topbar-inverse admin-header">
         <div class="am-topbar-brand">
-            <a href="/store/index"><strong>驾校网上报名管理平台</strong></a>
+            <a href="/home/index"><strong>驾校网上报名管理平台</strong></a>
         </div>
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
         <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
@@ -268,8 +348,8 @@
     </header>
     <div class="am-cf admin-main am-text-left">
 
-        <div id="imgDiv" style="opacity:1;background-color:black;width:100%;height:100%;z-index:200; display:none; position:absolute;">
-            <div style="width:600px; margin:0 auto; z-index:201;margin-top:10%">
+        <div id="imgDiv" style="opacity:1;background-color:black;width:100%;height:100%;z-index:9000; display:none; position:absolute;">
+            <div style="width:600px; margin:0 auto; z-index:9001;margin-top:10%">
                 <img src="" style="width:100%;" />
             </div>
         </div>

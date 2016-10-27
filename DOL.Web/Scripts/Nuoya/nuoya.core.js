@@ -143,13 +143,19 @@
             });
         },
         ajaxDialog: function (options) {
-            //这里可以开始显示进度条
-            $.Nuoya.ajaxGetCache(options.ajaxUrl, null, function (html) {
-                options.message = html;
-                options.ajaxUrl = null;
-                var target = $.Nuoya.dialog(options);
-                $.Nuoya.callFunction(options.callback, target);
-            });
+            if (options.pageUrl == "" || options.pageUrl == null || operateUrlArray ==null|| (operateUrlArray != null && operateUrlArray.indexOf(options.pageUrl) > -1)) {
+                //这里可以开始显示进度条
+                $.Nuoya.ajaxGetCache(options.ajaxUrl, null, function (html) {
+                    options.message = html;
+                    options.ajaxUrl = null;
+                    var target = $.Nuoya.dialog(options);
+                    $.Nuoya.callFunction(options.callback, target);
+                });
+            }
+            else {
+                $.Nuoya.alert("你没有该权限");
+                return false;
+            }
         },
         dialog: function (options) {
             var defaults = {

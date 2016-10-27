@@ -12,7 +12,7 @@
         <div class="am-u-lg-7">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">省份：</span>
-                <select name="ProvinceCode" data-am-selected="{btnSize: 'sm'}" onchange="ShowCity(true, this)" style="width:120px;"></select>
+                <select name="ProvinceCode" data-am-selected="{btnSize: 'sm'}" onchange="ShowCity(true, 1)" style="width:120px;"></select>
                 <span class="am-input-group-label">市：</span>
                 <select name="CityCode" data-am-selected="{btnSize: 'sm'}" onchange="ShowArea(true, this)" style="width:120px;"></select>
                 <span class="am-input-group-label">县区：</span>
@@ -256,81 +256,6 @@
 
 
 
-        //显示省份下方的市
-        function ShowCity(isIndex,obj) {
-            index = 0;
-            if (isIndex) {
-                $("#searchDomain select[name='CityCode']").empty();
-            }
-            else {
-                $("#form select[name='CityCode']").empty();
-            }
-            var value = i$(obj).val();
-            if (value == "0")
-                return false;
-            $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
-                $(json).each(function () {
-                    if (index == 0) {
-                        if (isIndex) {
-                            $("#searchDomain select[name='CityCode']").val(this.Value);
-                            $("#searchDomain select[name='CityCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
-                        }
-                        else {
-                            $("#form select[name='CityCode']").val(this.Value);
-                            $("#form select[name='CityCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
-                        }
-                    }
-                    else {
-                        if (isIndex) {
-                            $("#searchDomain select[name='CityCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                        }
-                        else {
-                            $("#form select[name='CityCode']").append("<option value='" + this.Value + "' >" + this.Text + "</option>");
-                        }
-                    }
-                    index++;
-                });
-            });
-            //if (isIndex) {
-            //    $("#searchDomain select[name='CityCode']").selected();
-            //}
-            //else {
-            //    $("#form select[name='CityCode']").selected();
-            //}
-        }
-
-        //显示市下方的县区
-        function ShowArea(isIndex, obj) {
-            index = 0;
-            if (isIndex) {
-                $("#searchDomain select[name='DistrictCode']").empty();
-            }
-            else {
-                $("#form select[name='DistrictCode']").empty();
-            }
-            var value = i$(obj).val();
-
-            $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
-                $(json).each(function () {
-                    if (index == 0) {
-                        if (isIndex) {
-                            $("#searchDomain select[name='DistrictCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
-                        }
-                        else {
-                            $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
-                        }
-                    }
-                    else {
-                        if (isIndex) {
-                            $("#searchDomain select[name='DistrictCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                        }
-                        else {
-                            $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                        }
-                    }
-                    index++;
-                });
-            });
-        }
+ 
 </script>
 }

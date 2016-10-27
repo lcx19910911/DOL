@@ -17,6 +17,7 @@ namespace DOL.Core
         {
             this.PageIndex = pageIndex;
             this.PageSize = pageSize;
+
         }
         /// <summary>
         /// 初始化
@@ -25,12 +26,13 @@ namespace DOL.Core
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <param name="RecordCount"></param>
-        public PageList(List<T> list, int pageIndex, int pageSize, long recordCount)
+        public PageList(List<T> list, int pageIndex, int pageSize, long recordCount, List<string> operateList)
         {
             this.PageIndex = pageIndex;
             this.PageSize = pageSize;
             this.RecordCount = recordCount;
             this.List = list;
+            this.OperateList = operateList;
         }
 
         /// <summary>
@@ -58,6 +60,11 @@ namespace DOL.Core
         /// 页面数据数量
         /// </summary>
         public int PageSize { get; set; }
+
+        /// <summary>
+        /// 权限集合
+        /// </summary>
+        public List<string> OperateList { get; set; }
 
         /// <summary>
         /// 数据列表

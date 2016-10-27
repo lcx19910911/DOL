@@ -64,10 +64,11 @@ namespace DOL.Service
 
                 var count = query.Count();
                 var list = query.OrderBy(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var menuDic = Cache_Get_MenuList_Dic();
                 list.ForEach(x =>
                 {
-                    if (!string.IsNullOrEmpty(x.MenuID))
-                        x.MenuName = Cache_Get_MenuList_Dic()[x.MenuID]?.Name;
+                    if (!string.IsNullOrEmpty(x.MenuID) && menuDic.ContainsKey(x.MenuID))
+                        x.MenuName = menuDic[x.MenuID]?.Name;
                 });
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
@@ -79,17 +80,22 @@ namespace DOL.Service
         /// 获取权限地址集合
         /// </summary>
         /// <returns></returns>
-        public List<string> Get_OperateUrlByPageUrl(string pageUrl)
+        public List<string> Get_OperateUrlList(string pageUrl)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var menu = Cache_Get_MenuList().FirstOrDefault(x => x.Link.Equals(pageUrl, StringComparison.CurrentCultureIgnoreCase));
-                if (menu != null)
-                {
-                    return Cache_Get_OperateList().AsQueryable().Where(x => x.MenuID.Equals(menu.ID)).Select(x => x.ActionUrl).ToList();
-                }
-                else
+                var menu = Cache_Get_MenuList().Where(x =>!string.IsNullOrEmpty(x.Link)&&x.Link.Contains(pageUrl)).FirstOrDefault();
+                if (menu == null)
                     return null;
+                else
+                {
+                    if(Client.LoginUser.OperateFlag==-1)
+                    {
+                        return Cache_Get_OperateList().Where(x => x.MenuID.Equals(menu.ID)).Select(x => x.ActionUrl).ToList();
+                    }
+                    else
+                        return Cache_Get_OperateList().Where(x => ((long)x.LimitFlag & Client.LoginUser.OperateFlag) != 0 && x.MenuID.Equals(menu.ID)).Select(x => x.ActionUrl).ToList();
+                }
                 
             }
         }

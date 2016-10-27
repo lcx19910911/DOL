@@ -37,7 +37,7 @@ namespace DOL.Service
         /// 全局缓存 dic
         /// </summary>
         /// <returns></returns>
-        private Dictionary<string, User> Cache_Get_UserDict()
+        private Dictionary<string, User> Cache_Get_UserDic()
         {
             return Cache_Get_UserList().ToDictionary(x => x.ID);
         }

@@ -57,6 +57,84 @@ namespace DOL.Service
 
 
         /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <returns></returns>
+        public WebResult<PageList<PayOrder>> Get_PayOrderPageList(
+            int pageIndex,
+            int pageSize,
+            string no,
+            int state
+            )
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+
+
+                if (no.IsNotNullOrEmpty())
+                {
+                    var studentIdList = Cache_Get_StudentList().Where(x => x.IDCard.Contains(no)).Select(x => x.ID).ToList();
+                    query = query.Where(x => studentIdList.Contains(x.StudentID));
+                }
+
+                if (state != -1)
+                {
+                    query = query.Where(x => (int)x.IsConfirm == state);
+                }
+
+                var count = query.Count();
+                var list = query.OrderByDescending(x => x.PayTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var studentDic = Cache_Get_StudentList_Dic();
+                var referenceDic = Cache_Get_ReferenceList_Dic();
+                var driverShopDic = Cache_Get_DriverShopList_Dic();
+                var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
+                var userDic = Cache_Get_UserDic();
+                list.ForEach(x =>
+                {
+                    if (!string.IsNullOrEmpty(x.StudentID))
+                    {
+                        if (studentDic.ContainsKey(x.StudentID))
+                        {
+                            var student = studentDic[x.StudentID];
+                            x.EnteredDate = student.EnteredDate;
+                            x.MakeCardDate = student.MakeCardDate;
+                            x.Mobile = student.Mobile;
+                            x.Money = student.Money;
+                            x.HadPayMoney = student.HadPayMoney;
+                            x.Name = student.Name;
+                            x.IDCard = student.IDCard;
+                            //制卡驾校
+                            if (!string.IsNullOrEmpty(student.MakeDriverShopID) && driverShopDic.ContainsKey(student.MakeDriverShopID))
+                                x.MakeDriverShopName = driverShopDic[student.MakeDriverShopID]?.Name;
+
+                            //推荐人
+                            if (!string.IsNullOrEmpty(student.ReferenceID) && referenceDic.ContainsKey(student.ReferenceID))
+                                x.ReferenceName = referenceDic[student.ReferenceID]?.Name;
+
+                            //证书
+                            if (!string.IsNullOrEmpty(student.CertificateID) && cerDic.ContainsKey(student.CertificateID))
+                                x.CertificateName = cerDic[student.CertificateID]?.Value;
+                        }
+                    }
+                    //登记人
+                    if (!string.IsNullOrEmpty(x.CreaterID) && userDic.ContainsKey(x.CreaterID))
+                        x.CreaterName = userDic[x.CreaterID]?.Name;
+                    //确认人
+                    if (!string.IsNullOrEmpty(x.ConfirmUserID) && userDic.ContainsKey(x.ConfirmUserID))
+                        x.ConfirmUserName = userDic[x.ConfirmUserID]?.Name;
+
+                });
+
+                return ResultPageList(list, pageIndex, pageSize, count);
+            }
+        }
+
+
+
+        /// <summary>
         /// 增加
         /// </summary>
         /// <param name="model"></param>
@@ -69,6 +147,7 @@ namespace DOL.Service
                 model.UpdatedTime = DateTime.Now;
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
+                model.IsConfirm = YesOrNoCode.No;
                 entities.PayOrder.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -82,6 +161,78 @@ namespace DOL.Service
                 }
             }
 
+        }
+
+
+
+        /// <summary>
+        /// 确认收款
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public WebResult<bool> Confirm_PayOrder(string ID)
+        {
+            if (!ID.IsNotNullOrEmpty())
+            {
+                return Result(false, ErrorCode.sys_param_format_error);
+            }
+            using (DbRepository entities = new DbRepository())
+            {
+                var list = Cache_Get_PayOrderList();
+                var studentList = Cache_Get_StudentList();
+                var oldEntity = entities.PayOrder.Find(ID);
+
+                if (oldEntity == null || oldEntity.IsConfirm == YesOrNoCode.Yes)
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                oldEntity.IsConfirm = YesOrNoCode.Yes;
+                oldEntity.ConfirmUserID = Client.LoginUser.ID;
+                oldEntity.ConfirmDate = DateTime.Now;
+
+                var student = studentList.FirstOrDefault(x => x.ID.Equals(oldEntity.StudentID));
+
+                if (student == null)
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                list.AsQueryable().Where(x => x.StudentID.Equals(student.ID) && x.IsConfirm == YesOrNoCode.Yes).ToList().ForEach(x =>
+                {
+                    student.HadPayMoney += x.PayMoney;
+                });
+                student.HadPayMoney += oldEntity.PayMoney;
+
+                if (student.HadPayMoney >= student.Money)
+                {
+                    student.MoneyIsFull = YesOrNoCode.Yes;
+                }
+
+                if (entities.SaveChanges() > 0)
+                {
+
+                    var index = list.FindIndex(x => x.ID.Equals(ID));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    var studentIndex = studentList.FindIndex(x => x.ID.Equals(student.ID));
+                    if (studentIndex > -1)
+                    {
+                        studentList[studentIndex] = student;
+                    }
+                    else
+                    {
+                        studentList.Add(student);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
         }
 
 
@@ -179,10 +330,11 @@ namespace DOL.Service
             {
                 var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId) && x.Flag == (long)GlobalFlag.Normal).OrderBy(x => x.CreatedTime);
                 var count = query.Count();
-                var list=query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var accountList = Get_DataDictorySelectItem(GroupCode.Account);
                 var payTypeList = Get_DataDictorySelectItem(GroupCode.PayType);
-                list.ForEach(x => {
+                list.ForEach(x =>
+                {
                     if (!string.IsNullOrEmpty(x.AccountID))
                         x.AccountName = accountList.FirstOrDefault(y => y.Value.Equals(x.AccountID))?.Text;
                     if (!string.IsNullOrEmpty(x.PayTypeID))

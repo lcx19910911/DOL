@@ -17,6 +17,25 @@ namespace DOL.Web.Controllers
             return View();
         }
 
+
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="state">名称 - 搜索项</param>
+        /// <param name="no">编号 - 搜索项</param>
+        /// <returns></returns>
+        public ActionResult GetPageList(int pageIndex,
+            int pageSize,
+            string no,
+            int state
+            )
+        {
+            return JResult(WebService.Get_PayOrderPageList(pageIndex, pageSize, no, state));
+        }
+
+
         /// <summary>
         /// 新增
         /// </summary>
@@ -36,6 +55,17 @@ namespace DOL.Web.Controllers
             {
                 return ParamsErrorJResult(ModelState);
             }
+        }
+
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public ActionResult Confirm(string ID)
+        {
+            return JResult(WebService.Confirm_PayOrder(ID));
         }
 
         /// <summary>

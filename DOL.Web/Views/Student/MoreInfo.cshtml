@@ -11,39 +11,76 @@
     <div class="am-g">   
         <div class="am-u-lg-12">
             <div class="am-input-group am-input-group-sm">
-                <span class="am-input-group-label ">姓名：</span>
+                <span class="am-input-group-label">姓名：</span>
                 <input type="text" class="am-form-field" placeholder="按姓名搜索" style="width:100px;" name="name" ;>
-
-                <span class="am-input-group-label   am-margin-left-sm">身份证：</span>
+                <span class="am-input-group-label am-margin-left-sm">身份证：</span>
                 <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:140px;" name="no" ;>
 
-                <span class="am-input-group-label   am-margin-left-sm">手机号码：</span>
-                <input type="text" class="am-form-field" placeholder="按手机号码搜索" style="width:120px;" name="mobile" ;>
 
-                <span class="am-input-group-label   am-margin-left-sm">报名点：</span>
-                <select name="EnteredPointID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" onchange="LoadReference(true,this)"><option value="">不限</option></select>
+                <span class="am-input-group-label am-margin-left-sm">制卡驾校：</span>
+                <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}"><option value="">不限</option></select>
 
-                <span class="am-input-group-label   am-margin-left-sm">推荐人：</span>
-                <select name="ReferenceID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"><option value="">不限</option></select>
- 
-                <span class="am-input-group-label  am-margin-left-sm">制卡驾校：</span>
-                <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"><option value="">不限</option></select>
+                <span class="am-input-group-label am-margin-left-sm">培训方式：</span>
+                <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;"><option value="">不限</option></select>
+
+
+                <span class="am-input-group-label  am-margin-left-sm">科一日期</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeOneTimeStart" readonly style="width:100px;">
+                <span class="am-input-group-label"> - </span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeOneTimeEnd" readonly style="width:100px;">
+
+                <span class="am-input-group-label  am-margin-left-sm">科二日期</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeTwoTimeStart" readonly style="width:100px;">
+                <span class="am-input-group-label"> - </span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeTwoTimeEnd" readonly style="width:100px;">
             </div>
         </div>
     </div>
 
     <div class="am-g am-margin-top">
 
-        <div class="am-u-lg-12 am-u-end">
+
+        <div class="am-u-lg-12">
             <div class="am-input-group am-input-group-sm">
-                <span class="am-input-group-label">报名日期</span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" name="enteredTimeStart" readonly style="width:120px;">
+
+
+                <span class="am-input-group-label">科三日期</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeThreeTimeStart" readonly style="width:100px;">
                 <span class="am-input-group-label"> - </span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" name="enteredTimeEnd" readonly style="width:120px;">
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeThreeTimeEnd" readonly style="width:100px;">
+
+                <span class="am-input-group-label  am-margin-left-sm">科四日期</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeFourTimeStart" readonly style="width:100px;">
+                <span class="am-input-group-label"> - </span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeFourTimeEnd" readonly style="width:100px;">
+                <span class="am-input-group-label am-margin-left-sm">科一通过：</span>
+                <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;"><option value="">不限</option></select>
+
+                <span class="am-input-group-label am-margin-left-sm">科三通过：</span>
+                <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;"><option value="">不限</option></select>
+
+                <span class="am-input-group-label am-margin-left-sm">科二教练：</span>
+                <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;"><option value="">不限</option></select>
+
+                <span class="am-input-group-label am-margin-left-sm">科三教练：</span>
+                <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;"><option value="">不限</option></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="am-g am-margin-top">
+        <div class="am-u-lg-12 ">
+
+            <div class="am-input-group am-input-group-sm">
+
+                <span class="am-input-group-label">科二学时：</span>
+                <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;"><option value="">不限</option></select>
+                <span class="am-input-group-label am-margin-left-sm">科三学时：</span>
+                <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;"><option value="">不限</option></select>
                 <span class="am-input-group-label  am-margin-left-sm">制卡日期</span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" name="makedTimeStart" readonly style="width:120px;">
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="makedTimeStart" readonly style="width:100px;">
                 <span class="am-input-group-label"> - </span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" name="makeTimeEnd" readonly style="width:120px;">
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="makeTimeEnd" readonly style="width:100px;">
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -55,7 +92,7 @@
     </div>
 
 
-    <div class="am-g am-margin-top-lg">
+    <div class="am-g am-margin-top-sm">
         <div class="am-u-lg-6">
             <div class="am-btn-toolbar">
                 <div class="am-btn-group am-btn-group-sm">
@@ -212,7 +249,7 @@
                     name: "编辑",
                     url: "/Student/Update",
                     click: function (item) {
-                        window.location.href = "/Student/Update?ID=" + item.ID;
+                        window.location.href = "/Student/Update?ID=" + item.ID + "&trian=1";
                     }
                 },
                 {

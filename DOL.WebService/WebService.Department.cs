@@ -62,11 +62,12 @@ namespace DOL.Service
 
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.Sort).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var deparmentDic = Cache_Get_DepartmentList_Dic();
                 list.ForEach(x =>
                 {
-                    if (!string.IsNullOrEmpty(x.ParentID))
+                    if (!string.IsNullOrEmpty(x.ParentID) && deparmentDic.ContainsKey(x.ParentID))
                     {
-                        x.ParentName = Cache_Get_DepartmentList_Dic()[x.ParentID]?.Name;
+                        x.ParentName = deparmentDic[x.ParentID]?.Name;
                     }
                 });
                 return ResultPageList(list, pageIndex, pageSize, count);

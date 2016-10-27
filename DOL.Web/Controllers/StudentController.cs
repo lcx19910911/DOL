@@ -1,4 +1,5 @@
 ﻿
+using DOL.Core;
 using DOL.Model;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,33 @@ namespace DOL.Web.Controllers
         public ViewResult Add()
         {
             return View();
+        }
+
+        public ViewResult Update()
+        {
+            return View();
+        }
+
+
+        public ViewResult Confirm()
+        {
+            return View();
+        }
+
+        public ViewResult MoreInfo()
+        {
+            return View();
+        }
+        
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public ActionResult Find(string ID)
+        {
+            return JResult(WebService.Find_Student(ID));
         }
 
 
@@ -47,6 +75,7 @@ namespace DOL.Web.Controllers
         }
 
 
+
         /// <summary>
         /// 查找实体
         /// </summary>
@@ -58,14 +87,44 @@ namespace DOL.Web.Controllers
         }
 
         /// <summary>
-        /// 删除
+        /// 编辑
         /// </summary>
-        /// <param name="ids"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Add(Student model)
+        public ActionResult Update(Student model)
         {
-            return JResult(WebService.Add_Student(model));
+            ModelState.Remove("UpdaterID");
+            ModelState.Remove("UpdatedTime");
+            ModelState.Remove("CreatedTime");
+            if (ModelState.IsValid)
+            {
+                return JResult(WebService.Update_Student(model));
+            }
+            else
+            {
+                return ParamsErrorJResult(ModelState);
+            }
+        }
+
+        /// <summary>
+        /// 报名
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult AddEntered(Student model)
+        {
+            ModelState.Remove("ID");
+            ModelState.Remove("UpdaterID");
+            ModelState.Remove("UpdatedTime");
+            ModelState.Remove("CreatedTime");
+            if (ModelState.IsValid)
+            {
+                return JResult(WebService.Add_Student(model));
+            }
+            else
+            {
+                return ParamsErrorJResult(ModelState);
+            }
         }
     }
 }

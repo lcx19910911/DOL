@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.SessionState;
 using System.Web.Security;
+using DOL.Model;
 
 namespace DOL.Core
 {
@@ -35,13 +36,13 @@ namespace DOL.Core
         }
 
 
-        private LoginUser _loginUser = null;
+        private User _loginUser = null;
 
-        public LoginUser LoginUser
+        public User LoginUser
         {
             get
             {
-                return _loginUser != null ? _loginUser :new LoginUser(CookieHelper.GetCurrentUser());
+                return _loginUser != null ? _loginUser :CookieHelper.GetCurrentUser();
             }
         }
         private string _postData = null;

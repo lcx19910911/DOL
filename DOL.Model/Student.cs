@@ -8,6 +8,7 @@ namespace DOL.Model
     /// <summary>
     /// 学员
     /// </summary>
+    [Table("Student")]
     public partial class Student : BaseEntity
     {
 
@@ -295,6 +296,12 @@ namespace DOL.Model
         public string ThemeOneCoachName { get; set; }
 
         /// <summary>
+        /// 科目一是否通过
+        /// </summary>
+        public YesOrNoCode ThemeOnePass { get; set; }
+
+
+        /// <summary>
         /// 科目二时间
         /// </summary>
         public Nullable<DateTime> ThemeTwoDate { get; set; }
@@ -312,6 +319,11 @@ namespace DOL.Model
         public string ThemeTwoCoachName { get; set; }
 
         /// <summary>
+        /// 科目二是否通过
+        /// </summary>
+        public YesOrNoCode ThemeTwoPass { get; set; }
+
+        /// <summary>
         /// 科目三时间
         /// </summary>
         public Nullable<DateTime> ThemeThreeDate { get; set; }
@@ -326,6 +338,13 @@ namespace DOL.Model
         /// </summary>
         [NotMapped]
         public string ThemeThreeCoachName { get; set; }
+
+
+        /// <summary>
+        /// 科目三是否通过
+        /// </summary>
+        public YesOrNoCode ThemeThreePass { get; set; }
+
         /// <summary>
         /// 科目四时间
         /// </summary>
@@ -344,17 +363,46 @@ namespace DOL.Model
         public string ThemeFourCoachName { get; set; }
 
         /// <summary>
+        /// 科目四是否通过
+        /// </summary>
+        public YesOrNoCode ThemeFourPass { get; set; }
+
+
+        /// <summary>
         /// 当前科目
         /// </summary>
         public ThemeCode NowTheme { get; set; }
 
         #endregion
 
-
         /// <summary>
         /// 学员状态
         /// </summary>
         public StudentCode State { get; set; }
+
+        /// <summary>
+        /// 退学申请时间
+        /// </summary>
+
+        public Nullable<DateTime> DropOutDate { get; set; }
+
+        /// <summary>
+        /// 退款记录
+        /// </summary>
+        [Column("DropOutPayOrderId", TypeName = "char"), MaxLength(32)]
+        public string DropOutPayOrderId { get; set; }
+
+        /// <summary>
+        /// 修改人
+        /// </summary>
+        [Required(ErrorMessage = "修改人ID不能为空")]
+        [Column("UpdatedID", TypeName = "char"), MaxLength(32)]
+        public string UpdaterID { get; set; }
+        /// <summary>
+        /// 修改人
+        /// </summary>
+        [NotMapped]
+        public string UpdaterName { get; set; }
 
 
         /// <summary>

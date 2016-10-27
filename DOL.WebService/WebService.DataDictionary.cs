@@ -109,7 +109,7 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 if(entities.DataDictionary.Where(x=>x.GroupCode==GroupCode.Area&&x.Key.Equals(model.Key)).Any())
-                    return Result(false, ErrorCode.datadatabase_key__had);
+                    return Result(false, ErrorCode.sys_param_format_error);
                 model.ID = Guid.NewGuid().ToString("N");
                 if(string.IsNullOrEmpty(model.Key))
                     model.Key = model.ID;
@@ -167,7 +167,7 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 if (entities.DataDictionary.Where(x => x.GroupCode == GroupCode.Area && x.Key.Equals(model.Key)&&!x.ID.Equals(model.ID)).Any())
-                    return Result(false, ErrorCode.datadatabase_key__had);
+                    return Result(false, ErrorCode.sys_param_format_error);
                 var oldEntity = entities.DataDictionary.Find(model.ID);
                 if (oldEntity != null)
                 {

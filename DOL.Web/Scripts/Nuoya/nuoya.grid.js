@@ -12,7 +12,8 @@
             rowCallback: null,//表格行绘制的回调函数                
             drawCallback: null,//绘制完成回调
         }
-        var op
+        //权限数据
+        var userOperateUrlArray = new Array();
         var options = $.extend(true, defaults, options);
         var tableObj = $("#" + options.tableId);
         var searchObj = options.search != null ? $("#" + options.search.domainId) : null;//搜索区域
@@ -45,7 +46,7 @@
                 $.each(options.events, function (index, event) {
                     var eventSetting = { name: "", icon: "", className: "", click: null, formula: null, url:""};
                     event = $.extend(true, eventSetting, event);
-                    if (event.url == "" || (event.url != "" && (isHaveOperate(event.url))))
+                    if (event.url == "" || userOperateUrlArray == null||(userOperateUrlArray != null && userOperateUrlArray.indexOf(event.url) > -1))
                     {
                         var operate = $('<button class="am-btn am-btn-default am-btn-xs ' + event.className + '"><span class="am-' + event.icon + '"></span> ' + event.name + '</button>');
                         operate.bind("click", function () {
@@ -238,13 +239,17 @@
             $(pageSizeMenu).selected();
         }
 
+        //获取权限
+        var getOperate = function () {
+           
+        }
         var _dataload = function () {
+
             $.Nuoya.action(options.ajaxUrl, _getParams(), function (json) {
                 json.List = json.List == null ? [] : json.List;
                 $.Nuoya.callFunction(options.callback, json);
-
-                getPageIndexOperateList()
-
+                userOperateUrlArray = json.OperateList;
+                operateUrlArray = json.OperateList;
                 _createContent(json.List);//创建内容
                 _createPaginate(json);//创建页码
                 $.Nuoya.callFunction(options.drawCallback, json);
@@ -253,27 +258,6 @@
             });
         }
 
-        var getPageIndexOperateList = function ()
-        {
-            if (options.pageUrl != "") {
-
-                var url = document.location.toString();
-                var arrUrl = url.split("//");
-
-                var start = arrUrl[1].indexOf("/");
-                var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符
-
-                if (relUrl.indexOf("?") != -1) {
-                    relUrl = relUrl.split("?")[0];
-                }
-
-                $.Nuoya.action("/base/GetPageOperate", { pageUrl: relUrl }, function (json) {
-                    debugger;
-                    $(json).each(function () { })
-
-                });
-            }
-        }
 
         //获取选中节点对象
         var _getCheckNote = function (fieldName) {

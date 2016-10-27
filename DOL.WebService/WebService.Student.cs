@@ -33,6 +33,15 @@ namespace DOL.Service
         }
 
         /// <summary>
+        /// 缓存 dic
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, Student> Cache_Get_StudentList_Dic()
+        {
+            return Cache_Get_StudentList().ToDictionary(x => x.ID);
+        }
+
+        /// <summary>
         /// 获取分页列表
         /// </summary>
         /// <param name="pageIndex">页码</param>
@@ -110,39 +119,43 @@ namespace DOL.Service
                 var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
                 var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
+                var userDic = Cache_Get_UserDic();
                 list.ForEach(x =>
                 {
                     //报名地
-                    if (!string.IsNullOrEmpty(x.EnteredCityCode))
+                    if (!string.IsNullOrEmpty(x.EnteredCityCode)&& areaDic.ContainsKey(x.EnteredCityCode))
                         x.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
                     //制卡地
-                    if (!string.IsNullOrEmpty(x.MakeCardCityCode))
+                    if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
                         x.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
                     //培训方式
-                    if (!string.IsNullOrEmpty(x.TrianID))
+                    if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
                         x.TrianName = trianDic[x.TrianID]?.Value;
                     //制卡驾校
-                    if (!string.IsNullOrEmpty(x.MakeDriverShopID))
+                    if (!string.IsNullOrEmpty(x.MakeDriverShopID) && driverShopDic.ContainsKey(x.MakeDriverShopID))
                         x.MakeDriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
 
                     //推荐人
-                    if (!string.IsNullOrEmpty(x.ReferenceID))
+                    if (!string.IsNullOrEmpty(x.ReferenceID) && referenceDic.ContainsKey(x.ReferenceID))
                         x.ReferenceName = referenceDic[x.ReferenceID]?.Name;
                     //支付方式
-                    if (!string.IsNullOrEmpty(x.PayMethodID))
+                    if (!string.IsNullOrEmpty(x.PayMethodID) && payMethodDic.ContainsKey(x.PayMethodID))
                         x.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
 
                     //省
-                    if (!string.IsNullOrEmpty(x.ProvinceCode))
+                    if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
                         x.ProvinceName = areaDic[x.ProvinceCode]?.Value;
                     //省
-                    if (!string.IsNullOrEmpty(x.CityCode))
+                    if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
                         x.CityName = areaDic[x.CityCode]?.Value;
 
                     //证书
-                    if (!string.IsNullOrEmpty(x.CertificateID))
+                    if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
                         x.CertificateName = cerDic[x.CertificateID]?.Value;
 
+                    //修改人
+                    if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
+                        x.UpdaterName = userDic[x.UpdaterID]?.Name;
                 });
 
                 return ResultPageList(list, pageIndex, pageSize, count);
@@ -158,21 +171,18 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (entities.Student.AsNoTracking().Where(x => x.Name.Equals(model.Name)).Any())
-                    return Result(false, ErrorCode.datadatabase_name_had);
+                if (entities.Student.AsNoTracking().Where(x => x.Name.Equals(model.IDCard)).Any())
+                    return Result(false, ErrorCode.datadatabase_idcards__had);
                 var makecardShop = Cache_Get_DriverShopList().FirstOrDefault(x => x.ID.Equals(model.MakeDriverShopID));
                 if(makecardShop==null)
                     return Result(false, ErrorCode.sys_param_format_error);
-                model.MakeCardCityCode = makecardShop.CityCode;            
+                model.MakeCardCityCode = makecardShop.CityCode;
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
                 model.State = StudentCode.Entered;
-                model.NowTheme = ThemeCode.One;
+                model.NowTheme = ThemeCode.None;
+                model.UpdaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
-                Cache_Get_PayOrderList().Where(x => x.StudentID.Equals(model.ID)).ToList().ForEach(x =>
-                {
-                    model.HadPayMoney += x.PayMoney;
-                });
                 if (model.HadPayMoney == model.Money)
                     model.MoneyIsFull = YesOrNoCode.Yes;
                 else
@@ -229,20 +239,22 @@ namespace DOL.Service
                 return Result(false, ErrorCode.sys_param_format_error);
             using (DbRepository entities = new DbRepository())
             {
+
+                var list = Cache_Get_StudentList();
                 var oldEntity = entities.Student.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    if (entities.Student.AsNoTracking().Where(x => x.Name.Equals(model.Name) && !x.ID.Equals(model.ID)).Any())
-                        return Result(false, ErrorCode.datadatabase_name_had);
+                    if (list.AsQueryable().Where(x => x.Name.Equals(model.IDCard) && !x.ID.Equals(model.ID)).Any())
+                        return Result(false, ErrorCode.datadatabase_idcards__had);
                     oldEntity.Name = model.Name;
                     oldEntity.UpdatedTime = DateTime.Now;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
 
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_StudentList();
                     var index = list.FindIndex(x => x.ID.Equals(model.ID));
                     if (index > -1)
                     {

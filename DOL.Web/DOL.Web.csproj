@@ -130,6 +130,7 @@
     <Content Include="HtmlTemplates\EnteredPoint\Update.html" />
     <Content Include="HtmlTemplates\Operate\Update.html" />
     <Content Include="HtmlTemplates\Menu\Update.html" />
+    <Content Include="HtmlTemplates\PayOrder\Index.html" />
     <Content Include="HtmlTemplates\Reference\Update.html" />
     <Content Include="HtmlTemplates\Role\Update.html" />
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
@@ -271,6 +272,9 @@
     <Content Include="Views\Operate\Index.cshtml" />
     <Content Include="Views\Student\Index.cshtml" />
     <Content Include="Views\Student\Add.cshtml" />
+    <Content Include="Views\Student\Update.cshtml" />
+    <Content Include="Views\PayOrder\Index.cshtml" />
+    <Content Include="Views\Student\MoreInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

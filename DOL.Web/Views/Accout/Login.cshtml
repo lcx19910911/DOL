@@ -250,7 +250,7 @@
                     data: { password: document.forms[0].password.value, account: document.forms[0].account.value },
                     success: function (data) {
                         if (data.Result) {
-                            window.location.href = "@(string.IsNullOrEmpty(Request["redirecturl"])?"/Order/index": Request["redirecturl"])";
+                            window.location.href = "@(string.IsNullOrEmpty(Request["redirecturl"])?"/Home/index": Request["redirecturl"])";
                         }
                         else {
                             alert(data.ErrorDesc);
