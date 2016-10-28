@@ -4,7 +4,7 @@
 }
 
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a onclick="unState()"><strong class="am-text-primary am-text-lg">菜单</strong></a> /<small>招生收款</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>招生收款</small></div>
 </div>
 <div id="searchDomain">
 
@@ -24,7 +24,6 @@
                     <option value="1">已确认</option>
                     <option value="0">未确认</option>
                 </select>
-                <select name="EnteredPointID" data-am-selected="{btnSize: 'sm'}" style="width:120px;" onchange="LoadReference(true,this)"><option value="">不限</option></select>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -40,7 +39,6 @@
         <div class="am-u-lg-6">
             <div class="am-btn-toolbar">
                 <div class="am-btn-group am-btn-group-sm">
-                    <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
                     <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
                 </div>
             </div>
@@ -67,6 +65,7 @@
                 <th dataname="ReferenceName">推荐人</th>
                 <th dataname="CreaterName">登记人</th>
                 <th dataname="ConfirmUserName">确认人</th>
+                <th render="ShowConfirm">确认情况</th>
                 <th dataname="ConfirmDate" datatype="jsondate">确认日期</th>
                 <th type="eventlist"></th>
             </tr>
@@ -77,10 +76,8 @@
 @section scripts
 {
     <script type="text/javascript">
-        $('.admin-sidebar').hide();
         function ClearFilter() {
             $("#searchDomain input").val("");
-            $('#searchDomain select').find('option').eq(0).attr('selected', true);
         }
         //批量删除
         function batchDelete() {
@@ -92,6 +89,40 @@
                     }
                 });
             });
+        }
+
+
+        function formInit(dataitem) {
+
+            if (dataitem != null) {
+                //$('#payForm [name=PayTime]').datetimepicker('update', RenderDate(dataitem.PayTime));
+                if (dataitem.VoucherThum != null) {
+                    if (dataitem.VoucherThum != null) {
+                        $("#imageDiv").show().find("img").attr("src", dataitem.VoucherThum);
+                    }
+
+                }
+            }
+            $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+                $(json.PayTypeList).each(function () {
+                    if (dataitem != null) {
+                        $("#payForm select[name='PayTypeID']").append("<option  value='" + this.Value + "' " + (dataitem.PayTypeID == this.Value ? "selected" : "") + " >" + this.Text + "</option>");
+                    }
+                    else {
+                        $("#payForm select[name='PayTypeID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                    }
+                });
+                $(json.AccountList).each(function () {
+                    if (dataitem != null) {
+                        $("#payForm select[name='AccountID']").append("<option  value='" + this.Value + "' " + (dataitem.AccountID == this.Value ? "selected" : "") + ">" + this.Text + "</option>");
+                    }
+                    else {
+                        $("#payForm select[name='AccountID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                    }
+                });
+            });
+
+        
         }
 
         var grid = $.Nuoya.grid({
@@ -208,14 +239,45 @@
                         }
                     },
                     click: function (item) {
-                        $.Nuoya.confirm("确认已收款？", function () {
-                            $.Nuoya.action("/PayOrder/Confirm", {
-                                ID: item.ID
+
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/User/Pay.html",
+                            title: "缴费记录",
+                            width: "1000px",
+                            height: "800px",
+                            callback: function (e) {
+                                $.Nuoya.action("/PayOrder/Find", { id: item.ID }, function (model) {
+                                    //载入数据
+                                    $.Nuoya.form("payForm").dataLoad({
+                                        data: model
+                                    });
+                                    formInit(model);//表单初始化
+                                    $("#payForm  input,select").attr("readonly", true);
+                                });
                             },
-                            function () {
-                                grid.reload();
-                            });
-                        });
+                            buttons: [{
+                                label: "确认",
+                                callback: function (e) {
+                                    $.Nuoya.confirm("确认收款？", function () {
+                                        $.Nuoya.form("form").ajaxSubmit({
+                                            ajaxUrl: "/PayOrder/Confirm",
+                                            params: {
+                                                ID: item.ID
+                                            },
+                                            callback: function (data) {
+                                                if (!data.ErrorDesc) {
+                                                    e.hide();
+                                                    grid.reload();
+                                                }
+                                                else
+                                                    $.Nuoya.alert(data.ErrorDesc);
+                                            }
+                                        });
+                                    });
+                                }
+                            }]
+                        })                 
                     }
                 },
                 {

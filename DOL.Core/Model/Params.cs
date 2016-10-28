@@ -28,6 +28,11 @@ namespace DOL.Core
         public static readonly string SecretKey = ConfigurationManager.AppSettings["SecretKey"];
 
         /// <summary>
+        /// 教练员默认权限
+        /// </summary>
+        public static readonly int CoachMenuFlag = ConfigurationManager.AppSettings["CoachMenuFlag"].GetInt();
+
+        /// <summary>
         /// 登陆cookie
         /// </summary>
         public static readonly string UserCookieName = "dol_user";

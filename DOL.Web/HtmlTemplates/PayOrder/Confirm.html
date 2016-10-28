@@ -1,30 +1,29 @@
-﻿
-<div class="admin-content">
-    <form id="payForm" class="am-form am-form-horizontal">
+﻿<div class="admin-content">
+    <form id="form" class="am-form am-form-horizontal">
         <div class="admin-content-body">
-            <div class="am-margin">             
+            <div class="am-margin">
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        退款日期：
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="PayTime" class="am-input-sm" style="width:190px;" placeholder="请选择报名时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填</div>
+                </div>
 
                 <div class="am-g am-margin-top">
                     <div class="am-u-md-3 am-text-right">
-                        缴款日期：
+                        退款金额：
                     </div>
                     <div class="am-u-md-5">
-                        <input type="text" name="PayTime"  class="am-input-sm" placeholder="请选择缴费日期"   readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate"  />
+                        <input type="number" name="PayMoney" class="am-input-sm" min="0">
                     </div>
-                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong></div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left">不能超过64个字符</div>
                 </div>
-                <div class="am-g am-margin-top">
+                 <div class="am-g am-margin-top">
                     <div class="am-u-md-3 am-text-right">
-                        缴费金额：
-                    </div>
-                    <div class="am-u-md-5 am-text-left">
-                        <input type="number" name="PayMoney" class="am-input-sm" />
-                    </div>
-                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong></div>
-                </div>
-                <div class="am-g am-margin-top">
-                    <div class="am-u-md-3 am-text-right">
-                        支付方式：
+                        支付渠道：
                     </div>
                     <div class="am-u-md-5">
                         <select name="PayTypeID"></select>
@@ -33,19 +32,19 @@
                 </div>
                 <div class="am-g am-margin-top">
                     <div class="am-u-md-3 am-text-right">
-                        收款账户：
+                        账户 :
                     </div>
                     <div class="am-u-md-5">
-                        <select name="AccountID"></select>
+                        <input type="text" name="AccountNO"  class="am-input-sm" maxlength="32" placeholder="请输入账户号码">
                     </div>
-                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong></div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left">不能超过32个字符</div>
                 </div>
                 <div class="am-g am-margin-top">
                     <div class="am-u-md-3 am-text-right">
                         凭证号：
                     </div>
                     <div class="am-u-md-5 am-text-left">
-                        <input type="text" name="VoucherNO" class="am-input-sm" maxlength="32" />
+                        <input type="text" name="VoucherNO" class="am-input-sm" maxlength="32" placeholder="请输入凭证号" />
                     </div>
                     <div class="am-hide-sm-only am-u-md-4 am-text-left">不能超过32个字符</div>
                 </div>
@@ -68,8 +67,9 @@
                         <img style="width:360px;" />
                     </div>
                     <div class="am-hide-sm-only am-u-md-4 am-text-left"></div>
-                </div>
+                </div>           
             </div>
+
         </div>
     </form>
 </div>

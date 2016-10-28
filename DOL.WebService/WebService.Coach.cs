@@ -13,20 +13,20 @@ namespace DOL.Service
 {
     public partial class WebService
     {
-        string referenceKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "Reference");
+        string coachKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "Coach");
 
         /// <summary>
         /// 缓存
         /// </summary>
         /// <returns></returns>
-        private List<Reference> Cache_Get_ReferenceList()
+        private List<Coach> Cache_Get_CoachList()
         {
 
-            return CacheHelper.Get<List<Reference>>(referenceKey, () =>
+            return CacheHelper.Get<List<Coach>>(coachKey, () =>
             {
                 using (var db = new DbRepository())
                 {
-                    List<Reference> list = db.Reference.OrderByDescending(x => x.CreatedTime).ThenBy(x => x.ID).ToList();
+                    List<Coach> list = db.Coach.OrderByDescending(x => x.CreatedTime).ThenBy(x => x.ID).ToList();
                     return list;
                 }
             });
@@ -36,9 +36,9 @@ namespace DOL.Service
         /// 缓存 dic
         /// </summary>
         /// <returns></returns>
-        private Dictionary<string,Reference> Cache_Get_ReferenceList_Dic()
+        private Dictionary<string,Coach> Cache_Get_CoachList_Dic()
         {
-            return Cache_Get_ReferenceList().ToDictionary(x => x.ID);
+            return Cache_Get_CoachList().ToDictionary(x => x.ID);
         }
 
         /// <summary>
@@ -49,17 +49,37 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Reference>> Get_ReferencePageList(int pageIndex, int pageSize, string name)
+        public WebResult<PageList<Coach>> Get_CoachPageList(int pageIndex, int pageSize, string name, string no)
         {
             using (DbRepository entities = new DbRepository())
             {
-               var query = Cache_Get_ReferenceList().AsQueryable().AsNoTracking();
+               var query = Cache_Get_CoachList().AsQueryable().AsNoTracking();
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
                 }
+                if (no.IsNotNullOrEmpty())
+                {
+                    query = query.Where(x => x.IDCard.Contains(no));
+                }
+                var driverShopDic = Cache_Get_DriverShopList_Dic();
+                var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+
+                list.ForEach(x =>
+                {
+                    //省
+                    if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
+                        x.ProvinceName = areaDic[x.ProvinceCode]?.Value;
+                    //省
+                    if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
+                        x.CityName = areaDic[x.CityCode]?.Value;
+
+                    //证书
+                    if (!string.IsNullOrEmpty(x.DriverShopID) && driverShopDic.ContainsKey(x.DriverShopID))
+                        x.DriverShopName = driverShopDic[x.DriverShopID]?.Name;
+                });
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
@@ -69,7 +89,7 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Add_Reference(Reference model)
+        public WebResult<bool> Add_Coach(Coach model)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -77,10 +97,10 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.UpdatedTime = DateTime.Now;
-                entities.Reference.Add(model);
+                entities.Coach.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_ReferenceList();
+                    var list = Cache_Get_CoachList();
                     list.Add(model);
                     return Result(true);
                 }
@@ -98,24 +118,37 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Update_Reference(Reference model)
+        public WebResult<bool> Update_Coach(Coach model)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var oldEntity = entities.Reference.Find(model.ID);
+                var oldEntity = entities.Coach.Find(model.ID);
                 if (oldEntity != null)
                 {
+                    oldEntity.IDCard = model.IDCard;
                     oldEntity.Mobile = model.Mobile;
                     oldEntity.Name = model.Name;
-                    oldEntity.ShopIDStr = model.ShopIDStr;
                     oldEntity.GenderCode = model.GenderCode;
+                    oldEntity.Address = model.Address;
+                    oldEntity.ProvinceCode = model.ProvinceCode;
+                    oldEntity.CityCode = model.CityCode;
+                    oldEntity.Remark = model.Remark;
+                    oldEntity.DrivingYears = model.DrivingYears;
+                    oldEntity.ArchivesNO = model.ArchivesNO;
+                    oldEntity.TrainYears = model.TrainYears;
+                    oldEntity.ThemeThreeCount = model.ThemeThreeCount;
+                    oldEntity.ThemeTwoCount = model.ThemeTwoCount;
+                    oldEntity.FirstGetDriverDate = model.FirstGetDriverDate;
+                    oldEntity.FirstGetTrainDate = model.FirstGetTrainDate;
+                    oldEntity.DriverShopID = model.DriverShopID;
+                    oldEntity.EntryDate = model.EntryDate;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
 
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_ReferenceList();
+                    var list = Cache_Get_CoachList();
                     var index = list.FindIndex(x => x.ID.Equals(model.ID));
                     if (index>-1)
                     {
@@ -141,11 +174,11 @@ namespace DOL.Service
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Reference Find_Reference(string id)
+        public Coach Find_Coach(string id)
         {
             if (!id.IsNotNullOrEmpty())
                 return null;
-             return Cache_Get_ReferenceList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(id));
+             return Cache_Get_CoachList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(id));
         }
 
 
@@ -154,15 +187,15 @@ namespace DOL.Service
         /// </summary>
         /// <param name="">门店id</param>
         /// <returns></returns>
-        public List<SelectItem> Get_ReferenceSelectItem(string enteredPointId)
+        public List<SelectItem> Get_CoachSelectItem(string driverShopId)
         {
             using (DbRepository entities = new DbRepository())
             {
                 List<SelectItem> list = new List<SelectItem>();
 
-                var query = Cache_Get_ReferenceList().AsQueryable().AsNoTracking();
+                var query = Cache_Get_CoachList().AsQueryable().AsNoTracking();
 
-                if (string.IsNullOrEmpty(enteredPointId))
+                if (string.IsNullOrEmpty(driverShopId))
                 {
                     query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
@@ -175,7 +208,7 @@ namespace DOL.Service
                 }
                 else
                 {
-                    query.Where(x=>x.ShopIDStr.Contains(enteredPointId)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    query.Where(x=>x.DriverShopID.Equals(driverShopId)&&(x.Flag|(long)GlobalFlag.Normal)==0).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
                         list.Add(new SelectItem()
                         {
@@ -190,11 +223,11 @@ namespace DOL.Service
         }
 
         /// <summary>
-        /// 删除分类
+        /// 删除
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public WebResult<bool> Delete_Reference(string ids)
+        public WebResult<bool> Delete_Coach(string ids)
         {
             if (!ids.IsNotNullOrEmpty())
             {
@@ -202,15 +235,19 @@ namespace DOL.Service
             }
             using (DbRepository entities = new DbRepository())
             {
-                var list = Cache_Get_ReferenceList();
+                var list = Cache_Get_CoachList();
                 //找到实体
-                entities.Reference.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
+                entities.Coach.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
-                    entities.Reference.Remove(x);
+                    x.Flag = x.Flag & ~(long)GlobalFlag.Unabled;
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
                     if (index > -1)
                     {
-                        list.RemoveAt(index);
+                        list[index] = x;
+                    }
+                    else
+                    {
+                        list.Add(x);
                     }
                 });
                 if (entities.SaveChanges() > 0)

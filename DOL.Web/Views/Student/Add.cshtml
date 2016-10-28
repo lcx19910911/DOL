@@ -25,7 +25,7 @@
                             户籍地<strong class="am-text-danger am-text-sm">*</strong>：
                         </div>
                         <div class="am-u-md-5 am-text-left am-u-end">
-                            <select name="ProvinceCode" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" onchange="ShowCity(false,1)" style="width:120px;"></select>省
+                            <select name="ProvinceCode" readonly data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" onchange="ShowCity(false,1)" style="width:120px;"></select>省
                             <select name="CityCode" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>市
                         </div>
                     </div>
@@ -402,8 +402,6 @@
                                     data: model
                                 });
                                 formInit(model);//表单初始化
-                                
-                               
                             });
                         },
                         buttons: [{

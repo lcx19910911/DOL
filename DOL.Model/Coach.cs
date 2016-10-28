@@ -39,16 +39,34 @@ namespace DOL.Model
         /// </summary>
         [MaxLength(512)]
         [Display(Name = "地址")]
-        [Column("IDCardsAddress", TypeName = "varchar")]
-        public string IDCardsAddress { get; set; }
+        [Column("Address", TypeName = "varchar")]
+        public string Address { get; set; }
+
 
         /// <summary>
-        /// 户籍地址
+        /// 省份编码
         /// </summary>
-        [MaxLength(512)]
-        [Display(Name = "地址")]
-        [Column("HouseholdAddress", TypeName = "varchar")]
-        public string HouseholdAddress { get; set; }
+        [MaxLength(6)]
+        [Column("ProvinceCode", TypeName = "varchar")]
+        public string ProvinceCode { get; set; }
+
+        /// <summary>
+        /// 城市编码
+        /// </summary>
+        [MaxLength(6)]
+        [Column("CityCode", TypeName = "varchar")]
+        public string CityCode { get; set; }
+        /// <summary>
+        /// 省份名称
+        /// </summary>
+        [NotMapped]
+        public string ProvinceName { get; set; }
+
+        /// <summary>
+        /// 城市称
+        /// </summary>
+        [NotMapped]
+        public string CityName { get; set; }
 
 
         /// <summary>
@@ -65,6 +83,48 @@ namespace DOL.Model
         [RegularExpression(@"((\d{11})$)", ErrorMessage = "手机格式不正确")]
         public string Mobile { get; set; }
 
+
+
+
+        /// <summary>
+        /// 教练证信息
+       
+
+        /// <summary>
+        /// 教练证初次申领时间
+        /// </summary>
+        public Nullable<DateTime> FirstGetTrainDate { get; set; }
+
+        /// <summary>
+        /// 教龄
+        /// </summary>
+        public int TrainYears { get; set; }
+
+
+
+        /// <summary>
+        /// 驾驶证信息
+        
+        /// <summary>
+        /// 教练证初次申领时间
+        /// </summary>
+        public Nullable<DateTime> FirstGetDriverDate { get; set; }
+        /// <summary>
+        /// 驾龄
+        /// </summary>
+        public int DrivingYears { get; set; }
+
+
+
+        /// <summary>
+        /// 档案编号
+        /// </summary>
+        [MaxLength(128)]
+        [Column("ArchivesNO", TypeName = "varchar")]
+        public string ArchivesNO { get; set; }
+
+
+
         /// <summary>
         /// 入职时间
         /// </summary>
@@ -78,40 +138,6 @@ namespace DOL.Model
         [Column("Remark", TypeName = "varchar")]
         public string Remark { get; set; }
 
-        /// <summary>
-        /// 教练证信息
-        /// </summary>
-        [MaxLength(512)]
-        [Column("CertificateInfo", TypeName = "varchar")]
-        public string CertificateInfo { get; set; }
-
-        /// <summary>
-        /// 驾龄
-        /// </summary>
-        public int DrivingYears { get; set; }
-
-        /// <summary>
-        /// 档案编号
-        /// </summary>
-        [MaxLength(128)]
-        [Column("ArchivesNO", TypeName = "varchar")]
-        public string ArchivesNO { get; set; }
-        
-
-        /// <summary>
-        /// 教龄
-        /// </summary>
-        public int TrainYears { get; set; }
-
-        /// <summary>
-        /// 初次申领时间
-        /// </summary>
-        public Nullable<DateTime> FirstClaimDate { get; set; }
-
-        /// <summary>
-        /// 入职时间
-        /// </summary>
-        public Nullable<DateTime> ReportDate { get; set; }
 
         /// <summary>
         /// 科目二通过数
@@ -124,5 +150,18 @@ namespace DOL.Model
         /// </summary>
 
         public int ThemeThreeCount { get; set; }
+
+        /// <summary>
+        /// 所属驾校
+        /// </summary>
+        [Required(ErrorMessage = "所属驾校不能为空")]
+        [Column("DriverShopID", TypeName = "char"), MaxLength(32)]
+        public string DriverShopID { get; set; }
+
+        /// <summary>
+        /// 所属驾校
+        /// </summary>
+        [NotMapped]
+        public string DriverShopName { get; set; }
     }
 }

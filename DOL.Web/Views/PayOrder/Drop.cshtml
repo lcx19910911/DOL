@@ -1,0 +1,292 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "退管管理";
+}
+
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>退管管理</small></div>
+</div>
+<div id="searchDomain">
+
+    <div class="am-g">
+        <div class="am-u-lg-2">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">身份证：</span>
+                <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:100px;" name="no" ;>
+            </div>
+        </div>
+
+        <div class="am-u-lg-6 am-u-end">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">状态：</span>
+                <select name="state" data-am-selected="{btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1">不限</option>
+                    <option value="1">已确认</option>
+                    <option value="0">未确认</option>
+                </select>
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<div class="grid_container">
+    <table id="dataTable" class="am-table am-table-striped am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th dataname="EnteredDate" datatype="jsondate">报名日期</th>
+                <th dataname="Name">姓名</th>
+                <th dataname="IDCard">身份证</th>
+                <th dataname="CertificateName">车型</th>
+                <th dataname="EnteredPointName">报名点</th>
+                <th dataname="ReferenceName">推荐人</th>
+                <th dataname="Money">全款金额</th>
+                <th dataname="HadPayMoney">已缴</th>
+                <th dataname="WantDropMoney">退款金额</th>
+                <th dataname="WantDropDate" datatype="jsondate">申请日期</th>
+                <th dataname="CreaterName">登记人</th>
+                <th dataname="ConfirmUserName">办理人</th>
+                <th render="ShowConfirm">确认情况</th>
+                <th dataname="ConfirmDate" datatype="jsondate">确认日期</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+
+
+        function formInit(dataitem) {
+            if (dataitem != null) {
+                if (dataitem.VoucherThum != null) {
+                    if (dataitem.VoucherThum != null) {
+                        $("#imageDiv").show().find("img").attr("src", dataitem.VoucherThum);
+                    }
+
+                }
+            }
+
+            $.Nuoya.action("/Student/GetPaySelectItemList", {}, function (json) {
+                $(json).each(function () {
+                    $("#form select[name='PayTypeID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                });
+            });
+
+            //添加表单验证
+            $.Nuoya.form("payForm").validate({
+                rules: {
+
+                    PayTime: {
+                        required: true
+                    },
+                    PayTypeID: {
+                        required: true
+                    },
+                    AccountNO: {
+                        required: true
+                    },
+                    VoucherNO: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    PayMoney: {
+                        required: true,
+                        min: 0,
+                        max: 99999999
+                    },
+                },
+                messages: {
+                    PayTime: {
+                        required: "不允许为空",
+                    },
+                    PayTypeID: {
+                        required: "不允许为空",
+                    },
+                    AccountNO: {
+                        required: "不允许为空",
+                    },
+                    VoucherNO: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
+                    PayMoney: {
+                        required: "请输入数字",
+                        max: "必须小于{0}",
+                        min: "必须大于{0}"
+                    }
+                }
+            });
+            UploadImg();
+        }
+
+        function UploadImg() {
+            var headimgbtn = $("#imageFile").uploadFile({
+                url: '/upload/uploadimage?mark=PayOrder',
+                fileSuffixs: ["jpg", "png", "gif"],
+                maximumFilesUpload: 1,//最大文件上传数
+                onComplete: function (data) {
+                    if (data) {
+                        $("[name='VoucherThum']").val(data);
+                        $("#imageDiv").show().find("img").attr("src", data);
+                    }
+                    else {
+                        $.Nuoya.alert("上传错误");
+                    }
+
+                },
+                onChosen: function (file, obj, fileSize, errorText) {
+                    if (errorText) {
+                        $.Nuoya.alert(errorText);
+                        return false;
+                    }
+                    //Loading("图片正在上传中...", "请稍等");
+                    uploadheadimg.submitUpload();
+                    return true;//返回false将取消当前选择的文件
+                },
+            });
+            var uploadheadimg = headimgbtn.data("uploadFileData");
+        }
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+        }
+
+        var grid = $.Nuoya.grid({
+            tableId: "dataTable",
+            //表格id
+            search: {
+                domainId: "searchDomain",
+                subId: "btnSearch"
+            },
+            ajaxUrl: "/PayOrder/GetDropPageList",
+            params: {
+                pageUrl: GetUrlRelativePath()
+            },
+            //数据请求地址
+            pageSize: 10,
+            events: [
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "查看",
+                    formula: function (item) {
+                        if (item.IsConfirm == 1) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/PayOrder/Confirm.html",
+                            title: "退款详情",
+                            width: "1000px",
+                            height: "800px",
+                            callback: function (e) {
+                                $.Nuoya.action("/PayOrder/Find", { id: item.ID }, function (model) {
+                                    //载入数据
+                                    $.Nuoya.form("form").dataLoad({
+                                        data: model
+                                    });
+                                    formInit(model);//表单初始化
+                                    $("#form  input,select").attr("readonly", true);
+                                });
+                            }
+                        })
+
+                        event.preventDefault();
+                    }
+                },
+                {
+                    className: "am-text-danger",
+                    icon: "icon-trash-o",
+                    name: "确认",
+                    url: "/PayOrder/ConfirmDrop",
+                    formula: function (model) {
+                        if (model.IsConfirm === 0) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/PayOrder/Confirm.html",
+                            title: "退款转账",
+                            width: "1000px",
+                            height: "800px",
+                            callback: function (e) {
+                                formInit();//表单初始化
+                            },
+                            buttons: [{
+                                label: "确认",
+                                callback: function (e) {
+                                    $.Nuoya.confirm("确认退款？", function () {
+                                        $.Nuoya.form("form").ajaxSubmit({
+                                            ajaxUrl: "/PayOrder/ConfirmDrop",
+                                            params: {
+                                                ID: item.ID
+                                            },
+                                            callback: function (data) {
+                                                if (!data.ErrorDesc) {
+                                                    e.hide();
+                                                    grid.reload();
+                                                }
+                                                else
+                                                    $.Nuoya.alert(data.ErrorDesc);
+                                            }
+                                        });
+                                    });
+                                }
+                            }]
+                        })
+
+                        event.preventDefault();
+
+
+                    }
+                },
+                {
+                    className: "am-text-danger",
+                    icon: "icon-trash-o",
+                    name: "删除",
+                    url: "/PayOrder/Delete",
+                    formula: function (item) {
+                        if (item.IsConfirm == 0) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+
+                        $.Nuoya.confirm("确认删除？", function () {
+                            $.Nuoya.deleteAction("/PayOrder/Delete", {
+                                ids: item.ID
+                            },
+                            function () {
+                                grid.reload();
+                            });
+                        });
+                    }
+                }
+            ]
+        });
+
+        LoadItemList(true, null);
+    </script>
+}

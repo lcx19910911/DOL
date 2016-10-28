@@ -324,6 +324,11 @@ namespace DOL.Model
         public YesOrNoCode ThemeTwoPass { get; set; }
 
         /// <summary>
+        /// 科目二学时状态
+        /// </summary>
+        public ThemeTimeCode ThemeTwoTimeCode { get; set; }
+
+        /// <summary>
         /// 科目三时间
         /// </summary>
         public Nullable<DateTime> ThemeThreeDate { get; set; }
@@ -344,6 +349,11 @@ namespace DOL.Model
         /// 科目三是否通过
         /// </summary>
         public YesOrNoCode ThemeThreePass { get; set; }
+
+        /// <summary>
+        /// 科目三学时状态
+        /// </summary>
+        public ThemeTimeCode ThemeThreeTimeCode { get; set; }
 
         /// <summary>
         /// 科目四时间
@@ -381,7 +391,7 @@ namespace DOL.Model
         public StudentCode State { get; set; }
 
         /// <summary>
-        /// 退学申请时间
+        /// 退学时间
         /// </summary>
 
         public Nullable<DateTime> DropOutDate { get; set; }

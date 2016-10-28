@@ -60,7 +60,7 @@ namespace DOL.Service
                 }
 
                 var count = query.Count();
-                var list = query.OrderBy(x => x.Sort).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.Sort).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 list.ForEach(x =>
                 {
                     if(!string.IsNullOrEmpty(x.ParentID))
@@ -214,7 +214,7 @@ namespace DOL.Service
         public List<DOL.Model.MenuItem> Get_UserMenu(string parentId)
         {
             List<DOL.Model.MenuItem> menuList = new List<DOL.Model.MenuItem>();
-            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().GroupBy(x => x.ParentID).ToList();
+            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().OrderByDescending(x => x.Sort).GroupBy(x => x.ParentID).ToList();
             return Get_UserMenu(parentId, group);
         }
 
@@ -284,7 +284,7 @@ namespace DOL.Service
         public List<ZTreeNode> Get_MenuZTreeChildren(string parentId)
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().GroupBy(x=>x.ParentID).ToList();
+            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().OrderByDescending(x => x.Sort).GroupBy(x=>x.ParentID).ToList();
             return Get_MenuZTreeChildren(parentId, group);
         }
 
@@ -297,7 +297,7 @@ namespace DOL.Service
         public List<ZTreeNode> Get_MenuZTreeFlagChildren(string parentId)
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().GroupBy(x => x.ParentID).ToList();
+            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().OrderByDescending(x => x.Sort).GroupBy(x => x.ParentID).ToList();
             return Get_MenuZTreeFlagChildren(parentId, group);
         }
 

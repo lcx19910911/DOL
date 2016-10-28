@@ -63,6 +63,7 @@
     <Compile Include="WebService.PayOrder.cs" />
     <Compile Include="WebService.Department.cs" />
     <Compile Include="WebService.DriverShop.cs" />
+    <Compile Include="WebService.Coach.cs" />
     <Compile Include="WebService.Reference.cs" />
     <Compile Include="WebService.Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

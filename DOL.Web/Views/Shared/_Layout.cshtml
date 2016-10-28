@@ -51,6 +51,7 @@
             });
         }
 
+        //关闭/展示菜单
         function unState() {
             var state = $(".admin-sidebar").css("display");
             if (state == "none")
@@ -59,6 +60,7 @@
                 $('.admin-sidebar').hide();
         }
 
+        //根据市加载报名点
         function LoadEnteredPoint(isIndex, obj) {
             if (isIndex) {
                 $("#searchDomain select[name='EnteredPointID']").empty();
@@ -81,15 +83,17 @@
             }
         }
 
+        //获取Json的日期
         function RenderDate(data) {
             var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
             return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDay() ;
         }
+        //获取Json的时间
         function RenderTime(data) {
             var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
             return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDay() + " " + da.getHours() + ":" + da.getSeconds() + ":" + da.getMinutes();
         }
-
+        //根据报名点加载推荐人
         function LoadReference(isIndex, obj) {
             if (isIndex) {
                 $("#searchDomain select[name='ReferenceID']").empty();
@@ -111,7 +115,7 @@
                 });
             }
         }
-
+        //加载省份
         function LoadProvince(isIndex, dataitem) {
             if (isIndex) {
                 $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
@@ -143,7 +147,7 @@
 
             }
         }
-
+        //加载学员信息的下拉框集合
         function LoadItemList(isIndex, dataitem) {
             $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
                 $(json.ReferenceList).each(function () {
@@ -298,6 +302,9 @@
         }
 
         //图片方法 缩小
+        function ShowThum(item) {
+            return "<a onclick='ShowImage(\"" + item.VoucherThum + "\")'><img src='" + item.VoucherThum + "' style='width:100px; height:40px;'/></a>"
+        }
         function ShowImage(src)
         {
             $("#imgDiv img").attr("src", src);
@@ -309,6 +316,7 @@
             });
         });
 
+        //获取页面路径
         function GetUrlRelativePath()
         {
             var url = document.location.toString();
@@ -326,8 +334,22 @@
         //权限路径集合
         var operateUrlArray = new Array();
 
-        function ShowThum(item) {
-            return "<a onclick='ShowImage(\"" + item.VoucherThum + "\")'><img src='" + item.VoucherThum + "' style='width:100px; height:40px;'/></a>"
+        //显示性别
+        function Gender(item) {
+            if (item.GenderCode == 1)
+                return "男";
+            else if (item.GenderCode == 2)
+                return "女";
+            else
+                return "未知";
+        }
+
+        //显示性别
+        function ShowConfirm(item) {
+            if (item.IsConfirm == 1)
+                return "已确认";
+            else
+                return "未确认";
         }
     </script>
 </head>

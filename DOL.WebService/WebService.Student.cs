@@ -51,13 +51,14 @@ namespace DOL.Service
         /// <returns></returns>
         public WebResult<PageList<Student>> Get_StudentPageList(
             int pageIndex,
-            int pageSize, 
+            int pageSize,
             string name,
             string referenceId,
             string no,
             string mobile,
             string enteredPointId,
             string makeDriverShopId,
+            StudentCode state,
             DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
             DateTime? makedTimeStart, DateTime? makeTimeEnd
             )
@@ -77,7 +78,10 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.Mobile.Contains(mobile));
                 }
-
+                if (state != StudentCode.None)
+                {
+                    query = query.Where(x => x.State.Equals(state));
+                }
                 if (referenceId.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.ReferenceID.Equals(referenceId));
@@ -123,7 +127,7 @@ namespace DOL.Service
                 list.ForEach(x =>
                 {
                     //报名地
-                    if (!string.IsNullOrEmpty(x.EnteredCityCode)&& areaDic.ContainsKey(x.EnteredCityCode))
+                    if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
                         x.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
                     //制卡地
                     if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
@@ -174,7 +178,7 @@ namespace DOL.Service
                 if (entities.Student.AsNoTracking().Where(x => x.Name.Equals(model.IDCard)).Any())
                     return Result(false, ErrorCode.datadatabase_idcards__had);
                 var makecardShop = Cache_Get_DriverShopList().FirstOrDefault(x => x.ID.Equals(model.MakeDriverShopID));
-                if(makecardShop==null)
+                if (makecardShop == null)
                     return Result(false, ErrorCode.sys_param_format_error);
                 model.MakeCardCityCode = makecardShop.CityCode;
                 model.CreatedTime = DateTime.Now;
@@ -183,10 +187,8 @@ namespace DOL.Service
                 model.NowTheme = ThemeCode.None;
                 model.UpdaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
-                if (model.HadPayMoney == model.Money)
-                    model.MoneyIsFull = YesOrNoCode.Yes;
-                else
-                    model.MoneyIsFull = YesOrNoCode.No;
+
+                model.MoneyIsFull = YesOrNoCode.No;
 
                 entities.Student.Add(model);
                 if (entities.SaveChanges() > 0)
@@ -218,9 +220,9 @@ namespace DOL.Service
                 ReferenceList = referenceList,
                 DriverShopList = driverShopList,
                 EnteredPointList = enteredPointList,
-                CertificateList= Get_DataDictorySelectItem(GroupCode.Certificate),
-                PayMethodList= Get_DataDictorySelectItem(GroupCode.PayMethod),
-                TrainList= Get_DataDictorySelectItem(GroupCode.Train),
+                CertificateList = Get_DataDictorySelectItem(GroupCode.Certificate),
+                PayMethodList = Get_DataDictorySelectItem(GroupCode.PayMethod),
+                TrainList = Get_DataDictorySelectItem(GroupCode.Train),
                 PayTypeList = Get_DataDictorySelectItem(GroupCode.PayType),
                 AccountList = Get_DataDictorySelectItem(GroupCode.Account)
             });
@@ -246,7 +248,52 @@ namespace DOL.Service
                 {
                     if (list.AsQueryable().Where(x => x.Name.Equals(model.IDCard) && !x.ID.Equals(model.ID)).Any())
                         return Result(false, ErrorCode.datadatabase_idcards__had);
+                    oldEntity.IDCard = model.IDCard;
+                    oldEntity.Mobile = model.Mobile;
                     oldEntity.Name = model.Name;
+                    oldEntity.GenderCode = model.GenderCode;
+                    oldEntity.Address = model.Address;
+                    oldEntity.ProvinceCode = model.ProvinceCode;
+                    oldEntity.CityCode = model.CityCode;
+                    oldEntity.Remark = model.Remark;
+                    oldEntity.EnteredProvinceCode = model.EnteredProvinceCode;
+                    oldEntity.EnteredCityCode = model.EnteredCityCode;
+                    oldEntity.EnteredDate = model.EnteredDate;
+                    oldEntity.EnteredPointID = model.EnteredPointID;
+                    oldEntity.ReferenceID = model.ReferenceID;
+                    oldEntity.WantDriverShopID = model.WantDriverShopID;
+                    oldEntity.TrianID = model.TrianID;
+                    oldEntity.Money = model.Money;
+                    oldEntity.PayMethodID = model.PayMethodID;
+                    oldEntity.MakeDriverShopID = model.MakeDriverShopID;
+                    oldEntity.MakeCardCityCode = model.MakeCardCityCode;
+                    oldEntity.MakeCardRemark = model.MakeCardRemark;
+                    oldEntity.CertificateID = model.CertificateID;
+
+
+                    oldEntity.ThemeOneDate = model.ThemeOneDate;
+                    oldEntity.ThemeOneCoachID = model.ThemeOneCoachID;
+                    oldEntity.ThemeTwoPass = model.ThemeOnePass;
+
+                    oldEntity.ThemeTwoDate = model.ThemeTwoDate;
+                    oldEntity.ThemeTwoCoachID = model.ThemeTwoCoachID;
+                    oldEntity.ThemeTwoPass = model.ThemeTwoPass;
+
+                    oldEntity.ThemeThreeDate = model.ThemeThreeDate;
+                    oldEntity.ThemeThreeCoachID = model.ThemeThreeCoachID;
+                    oldEntity.ThemeThreePass = model.ThemeThreePass;
+
+                    oldEntity.ThemeFourDate = model.ThemeFourDate;
+                    oldEntity.ThemeFourCoachID = model.ThemeFourCoachID;
+                    oldEntity.ThemeFourPass = model.ThemeFourPass;
+
+                    oldEntity.IsAddCertificate = model.IsAddCertificate;
+                    if (model.IsAddCertificate == YesOrNoCode.Yes)
+                        oldEntity.OldCertificate = model.OldCertificate;
+
+                    oldEntity.ThemeTwoTimeCode = model.ThemeTwoTimeCode;
+                    oldEntity.ThemeThreeTimeCode = model.ThemeThreeTimeCode;
+
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                 }
@@ -312,6 +359,63 @@ namespace DOL.Service
             }
         }
 
+
+        /// <summary>
+        /// 申请退学
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public WebResult<bool> WantDrop_Student(string id,string remark,decimal money)
+        {
+            if (!id.IsNotNullOrEmpty())
+            {
+                return Result(false, ErrorCode.sys_param_format_error);
+            }
+            using (DbRepository entities = new DbRepository())
+            {
+                var list = Cache_Get_StudentList();
+                //找到实体
+                var student=entities.Student.Find(id);
+
+                if(student==null)
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                student.State = StudentCode.WantDropOut;
+                student.Remark = remark;
+                entities.PayOrder.Add(new PayOrder()
+                {
+                    StudentID = id,
+                    PayMoney = student.HadPayMoney,
+                    CreaterID = Client.LoginUser.ID,
+                    IsConfirm = YesOrNoCode.No,
+                    ID = Guid.NewGuid().ToString("N"),
+                    WantDropMoney = money,
+                    CreatedTime = DateTime.Now,
+                    UpdatedTime = DateTime.Now,
+                    IsDrop=YesOrNoCode.Yes,
+                    WantDropDate= DateTime.Now,
+                    Flag =(long)GlobalFlag.Normal
+                });
+                if (entities.SaveChanges() > 0)
+                {
+                    var index = list.FindIndex(y => y.ID.Equals(id));
+                    if (index > -1)
+                    {
+                        list[index] = student;
+                    }
+                    else
+                    {
+                        list.Add(student);
+                    }
+
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+        }
 
         /// <summary>
         /// 查找实体

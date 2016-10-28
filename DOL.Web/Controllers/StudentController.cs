@@ -68,10 +68,11 @@ namespace DOL.Web.Controllers
             string mobile,
             string enteredPointId,
             string makeDriverShopId,
+            StudentCode state,
             DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
             DateTime? makedTimeStart, DateTime? makeTimeEnd)
         {
-            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd));
+            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId,state, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd));
         }
 
 
@@ -84,6 +85,17 @@ namespace DOL.Web.Controllers
         public ActionResult GetSelectItemList()
         {
             return JResult(WebService.Get_SelectItemList());
+        }
+
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult GetPaySelectItemList()
+        {
+            return JResult(WebService.Get_DataDictorySelectItem(GroupCode.PayType));
         }
 
         /// <summary>
@@ -105,6 +117,17 @@ namespace DOL.Web.Controllers
                 return ParamsErrorJResult(ModelState);
             }
         }
+
+        /// <summary>
+        /// 申请退学
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult WantDrop(string id,string remark,decimal money)
+        {
+            return JResult(WebService.WantDrop_Student(id,remark, money));
+        }
+        
 
         /// <summary>
         /// 报名

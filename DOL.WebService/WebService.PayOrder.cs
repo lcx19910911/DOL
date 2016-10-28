@@ -71,7 +71,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.IsDrop == YesOrNoCode.No);
 
 
                 if (no.IsNotNullOrEmpty())
@@ -133,6 +133,89 @@ namespace DOL.Service
         }
 
 
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <returns></returns>
+        public WebResult<PageList<PayOrder>> Get_WantDropPayOrderPageList(
+            int pageIndex,
+            int pageSize,
+            string no,
+            int state
+            )
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.IsDrop == YesOrNoCode.Yes);
+
+
+                    
+                    
+                 var studentQuery=Cache_Get_StudentList().Where(x => x.State == StudentCode.WantDropOut || x.State == StudentCode.HadDropOut);
+
+                if (no.IsNotNullOrEmpty())
+                {
+                    studentQuery = studentQuery.Where(x =>x.IDCard.Contains(no));
+                }
+                var studentIdList = studentQuery.Select(x=>x.ID).ToList();
+
+                query = query.Where(x => studentIdList.Contains(x.StudentID));
+
+                if (state != -1)
+                {
+                    query = query.Where(x => (int)x.IsConfirm == state);
+                }
+
+                var count = query.Count();
+                var list = query.OrderByDescending(x => x.PayTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var studentDic = Cache_Get_StudentList_Dic();
+                var referenceDic = Cache_Get_ReferenceList_Dic();
+                var enteredDic = Cache_Get_EnteredPoint_Dic();
+                var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
+                var userDic = Cache_Get_UserDic();
+                list.ForEach(x =>
+                {
+                    if (!string.IsNullOrEmpty(x.StudentID))
+                    {
+                        if (studentDic.ContainsKey(x.StudentID))
+                        {
+                            var student = studentDic[x.StudentID];
+                            x.EnteredDate = student.EnteredDate;
+                            x.MakeCardDate = student.MakeCardDate;
+                            x.Mobile = student.Mobile;
+                            x.Money = student.Money;
+                            x.HadPayMoney = student.HadPayMoney;
+                            x.Name = student.Name;
+                            x.IDCard = student.IDCard;
+
+                            //推荐人
+                            if (!string.IsNullOrEmpty(student.ReferenceID) && referenceDic.ContainsKey(student.ReferenceID))
+                                x.ReferenceName = referenceDic[student.ReferenceID]?.Name;
+
+                            //证书
+                            if (!string.IsNullOrEmpty(student.CertificateID) && cerDic.ContainsKey(student.CertificateID))
+                                x.CertificateName = cerDic[student.CertificateID]?.Value;
+                            //报名点
+                            if (!string.IsNullOrEmpty(student.EnteredPointID) && enteredDic.ContainsKey(student.EnteredPointID))
+                                x.EnteredPointName = enteredDic[student.EnteredPointID]?.Name;
+                        }
+                    }
+                    //登记人
+                    if (!string.IsNullOrEmpty(x.CreaterID) && userDic.ContainsKey(x.CreaterID))
+                        x.CreaterName = userDic[x.CreaterID]?.Name;
+                    //确认人
+                    if (!string.IsNullOrEmpty(x.ConfirmUserID) && userDic.ContainsKey(x.ConfirmUserID))
+                        x.ConfirmUserName = userDic[x.ConfirmUserID]?.Name;
+
+                });
+
+                return ResultPageList(list, pageIndex, pageSize, count);
+            }
+        }
+
+
 
         /// <summary>
         /// 增加
@@ -148,6 +231,7 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.IsConfirm = YesOrNoCode.No;
+                model.IsDrop = YesOrNoCode.No;
                 entities.PayOrder.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -235,6 +319,74 @@ namespace DOL.Service
             }
         }
 
+
+        /// <summary>
+        /// 确认退款
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public WebResult<bool> Confirm_DropPayOrder(PayOrder model)
+        {
+            if (!model.ID.IsNotNullOrEmpty())
+            {
+                return Result(false, ErrorCode.sys_param_format_error);
+            }
+            using (DbRepository entities = new DbRepository())
+            {
+                var list = Cache_Get_PayOrderList();
+                var studentList = Cache_Get_StudentList();
+                var oldEntity = entities.PayOrder.Find(model.ID);
+
+                if (oldEntity == null || oldEntity.IsConfirm == YesOrNoCode.Yes)
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                oldEntity.IsConfirm = YesOrNoCode.Yes;
+                oldEntity.ConfirmUserID = Client.LoginUser.ID;
+                oldEntity.ConfirmDate = DateTime.Now;
+                oldEntity.PayMoney = model.PayMoney;
+                oldEntity.PayTime = model.PayTime;
+                oldEntity.AccountNO = model.AccountNO;
+                oldEntity.VoucherNO = model.VoucherNO;
+                oldEntity.VoucherThum = model.VoucherThum;
+                oldEntity.PayTypeID = model.PayTypeID;
+
+                var student = studentList.FirstOrDefault(x => x.ID.Equals(oldEntity.StudentID));
+
+                if (student == null)
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                student.State = StudentCode.HadDropOut;
+                student.DropOutDate = DateTime.Now;
+
+                if (entities.SaveChanges() > 0)
+                {
+
+                    var index = list.FindIndex(x => x.ID.Equals(model.ID));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    var studentIndex = studentList.FindIndex(x => x.ID.Equals(student.ID));
+                    if (studentIndex > -1)
+                    {
+                        studentList[studentIndex] = student;
+                    }
+                    else
+                    {
+                        studentList.Add(student);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+        }
 
         /// <summary>
         /// 修改
@@ -328,7 +480,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId) && x.Flag == (long)GlobalFlag.Normal).OrderBy(x => x.CreatedTime);
+                var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId) && x.Flag == (long)GlobalFlag.Normal&&x.IsDrop==YesOrNoCode.No).OrderBy(x => x.CreatedTime);
                 var count = query.Count();
                 var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var accountList = Get_DataDictorySelectItem(GroupCode.Account);

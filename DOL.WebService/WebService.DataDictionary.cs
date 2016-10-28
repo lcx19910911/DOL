@@ -231,7 +231,7 @@ namespace DOL.Service
         /// <returns></returns>
         public List<SelectItem> Get_AreaList(string value)
         {
-            var areas = Cache_Get_DataDictionary()[GroupCode.Area].Values.ToList().AsQueryable();
+            var areas = Cache_Get_DataDictionary()[GroupCode.Area].Values.OrderByDescending(x => x.Sort).ToList().AsQueryable();
             if (!string.IsNullOrEmpty(value)&&!value.Equals("0"))
                 areas = areas.Where(x=>!string.IsNullOrEmpty(x.ParentKey)&&x.ParentKey.Trim().Equals(value));
             else
@@ -242,27 +242,6 @@ namespace DOL.Service
             return list;
         }
 
-        /// <summary>
-        /// 获取支付种类
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public List<DataDictionary> Get_PayTypeList()
-        {
-            var dic = Cache_Get_DataDictionary()[GroupCode.PayType];
-            return dic.Values.ToList();
-        }
-
-        /// <summary>
-        /// 获取支付方法
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public List<DataDictionary> Get_PayMethodList()
-        {
-            var dic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
-            return dic.Values.ToList();
-        }
 
         /// <summary>
         /// 获取下拉框
@@ -276,7 +255,7 @@ namespace DOL.Service
             if (dataDic.Keys.Contains(group))
             {
                 var dic = dataDic[group];
-                dic.Values.ToList().ForEach(x =>
+                dic.Values.OrderByDescending(x=>x.Sort).ToList().ForEach(x =>
                 {
                     list.Add(new SelectItem()
                     {

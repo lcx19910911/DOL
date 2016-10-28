@@ -49,6 +49,7 @@
     <Compile Include="Enum\ErrorCode.cs" />
     <Compile Include="Enum\GenderCode.cs" />
     <Compile Include="Enum\GlobalFlag.cs" />
+    <Compile Include="Enum\ThemeTimeCode.cs" />
     <Compile Include="Enum\ThemeCode.cs" />
     <Compile Include="Enum\StudentCode.cs" />
     <Compile Include="Enum\GroupCode.cs" />

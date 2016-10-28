@@ -197,7 +197,7 @@ namespace DOL.Service
             {
                 List<SelectItem> list = new List<SelectItem>();
 
-                var query = Cache_Get_DepartmentList().AsQueryable().AsNoTracking();
+                var query = Cache_Get_DepartmentList().OrderByDescending(x => x.Sort).AsQueryable().AsNoTracking();
 
                 query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                 {
@@ -259,7 +259,7 @@ namespace DOL.Service
         public List<ZTreeNode> Get_DepartmentZTreeChildren(string parentId)
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var group = Cache_Get_DepartmentList().AsQueryable().AsNoTracking().Where(x=>(x.Flag|(long)GlobalFlag.Normal)==0).GroupBy(x => x.ParentID).ToList();
+            var group = Cache_Get_DepartmentList().AsQueryable().AsNoTracking().Where(x=>(x.Flag|(long)GlobalFlag.Normal)==0).OrderByDescending(x => x.Sort).GroupBy(x => x.ParentID).ToList();
             return Get_DepartmentZTreeChildren(parentId, group);
         }
 

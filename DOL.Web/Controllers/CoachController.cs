@@ -1,5 +1,4 @@
-﻿
-using DOL.Model;
+﻿using DOL.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +8,10 @@ using System.Web.Mvc;
 namespace DOL.Web.Controllers
 {
     /// <summary>
-    /// 推荐人
+    /// 教练
     /// </summary>
     [LoginFilter]
-    public class ReferenceController : BaseController
+    public class CoachController : BaseController
     {
 
         public ViewResult Index()
@@ -25,14 +24,14 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Add(Reference entity)
+        public JsonResult Add(Coach entity)
         {
             ModelState.Remove("ID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Add_Reference(entity);
+                var result = WebService.Add_Coach(entity);
                 return JResult(result);
             }
             else
@@ -46,13 +45,13 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Update(Reference entity)
+        public JsonResult Update(Coach entity)
         {
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Update_Reference(entity);
+                var result = WebService.Update_Coach(entity);
                 return JResult(result);
             }
             else
@@ -65,13 +64,20 @@ namespace DOL.Web.Controllers
         /// <summary>
         /// 获取分页列表
         /// </summary>
-        /// <param name="pageIndex">页码</param>
-        /// <param name="pageSize">分页大小</param>
-        /// <param name="name">名称 - 搜索项</param>
         /// <returns></returns>
-        public ActionResult GetPageList(int pageIndex, int pageSize, string name)
+        public ActionResult GetPageList(int pageIndex, int pageSize, string name,  string no)
         {
-            return JResult(WebService.Get_ReferencePageList(pageIndex, pageSize, name));
+            return JResult(WebService.Get_CoachPageList(pageIndex, pageSize, name, no));
+        }
+
+       
+        /// <summary>
+        /// 获取下拉框 
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SelectItem(string id)
+        {
+            return JResult(WebService.Get_CoachSelectItem(id));
         }
 
         /// <summary>
@@ -81,7 +87,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Find(string id)
         {
-            return JResult(WebService.Find_Reference(id));
+            return JResult(WebService.Find_Coach(id));
         }
 
         /// <summary>
@@ -91,17 +97,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Delete(string ids)
         {
-            return JResult(WebService.Delete_Reference(ids));
-        }
-
-
-        /// <summary>
-        /// 获取角色选择项
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetSelectItem(string enteredPointId)
-        {
-            return JResult(WebService.Get_ReferenceSelectItem(enteredPointId));
+            return JResult(WebService.Delete_Coach(ids));
         }
     }
 }

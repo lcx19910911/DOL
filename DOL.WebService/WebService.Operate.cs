@@ -63,7 +63,7 @@ namespace DOL.Service
                 }
 
                 var count = query.Count();
-                var list = query.OrderBy(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.Sort).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var menuDic = Cache_Get_MenuList_Dic();
                 list.ForEach(x =>
                 {
@@ -275,7 +275,7 @@ namespace DOL.Service
         public List<ZTreeNode> Get_OperateZTreeFlagChildren()
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var group = Cache_Get_OperateList().AsQueryable().AsNoTracking().Where(x => (x.Flag | (long)GlobalFlag.Normal) == 0).GroupBy(x => x.MenuID).ToList();
+            var group = Cache_Get_OperateList().AsQueryable().AsNoTracking().Where(x => (x.Flag | (long)GlobalFlag.Normal) == 0).OrderByDescending(x => x.Sort).GroupBy(x => x.MenuID).ToList();
             return Get_OperateZTreeChildren(group);
         }
 

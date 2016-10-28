@@ -27,9 +27,13 @@ namespace DOL.Model
 
 
         /// <summary>
+        /// 退款费用
+        /// </summary>
+        public decimal WantDropMoney { get; set; } = 0;
+
+        /// <summary>
         /// 支付渠道ID
         /// </summary>
-        [Required(ErrorMessage = "支付渠道ID不能为空")]
         [Column("PayTypeID", TypeName = "char"), MaxLength(32)]
         public string PayTypeID { get; set; }
 
@@ -44,7 +48,6 @@ namespace DOL.Model
         /// 凭证号
         /// </summary>
         [MaxLength(32)]
-        [Required(ErrorMessage = "凭证号不能为空")]
         [Column("VoucherNO", TypeName = "varchar")]
         public string VoucherNO { get; set; }
 
@@ -67,7 +70,11 @@ namespace DOL.Model
         [NotMapped]
         public string AccountName { get; set; }
 
-        
+        /// <summary>
+        /// 退款费用
+        /// </summary>
+        public Nullable<DateTime> WantDropDate { get; set; }
+
         /// <summary>
         /// 支付时间
         /// </summary>
@@ -86,6 +93,11 @@ namespace DOL.Model
         /// 是否确认收款
         /// </summary>
         public YesOrNoCode IsConfirm { get; set; }
+
+        /// <summary>
+        /// 是否退款
+        /// </summary>
+        public YesOrNoCode IsDrop { get; set; }
         /// <summary>
         /// 确认人ID
         /// </summary>
@@ -107,6 +119,10 @@ namespace DOL.Model
         /// </summary>
         [Column("CreaterID", TypeName = "char"), MaxLength(32)]
         public string CreaterID { get; set; }
+
+
+
+
 
         /// <summary>
         /// 推荐人名称
@@ -134,6 +150,12 @@ namespace DOL.Model
         /// </summary>
         [NotMapped]
         public DateTime EnteredDate { get; set; }
+
+        /// <summary>
+        /// 报名点
+        /// </summary>
+        [NotMapped]
+        public string EnteredPointName { get; set; }
 
         /// <summary>
         /// 制卡日期

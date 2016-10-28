@@ -121,8 +121,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="File\dol.sql" />
+    <Content Include="File\Dol_Db.sql" />
     <Content Include="Global.asax" />
+    <Content Include="HtmlTemplates\Coach\Update.html" />
     <Content Include="HtmlTemplates\DataDictionary\Update.html" />
     <Content Include="HtmlTemplates\Department\Update.html" />
     <Content Include="HtmlTemplates\Area\Update.html" />
@@ -131,8 +132,10 @@
     <Content Include="HtmlTemplates\Operate\Update.html" />
     <Content Include="HtmlTemplates\Menu\Update.html" />
     <Content Include="HtmlTemplates\PayOrder\Index.html" />
+    <Content Include="HtmlTemplates\PayOrder\Confirm.html" />
     <Content Include="HtmlTemplates\Reference\Update.html" />
     <Content Include="HtmlTemplates\Role\Update.html" />
+    <Content Include="HtmlTemplates\Student\WantDrop.html" />
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
     <Content Include="HtmlTemplates\User\SelectOperate.html" />
     <Content Include="HtmlTemplates\User\SelectMenu.html" />
@@ -230,6 +233,7 @@
     <Compile Include="Controllers\DataDictionaryController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\AreaController.cs" />
+    <Compile Include="Controllers\CoachController.cs" />
     <Compile Include="Controllers\PayOrderController.cs" />
     <Compile Include="Controllers\DriverShopController.cs" />
     <Compile Include="Controllers\EnteredPointController.cs" />
@@ -275,6 +279,8 @@
     <Content Include="Views\Student\Update.cshtml" />
     <Content Include="Views\PayOrder\Index.cshtml" />
     <Content Include="Views\Student\MoreInfo.cshtml" />
+    <Content Include="Views\Coach\Index.cshtml" />
+    <Content Include="Views\PayOrder\Drop.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

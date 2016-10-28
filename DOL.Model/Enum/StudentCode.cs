@@ -25,7 +25,10 @@ namespace DOL.Model
         [Description("毕业")]
         Graduated = 3,
 
-        [Description("退学")]
-        DropOut = 4,
+        [Description("申请退学")]
+        WantDropOut = 4,
+
+        [Description("已退学")]
+        HadDropOut = 5,
     }
 }

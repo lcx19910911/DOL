@@ -1,10 +1,10 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "推荐人管理";
+    ViewBag.Title = "教练管理";
 }
 
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>推荐人管理</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>教练管理</small></div>
 </div>
 <div id="searchDomain">
 
@@ -12,7 +12,9 @@
         <div class="am-u-lg-6 am-u-end">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">名称：</span>
-                <input type="text" class="am-form-field" placeholder="按推荐人名称搜索" style="width:100px;" name="name" ;>
+                <input type="text" class="am-form-field" placeholder="按教练名称搜索" style="width:100px;" name="name" ;>
+                <span class="am-input-group-label am-margin-left-sm">身份证：</span>
+                <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:100px;" name="no" ;>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -40,12 +42,17 @@
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
-                <th dataname="Name">推荐人名称</th>
+                <th dataname="Name">教练名称</th>
+                <th dataname="DriverShopName">所属驾校</th>                
+                <th dataname="IDCard">身份证</th>
                 <th render="Gender">性别</th>
                 <th dataname="Mobile">手机</th>
-                <th dataname="Remark">备注</th>
+                <th dataname="ProvinceName">户籍省份</th>
+                <th dataname="CityName">户籍城市</th>
+                <th dataname="ThemeTwoCount">科二通过数</th>
+                <th dataname="ThemeThreeCount">科二通过数</th>
+                <th dataname="EntryDate" datatype="jsondate">入职日期</th>
                 <th dataname="CreatedTime" datatype="jsondate">创建日期</th>
-                <th dataname="UpdatedTime" datatype="jsondate">编辑日期</th>
                 <th type="eventlist"></th>
             </tr>
         </thead>
@@ -54,7 +61,7 @@
 </div>
 @section scripts
 {
-    <script type="text/javascript">
+    <script type="text/javascript"> 
 
         function ClearFilter() {
             $("#searchDomain input").val("");
@@ -63,7 +70,7 @@
         function batchDelete() {
             $.Nuoya.confirm("确认删除？", function () {
                 grid.del({
-                    ajaxUrl: "/Reference/Delete",
+                    ajaxUrl: "/Coach/Delete",
                     callback: function (json) {
                         grid.reload();
                     }
@@ -72,7 +79,39 @@
         }
 
         function formInit(dataitem) {
-            $("[name=ShopIDStrSelect]").ztreeSelect($("[name=ShopIDStr]"), "/EnteredPoint/GetZTreeFlagChildren", dataitem != null ? dataitem.ShopIDStr : 0, true, false);
+
+            $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
+                $(json).each(function () {
+                    if (dataitem != null) {
+                        if (dataitem.ProvinceCode == this.Value)
+                            $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                        else
+                            $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                    }
+                    else
+                        $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                });
+            });
+
+            if (dataitem != null) {
+                if (dataitem.ProvinceCode != null) {
+                    $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: dataitem.ProvinceCode }, function (json) {
+                        $(json).each(function () {
+                            if (dataitem.CityCode == this.Value)
+                                $("#form select[name='CityCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                            else
+                                $("#form select[name='CityCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                        });
+                    });
+                }
+            }
+
+
+            $.Nuoya.action("/DriverShop/GetSelectItem", { id: dataitem ? dataitem.DriverShopID : "" }, function (json) {
+                $(json).each(function () {
+                    $("select[name='DriverShopID']").append("<option " + (this.Selected == true ? "selected" : "") + " value='" + this.Value + "'>" + this.Text + "</option>");
+                });
+            });
 
             //添加表单验证
             $.Nuoya.form("form").validate({
@@ -109,8 +148,8 @@
         function add() {
             $.Nuoya.ajaxDialog({
                 closeViaDimmer: false,
-                ajaxUrl: "/HtmlTemplates/Reference/Update.html",
-                title: "添加推荐人",
+                ajaxUrl: "/HtmlTemplates/Coach/Update.html",
+                title: "添加教练",
                 width: "1000px",
                 height: "540px",
                 callback: function (e) {
@@ -120,7 +159,7 @@
                     label: "保存",
                     callback: function (e) {
                         $.Nuoya.form("form").ajaxSubmit({
-                            ajaxUrl: "/Reference/Add",
+                            ajaxUrl: "/Coach/Add",
                             callback: function (data) {
                                 if (!data.ErrorDesc) {
                                     e.hide();
@@ -142,7 +181,7 @@
                 domainId: "searchDomain",
                 subId: "btnSearch"
             },
-            ajaxUrl: "/Reference/GetPageList",
+            ajaxUrl: "/Coach/GetPageList",
             //数据请求地址
             pageSize: 10,
             events: [
@@ -153,12 +192,12 @@
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,
-                            ajaxUrl: "/HtmlTemplates/Reference/Update.html",
-                            title: "编辑推荐人",
+                            ajaxUrl: "/HtmlTemplates/Coach/Update.html",
+                            title: "编辑教练",
                             width: "1000px",
                             height: "540px",
                             callback: function (e) {
-                                $.Nuoya.action("/Reference/Find", { id: item.ID }, function (model) {
+                                $.Nuoya.action("/Coach/Find", { id: item.ID }, function (model) {
                                     //载入数据
                                     $.Nuoya.form("form").dataLoad({
                                         data: model
@@ -171,7 +210,7 @@
                                 callback: function (e) {
 
                                     $.Nuoya.form("form").ajaxSubmit({
-                                        ajaxUrl: "/Reference/Update",
+                                        ajaxUrl: "/Coach/Update",
                                         params: {
                                             ID: item.ID
                                         },
@@ -195,7 +234,7 @@
                     name: "删除",
                     click: function (item) {
                         $.Nuoya.confirm("确认删除？", function () {
-                            $.Nuoya.deleteAction("/Reference/Delete", {
+                            $.Nuoya.deleteAction("/Coach/Delete", {
                                 ids: item.ID
                             },
                             function () {

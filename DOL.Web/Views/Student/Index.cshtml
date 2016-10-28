@@ -8,7 +8,7 @@
 </div>
 <div id="searchDomain">
 
-    <div class="am-g">   
+    <div class="am-g">
         <div class="am-u-lg-12">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label ">姓名：</span>
@@ -25,7 +25,7 @@
 
                 <span class="am-input-group-label   am-margin-left-sm">推荐人：</span>
                 <select name="ReferenceID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"><option value="">不限</option></select>
- 
+
                 <span class="am-input-group-label  am-margin-left-sm">制卡驾校：</span>
                 <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"><option value="">不限</option></select>
             </div>
@@ -44,6 +44,16 @@
                 <input type="text" class="am-form-field" placeholder="请选择日期" name="makedTimeStart" readonly style="width:120px;">
                 <span class="am-input-group-label"> - </span>
                 <input type="text" class="am-form-field" placeholder="请选择日期" name="makeTimeEnd" readonly style="width:120px;">
+
+                <span class="am-input-group-label  am-margin-left-sm">学员状态</span>
+                <select name="State" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                <option value="0">不限</option>
+                    <option value="1">报名</option>
+                    <option value="2">培训中</option>
+                    <option value="3">毕业</option>
+                    <option value="4">申请退学</option>
+                    <option value="5">已退学</option>
+                </select>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -91,6 +101,7 @@
                 <th dataname="ReferenceName">推荐人</th>
                 <th dataname="UpdaterName">修改人</th>
                 <th dataname="UpdatedTime" datatype="jsondate">修改日期</th>
+                <th render="ShowState">学员状态</th>
                 <th type="eventlist"></th>
             </tr>
         </thead>
@@ -100,6 +111,19 @@
 @section scripts
 {
     <script type="text/javascript">
+        function ShowState(item) {
+            if (item.State == "1")
+                return "报名";
+            else if (item.State == "2")
+                return "培训中";
+            else if (item.State == "3")
+                return "毕业";
+            else if (item.State == "4")
+                return "申请退学";
+            else if (item.State == "5")
+                return "已退学";
+        }
+
         $('.admin-sidebar').hide();
         $('[name=enteredTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
         $('[name=enteredTimeEnd]').datepicker({ format: 'yyyy-mm-dd' });
@@ -164,32 +188,7 @@
 
         //新增
         function add() {
-            $.Nuoya.ajaxDialog({
-                closeViaDimmer: false,
-                ajaxUrl: "/HtmlTemplates/Student/Update.html",
-                title: "添加学员",
-                width: "1000px",
-                height: "420px",
-                callback: function (e) {
-                    formInit();//表单初始化
-                },
-                buttons: [{
-                    label: "保存",
-                    callback: function (e) {
-                        $.Nuoya.form("form").ajaxSubmit({
-                            ajaxUrl: "/Student/Add",
-                            callback: function (data) {
-                                if (!data.ErrorDesc) {
-                                    e.hide();
-                                    grid.reload();
-                                }
-                                else
-                                    $.Nuoya.alert(data.ErrorDesc);
-                            }
-                        });
-                    }
-                }]
-            })
+            window.location.href = "/Student/Add";
         }
 
         var grid = $.Nuoya.grid({
@@ -230,10 +229,55 @@
                             });
                         });
                     }
+                },
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "申请退学",
+                    url: "/Student/WantDrop",
+                    formula: function (model) {
+                        if (model.State != "4" && model.State != "5") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "600px",
+                            height: "400px",
+                            ajaxUrl: "/HtmlTemplates/Student/WantDrop.html",
+                            title: "申请退学",
+                            callback: function (e) {
+                                formInit();//表单初始化
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/Student/WantDrop", params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
                 }
             ]
         });
 
-        LoadItemList(true,null);
+        LoadItemList(true, null);
     </script>
 }
