@@ -76,14 +76,7 @@ namespace DOL.Web.Controllers
         }
 
 
-        /// <summary>
-        /// 获取下拉框 flag
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetZTreeFlagChildren()
-        {
-            return JResult(WebService.Get_OperateZTreeFlagChildren());
-        }
+    
 
         /// <summary>
         /// 查找实体

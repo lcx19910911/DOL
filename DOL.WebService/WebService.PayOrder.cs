@@ -250,7 +250,7 @@ namespace DOL.Service
 
 
         /// <summary>
-        /// 确认收款
+        /// 确认收款 学员状态为培训中
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
@@ -277,7 +277,7 @@ namespace DOL.Service
 
                 if (student == null)
                     return Result(false, ErrorCode.sys_param_format_error);
-
+                student.State = StudentCode.Training;
                 list.AsQueryable().Where(x => x.StudentID.Equals(student.ID) && x.IsConfirm == YesOrNoCode.Yes).ToList().ForEach(x =>
                 {
                     student.HadPayMoney += x.PayMoney;

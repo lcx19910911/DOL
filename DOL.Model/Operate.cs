@@ -21,12 +21,6 @@ namespace DOL.Model
         /// </summary>
         public long? LimitFlag { get; set; }
 
-        /// <summary>
-        /// 菜单ID
-        /// </summary>  
-        [Required(ErrorMessage = "菜单ID不能为空")]
-        [Column("MenuID", TypeName = "char"), MaxLength(32)]
-        public string MenuID { get; set; }
 
         /// <summary>
         /// 操作名称
@@ -51,7 +45,11 @@ namespace DOL.Model
         [Display(Name = "排序")]
         public int? Sort { get; set; }
 
-        [NotMapped]
-        public string MenuName { get; set; }
+        /// <summary>
+        /// 描述
+        /// </summary>
+        [MaxLength(64)]
+        [Column("Remark", TypeName = "varchar")]
+        public string Remark { get; set; }
     }
 }

@@ -82,16 +82,16 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.State.Equals(state));
                 }
-                if (referenceId.IsNotNullOrEmpty())
+                if (referenceId.IsNotNullOrEmpty()&& referenceId!="-1")
                 {
                     query = query.Where(x => x.ReferenceID.Equals(referenceId));
                 }
 
-                if (enteredPointId.IsNotNullOrEmpty())
+                if (enteredPointId.IsNotNullOrEmpty() && enteredPointId != "-1")
                 {
                     query = query.Where(x => x.EnteredPointID.Equals(enteredPointId));
                 }
-                if (makeDriverShopId.IsNotNullOrEmpty())
+                if (makeDriverShopId.IsNotNullOrEmpty() && makeDriverShopId != "-1")
                 {
                     query = query.Where(x => x.MakeDriverShopID.Equals(makeDriverShopId));
                 }
@@ -167,6 +167,159 @@ namespace DOL.Service
         }
 
         /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="name">名称 - 搜索项</param>
+        /// <param name="no">编号 - 搜索项</param>
+        /// <returns></returns>
+        public WebResult<PageList<Student>> Get_StudentMoreInfoPageList(
+            int pageIndex,
+            int pageSize,
+            string name,
+            string no,
+            string trianID,
+            string driverShopID,
+            string themeTwoCoachID,
+            string themeThreeCoachID,
+            YesOrNoCode? themeOnePass,
+            YesOrNoCode? themeTwoPass,
+            YesOrNoCode? themeThreePass,
+            YesOrNoCode? themeFourPass,
+            DateTime? themeOneTimeStart, DateTime? themeOneTimeEnd,
+            DateTime? themeTwoTimeStart, DateTime? themeTwoTimeEnd,
+            DateTime? themeThreeTimeStart, DateTime? themeThreeTimeEnd,
+            DateTime? themeFourTimeStart, DateTime? themeFourTimeEnd
+            )
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var query = Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                if (name.IsNotNullOrEmpty())
+                {
+                    query = query.Where(x => x.Name.Contains(name));
+                }
+                if (no.IsNotNullOrEmpty())
+                {
+                    query = query.Where(x => x.IDCard.Contains(no));
+                }
+
+                if (trianID.IsNotNullOrEmpty() && trianID != "-1")
+                {
+                    query = query.Where(x =>!string.IsNullOrEmpty(x.TrianID)&&x.TrianID.Equals(trianID));
+                }
+
+                if (driverShopID.IsNotNullOrEmpty()&& driverShopID != "-1")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.DriverShopID) && x.DriverShopID.Equals(driverShopID));
+                }
+                if (themeTwoCoachID.IsNotNullOrEmpty() && themeTwoCoachID != "-1")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(themeTwoCoachID));
+                }
+                if (themeThreeCoachID.IsNotNullOrEmpty() && themeThreeCoachID != "-1")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.ThemeThreeCoachID) && x.ThemeThreeCoachID.Equals(themeThreeCoachID));
+                }
+                if (themeTwoCoachID.IsNotNullOrEmpty() && themeTwoCoachID != "-1")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(themeTwoCoachID));
+                }
+
+                if (themeOnePass!=null&& (int)themeOnePass!=-1)
+                {
+                    query = query.Where(x => x.ThemeOnePass.Equals(themeOnePass));
+                }
+                if (themeTwoPass != null && (int)themeOnePass != -1)
+                {
+                    query = query.Where(x => x.ThemeTwoPass.Equals(themeTwoPass));
+                }
+                if (themeThreePass != null && (int)themeOnePass != -1)
+                {
+                    query = query.Where(x => x.ThemeThreePass.Equals(themeThreePass));
+                }
+                if (themeFourPass != null && (int)themeOnePass != -1)
+                {
+                    query = query.Where(x => x.ThemeFourPass.Equals(themeFourPass));
+                }
+
+                if (themeOneTimeStart != null)
+                {
+                    query = query.Where(x => x.ThemeOneDate >= themeOneTimeStart);
+                }
+                if (themeOneTimeEnd != null)
+                {
+                    themeOneTimeEnd = themeOneTimeEnd.Value.AddDays(1);
+                    query = query.Where(x => x.ThemeOneDate < themeOneTimeEnd);
+                }
+
+                if (themeTwoTimeStart != null)
+                {
+                    query = query.Where(x => x.ThemeTwoDate >= themeTwoTimeStart);
+                }
+                if (themeTwoTimeEnd != null)
+                {
+                    themeTwoTimeEnd = themeTwoTimeEnd.Value.AddDays(1);
+                    query = query.Where(x => x.ThemeTwoDate < themeTwoTimeEnd);
+                }
+
+
+                if (themeThreeTimeStart != null)
+                {
+                    query = query.Where(x => x.ThemeThreeDate >= themeThreeTimeStart);
+                }
+                if (themeThreeTimeEnd != null)
+                {
+                    themeThreeTimeEnd = themeThreeTimeEnd.Value.AddDays(1);
+                    query = query.Where(x => x.ThemeThreeDate < themeThreeTimeEnd);
+                }
+
+                if (themeFourTimeStart != null)
+                {
+                    query = query.Where(x => x.ThemeFourDate >= themeFourTimeStart);
+                }
+                if (themeFourTimeEnd != null)
+                {
+                    themeFourTimeEnd = themeFourTimeEnd.Value.AddDays(1);
+                    query = query.Where(x => x.ThemeFourDate < themeFourTimeEnd);
+                }
+
+                var count = query.Count();
+                var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var driverShopDic = Cache_Get_DriverShopList_Dic();
+                var coachDic = Cache_Get_CoachList_Dic(); 
+                var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
+                var userDic = Cache_Get_UserDic();
+                list.ForEach(x =>
+                {
+                    //培训方式
+                    if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
+                        x.TrianName = trianDic[x.TrianID]?.Value;
+                    //制卡驾校
+                    if (!string.IsNullOrEmpty(x.DriverShopID) && driverShopDic.ContainsKey(x.DriverShopID))
+                        x.DriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
+
+                    //科目二教练
+                    if (!string.IsNullOrEmpty(x.ThemeThreeCoachID) && coachDic.ContainsKey(x.ThemeThreeCoachID))
+                        x.ThemeThreeCoachName = coachDic[x.ThemeThreeCoachID]?.Name;
+                    //科目三教练
+                    if (!string.IsNullOrEmpty(x.ThemeTwoCoachID) && coachDic.ContainsKey(x.ThemeTwoCoachID))
+                        x.ThemeTwoCoachName = coachDic[x.ThemeTwoCoachID]?.Name;
+                    //修改人
+                    if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
+                        x.UpdaterName = userDic[x.UpdaterID]?.Name;
+                });
+
+                return ResultPageList(list, pageIndex, pageSize, count);
+            }
+        }
+
+
+      
+
+
+        /// <summary>
         /// 增加
         /// </summary>
         /// <param name="model"></param>
@@ -175,7 +328,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (entities.Student.AsNoTracking().Where(x => x.Name.Equals(model.IDCard)).Any())
+                if (Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => x.IDCard.Equals(model.IDCard)).Any())
                     return Result(false, ErrorCode.datadatabase_idcards__had);
                 var makecardShop = Cache_Get_DriverShopList().FirstOrDefault(x => x.ID.Equals(model.MakeDriverShopID));
                 if (makecardShop == null)
@@ -184,12 +337,22 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
                 model.State = StudentCode.Entered;
-                model.NowTheme = ThemeCode.None;
                 model.UpdaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
-
+                if (model.MakeDriverShopID == "-1")
+                    model.MakeDriverShopID = string.Empty;
                 model.MoneyIsFull = YesOrNoCode.No;
-
+                if (model.ThemeOnePass == YesOrNoCode.Yes)
+                    model.NowTheme = ThemeCode.One;
+                if (model.ThemeTwoPass == YesOrNoCode.Yes)
+                    model.NowTheme = ThemeCode.Two;
+                if (model.ThemeThreePass == YesOrNoCode.Yes)
+                    model.NowTheme = ThemeCode.Three;
+                if (model.ThemeFourPass == YesOrNoCode.Yes)
+                {
+                    model.NowTheme = ThemeCode.Four;
+                    model.State = StudentCode.Graduated;
+                }
                 entities.Student.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -214,12 +377,13 @@ namespace DOL.Service
             var referenceList = Cache_Get_ReferenceList();
             var driverShopList = Cache_Get_DriverShopList();
             var enteredPointList = Cache_Get_EnteredPointList();
-
+            var coachList = Cache_Get_CoachList();
             return Result(new StudentIndexModel()
             {
                 ReferenceList = referenceList,
                 DriverShopList = driverShopList,
                 EnteredPointList = enteredPointList,
+                CoachList = coachList,
                 CertificateList = Get_DataDictorySelectItem(GroupCode.Certificate),
                 PayMethodList = Get_DataDictorySelectItem(GroupCode.PayMethod),
                 TrainList = Get_DataDictorySelectItem(GroupCode.Train),
@@ -270,9 +434,8 @@ namespace DOL.Service
                     oldEntity.MakeCardRemark = model.MakeCardRemark;
                     oldEntity.CertificateID = model.CertificateID;
 
-
+                    oldEntity.DriverShopID = model.DriverShopID;
                     oldEntity.ThemeOneDate = model.ThemeOneDate;
-                    oldEntity.ThemeOneCoachID = model.ThemeOneCoachID;
                     oldEntity.ThemeTwoPass = model.ThemeOnePass;
 
                     oldEntity.ThemeTwoDate = model.ThemeTwoDate;
@@ -284,7 +447,6 @@ namespace DOL.Service
                     oldEntity.ThemeThreePass = model.ThemeThreePass;
 
                     oldEntity.ThemeFourDate = model.ThemeFourDate;
-                    oldEntity.ThemeFourCoachID = model.ThemeFourCoachID;
                     oldEntity.ThemeFourPass = model.ThemeFourPass;
 
                     oldEntity.IsAddCertificate = model.IsAddCertificate;
@@ -294,6 +456,17 @@ namespace DOL.Service
                     oldEntity.ThemeTwoTimeCode = model.ThemeTwoTimeCode;
                     oldEntity.ThemeThreeTimeCode = model.ThemeThreeTimeCode;
 
+                    if (model.ThemeOnePass == YesOrNoCode.Yes)
+                        oldEntity.NowTheme = ThemeCode.One;
+                    if (model.ThemeTwoPass == YesOrNoCode.Yes)
+                        oldEntity.NowTheme = ThemeCode.Two;
+                    if (model.ThemeThreePass == YesOrNoCode.Yes)
+                        oldEntity.NowTheme = ThemeCode.Three;
+                    if (model.ThemeFourPass == YesOrNoCode.Yes)
+                    {
+                        oldEntity.NowTheme = ThemeCode.Four;
+                        oldEntity.State = StudentCode.Graduated;
+                    }
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                 }

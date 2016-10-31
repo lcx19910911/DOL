@@ -62,7 +62,7 @@ namespace DOL.Repository
 
         public DbSet<SiteMessage> SiteMessage { get; set; }
 
-        public DbSet<Theme> Theme { get; set; }
+        public DbSet<Exam> Exam { get; set; }
 
         public DbSet<Reference> Reference { get; set; }
 

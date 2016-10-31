@@ -30,7 +30,7 @@ namespace DOL.Core
         /// <summary>
         /// 教练员默认权限
         /// </summary>
-        public static readonly int CoachMenuFlag = ConfigurationManager.AppSettings["CoachMenuFlag"].GetInt();
+        public static readonly long CoachMenuFlag = ConfigurationManager.AppSettings["CoachMenuFlag"].GetLong();
 
         /// <summary>
         /// 登陆cookie

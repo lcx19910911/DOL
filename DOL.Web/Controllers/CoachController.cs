@@ -19,6 +19,11 @@ namespace DOL.Web.Controllers
             return View();
         }
 
+        public ViewResult MyStudent()
+        {
+            return View();
+        }
+
         /// <summary>
         /// 新增
         /// </summary>
@@ -70,7 +75,18 @@ namespace DOL.Web.Controllers
             return JResult(WebService.Get_CoachPageList(pageIndex, pageSize, name, no));
         }
 
-       
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetMyStudentPageList(int pageIndex, int pageSize, string name, string no,
+            ThemeTimeCode? themeTwoCode,
+            ThemeTimeCode? themeThreeCode)
+        {
+            return JResult(WebService.Get_MyStudenPageList(pageIndex, pageSize, name, no, themeTwoCode, themeThreeCode));
+        }
+
+
         /// <summary>
         /// 获取下拉框 
         /// </summary>

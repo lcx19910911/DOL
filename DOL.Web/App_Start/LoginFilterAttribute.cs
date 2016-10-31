@@ -35,18 +35,19 @@ namespace DOL.Web
             }
             else
             {
-                if (user.MenuFlag != -1)
-                {
-                    int enumKey = EnumHelper.GetEnumKey(typeof(MenuFlag), controllerName);
-                    if ((user.MenuFlag & enumKey) == 0)
-                    {
-                        RedirectResult redirectResult = new RedirectResult("/Base/Forbidden");
-                        filterContext.Result = redirectResult;
-                    }
-                }
+                var url = filterContext.HttpContext.Request.RawUrl;
+                //if (user.MenuFlag != -1)
+                //{
+
+                //    var menuFlag = user.MenuFlag.HasValue ? user.MenuFlag.Value : 0;
+                //    if (!new WebService(new WebClient(filterContext.HttpContext)).IsHavePage(menuFlag, url))
+                //    {
+                //        filterContext.Result = new RedirectResult("/Home/Index");
+                //    }
+                //}
                 if (user.OperateFlag != -1)
                 {
-                    var url = filterContext.HttpContext.Request.RawUrl;
+
                     var operateFlag = user.OperateFlag.HasValue ? user.OperateFlag.Value : 0;
                     if (!new WebService(new WebClient(filterContext.HttpContext)).IsHaveAuthority(operateFlag, url))
                     {

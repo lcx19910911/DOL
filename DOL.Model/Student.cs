@@ -32,7 +32,7 @@ namespace DOL.Model
         [MaxLength(32)]
         [Required(ErrorMessage = "身份证号码不能为空")]
         [Column("IDCard", TypeName = "varchar")]
-        [RegularExpression(@"(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$)", ErrorMessage = "手机格式不正确")]
+        [RegularExpression(@"(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$)", ErrorMessage = "身份证号码格式不正确")]
         public string IDCard { get; set; }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace DOL.Model
         /// 省份名称
         /// </summary>
         [NotMapped]
-        public string ProvinceName { get; set; }
+        public string ProvinceName { get; set; } 
 
         /// <summary>
         /// 城市称
@@ -223,7 +223,6 @@ namespace DOL.Model
         /// <summary>
         /// 制卡驾校ID
         /// </summary>
-        [Required(ErrorMessage = "制卡驾校ID不能为空")]
         [Column("MakeDriverShopID", TypeName = "char"), MaxLength(32)]
         public string MakeDriverShopID { get; set; }
 
@@ -272,6 +271,20 @@ namespace DOL.Model
         [Column("OldCertificate", TypeName = "varchar")]
         public string OldCertificate { get; set; }
 
+        /// <summary>
+        /// 所在驾校ID
+        /// </summary>
+        [Column("DriverShopID", TypeName = "char"), MaxLength(32)]
+        public string DriverShopID { get; set; }
+
+
+        /// <summary>
+        ///  分配院校
+        /// </summary>
+        [NotMapped]
+        public string DriverShopName { get; set; }
+
+
         #endregion
 
         #region 科目情况
@@ -281,19 +294,7 @@ namespace DOL.Model
         /// <summary>
         /// 科目一时间
         /// </summary>
-        public Nullable<DateTime> ThemeOneDate { get; set; }
-
-        /// <summary>
-        /// 科目一教练
-        /// </summary>
-        [Column("ThemeOneCoachID", TypeName = "char"), MaxLength(32)]
-        public string ThemeOneCoachID { get; set; }
-
-        /// <summary>
-        ///  科目一教练名称
-        /// </summary>
-        [NotMapped]
-        public string ThemeOneCoachName { get; set; }
+        public Nullable<DateTime> ThemeOneDate { get; set; }     
 
         /// <summary>
         /// 科目一是否通过
@@ -305,6 +306,17 @@ namespace DOL.Model
         /// 科目二时间
         /// </summary>
         public Nullable<DateTime> ThemeTwoDate { get; set; }
+
+
+        /// <summary>
+        /// 科目二是否通过
+        /// </summary>
+        public YesOrNoCode ThemeTwoPass { get; set; }
+
+        /// <summary>
+        /// 科目二学时状态
+        /// </summary>
+        public ThemeTimeCode ThemeTwoTimeCode { get; set; }
 
         /// <summary>
         /// 科目二教练
@@ -318,20 +330,22 @@ namespace DOL.Model
         [NotMapped]
         public string ThemeTwoCoachName { get; set; }
 
-        /// <summary>
-        /// 科目二是否通过
-        /// </summary>
-        public YesOrNoCode ThemeTwoPass { get; set; }
-
-        /// <summary>
-        /// 科目二学时状态
-        /// </summary>
-        public ThemeTimeCode ThemeTwoTimeCode { get; set; }
 
         /// <summary>
         /// 科目三时间
         /// </summary>
         public Nullable<DateTime> ThemeThreeDate { get; set; }
+
+        /// <summary>
+        /// 科目三是否通过
+        /// </summary>
+        public YesOrNoCode ThemeThreePass { get; set; }
+
+        /// <summary>
+        /// 科目三学时状态
+        /// </summary>
+        public ThemeTimeCode ThemeThreeTimeCode { get; set; }
+
         /// <summary>
         /// 科目三教练
         /// </summary>
@@ -346,42 +360,15 @@ namespace DOL.Model
 
 
         /// <summary>
-        /// 科目三是否通过
-        /// </summary>
-        public YesOrNoCode ThemeThreePass { get; set; }
-
-        /// <summary>
-        /// 科目三学时状态
-        /// </summary>
-        public ThemeTimeCode ThemeThreeTimeCode { get; set; }
-
-        /// <summary>
         /// 科目四时间
         /// </summary>
         public Nullable<DateTime> ThemeFourDate { get; set; }
-
-        /// <summary>
-        /// 科目四教练
-        /// </summary>
-        [Column("ThemeFourCoachID", TypeName = "char"), MaxLength(32)]
-        public string ThemeFourCoachID { get; set; }
-
-        /// <summary>
-        ///  科目四教练名称
-        /// </summary>
-        [NotMapped]
-        public string ThemeFourCoachName { get; set; }
 
         /// <summary>
         /// 科目四是否通过
         /// </summary>
         public YesOrNoCode ThemeFourPass { get; set; }
 
-
-        /// <summary>
-        /// 当前科目
-        /// </summary>
-        public ThemeCode NowTheme { get; set; }
 
         #endregion
 
@@ -413,6 +400,11 @@ namespace DOL.Model
         /// </summary>
         [NotMapped]
         public string UpdaterName { get; set; }
+
+        /// <summary>
+        /// 当前科目
+        /// </summary>
+        public ThemeCode NowTheme { get; set; }
 
 
         /// <summary>

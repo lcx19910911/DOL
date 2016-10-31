@@ -31,7 +31,7 @@ namespace DOL.Service
             pageSize = pageSize <= 0 ? 10 : pageSize;
             int skip = (pageIndex - 1) * pageSize;
             var list = allList?.Skip(skip).Take(pageSize).ToList();
-            List<string> operateList = Get_OperateUrlList(Client.Request["pageUrl"]);
+            List<string> operateList = Get_UserOperateList((long)Client.LoginUser.OperateFlag);
             return new PageList<T>(list, pageIndex, pageSize, allList == null ? 0 : allList.LongCount(), operateList);
         }
 
@@ -70,10 +70,10 @@ namespace DOL.Service
 
         public WebResult<PageList<T>> ResultPageList<T>(List<T> model, int pageIndex, int pageSize,int recoredCount)
         {
-            //获取页面的权限
             List<string> operateList = new List<string>();
-            if(!string.IsNullOrEmpty(Client.Request["pageUrl"]))
-                operateList=Get_OperateUrlList(Client.Request["pageUrl"]);
+            //获取页面的权限
+            if (Client.LoginUser.OperateFlag.HasValue)
+                operateList = Get_UserOperateList(Client.LoginUser.OperateFlag.Value);
             return Result(ConvertPageList<T>(model, pageIndex, pageSize, recoredCount, operateList));
         }
 

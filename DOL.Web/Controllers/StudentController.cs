@@ -78,6 +78,37 @@ namespace DOL.Web.Controllers
 
 
         /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="name">名称 - 搜索项</param>
+        /// <param name="no">编号 - 搜索项</param>
+        /// <returns></returns>
+        public ActionResult GetMoreInfoPageList(
+            int pageIndex,
+            int pageSize,
+            string name,
+            string no,
+            string trianID,
+            string driverShopID,
+            string themeTwoCoachID,
+            string themeThreeCoachID,
+            YesOrNoCode? themeOnePass,
+            YesOrNoCode? themeTwoPass,
+            YesOrNoCode? themeThreePass,
+            YesOrNoCode? themeFourPass,
+            DateTime? themeOneTimeStart, DateTime? themeOneTimeEnd,
+            DateTime? themeTwoTimeStart, DateTime? themeTwoTimeEnd,
+            DateTime? themeThreeTimeStart, DateTime? themeThreeTimeEnd,
+            DateTime? themeFourTimeStart, DateTime? themeFourTimeEnd
+            )
+        {
+            return JResult(WebService.Get_StudentMoreInfoPageList(pageIndex, pageSize, name, no, trianID, driverShopID, themeTwoCoachID, themeThreeCoachID, themeOnePass, themeTwoPass, themeThreePass, themeFourPass,
+                themeOneTimeStart, themeOneTimeEnd, themeTwoTimeStart, themeTwoTimeEnd, themeThreeTimeStart, themeThreeTimeEnd, themeFourTimeStart, themeFourTimeEnd));
+        }
+
+        /// <summary>
         /// 查找实体
         /// </summary>
         /// <param name="id"></param>

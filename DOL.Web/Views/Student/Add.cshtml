@@ -129,7 +129,9 @@
                             制卡驾校：
                         </div>
                         <div class="am-u-md-1">
-                            <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                            <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                                <option value="-1">请选择</option>
+                            </select>
                         </div>
                         <div class="am-u-md-2 am-text-right">
                             报名时间<strong class="am-text-danger am-text-sm">*</strong>：
@@ -377,8 +379,7 @@
         },
         ajaxUrl: "/PayOrder/GetList?studentID=" + $("[name='ID']").val(),
         params: {
-            StudentID: $("[name='ID']").val(),
-            pageUrl: GetUrlRelativePath()
+            StudentID: $("[name='ID']").val()
         },      
         //数据请求地址
         pageSize: 10,

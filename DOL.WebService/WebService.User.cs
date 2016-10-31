@@ -73,6 +73,8 @@ namespace DOL.Service
 
                     else
                     {
+                        if(user.OperateFlag.HasValue)
+                        user.OperateList = Get_UserOperateList(user.OperateFlag.Value);
                         CookieHelper.CreateCookie(user);
                         return Result(true);
                     }
@@ -115,7 +117,6 @@ namespace DOL.Service
                         return Result(false, ErrorCode.user_password_nottrue);
                     newPassword = CryptoHelper.MD5_Encrypt(newPassword);
                     user.Password = newPassword;
-
                     CookieHelper.CreateCookie(user);
                     if (db.SaveChanges() > 0)
                     {
@@ -156,7 +157,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_UserList().AsQueryable().AsNoTracking().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && !x.ID.Equals(this.Client.LoginUser.ID)&&x.MenuFlag!=-1);
+                var query = Cache_Get_UserList().AsQueryable().AsNoTracking().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && !x.ID.Equals(this.Client.LoginUser.ID)&&x.MenuFlag!=-1&&string.IsNullOrEmpty(x.CoachID));
 
                 if (name.IsNotNullOrEmpty())
                 {
@@ -196,6 +197,8 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
+                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile)).Any())
+                    return Result(false, ErrorCode.datadatabase_mobile__had);
                 if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Account.Equals(model.Account)).Any())
                     return Result(false, ErrorCode.user_name_already_exist);
                 var role = Cache_Get_RoleList().Where(x => x.ID.Equals(model.RoleID)).FirstOrDefault();
@@ -234,6 +237,8 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
+                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && !x.ID.Equals(model.ID)).Any())
+                    return Result(false, ErrorCode.datadatabase_mobile__had);
                 var oldEntity = Cache_Get_UserList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(model.ID));
                 if (oldEntity != null)
                 {

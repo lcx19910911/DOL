@@ -107,11 +107,11 @@
             }
 
 
-            $.Nuoya.action("/DriverShop/GetSelectItem", { id: dataitem ? dataitem.DriverShopID : "" }, function (json) {
+            $.Nuoya.action("/DriverShop/SelectItem", { id: dataitem ? dataitem.DriverShopID : "" }, function (json) {
                 $(json).each(function () {
-                    $("select[name='DriverShopID']").append("<option " + (this.Selected == true ? "selected" : "") + " value='" + this.Value + "'>" + this.Text + "</option>");
+                    $("#form select[name='DriverShopID']").append("<option " + (this.Selected == true ? "selected" : "") + " value='" + this.Value + "'>" + this.Text + "</option>");
                 });
-            });
+            }); 
 
             //添加表单验证
             $.Nuoya.form("form").validate({
@@ -120,15 +120,49 @@
                         required: true,
                         maxlength: 64
                     },
-                    Remark: {
-                        maxlength: 128
+                    IDCard: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    ProvinceCode: {
+                        required: true
+                    },
+                    CityCode: {
+                        required: true
+                    },
+                    GenderCode: {
+                        required: true
                     },
                     Mobile: {
                         required: true,
                         maxlength: 11
+                    },
+                    ArchivesNO: {
+                        maxlength: 128
                     }
                 },
                 messages: {
+                    Name: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
+                    IDCard: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
+                    ProvinceCode: {
+                        required: "不允许为空"
+                    },
+                    CityCode: {
+                        required: "不允许为空"
+                    },
+                    GenderCode: {
+                        required: "不允许为空"
+                    },
+                    Mobile: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
                     Name: {
                         required: "不允许为空",
                         maxlength: "最多{0}个字符"
@@ -137,7 +171,7 @@
                         required: "不允许为空",
                         maxlength: "最多{0}个字符"
                     },
-                    Remark: {
+                    ArchivesNO: {
                         maxlength: "最多{0}个字符"
                     }
                 }
@@ -150,8 +184,8 @@
                 closeViaDimmer: false,
                 ajaxUrl: "/HtmlTemplates/Coach/Update.html",
                 title: "添加教练",
-                width: "1000px",
-                height: "540px",
+                width: "1300px",
+                height: "740px",
                 callback: function (e) {
                     formInit();//表单初始化
                 },
@@ -194,8 +228,8 @@
                             closeViaDimmer: false,
                             ajaxUrl: "/HtmlTemplates/Coach/Update.html",
                             title: "编辑教练",
-                            width: "1000px",
-                            height: "540px",
+                            width: "1300px",
+                            height: "740px",
                             callback: function (e) {
                                 $.Nuoya.action("/Coach/Find", { id: item.ID }, function (model) {
                                     //载入数据

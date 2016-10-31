@@ -1,0 +1,264 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "学员管理";
+}
+
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a onclick="unState()"><strong class="am-text-primary am-text-lg">菜单</strong></a> /<small>学员管理</small></div>
+</div>
+<div id="searchDomain">
+
+    <div class="am-g am-margin-top">
+
+        <div class="am-u-lg-12 am-u-end">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label ">姓名：</span>
+                <input type="text" class="am-form-field" placeholder="按姓名搜索" style="width:100px;" name="name" ;>
+
+                <span class="am-input-group-label   am-margin-left-sm">身份证：</span>
+                <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:140px;" name="no" ;>
+
+                <span class="am-input-group-label  am-margin-left-sm">科目二</span>
+                <select name="State" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1">不限</option>
+                    <option value="1">通过</option>
+                    <option value="0">未通过</option>
+                </select>
+                <span class="am-input-group-label  am-margin-left-sm">科目二</span>
+                <select name="State" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1">不限</option>
+                    <option value="1">通过</option>
+                    <option value="0">未通过</option>
+                </select>
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<div class="grid_container">
+    <table id="dataTable" class="am-table am-table-striped am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th dataname="EnteredDate" datatype="jsondate">报名日期</th>
+                <th dataname="MakeCardDate" datatype="jsondate">制卡日期</th>
+                <th dataname="EnteredCityName">报名地点</th>
+                <th dataname="MakeCardCityName">制卡地</th>
+                <th dataname="TrianName">培训方式</th>
+                <th dataname="MakeDriverShopName">制卡驾校</th>
+                <th dataname="Name">姓名</th>
+                <th dataname="ProvinceName">户籍省份</th>
+                <th dataname="CityName">户籍城市</th>
+                <th dataname="IDCard">身份证</th>
+                <th dataname="Mobile">电话号码</th>
+                <th dataname="CertificateName">车型</th>
+                <th dataname="ReferenceName">推荐人</th>
+                <th render="ShowNowTheme">当前科目</th>
+                <th dataname="ThemeOneDate" datatype="jsondate">科一时间</th>
+                <th render="ShowThemeTwoTimeCode">科二学时</th>
+                <th dataname="ThemeTwoDate" datatype="jsondate">科二时间</th>
+                <th dataname="ThemeTwoCoachName">科二教练</th>
+                <th render="ShowThemeThreeTimeCode">科三学时</th>
+                <th dataname="ThemeThreeDate" datatype="jsondate">科三时间</th>
+                <th dataname="ThemeThreeCoachName">科三教练</th>
+                <th dataname="ThemeFourDate" datatype="jsondate">科四时间</th>
+                <th render="ShowState">学员状态</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        var studentId = "";
+        //显示通过情况
+        function ShowThemeTwoTimeCode(item) {
+            if (item.ThemeTwoTimeCode == 1)
+                return "完成";
+            else if (item.ThemeTwoTimeCode == 2)
+                return "未完成";
+            else
+                return "未知";
+        }
+
+        function ShowNowTheme(item)
+        {
+            if (item.NowTheme == 1)
+                return "科目一";
+            else if (item.NowTheme == 2)
+                return "科目二";
+            else if (item.NowTheme == 3)
+                return "科目三";
+            else if (item.NowTheme == 4)
+                return "科目四";
+            else
+                return "未知";
+        }
+
+        //显示通过情况
+        function ShowThemeThreeTimeCode(item) {
+            if (item.ThemeThreeTimeCode == 1)
+                return "完成";
+            else if (item.ThemeThreeTimeCode == 2)
+                return "未完成";
+            else
+                return "未知";
+        }
+
+        $('.admin-sidebar').hide();
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+            $('#searchDomain select').each(function () {
+                $(this).find('option').eq(0).attr('selected', true);
+            })
+        }
+        var examGrid = null;
+        function formInit(dataitem) {
+            //添加表单验证
+            $.Nuoya.form("form").validate({
+                rules: {
+                    Code: {
+                        required: true
+                    },
+                    Result: {
+                        required: true
+                    },
+                    CreatedTime: {
+                        required: true
+                    },
+                    Count: {
+                        digits: true,
+                        max: 2147483647,
+                        min: -2147483647
+                    }
+                },
+                messages: {
+                    Code: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
+                    Result: {
+                        required: "不允许为空",
+                    },
+                    CreatedTime: {
+                        required: "不允许为空",
+                    },
+                    Sort: {
+                        digits: "请输入数字",
+                        max: "必须小于{0}",
+                        min: "必须大于{0}"
+                    }
+                }
+            });
+        }
+
+        var grid = $.Nuoya.grid({
+            tableId: "dataTable",
+            //表格id
+            search: {
+                domainId: "searchDomain",
+                subId: "btnSearch"
+            },
+            ajaxUrl: "/Coach/GetMyStudentPageList",
+            //数据请求地址
+            pageSize: 10,
+            events: [
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "考试管理",
+                    click: function (item) {
+                        studentId = item.ID;
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "1000px",
+                            height: "700px",
+                            ajaxUrl: "/HtmlTemplates/Exam/Index.html",
+                            title: "考试记录",
+                            callback: function (e) {
+
+                                examGrid = $.Nuoya.grid({
+                                    tableId: "examDataTable",
+                                    //表格id
+                                    search: {
+                                        domainId: "examSearchDomain",
+                                        subId: "examBtnSearch"
+                                    },
+                                    ajaxUrl: "/Exam/GetList",
+                                    params: {
+                                        StudentID: item.ID
+                                    },
+                                    //数据请求地址
+                                    pageSize: 10,
+                                    events: [
+                                        {
+                                            className: "am-text-danger",
+                                            icon: "icon-trash-o",
+                                            name: "删除",
+                                            click: function (item) {
+                                                $.Nuoya.confirm("确认删除？", function () {
+                                                    $.Nuoya.deleteAction("/Exam/Delete", {
+                                                        ids: item.ID
+                                                    },
+                                                    function () {
+                                                        examGrid.reload();
+                                                    });
+                                                });
+
+                                                event.preventDefault();
+                                            }
+                                        }
+                                    ]
+                                });
+                            }
+                        });
+
+
+                    }
+                }
+            ]
+        });
+
+        //新增
+        function addExam() {
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                ajaxUrl: "/HtmlTemplates/Exam/Update.html",
+                title: "新增考试",
+                width: "700px",
+                height: "500px",
+                callback: function (e) {
+                    formInit();//表单初始化
+                },
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+                        $.Nuoya.form("payForm").ajaxSubmit({
+                            ajaxUrl: "/Exam/Add",
+                            params: {
+                                StudentID: studentId
+                            },
+                            callback: function (data) {
+                                if (!data.ErrorDesc) {
+                                    e.hide();
+                                    examGrid.reload();
+                                }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+                            }
+                        });
+                    }
+                }]
+            })
+        }
+
+    </script>
+}

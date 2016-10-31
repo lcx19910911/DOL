@@ -1,0 +1,56 @@
+﻿
+<div class="admin-content">
+    <form id="payForm" class="am-form am-form-horizontal">
+        <div class="admin-content-body">
+            <div class="am-margin">             
+
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        考试日期：
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="CreatedTime"  class="am-input-sm" placeholder="请选择日期"   readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate"  />
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong></div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        科目：
+                    </div>
+                    <div class="am-u-md-5">
+                        <select name="Code">
+                            <option value="1">科目一</option>
+                            <option value="2">科目二</option>
+                            <option value="3">科目三</option>
+                            <option value="4">科目四</option>
+                        </select>
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong></div>
+                </div> 
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        考试次数：
+                    </div>
+                    <div class="am-u-md-5 am-text-left">
+                        <input type="number" name="Count" class="am-input-sm"  min="1"/>
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong></div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        通过情况：
+                    </div>
+                    <div class="am-u-md-5">
+                        <select name="Result">
+                            <option value="1">挂科</option>
+                            <option value="2">通过</option>
+                            <option value="3">缺考</option>
+                        </select>
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong></div>
+                </div>
+            
+            </div>
+        </div>
+    </form>
+</div>

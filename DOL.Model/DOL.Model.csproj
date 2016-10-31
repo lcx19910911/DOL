@@ -49,11 +49,11 @@
     <Compile Include="Enum\ErrorCode.cs" />
     <Compile Include="Enum\GenderCode.cs" />
     <Compile Include="Enum\GlobalFlag.cs" />
+    <Compile Include="Enum\ExamCode.cs" />
     <Compile Include="Enum\ThemeTimeCode.cs" />
     <Compile Include="Enum\ThemeCode.cs" />
     <Compile Include="Enum\StudentCode.cs" />
     <Compile Include="Enum\GroupCode.cs" />
-    <Compile Include="Enum\MenuFlag.cs" />
     <Compile Include="Enum\YesOrNo.cs" />
     <Compile Include="EnteredPoint.cs" />
     <Compile Include="Menu.cs" />
@@ -65,7 +65,7 @@
     <Compile Include="SiteMessage.cs" />
     <Compile Include="PayOrder.cs" />
     <Compile Include="Student.cs" />
-    <Compile Include="Theme.cs" />
+    <Compile Include="Exam.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

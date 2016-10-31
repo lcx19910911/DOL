@@ -21,13 +21,13 @@
                 <input type="text" class="am-form-field" placeholder="按手机号码搜索" style="width:120px;" name="mobile" ;>
 
                 <span class="am-input-group-label   am-margin-left-sm">报名点：</span>
-                <select name="EnteredPointID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" onchange="LoadReference(true,this)"><option value="">不限</option></select>
+                <select name="EnteredPointID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" onchange="LoadReference(true,this)"><option value="-1">不限</option></select>
 
                 <span class="am-input-group-label   am-margin-left-sm">推荐人：</span>
-                <select name="ReferenceID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"><option value="">不限</option></select>
+                <select name="ReferenceID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"><option value="-1">不限</option></select>
 
                 <span class="am-input-group-label  am-margin-left-sm">制卡驾校：</span>
-                <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"><option value="">不限</option></select>
+                <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"><option value="-1">不限</option></select>
             </div>
         </div>
     </div>
@@ -74,7 +74,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
 </div>
@@ -111,18 +110,7 @@
 @section scripts
 {
     <script type="text/javascript">
-        function ShowState(item) {
-            if (item.State == "1")
-                return "报名";
-            else if (item.State == "2")
-                return "培训中";
-            else if (item.State == "3")
-                return "毕业";
-            else if (item.State == "4")
-                return "申请退学";
-            else if (item.State == "5")
-                return "已退学";
-        }
+      
 
         $('.admin-sidebar').hide();
         $('[name=enteredTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
@@ -132,7 +120,9 @@
 
         function ClearFilter() {
             $("#searchDomain input").val("");
-            $('#searchDomain select').find('option').eq(0).attr('selected', true);
+            $('#searchDomain select').each(function () {
+                $(this).find('option').eq(0).attr('selected', true);
+            })
         }
         //批量删除
         function batchDelete() {
@@ -199,9 +189,6 @@
                 subId: "btnSearch"
             },
             ajaxUrl: "/Student/GetPageList",
-            params: {
-                pageUrl: GetUrlRelativePath()
-            },
             //数据请求地址
             pageSize: 10,
             events: [

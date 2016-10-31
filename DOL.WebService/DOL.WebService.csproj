@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="WebService.DataDictionary.cs" />
     <Compile Include="WebService.Operate.cs" />
+    <Compile Include="WebService.Exam.cs" />
     <Compile Include="WebService.PayOrder.cs" />
     <Compile Include="WebService.Department.cs" />
     <Compile Include="WebService.DriverShop.cs" />
@@ -71,7 +72,6 @@
     <Compile Include="WebService.Role.cs" />
     <Compile Include="WebService.cs" />
     <Compile Include="WebService.Student.cs" />
-    <Compile Include="WebService.Theme.cs" />
     <Compile Include="WebService.User.cs" />
   </ItemGroup>
   <ItemGroup>

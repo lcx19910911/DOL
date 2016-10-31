@@ -102,5 +102,17 @@ namespace DOL.Model
         /// </summary>
         [NotMapped]
         public string State { get; set; }
+
+        /// <summary>
+        /// 教练员id
+        /// </summary>
+        [Column("CoachID", TypeName = "char"), MaxLength(32)]
+        public string CoachID { get; set; }
+
+        /// <summary>
+        /// 权限集合
+        /// </summary>
+        [NotMapped]
+        public List<string> OperateList { get; set; }
     }
 }

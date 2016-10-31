@@ -63,20 +63,27 @@ namespace DOL.Model
         [Description("身份证号码已存在.")]
         datadatabase_idcards__had = 62,
 
+
+        /// <summary>
+        /// 手机号码已存在
+        /// </summary>
+        [Description("手机号码已存在.")]
+        datadatabase_mobile__had = 63,
+
         #endregion
 
         #region 业务逻辑
         /// <summary>
-        /// 开始时间大于开始时间
+        /// 该学员该科目已通过
         /// </summary>
-        [Description("开始时间大于开始时间.")]
-        time_not_legal =80,
+        [Description("该学员该科目已通过.")]
+        theme_had_pass =80,
 
         /// <summary>
-        /// 只能修改24小时内的订单
+        /// 次数已存在
         /// </summary>
-        [Description("只能修改24小时内的订单.")]
-        time_over = 80,
+        [Description("次数已存在.")]
+        count_had_exit = 81,
 
         #endregion
 

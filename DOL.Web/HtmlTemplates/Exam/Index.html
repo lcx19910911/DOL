@@ -1,0 +1,38 @@
+﻿<div id="searchExamDomain" style="display:none;">
+    <div class="am-g">         
+        <div class="am-u-lg-9">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnExamSearch" type="button">搜索</button>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>
+<hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
+<div class="am-g am-margin-top-lg">
+    <div class="am-u-lg-6">
+        <div class="am-btn-toolbar">
+            <div class="am-btn-group am-btn-group-sm">
+                <button onclick="addExam()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                <button onclick="batchExamDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="grid_container">
+    <table id="examDataTable" class="am-table am-table-striped am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th dataname="CreatedTime" datatype="jsondate">考试日期</th>
+                <th render="ShowTheme">科目</th>
+                <th dataname="Count">次数</th>
+                <th render="ShowResult">通过情况</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>

@@ -133,9 +133,6 @@
                 subId: "btnSearch"
             },
             ajaxUrl: "/PayOrder/GetPageList",
-            params: {
-                pageUrl: GetUrlRelativePath()
-            },
             //数据请求地址
             pageSize: 10,
             events: [
@@ -161,8 +158,7 @@
                                     },
                                     ajaxUrl: "/PayOrder/GetList",
                                     params: {
-                                        StudentID: item.StudentID,
-                                        pageUrl: GetUrlRelativePath()
+                                        StudentID: item.StudentID
                                     },
                                     //数据请求地址
                                     pageSize: 10,

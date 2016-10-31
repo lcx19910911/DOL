@@ -65,11 +65,6 @@ namespace DOL.Service
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.Sort).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var menuDic = Cache_Get_MenuList_Dic();
-                list.ForEach(x =>
-                {
-                    if (!string.IsNullOrEmpty(x.MenuID) && menuDic.ContainsKey(x.MenuID))
-                        x.MenuName = menuDic[x.MenuID]?.Name;
-                });
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
@@ -80,23 +75,14 @@ namespace DOL.Service
         /// 获取权限地址集合
         /// </summary>
         /// <returns></returns>
-        public List<string> Get_OperateUrlList(string pageUrl)
+        public List<string> Get_UserOperateList(long operateFlag)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var menu = Cache_Get_MenuList().Where(x =>!string.IsNullOrEmpty(x.Link)&&x.Link.Contains(pageUrl)).FirstOrDefault();
-                if (menu == null)
-                    return null;
+                if(operateFlag == -1)
+                    return Cache_Get_OperateList().Select(x => x.ActionUrl).ToList();
                 else
-                {
-                    if(Client.LoginUser.OperateFlag==-1)
-                    {
-                        return Cache_Get_OperateList().Where(x => x.MenuID.Equals(menu.ID)).Select(x => x.ActionUrl).ToList();
-                    }
-                    else
-                        return Cache_Get_OperateList().Where(x => ((long)x.LimitFlag & Client.LoginUser.OperateFlag) != 0 && x.MenuID.Equals(menu.ID)).Select(x => x.ActionUrl).ToList();
-                }
-                
+                    return Cache_Get_OperateList().Where(x => (x.LimitFlag & operateFlag) != 0).Select(x => x.ActionUrl).ToList();
             }
         }
 
@@ -159,7 +145,7 @@ namespace DOL.Service
                 {
                     oldEntity.ActionUrl = model.ActionUrl;
                     oldEntity.Name = model.Name;
-                    oldEntity.MenuID = model.MenuID;
+                    oldEntity.Remark = model.Remark;
                     oldEntity.Sort = model.Sort; 
                 }
                 else
@@ -237,47 +223,6 @@ namespace DOL.Service
         }
 
 
-        /// <summary>
-        /// 获取ZTree子节点
-        /// </summary>
-        /// <param name="parentId">父级id</param>
-        /// <param name="groups">分组数据</param>
-        /// <returns></returns>
-        private List<ZTreeNode> Get_OperateZTreeChildren(List<IGrouping<string, Operate>> groups)
-        {
-            List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            groups.ForEach(x =>
-            {
-                ztreeNodes.Add(new ZTreeNode()
-                {
-                    name = Cache_Get_MenuList().FirstOrDefault(z => z.ID.Equals(x.Key))?.Name,
-                    children = GetChidrenOperate(x.Key)
-                });
-            });
-            return ztreeNodes;
-        }
-
-        private List<ZTreeNode> GetChidrenOperate(string menuId)
-        {
-            return Cache_Get_OperateList().Where(x => x.MenuID.Equals(menuId)).Select(x => new ZTreeNode()
-            {
-                name = x.Name,
-                value = x.LimitFlag.ToString(),
-            }).ToList();
-        }
-
-        /// <summary>
-        /// 获取ZTree子节点
-        /// </summary>
-        /// <param name="parentId">父级id</param>
-        /// <param name="groups">分组数据</param>
-        /// <returns></returns>
-        public List<ZTreeNode> Get_OperateZTreeFlagChildren()
-        {
-            List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var group = Cache_Get_OperateList().AsQueryable().AsNoTracking().Where(x => (x.Flag | (long)GlobalFlag.Normal) == 0).OrderByDescending(x => x.Sort).GroupBy(x => x.MenuID).ToList();
-            return Get_OperateZTreeChildren(group);
-        }
 
         /// <summary>
         /// 根据权限Flag值判断是否有权限
@@ -298,6 +243,27 @@ namespace DOL.Service
             }
             else
                 return true;           
+        }
+
+        /// <summary>
+        /// 根据页面Flag值判断是否有权限
+        /// </summary>
+        /// <param name="menuFlag">页面flag值</param>
+        /// <param name="url">相对路径</param>
+        /// <returns></returns>
+        public bool IsHavePage(long menuFlag, string url)
+        {
+            var menu = Cache_Get_MenuList().AsQueryable().Where(x =>!string.IsNullOrEmpty(x.Link)&&url.Contains(x.Link)).FirstOrDefault();
+
+            if (menu != null)
+            {
+                if (((long)menu.LimitFlag & menuFlag) != 0)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return true;
         }
     }
 }

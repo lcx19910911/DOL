@@ -131,14 +131,5 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Disable_User(ids));
         }
-
-        /// <summary>
-        /// 获取权限集合
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetOperateUrlList(string pageUrl)
-        {
-            return JResult(WebService.Get_OperateUrlList(pageUrl));
-        }
     }
 }

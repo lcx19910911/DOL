@@ -129,6 +129,8 @@
     <Content Include="HtmlTemplates\Area\Update.html" />
     <Content Include="HtmlTemplates\DriverShop\Update.html" />
     <Content Include="HtmlTemplates\EnteredPoint\Update.html" />
+    <Content Include="HtmlTemplates\Exam\Index.html" />
+    <Content Include="HtmlTemplates\Exam\Update.html" />
     <Content Include="HtmlTemplates\Operate\Update.html" />
     <Content Include="HtmlTemplates\Menu\Update.html" />
     <Content Include="HtmlTemplates\PayOrder\Index.html" />
@@ -234,6 +236,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\AreaController.cs" />
     <Compile Include="Controllers\CoachController.cs" />
+    <Compile Include="Controllers\ExamController.cs" />
     <Compile Include="Controllers\PayOrderController.cs" />
     <Compile Include="Controllers\DriverShopController.cs" />
     <Compile Include="Controllers\EnteredPointController.cs" />
@@ -281,6 +284,7 @@
     <Content Include="Views\Student\MoreInfo.cshtml" />
     <Content Include="Views\Coach\Index.cshtml" />
     <Content Include="Views\PayOrder\Drop.cshtml" />
+    <Content Include="Views\Coach\MyStudent.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

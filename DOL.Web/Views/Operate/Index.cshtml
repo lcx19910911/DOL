@@ -41,8 +41,8 @@
             <tr>
                 <th dataname="ID" type="checkbox"></th>
                 <th dataname="Name">权限名称</th>
-                <th dataname="MenuName">所属菜单</th>
                 <th dataname="ActionUrl">路径</th>
+                <th dataname="Remark">备注</th>
                 <th dataname="Sort">排序</th>
                 <th dataname="CreatedTime" datatype="jsondate">创建日期</th>
                 <th dataname="UpdatedTime" datatype="jsondate">编辑日期</th>
@@ -72,8 +72,6 @@
         }
         function formInit(dataitem) {
 
-            $("[name=MenuIDSelect]").ztreeSelect($("[name=MenuID]"), "/Menu/GetZTreeChildren", dataitem != null ? dataitem.MenuID : null, false, false);
-
             //添加表单验证
             $.Nuoya.form("form").validate({
                 rules: {
@@ -81,8 +79,8 @@
                         required: true,
                         maxlength: 32
                     },
-                    MenuID: {
-                        required: true,
+                    Remark: {
+                        maxlength: 64
                     },
                     ActionUrl: {
                         maxlength: 64,
@@ -99,8 +97,8 @@
                         required: "不允许为空",
                         maxlength: "最多{0}个字符"
                     },
-                    MenuID: {
-                        required: "不允许为空"
+                    Remark: {
+                        maxlength: "最多{0}个字符"
                     },
                     ActionUrl: {
                         required: "不允许为空",

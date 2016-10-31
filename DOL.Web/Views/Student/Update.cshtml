@@ -124,7 +124,9 @@
                             制卡驾校：
                         </div>
                         <div class="am-u-md-1">
-                            <select name="MakeDriverShopID"  data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                            <select name="MakeDriverShopID"  data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                                <option value="">请选择</option>
+                            </select>
                         </div>
                         <div class="am-u-md-2 am-text-right">
                             报名时间<strong class="am-text-danger am-text-sm">*</strong>：
@@ -211,26 +213,181 @@
                 </div>
 
                 <div @(Html.Raw(!string.IsNullOrEmpty(Request["trian"])&&Request["trian"]=="1" ? "class='am-tab-panel am-fade am-in am-active'" : "class='am-tab-panel am-fade'")) id="tab2">
-
                     <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            一等奖奖品
+                        <div class="am-u-md-12 am-text-left">
+                            <label for="user-name" class="am-form-label">学员所在驾校：</label>
                         </div>
-                        <div class="am-u-md-3">
-                            <input type="text" name="OnePrize" class="am-input-sm" maxlength="64">
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm"><strong class="am-text-danger am-text-sm">*</strong></strong>必填，不能超过50个字</div>
-                    </div>
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-3 am-text-right">
-                            一等奖奖品数
-                        </div>
-                        <div class="am-u-md-3">
-                            <input type="number" name="OnePrizeCount" class="am-input-sm" min="1" />
-                        </div>
-                        <div class="am-hide-sm-only am-u-md-6 am-text-left"><strong class="am-text-danger am-text-sm">*</strong>必填，首次设置后不能修改，数量必须是大于1且小于5000</div>
                     </div>
 
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            分配驾校<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
+                        </div>
+                        <div class="am-u-md-2 am-u-end">
+                            <select name="DriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                    </div>
+
+                    <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-12 am-text-left">
+                            <label for="user-name" class="am-form-label">科目一：</label>
+                        </div>
+                    </div>
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            科目一时间：
+                        </div>
+                        <div class="am-u-md-1 am-text-left">
+                            <input type="text" name="ThemeOneDate" class="am-input-sm" style="width:130px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                        </div>
+                        <div class="am-u-md-2"></div>
+                        <div class="am-u-md-1 am-text-right">
+                            是否通过：
+                        </div>
+                        <div class="am-u-md-1  am-u-end">
+                            <select name="ThemeOnePass" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-12 am-text-left">
+                            <label for="user-name" class="am-form-label">科目二：</label>
+                        </div>
+                    </div>
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            科二教练：
+                        </div>
+                        <div class="am-u-md-1">
+                            <select name="ThemeTwoCoachID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                        <div class="am-u-md-2 am-text-right">
+                            科目二时间：
+                        </div>
+                        <div class="am-u-md-1 am-text-left">
+                            <input type="text" name="ThemeOneDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                        </div>
+                        <div class="am-u-md-1"></div>
+                        <div class="am-u-md-1 am-text-right">
+                            是否通过：
+                        </div>
+                        <div class="am-u-md-1">
+                            <select name="ThemeTwoPass" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                        <div class="am-u-md-2 am-text-right">
+                            学时是否完成：
+                        </div>
+                        <div class="am-u-md-1  am-u-end">
+                            <select name="ThemeTwoTimeCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                    </div>
+
+
+                    <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-12 am-text-left">
+                            <label for="user-name" class="am-form-label">科目三：</label>
+                        </div>
+                    </div>
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            科三教练：
+                        </div>
+                        <div class="am-u-md-1">
+                            <select name="ThemeThreeCoachID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                        <div class="am-u-md-1"></div>
+                        <div class="am-u-md-2 am-text-right">
+                            科目三时间：
+                        </div>
+                        <div class="am-u-md-1 am-text-left">
+                            <input type="text" name="ThemeThreeDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                        </div>
+                        <div class="am-u-md-1"></div>
+                        <div class="am-u-md-1 am-text-right">
+                            是否通过：
+                        </div>
+                        <div class="am-u-md-1">
+                            <select name="ThemeThreePass" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                        <div class="am-u-md-1"></div>
+                        <div class="am-u-md-2 am-text-right">
+                            学时是否完成：
+                        </div>
+                        <div class="am-u-md-1  am-u-end">
+                            <select name="ThemeThreeTimeCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                    </div>
+
+                    <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-12 am-text-left">
+                            <label for="user-name" class="am-form-label">科目四：</label>
+                        </div>
+                    </div>
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            科目四时间：
+                        </div>
+                        <div class="am-u-md-1 am-text-left">
+                            <input type="text" name="ThemeFourDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                        </div>
+                        <div class="am-u-md-1"></div>
+                        <div class="am-u-md-1 am-text-right">
+                            是否通过：
+                        </div>
+                        <div class="am-u-md-1  am-u-end">
+                            <select name="ThemeFourPass" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                        </div>
+                    </div>
+
+
+                    <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-12 am-text-left">
+                            <label for="user-name" class="am-form-label">考试记录：</label>
+                        </div>
+                    </div>
+                    <div class="am-g am-margin-top-sm">
+                        <div class="am-u-lg-6">
+                            <div class="am-btn-toolbar">
+                                <div class="am-btn-group am-btn-group-sm">
+                                    <button onclick="addExam()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="examSearchDomain" style="display:none;">
+                    </div>
+                    <button class="am-btn am-btn-default" id="examBtnSearch" type="button" style="display:none;">搜索</button>
+
+                    <div class="grid_container">
+                        <table id="examDataTable" class="am-table am-table-striped am-table-hover table-main">
+                            <thead>
+                                <tr>
+                                    <th dataname="ID" type="checkbox"></th>
+                                    <th dataname="CreatedTime" datatype="jsondate">考试日期</th>
+                                    <th render="ShowTheme">科目</th>
+                                    <th dataname="Count">次数</th>
+                                    <th render="ShowResult">通过情况</th>
+                                    <th type="eventlist"></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -240,8 +397,6 @@
     </div>
 </div>
 <script>
-    //当前路径
-    var pageUrl = GetUrlRelativePath();
 
     function formInit(dataitem) {
 
@@ -375,6 +530,40 @@
         })
     }
 
+    //新增
+    function addExam() {
+        $.Nuoya.ajaxDialog({
+            closeViaDimmer: false,
+            ajaxUrl: "/HtmlTemplates/Exam/Update.html",
+            title: "新增考试",
+            width: "700px",
+            height: "500px",
+            pageUrl: "/Exam/Add",
+            callback: function (e) {
+                formInit();//表单初始化
+            },
+            buttons: [{
+                label: "保存",
+                callback: function (e) {
+                    $.Nuoya.form("payForm").ajaxSubmit({
+                        ajaxUrl: "/Exam/Add",
+                        params: {
+                            StudentID: $("[name='ID']").val()
+                        },
+                        callback: function (data) {
+                            if (!data.ErrorDesc) {
+                                e.hide();
+                                examGrid.reload();
+                            }
+                            else
+                                $.Nuoya.alert(data.ErrorDesc);
+                        }
+                    });
+                }
+            }]
+        })
+    }
+
     function IsAddCertificateFun(obj)
     {
         var value = $(obj).val();
@@ -395,8 +584,7 @@
         },
         ajaxUrl: "/PayOrder/GetList?studentID=" + $("[name='ID']").val(),
         params: {
-            StudentID: $("[name='ID']").val(),
-            pageUrl: pageUrl
+            StudentID: $("[name='ID']").val()
         },
         //数据请求地址
         pageSize: 10,
@@ -471,10 +659,40 @@
         ]
     });
 
-    function ShowThum(item)
-    {
-        return "<a onclick='ShowImage(\"" + item.VoucherThum + "\")'><img src='" + item.VoucherThum + "' style='width:100px;'/></a>"
-    }
+    var examGrid = $.Nuoya.grid({
+        tableId: "examDataTable",
+        //表格id
+        search: {
+            domainId: "examSearchDomain",
+            subId: "examBtnSearch"
+        },
+        ajaxUrl: "/Exam/GetList?studentID=" + $("[name='ID']").val(),
+        params: {
+            StudentID: $("[name='ID']").val()
+        },
+        //数据请求地址
+        pageSize: 10,
+        events: [
+            {
+                className: "am-text-danger",
+                icon: "icon-trash-o",
+                name: "删除",
+                url: "/Exam/Delete",
+                click: function (item) {
+                    $.Nuoya.confirm("确认删除？", function () {
+                        $.Nuoya.deleteAction("/Exam/Delete", {
+                            ids: item.ID
+                        },
+                        function () {
+                            examGrid.reload();
+                        });
+                    });
+
+                    event.preventDefault();
+                }
+            }
+        ]
+    });
 
     function init()
     {
@@ -500,16 +718,22 @@
             else
                 $("#form select[name='GenderCode']").append("<option value='2'>女</option>");
 
-            if (model.IsAddCertificate == 0) {
-                $("#form select[name='IsAddCertificate']").append("<option value='0' selected>否</option>");
-                $("#form [name='OldCertificate']").attr("readonly", true);
-            }
-            else
-                $("#form select[name='IsAddCertificate']").append("<option value='0'>否</option>");
-            if (model.IsAddCertificate == 1)
-                $("#form select[name='IsAddCertificate']").append("<option value='1' selected>是</option>");
-            else
-                $("#form select[name='IsAddCertificate']").append("<option value='1'>是</option>");
+            //是否增驾
+            LoadYesOrNoSelectItem($("#form select[name='IsAddCertificate']"), model.IsAddCertificate);
+
+            //是否科目一通过
+            LoadYesOrNoSelectItem($("#form select[name='ThemeOnePass']"), model.ThemeOnePass);
+            //是否科目二通过
+            LoadYesOrNoSelectItem($("#form select[name='ThemeTwoPass']"), model.ThemeTwoPass);
+            //是否科目三通过
+            LoadYesOrNoSelectItem($("#form select[name='ThemeThreePass']"), model.ThemeThreePass);
+            //是否科目四通过
+            LoadYesOrNoSelectItem($("#form select[name='ThemeFourPass']"), model.ThemeFourPass);
+
+            //科目二学时是否完成
+            LoadYesOrNoSelectItem($("#form select[name='ThemeTwoTimeCode']"), model.ThemeTwoTimeCode);
+            //科目三学时是否完成
+            LoadYesOrNoSelectItem($("#form select[name='ThemeThreeTimeCode']"), model.ThemeThreeTimeCode);
 
 
             $("#form select[name='ProvinceCode']").change(function () {

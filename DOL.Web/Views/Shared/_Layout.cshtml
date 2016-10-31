@@ -86,7 +86,7 @@
         //获取Json的日期
         function RenderDate(data) {
             var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
-            return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDay() ;
+            return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDay();
         }
         //获取Json的时间
         function RenderTime(data) {
@@ -177,6 +177,13 @@
                         } else {
                             $("#form select[name='WantDriverShopID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
                         }
+                        if ($("#form select[name='DriverShopID']") != null) {
+                            if (dataitem != null && dataitem.DriverShopID == this.ID) {
+                                $("#form select[name='DriverShopID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                            } else {
+                                $("#form select[name='DriverShopID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                            }
+                        }
                     }
                 });
                 $(json.EnteredPointList).each(function () {
@@ -224,13 +231,30 @@
                         } else {
                             $("#form select[name='TrianID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
                         }
-                     }
+                    }
+                });
+                $(json.CoachList).each(function () {
+                    if (isIndex) {
+                    }
+                    else {
+
+                        if (dataitem != null && dataitem.ThemeThreeCoachID == this.ID) {
+                            $("#form select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                        } else {
+                            $("#form select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                        }
+                        if (dataitem != null && dataitem.ThemeTwoCoachID == this.ID) {
+                            $("#form select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                        } else {
+                            $("#form select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                        }
+                    }
                 });
             });
         }
 
         //显示省份下方的市
-        function ShowCity(isIndex, tabe,setVaule) {
+        function ShowCity(isIndex, tabe, setVaule) {
             var value = "";
             if (isIndex) {
                 {
@@ -243,8 +267,7 @@
                     value = $("#form select[name='ProvinceCode']").val();
                     $("#form select[name='CityCode']").empty();
                 }
-                else if (tabe == 2)
-                {
+                else if (tabe == 2) {
                     value = $("#form select[name='EnteredProvinceCode']").val();
                     $("#form select[name='EnteredCityCode']").empty();
                 }
@@ -305,8 +328,9 @@
         function ShowThum(item) {
             return "<a onclick='ShowImage(\"" + item.VoucherThum + "\")'><img src='" + item.VoucherThum + "' style='width:100px; height:40px;'/></a>"
         }
-        function ShowImage(src)
-        {
+
+        //展示图片
+        function ShowImage(src) {
             $("#imgDiv img").attr("src", src);
             $("#imgDiv").show();
         }
@@ -317,15 +341,14 @@
         });
 
         //获取页面路径
-        function GetUrlRelativePath()
-        {
+        function GetUrlRelativePath() {
             var url = document.location.toString();
             var arrUrl = url.split("//");
 
             var start = arrUrl[1].indexOf("/");
             var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符
 
-            if(relUrl.indexOf("?") != -1){
+            if (relUrl.indexOf("?") != -1) {
                 relUrl = relUrl.split("?")[0];
             }
             return relUrl;
@@ -333,6 +356,7 @@
 
         //权限路径集合
         var operateUrlArray = new Array();
+
 
         //显示性别
         function Gender(item) {
@@ -344,15 +368,72 @@
                 return "未知";
         }
 
-        //显示性别
+        //学员状态
+        function ShowState(item) {
+            if (item.State == "1")
+                return "报名";
+            else if (item.State == "2")
+                return "培训中";
+            else if (item.State == "3")
+                return "毕业";
+            else if (item.State == "4")
+                return "申请退学";
+            else if (item.State == "5")
+                return "已退学";
+        }
+
+        //显示是否确认
         function ShowConfirm(item) {
             if (item.IsConfirm == 1)
                 return "已确认";
             else
                 return "未确认";
         }
+
+        //显示科目
+        function ShowTheme(item) {
+            if (item.Code == 1)
+                return "科目一";
+            else if (item.Code == 2)
+                return "科目二";
+            else if (item.Code == 3)
+                return "科目三";
+            else if (item.Code == 4)
+                return "科目四";
+            else
+                return "未知";
+        }
+
+        //显示通过情况
+        function ShowResult(item) {
+            if (item.Result == 1)
+                return "挂科";
+            else if (item.Result == 2)
+                return "通过";
+            else if (item.Result == 3)
+                return "缺考";
+            else
+                return "未知";
+        }
+
+        //加载是否框
+        function LoadYesOrNoSelectItem(obj, key) {
+            if (key == 0) {
+                $(obj).append("<option value='0' selected>否</option>");
+                $(obj).append("<option value='1' >是</option>");
+            }
+            else {
+                $(obj).append("<option value='0'>否</option>");
+                $(obj).append("<option value='1'>是</option>");
+            }
+        }
+
+
     </script>
+
+
 </head>
+
 <body>
     <header class="am-topbar am-topbar-inverse admin-header">
         <div class="am-topbar-brand">
