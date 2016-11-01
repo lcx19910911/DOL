@@ -1,11 +1,11 @@
-﻿
-using DOL.Core;
+﻿using DOL.Core;
 using DOL.Model;
 using DOL.Repository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,32 +13,45 @@ namespace DOL.Service
 {
     public partial class WebService
     {
-        string referenceKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "Reference");
+        string themeSalaryKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "ThemeSalary");
 
         /// <summary>
-        /// 缓存
+        /// 全局缓存
         /// </summary>
         /// <returns></returns>
-        private List<Reference> Cache_Get_ReferenceList()
+        private List<ThemeSalary> Cache_Get_ThemeSalaryList()
         {
 
-            return CacheHelper.Get<List<Reference>>(referenceKey, () =>
+            return CacheHelper.Get<List<ThemeSalary>>(themeSalaryKey, () =>
             {
                 using (var db = new DbRepository())
                 {
-                    List<Reference> list = db.Reference.OrderByDescending(x => x.CreatedTime).ThenBy(x => x.ID).ToList();
+                    List<ThemeSalary> list = db.ThemeSalary.OrderByDescending(x => x.CreatedTime).ThenBy(x => x.ID).ToList();
                     return list;
                 }
             });
         }
 
         /// <summary>
-        /// 缓存 dic
+        /// 全局缓存 dic
         /// </summary>
         /// <returns></returns>
-        private Dictionary<string,Reference> Cache_Get_ReferenceList_Dic()
+        private Dictionary<string, ThemeSalary> Cache_Get_ThemeSalaryList_Dic()
         {
-            return Cache_Get_ReferenceList().ToDictionary(x => x.ID);
+            return Cache_Get_ThemeSalaryList().ToDictionary(x => x.ID);
+        }
+
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ThemeSalary Find_ThemeSalary(string id)
+        {
+            if (!id.IsNotNullOrEmpty())
+                return null;
+            return Cache_Get_ThemeSalaryList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
         }
 
         /// <summary>
@@ -46,42 +59,48 @@ namespace DOL.Service
         /// </summary>
         /// <param name="pageIndex">页码</param>
         /// <param name="pageSize">分页大小</param>
-        /// <param name="name">名称 - 搜索项</param>
-        /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Reference>> Get_ReferencePageList(int pageIndex, int pageSize, string name)
+        public WebResult<PageList<ThemeSalary>> Get_ThemeSalaryPageList(
+            int pageIndex,
+            int pageSize,
+            string name
+            )
         {
             using (DbRepository entities = new DbRepository())
             {
-               var query = Cache_Get_ReferenceList().AsQueryable().AsNoTracking();
+                var query = Cache_Get_ThemeSalaryList().AsQueryable().AsNoTracking();
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
                 }
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderBy(x => x.Code).ThenBy(x=>x.Count).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
+
 
         /// <summary>
         /// 增加
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Add_Reference(Reference model)
+        public WebResult<bool> Add_ThemeSalary(ThemeSalary model)
         {
             using (DbRepository entities = new DbRepository())
             {
                 model.ID = Guid.NewGuid().ToString("N");
+                entities.ThemeSalary.Add(model);
+                if (Cache_Get_ThemeSalaryList().Where(x => x.Code == model.Code && x.Count == model.Count).Any())
+                    return Result(false, ErrorCode.count_had_exit);
+
                 model.CreatedTime = DateTime.Now;
-                model.Flag = (long)GlobalFlag.Normal;
                 model.UpdatedTime = DateTime.Now;
                 model.UpdaterID = Client.LoginUser.ID;
-                entities.Reference.Add(model);
+
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_ReferenceList();
+                    var list = Cache_Get_ThemeSalaryList();
                     list.Add(model);
                     return Result(true);
                 }
@@ -99,28 +118,28 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Update_Reference(Reference model)
+        public WebResult<bool> Update_ThemeSalary(ThemeSalary model)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var oldEntity = entities.Reference.Find(model.ID);
+                var oldEntity = entities.ThemeSalary.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    oldEntity.Mobile = model.Mobile;
+                    oldEntity.Code = model.Code;
                     oldEntity.Name = model.Name;
-                    oldEntity.ShopIDStr = model.ShopIDStr;
-                    oldEntity.GenderCode = model.GenderCode;
-                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                    oldEntity.Count = model.Count;
+                    oldEntity.Money = model.Money;
                     oldEntity.UpdatedTime = DateTime.Now;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
 
                 if (entities.SaveChanges() > 0)
                 {
-                    var list = Cache_Get_ReferenceList();
+                    var list = Cache_Get_ThemeSalaryList();
                     var index = list.FindIndex(x => x.ID.Equals(model.ID));
-                    if (index>-1)
+                    if (index > -1)
                     {
                         list[index] = oldEntity;
                     }
@@ -140,64 +159,11 @@ namespace DOL.Service
 
 
         /// <summary>
-        /// 查找实体
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Reference Find_Reference(string id)
-        {
-            if (!id.IsNotNullOrEmpty())
-                return null;
-             return Cache_Get_ReferenceList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(id));
-        }
-
-
-        /// <summary>
-        /// 下拉框集合
-        /// </summary>
-        /// <param name="">门店id</param>
-        /// <returns></returns>
-        public List<SelectItem> Get_ReferenceSelectItem(string enteredPointId)
-        {
-            using (DbRepository entities = new DbRepository())
-            {
-                List<SelectItem> list = new List<SelectItem>();
-
-                var query = Cache_Get_ReferenceList().AsQueryable().AsNoTracking();
-
-                if (string.IsNullOrEmpty(enteredPointId))
-                {
-                    query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
-                    {
-                        list.Add(new SelectItem()
-                        {
-                            Text = x.Name,
-                            Value = x.ID
-                        });
-                    });
-                }
-                else
-                {
-                    query.Where(x=>x.ShopIDStr.Contains(enteredPointId)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
-                    {
-                        list.Add(new SelectItem()
-                        {
-                            Text = x.Name,
-                            Value = x.ID
-                        });
-                    });
-                }
-                return list;
-
-            }
-        }
-
-        /// <summary>
-        /// 删除分类
+        /// 删除考试记录
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public WebResult<bool> Delete_Reference(string ids)
+        public WebResult<bool> Delete_ThemeSalary(string ids)
         {
             if (!ids.IsNotNullOrEmpty())
             {
@@ -205,11 +171,11 @@ namespace DOL.Service
             }
             using (DbRepository entities = new DbRepository())
             {
-                var list = Cache_Get_ReferenceList();
+                var list = Cache_Get_ThemeSalaryList();
                 //找到实体
-                entities.Reference.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
+                entities.ThemeSalary.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
-                    entities.Reference.Remove(x);
+                    entities.ThemeSalary.Remove(x);
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
                     if (index > -1)
                     {

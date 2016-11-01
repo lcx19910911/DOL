@@ -1,10 +1,10 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "教练管理";
+    ViewBag.Title = "科目薪资管理";
 }
 
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>教练管理</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>科目薪资管理</small></div>
 </div>
 <div id="searchDomain">
 
@@ -12,9 +12,7 @@
         <div class="am-u-lg-6 am-u-end">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">名称：</span>
-                <input type="text" class="am-form-field" placeholder="按教练名称搜索" style="width:100px;" name="name" ;>
-                <span class="am-input-group-label am-margin-left-sm">身份证：</span>
-                <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:100px;" name="no" ;>
+                <input type="text" class="am-form-field" placeholder="按科目薪资名称搜索" style="width:100px;" name="name" ;>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -42,18 +40,12 @@
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
-                <th dataname="Name">教练名称</th>
-                <th dataname="DriverShopName">所属驾校</th>                
-                <th dataname="IDCard">身份证</th>
-                <th render="Gender">性别</th>
-                <th dataname="Mobile">手机</th>
-                <th dataname="ProvinceName">户籍省份</th>
-                <th dataname="CityName">户籍城市</th>
-                <th dataname="BasicSalary">底薪</th>
-                <th dataname="ThemeTwoCount">科二通过数</th>
-                <th dataname="ThemeThreeCount">科二通过数</th>
-                <th dataname="EntryDate" datatype="jsondate">入职日期</th>
+                <th render="ShowCode">科目</th>
+                <th dataname="Name">科目薪资名称</th>
+                <th dataname="Count">考试次数</th>
+                <th dataname="Money">金额</th>
                 <th dataname="CreatedTime" datatype="jsondate">创建日期</th>
+                <th dataname="UpdatedTime" datatype="jsondate">编辑日期</th>
                 <th type="eventlist"></th>
             </tr>
         </thead>
@@ -62,7 +54,15 @@
 </div>
 @section scripts
 {
-    <script type="text/javascript"> 
+    <script type="text/javascript">
+
+        function ShowCode(item)
+        {
+            if (item.Code == 2)
+                return "科目二";
+            else if (item.Code == 3)
+                return "科目三";
+        }
 
         function ClearFilter() {
             $("#searchDomain input").val("");
@@ -71,120 +71,76 @@
         function batchDelete() {
             $.Nuoya.confirm("确认删除？", function () {
                 grid.del({
-                    ajaxUrl: "/Coach/Delete",
+                    ajaxUrl: "/ThemeSalary/Delete",
                     callback: function (json) {
                         grid.reload();
                     }
                 });
             });
         }
-
         function formInit(dataitem) {
-
-            $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
-                $(json).each(function () {
-                    if (dataitem != null) {
-                        if (dataitem.ProvinceCode == this.Value)
-                            $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
-                        else
-                            $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                    }
-                    else
-                        $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                });
-            });
-
-            if (dataitem != null) {
-                if (dataitem.ProvinceCode != null) {
-                    $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: dataitem.ProvinceCode }, function (json) {
-                        $(json).each(function () {
-                            if (dataitem.CityCode == this.Value)
-                                $("#form select[name='CityCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
-                            else
-                                $("#form select[name='CityCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                        });
-                    });
+            if (dataitem != null)
+            {
+                if (dataitem.Code == 2)
+                {
+                    $("#form select[name='Code']").append("<option  value='2' selected>科目二</option>");
+                    $("#form select[name='Code']").append("<option  value='3'>科目三</option>");
+                }
+                else if (dataitem.Code == 3) {
+                    $("#form select[name='Code']").append("<option  value='2' >科目二</option>");
+                    $("#form select[name='Code']").append("<option  value='3' selected>科目三</option>");
                 }
             }
-
-
-            $.Nuoya.action("/DriverShop/SelectItem", { id: dataitem ? dataitem.DriverShopID : "" }, function (json) {
-                $(json).each(function () {
-                    $("#form select[name='DriverShopID']").append("<option " + (this.Selected == true ? "selected" : "") + " value='" + this.Value + "'>" + this.Text + "</option>");
-                });
-            }); 
+            else {
+                $("#form select[name='Code']").append("<option  value='2'>科目二</option>");
+                $("#form select[name='Code']").append("<option  value='3'>科目三</option>");
+            }
 
             //添加表单验证
             $.Nuoya.form("form").validate({
                 rules: {
                     Name: {
                         required: true,
-                        maxlength: 64
-                    },
-                    IDCard: {
-                        required: true,
                         maxlength: 32
                     },
-                    ProvinceCode: {
-                        required: true
-                    },
-                    CityCode: {
-                        required: true
-                    },
-                    GenderCode: {
-                        required: true
-                    },
-                    Mobile: {
+                    Code: {
                         required: true,
-                        maxlength: 11
                     },
-                    ArchivesNO: {
-                        maxlength: 128
-                    },
-                    BasicSalary: {
+                    Money: {
                         required: true,
                         digits: true,
                         min: 0
                     },
+                    Count: {
+                        required: true,
+                        digits: true,
+                        max: 100,
+                        min: 0
+                    }
                 },
                 messages: {
                     Name: {
                         required: "不允许为空",
                         maxlength: "最多{0}个字符"
                     },
-                    IDCard: {
+                    Code: {
+                        required: "不允许为空",
+                    },
+                    ActionUrl: {
                         required: "不允许为空",
                         maxlength: "最多{0}个字符"
                     },
-                    ProvinceCode: {
-                        required: "不允许为空"
-                    },
-                    CityCode: {
-                        required: "不允许为空"
-                    },
-                    GenderCode: {
-                        required: "不允许为空"
-                    },
-                    Mobile: {
-                        required: "不允许为空",
-                        maxlength: "最多{0}个字符"
-                    },
-                    Name: {
-                        required: "不允许为空",
-                        maxlength: "最多{0}个字符"
-                    },
-                    Mobile: {
-                        required: "不允许为空",
-                        maxlength: "最多{0}个字符"
-                    },
-                    ArchivesNO: {
-                        maxlength: "最多{0}个字符"
-                    },
-                    BasicSalary: {
+                    Money: {
                         required: "不允许为空",
                         digits: "请输入数字",
                         min: "必须大于{0}"
                     },
+                    Count: {
+                        required: "不允许为空",
+                        digits: "请输入数字",
+                        max: "必须小于{0}",
+                        min: "必须大于{0}"
+                    }
                 }
             });
         }
@@ -193,10 +149,10 @@
         function add() {
             $.Nuoya.ajaxDialog({
                 closeViaDimmer: false,
-                ajaxUrl: "/HtmlTemplates/Coach/Update.html",
-                title: "添加教练",
-                width: "1300px",
-                height: "740px",
+                ajaxUrl: "/HtmlTemplates/ThemeSalary/Update.html",
+                title: "添加科目薪资",
+                width: "1000px",
+                height: "420px",
                 callback: function (e) {
                     formInit();//表单初始化
                 },
@@ -204,7 +160,7 @@
                     label: "保存",
                     callback: function (e) {
                         $.Nuoya.form("form").ajaxSubmit({
-                            ajaxUrl: "/Coach/Add",
+                            ajaxUrl: "/ThemeSalary/Add",
                             callback: function (data) {
                                 if (!data.ErrorDesc) {
                                     e.hide();
@@ -226,7 +182,7 @@
                 domainId: "searchDomain",
                 subId: "btnSearch"
             },
-            ajaxUrl: "/Coach/GetPageList",
+            ajaxUrl: "/ThemeSalary/GetPageList",
             //数据请求地址
             pageSize: 10,
             events: [
@@ -237,12 +193,12 @@
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,
-                            ajaxUrl: "/HtmlTemplates/Coach/Update.html",
-                            title: "编辑教练",
-                            width: "1300px",
-                            height: "740px",
+                            ajaxUrl: "/HtmlTemplates/ThemeSalary/Update.html",
+                            title: "编辑科目薪资",
+                            width: "1000px",
+                            height: "420px",
                             callback: function (e) {
-                                $.Nuoya.action("/Coach/Find", { id: item.ID }, function (model) {
+                                $.Nuoya.action("/ThemeSalary/Find", { id: item.ID }, function (model) {
                                     //载入数据
                                     $.Nuoya.form("form").dataLoad({
                                         data: model
@@ -255,7 +211,7 @@
                                 callback: function (e) {
 
                                     $.Nuoya.form("form").ajaxSubmit({
-                                        ajaxUrl: "/Coach/Update",
+                                        ajaxUrl: "/ThemeSalary/Update",
                                         params: {
                                             ID: item.ID
                                         },
@@ -279,7 +235,7 @@
                     name: "删除",
                     click: function (item) {
                         $.Nuoya.confirm("确认删除？", function () {
-                            $.Nuoya.deleteAction("/Coach/Delete", {
+                            $.Nuoya.deleteAction("/ThemeSalary/Delete", {
                                 ids: item.ID
                             },
                             function () {

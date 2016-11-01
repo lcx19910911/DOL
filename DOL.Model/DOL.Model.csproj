@@ -44,6 +44,7 @@
     <Compile Include="BaseEntity.cs" />
     <Compile Include="DataDictionary.cs" />
     <Compile Include="Department.cs" />
+    <Compile Include="Dto\CoachReportModel.cs" />
     <Compile Include="Dto\MenuItem.cs" />
     <Compile Include="DriverShop.cs" />
     <Compile Include="Enum\ErrorCode.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Enum\GroupCode.cs" />
     <Compile Include="Enum\YesOrNo.cs" />
     <Compile Include="EnteredPoint.cs" />
+    <Compile Include="ThemeSalary.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Operate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

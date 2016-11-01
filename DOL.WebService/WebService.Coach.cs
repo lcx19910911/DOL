@@ -99,6 +99,7 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.UpdatedTime = DateTime.Now;
+                model.UpdaterID = Client.LoginUser.ID;
                 entities.Coach.Add(model);
 
                 entities.User.Add(new Model.User()
@@ -230,12 +231,13 @@ namespace DOL.Service
                 var oldEntity = entities.Coach.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    if (Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && !x.ID.Equals(model.ID)).Any())
+                    if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && !x.ID.Equals(model.ID)).Any())
                         return Result(false, ErrorCode.datadatabase_mobile__had);
                     oldEntity.IDCard = model.IDCard;
                     oldEntity.Mobile = model.Mobile;
                     oldEntity.Name = model.Name;
                     oldEntity.GenderCode = model.GenderCode;
+                    oldEntity.BasicSalary = model.BasicSalary;
                     oldEntity.Address = model.Address;
                     oldEntity.ProvinceCode = model.ProvinceCode;
                     oldEntity.CityCode = model.CityCode;
@@ -249,6 +251,8 @@ namespace DOL.Service
                     oldEntity.FirstGetTrainDate = model.FirstGetTrainDate;
                     oldEntity.DriverShopID = model.DriverShopID;
                     oldEntity.EntryDate = model.EntryDate;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                    oldEntity.UpdatedTime = DateTime.Now;
 
                     var user = entities.User.Where(x => x.Mobile.Equals(model.Mobile)).FirstOrDefault();
                     if (user == null)
@@ -377,6 +381,171 @@ namespace DOL.Service
                     return Result(false, ErrorCode.sys_fail);
                 }
             }
+        }
+
+        public CoachReportModel Get_CoachSalary(DateTime? time, string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return null;
+            //赋值本月
+            if (time == null)
+                time = DateTime.Now.AddMonths(-1).AddDays(1);
+
+            //本月结束时间
+            var endTime = time.Value.AddMonths(1).AddDays(-1);// && x.Code == ThemeCode.Two
+            var coachItem = Cache_Get_CoachList().Where(x => x.ID.Equals(id)).FirstOrDefault();
+            if (coachItem == null)
+                return null;
+
+            CoachReportModel model = new CoachReportModel();
+            model.StartTime = time.Value;
+            model.EndTime = endTime;
+            model.CoachName = coachItem.Name;
+            model.ExamModel = new ExamModel();
+            model.ExamModel.List = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
+
+            model.ThemeSalaryModel = new ThemeSalaryModel();
+            model.ThemeSalaryModel.List = new List<Tuple<ThemeCode,int, string, int, decimal, decimal>>();
+            model.ThemeSalaryModel.BasicSalary = coachItem.BasicSalary;
+
+            //科目二是该教练的学员
+            var themeTwoStudentList = Cache_Get_StudentList().Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(id)).ToList();
+            var themeTwoStudentIdList = themeTwoStudentList.Select(x => x.ID).ToList();
+
+            //科目二学员集合
+            var allThemeTwoList = Cache_Get_ExamList().Where(x => themeTwoStudentIdList.Contains(x.StudentID)).ToList();
+
+            //考试人数 通过人数 通过率
+            model.ExamModel.ThemeTwoAllExamCount = allThemeTwoList.Where(x=>x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
+            model.ExamModel.ThemeTwoAllPassCount = allThemeTwoList.Where(x=>x.Result==ExamCode.Pass&& x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
+            model.ExamModel.ThemeTwoAllPassScaling = model.ExamModel.ThemeTwoAllPassCount != 0 ? (model.ExamModel.ThemeTwoAllPassCount * 100 / model.ExamModel.ThemeTwoAllExamCount) : 0;
+
+            //科目三学员集合
+            var allThemeThreeList = Cache_Get_ExamList().Where(x => themeTwoStudentIdList.Contains(x.StudentID)).ToList();
+            //考试人数 通过人数 通过率
+            model.ExamModel.ThemeThreeAllExamCount = allThemeThreeList.Where(x => x.Code == ThemeCode.Three).Select(x => x.StudentID).Distinct().Count();
+            model.ExamModel.ThemeThreeAllPassCount = allThemeThreeList.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Three).Select(x => x.StudentID).Distinct().Count();
+            model.ExamModel.ThemeThreeAllPassScaling = model.ExamModel.ThemeThreeAllPassCount != 0 ? (model.ExamModel.ThemeThreeAllPassCount * 100 / model.ExamModel.ThemeThreeAllExamCount) : 0;
+
+            //考试学员姓名集合
+            List<string> studentNameList = new List<string>();
+
+            //考试记录集合
+            var list = Cache_Get_ExamList().Where(x => themeTwoStudentIdList.Contains(x.StudentID) && x.CreatedTime >= time && x.CreatedTime <= endTime).ToList();
+
+            //考试人数 通过人数
+            int examAllCount = 0;
+            int passAllCount = 0;
+            //科目二考试人数
+            list.Where(x => x.Code == ThemeCode.Two).GroupBy(x => x.CreatedTime).ToList().ForEach(x => {
+                if (x != null)
+                {
+                    studentNameList = new List<string>();
+                    //考试人数
+                    int examCount = x.Count();
+                    examAllCount += examCount;
+                    //通过人数
+                    int passCount = x.Where(y => y.Result == ExamCode.Pass).Count();
+                    passAllCount += passCount;
+                    //考试的学员id集合
+                    var idList = x.Select(y => y.StudentID).ToList();
+                    //学员姓名
+                    themeTwoStudentList.Where(y => idList.Contains(y.ID)).ToList().ForEach(y =>
+                    {
+                        studentNameList.Add(y.Name);
+                    });
+                    if (studentNameList != null)
+                        //添加到集合
+                        model.ExamModel.List.Add(new Tuple<ThemeCode, DateTime, string, int, int, int>(ThemeCode.Two, x.Key, string.Join(",", studentNameList), examCount, passCount, passCount != 0 ? (passCount * 100 / examCount) : 0));
+                }
+            });
+
+            //得出科目二的考试信息
+            model.ExamModel.ThemeTwoMonthExamCount = examAllCount;
+            model.ExamModel.ThemeTwoMonthPassCount = passAllCount;
+            model.ExamModel.ThemeTwoMonthPassScaling = passAllCount!=0?(passAllCount * 100 / examAllCount):0;
+
+
+            examAllCount = 0;
+            passAllCount = 0;
+            //科目三考试人数
+            list.Where(x => x.Code == ThemeCode.Three).GroupBy(x => x.CreatedTime).ToList().ForEach(x => {
+                if (x != null)
+                {
+                    studentNameList = new List<string>();
+                    int examCount = x.Count();
+                    examAllCount += examCount;
+                    int passCount = x.Where(y => y.Result == ExamCode.Pass).Count();
+                    passAllCount += passCount;
+                    var idList = x.Select(y => y.StudentID).ToList();
+
+                    themeTwoStudentList.Where(y => idList.Contains(y.ID)).ToList().ForEach(y =>
+                    {
+                        studentNameList.Add(y.Name);
+                    });
+                    if (studentNameList != null)
+                        model.ExamModel.List.Add(new Tuple<ThemeCode, DateTime, string, int, int, int>(ThemeCode.Two, x.Key, string.Join(",", studentNameList), examCount, passCount, passCount != 0 ? (passCount * 100 / examCount) : 0));
+                }
+            });
+
+            //科目三的考试信息
+            model.ExamModel.ThemeThreeMonthExamCount = examAllCount;
+            model.ExamModel.ThemeThreeMonthPassCount = passAllCount;
+            model.ExamModel.ThemeThreeMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
+
+
+            decimal AllMoney = 0;
+            //总科目薪资集合
+            var themeSalaryList = Cache_Get_ThemeSalaryList();
+
+            //科目二薪资集合
+            var themeTwoSalaryDic = themeSalaryList.Where(x => x.Code == ThemeCode.Two).ToDictionary(x => x.Count);
+            //有的次数集合
+            List<int> hadCount = new List<int>();
+            //该教练有的科目二薪资
+            list.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Two).GroupBy(x => x.Count).ToList().ForEach(x =>
+                  {
+                      if (themeTwoSalaryDic.ContainsKey(x.Key))
+                      {
+                          hadCount.Add(x.Key);
+                          var money = themeTwoSalaryDic[x.Key].Money;
+                          int count = x.Count();
+                          var totalMoney = money * count;
+                          AllMoney += totalMoney;
+                          model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode,int, string, int, decimal, decimal>(ThemeCode.Two,x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
+                      }
+                  });
+
+            //没有的科目薪资
+            themeSalaryList.Where(x => !hadCount.Contains(x.Count)&&x.Code==ThemeCode.Two).ToList().ForEach(x =>
+            {
+                model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Count, x.Name, 0, x.Money, 0));
+            });
+            
+            //科目三的人员薪资
+            var themeThreeSalaryDic = themeSalaryList.Where(x => x.Code == ThemeCode.Three).ToDictionary(x => x.Count);
+            hadCount = new List<int>();
+            list.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Three).GroupBy(x => x.Count).ToList().ForEach(x =>
+            {
+                if (themeThreeSalaryDic.ContainsKey(x.Key))
+                {
+                    var money = themeThreeSalaryDic[x.Key].Money;
+                    int count = x.Count();
+                    var totalMoney = money * count;
+                    AllMoney += totalMoney;
+                    model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
+                }
+            });
+            //没有人员的薪资
+            themeSalaryList.Where(x => !hadCount.Contains(x.Count) && x.Code == ThemeCode.Three).ToList().ForEach(x =>
+            {
+                model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Count, x.Name, 0, x.Money, 0));
+            });
+
+            //总工资
+            model.ThemeSalaryModel.TotalMoeny = AllMoney+coachItem.BasicSalary;
+
+            return model;
         }
     }
 }

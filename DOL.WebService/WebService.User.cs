@@ -212,6 +212,7 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
+                model.UpdaterID = Client.LoginUser.ID;
                 entities.User.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -251,6 +252,7 @@ namespace DOL.Service
                     oldEntity.Name = model.Name;
                     oldEntity.MenuFlag = model.MenuFlag;
                     oldEntity.Remark = model.Remark;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
                     oldEntity.UpdatedTime = DateTime.Now;
                 }
                 else

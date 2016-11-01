@@ -94,6 +94,7 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 model.ID = Guid.NewGuid().ToString("N");
+
                 entities.Exam.Add(model);
                 if(Cache_Get_ExamList().Where(x=>x.Code==model.Code&&x.Result==ExamCode.Pass&&x.StudentID.Equals(model.StudentID)).Any())
                     return Result(false, ErrorCode.theme_had_pass);

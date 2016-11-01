@@ -232,6 +232,7 @@ namespace DOL.Service
                 model.Flag = (long)GlobalFlag.Normal;
                 model.IsConfirm = YesOrNoCode.No;
                 model.IsDrop = YesOrNoCode.No;
+                model.UpdaterID = Client.LoginUser.ID;
                 entities.PayOrder.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -405,6 +406,8 @@ namespace DOL.Service
                     oldEntity.PayTypeID = model.PayTypeID;
                     oldEntity.VoucherNO = model.VoucherNO; ;
                     oldEntity.VoucherThum = model.VoucherThum;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                    oldEntity.UpdatedTime = DateTime.Now;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);

@@ -25,6 +25,7 @@ namespace DOL.Web.Controllers
         public JsonResult Add(Role entity)
         {
             ModelState.Remove("ID");
+            ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
@@ -45,6 +46,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public JsonResult Update(Role entity)
         {
+            ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)

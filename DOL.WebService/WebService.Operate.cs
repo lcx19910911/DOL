@@ -115,6 +115,7 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.UpdatedTime = DateTime.Now;
+                model.UpdaterID = Client.LoginUser.ID;
                 entities.Operate.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -146,7 +147,9 @@ namespace DOL.Service
                     oldEntity.ActionUrl = model.ActionUrl;
                     oldEntity.Name = model.Name;
                     oldEntity.Remark = model.Remark;
-                    oldEntity.Sort = model.Sort; 
+                    oldEntity.Sort = model.Sort;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                    oldEntity.UpdatedTime = DateTime.Now;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);

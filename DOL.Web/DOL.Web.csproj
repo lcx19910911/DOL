@@ -138,6 +138,7 @@
     <Content Include="HtmlTemplates\Reference\Update.html" />
     <Content Include="HtmlTemplates\Role\Update.html" />
     <Content Include="HtmlTemplates\Student\WantDrop.html" />
+    <Content Include="HtmlTemplates\ThemeSalary\Update.html" />
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
     <Content Include="HtmlTemplates\User\SelectOperate.html" />
     <Content Include="HtmlTemplates\User\SelectMenu.html" />
@@ -236,6 +237,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\AreaController.cs" />
     <Compile Include="Controllers\CoachController.cs" />
+    <Compile Include="Controllers\ThemeSalaryController.cs" />
     <Compile Include="Controllers\ExamController.cs" />
     <Compile Include="Controllers\PayOrderController.cs" />
     <Compile Include="Controllers\DriverShopController.cs" />
@@ -285,6 +287,11 @@
     <Content Include="Views\Coach\Index.cshtml" />
     <Content Include="Views\PayOrder\Drop.cshtml" />
     <Content Include="Views\Coach\MyStudent.cshtml" />
+    <None Include="Properties\PublishProfiles\dol.pubxml" />
+    <Content Include="Views\ThemeSalary\Index.cshtml" />
+    <Content Include="Views\Coach\Wages.cshtml" />
+    <Content Include="Views\Coach\Exams.cshtml" />
+    <Content Include="Views\Coach\Train.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -98,6 +98,7 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.UpdatedTime = DateTime.Now;
+                model.UpdaterID = Client.LoginUser.ID;
                 entities.Menu.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -130,6 +131,8 @@ namespace DOL.Service
                     oldEntity.Name = model.Name;
                     oldEntity.ClassName = model.ClassName;
                     oldEntity.Link = model.Link;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                    oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.Sort = model.Sort;
                 }
                 else

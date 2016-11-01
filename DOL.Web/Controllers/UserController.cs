@@ -46,6 +46,7 @@ namespace DOL.Web.Controllers
         public ActionResult Add(DOL.Model.User model)
         {
             ModelState.Remove("ID");
+            ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             ModelState.Remove("UserId");
@@ -67,6 +68,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Update(DOL.Model.User model)
         {
+            ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             ModelState.Remove("NewPassword");

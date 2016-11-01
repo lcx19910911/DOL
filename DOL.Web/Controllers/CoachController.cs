@@ -24,6 +24,37 @@ namespace DOL.Web.Controllers
             return View();
         }
 
+
+        public ViewResult Train(DateTime? searchTime, string coachId)
+        {
+            if (string.IsNullOrEmpty(coachId))
+            {
+                var driverShopList = WebService.Get_DriverShopSelectItem("");
+                
+                if (driverShopList != null && driverShopList.Count > 0)
+                {
+                    var driverShopId = driverShopList[0].Value;
+                    var coachList = WebService.Get_CoachSelectItem(driverShopId);
+                    if (coachList != null && coachList.Count > 0)
+                    {
+                        return View(WebService.Get_CoachSalary(searchTime, coachList[0].Value));
+                    }
+                }
+            }
+           
+            return View(WebService.Get_CoachSalary(searchTime, coachId));
+        }
+
+        public ViewResult Exams(DateTime? searchTime)
+        {
+            return View(WebService.Get_CoachSalary(searchTime, Client.LoginUser.CoachID));
+        }
+
+        public ViewResult Wages(DateTime? searchTime)
+        {
+            return View(WebService.Get_CoachSalary(searchTime, Client.LoginUser.CoachID));
+        }
+
         /// <summary>
         /// 新增
         /// </summary>
@@ -32,8 +63,9 @@ namespace DOL.Web.Controllers
         public JsonResult Add(Coach entity)
         {
             ModelState.Remove("ID");
+            ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
-            ModelState.Remove("CreatedTime");
+            ModelState.Remove("CreatedTime");       
             if (ModelState.IsValid)
             {
                 var result = WebService.Add_Coach(entity);
@@ -52,6 +84,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public JsonResult Update(Coach entity)
         {
+            ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
@@ -115,5 +148,15 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Delete_Coach(ids));
         }
+        /// <summary>
+        /// 我的工资
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public ActionResult GetSalary(DateTime? time, string id)
+        {
+            return JResult(WebService.Get_CoachSalary(time,id));
+        }
+        
     }
 }

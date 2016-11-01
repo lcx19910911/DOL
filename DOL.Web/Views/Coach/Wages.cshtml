@@ -1,0 +1,108 @@
+﻿@model CoachReportModel
+@{ 
+    var themeTwoSalary = new List<Tuple<ThemeCode,int, string, int, decimal, decimal>>();
+    var themeThreeSalary = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
+    if (Model.ExamModel.List != null && Model.ExamModel.List.Count > 0)
+    {
+        themeTwoSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
+        themeThreeSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x=>x.Item2).ToList();
+    }
+        }
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>我的工资</small></div>
+</div>
+<div id="searchDomain">
+
+    <div class="am-g">
+        <div class="am-u-lg-3">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">时间</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" value="@(Model.StartTime.ToString("yyyy-MM"))" name="searchTime" readonly style="width:100px;;">
+
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" onclick="Search()" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid_container">
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <div class="am-g am-margin-top-lg ">
+                <div class="am-u-sm-12 am-u-sm-centered am-text-center">
+                    <p>@(Model.CoachName)教练@(Model.StartTime.ToString("MM月dd日"))到@(Model.EndTime.ToString("MM月dd日"))工资表</p>
+                </div>
+
+            </div>
+            <table class="am-table am-table-striped am-table-hover table-main am-table-bordered">
+                <thead>
+                    <tr>
+                        <th>薪资级别</th>
+                        <th>计数</th>
+                        <th>金额</th>
+                        <th>小计</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>底薪</td>
+                        <td>1</td>
+                        <td>@Model.ThemeSalaryModel.BasicSalary</td>
+                        <td>@Model.ThemeSalaryModel.BasicSalary</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"  class="am-text-center">科目二</td>
+                    </tr>
+                    @foreach (var item in themeTwoSalary)
+                    {
+                        <tr>
+                            <td>@item.Item3</td>
+                            <td>@item.Item4</td>
+                            <td>@item.Item5</td>
+                            <td>@item.Item6</td>
+                        </tr>
+                    }
+                    <tr><td colspan="4"></td></tr>
+                    <tr>
+                        <td colspan="4" class="am-text-center">科目三</td>
+                    </tr>
+                    @foreach (var item in themeThreeSalary)
+                    {
+                        <tr>
+                            <td>@item.Item3</td>
+                            <td>@item.Item4</td>
+                            <td>@item.Item5</td>
+                            <td>@item.Item6</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>总计</td>
+                        <td>@Model.ThemeSalaryModel.TotalMoeny</td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+@section scripts
+{
+    <script>
+
+        $('[name=searchTime]').datepicker({ format: 'yyyy-mm', viewMode: 'years', minViewMode: 'months' });
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+        }
+        function Search() {
+            window.location.href = "/Coach/Wages?searchTime=" + $("[name='searchTime']").val();
+        }
+
+    </script>
+}

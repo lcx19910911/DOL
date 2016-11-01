@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="WebService.DataDictionary.cs" />
+    <Compile Include="WebService.ThemeSalary.cs" />
     <Compile Include="WebService.Operate.cs" />
     <Compile Include="WebService.Exam.cs" />
     <Compile Include="WebService.PayOrder.cs" />

@@ -32,7 +32,7 @@ namespace DOL.Web
             ///预加载
             using (var dbcontext = new DbRepository())
             {
-                dbcontext.Database.CreateIfNotExists();
+                //dbcontext.Database.CreateIfNotExists();
                 var objectContext = ((IObjectContextAdapter)dbcontext).ObjectContext;
                 var mappingCollection = (StorageMappingItemCollection)objectContext.MetadataWorkspace.GetItemCollection(DataSpace.CSSpace);
                 mappingCollection.GenerateViews(new List<EdmSchemaError>());
@@ -44,12 +44,15 @@ namespace DOL.Web
                         CreatedTime = DateTime.Now,
                         UpdatedTime = DateTime.Now,
                         Flag = (long)GlobalFlag.Normal,
-                        Name = "驾校",
-                        Mobile="11111111111",
-                        Account = "admin",                        
+                        Name = "Admin",
+                        Mobile = "11111111111",
+                        Account = "admin",
                         Password = CryptoHelper.MD5_Encrypt("123456"),
                         MenuFlag = -1,
-                        CreaterId = "1"
+                        CreaterId = "1",
+                        OperateFlag = -1,
+                        DepartmentID = "1",
+                        RoleID = "1"
                     });
                     dbcontext.SaveChanges();
                 }

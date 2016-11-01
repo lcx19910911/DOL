@@ -389,17 +389,6 @@ namespace DOL.Model
         [Column("DropOutPayOrderId", TypeName = "char"), MaxLength(32)]
         public string DropOutPayOrderId { get; set; }
 
-        /// <summary>
-        /// 修改人
-        /// </summary>
-        [Required(ErrorMessage = "修改人ID不能为空")]
-        [Column("UpdatedID", TypeName = "char"), MaxLength(32)]
-        public string UpdaterID { get; set; }
-        /// <summary>
-        /// 修改人
-        /// </summary>
-        [NotMapped]
-        public string UpdaterName { get; set; }
 
         /// <summary>
         /// 当前科目

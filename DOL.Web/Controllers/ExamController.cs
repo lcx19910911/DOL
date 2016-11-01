@@ -28,6 +28,7 @@ namespace DOL.Web.Controllers
         public JsonResult Add(Exam entity)
         {
             ModelState.Remove("ID");
+            ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)

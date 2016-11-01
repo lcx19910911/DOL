@@ -8,8 +8,11 @@ using System.Web.Mvc;
 
 namespace DOL.Web.Controllers
 {
+    /// <summary>
+    /// 科目薪资
+    /// </summary>
     [LoginFilter]
-    public class DepartmentController : BaseController
+    public class ThemeSalaryController : BaseController
     {
 
         public ViewResult Index()
@@ -17,12 +20,15 @@ namespace DOL.Web.Controllers
             return View();
         }
 
+
+
+
         /// <summary>
         /// 新增
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Add(Department entity)
+        public JsonResult Add(ThemeSalary entity)
         {
             ModelState.Remove("ID");
             ModelState.Remove("UpdaterID");
@@ -30,7 +36,7 @@ namespace DOL.Web.Controllers
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Add_Department(entity);
+                var result = WebService.Add_ThemeSalary(entity);
                 return JResult(result);
             }
             else
@@ -39,19 +45,20 @@ namespace DOL.Web.Controllers
             }
         }
 
+
         /// <summary>
-        /// 修改
+        /// 编辑
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Update(Department entity)
+        public JsonResult Update(ThemeSalary entity)
         {
             ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Update_Department(entity);
+                var result = WebService.Update_ThemeSalary(entity);
                 return JResult(result);
             }
             else
@@ -60,37 +67,16 @@ namespace DOL.Web.Controllers
             }
         }
 
-        
+
+
         /// <summary>
         /// 获取分页列表
         /// </summary>
-        /// <param name="pageIndex">页码</param>
-        /// <param name="pageSize">分页大小</param>
-        /// <param name="name">名称 - 搜索项</param>
-        /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public ActionResult GetPageList(int pageIndex, int pageSize, string name, string no)
+        public ActionResult GetPageList(int pageIndex,
+            int pageSize,string name)
         {
-            return JResult(WebService.Get_DepartmentPageList(pageIndex, pageSize, name, no));
-        }
-
-        /// <summary>
-        /// 获取下拉框 
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetZTreeChildren()
-        {
-            return JResult(WebService.Get_DepartmentZTreeChildren(null));
-        }
-
-        /// <summary>
-        /// 查找实体
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public ActionResult Find(string id)
-        {
-            return JResult(WebService.Find_Department(id));
+            return JResult(WebService.Get_ThemeSalaryPageList(pageIndex, pageSize, name));
         }
 
         /// <summary>
@@ -100,18 +86,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Delete(string ids)
         {
-            return JResult(WebService.Delete_Department(ids));
-        }
-
-
-
-        /// <summary>
-        /// 获取部门选择项
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetSelectItem(string id)
-        {
-            return JResult(WebService.Get_DepartmentSelectItem(id));
+            return JResult(WebService.Delete_ThemeSalary(ids));
         }
     }
 }

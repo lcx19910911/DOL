@@ -68,6 +68,7 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.UpdatedTime = DateTime.Now;
+                model.UpdaterID = Client.LoginUser.ID;
                 entities.Role.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -96,6 +97,8 @@ namespace DOL.Service
                 if (oldEntity != null)
                 {
                     oldEntity.OperateFlag = OperateFlag;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                    oldEntity.UpdatedTime = DateTime.Now;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);

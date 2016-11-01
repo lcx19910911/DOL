@@ -87,6 +87,7 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
+                model.UpdaterID = Client.LoginUser.ID;
                 entities.Department.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -121,6 +122,8 @@ namespace DOL.Service
                     oldEntity.Remark = model.Remark;
                     oldEntity.No = model.No;
                     oldEntity.Telephone = model.Telephone;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                    oldEntity.UpdatedTime = DateTime.Now;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);

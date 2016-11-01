@@ -1,0 +1,240 @@
+﻿@model CoachReportModel
+@{ 
+    var examThemeTwoList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
+    var examThemeThreeList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
+    var themeTwoSalary = new List<Tuple<ThemeCode,int, string, int, decimal, decimal>>();
+    var themeThreeSalary = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
+    if (Model!=null&&Model.ExamModel.List != null && Model.ExamModel.List.Count > 0)
+    {
+        examThemeTwoList = Model.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).ToList();
+        examThemeThreeList = Model.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).ToList();
+        themeTwoSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
+        themeThreeSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x=>x.Item2).ToList();
+    }
+        }
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>我的工资</small></div>
+</div>
+<div id="searchDomain">
+
+    <div class="am-g">
+        <div class="am-u-lg-3">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">时间</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" value="@(Model!=null?(Model.StartTime.ToString("yyyy-MM")):"")" name="searchTime" readonly style="width:100px;">
+
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" onclick="Search()" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid_container">
+    <div class="am-g">
+        <div class="am-u-lg-7">
+            <div class="am-g am-margin-top-lg ">
+                <div class="am-u-sm-12 am-u-sm-centered am-text-center">
+                    <p>@(Model.CoachName)教练@(Model.StartTime.ToString("MM月dd日"))到@(Model.EndTime.ToString("MM月dd日"))考试情况</p>
+                </div>
+
+            </div>
+            <table class="am-table am-table-striped am-table-hover table-main am-table-bordered">
+                <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>科目二</th>
+                        <th>考试人数</th>
+                        <th>通过数</th>
+                        <th>通过率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in examThemeTwoList)
+                    {
+                        <tr>
+                            <td>@(item.Item2.ToString("MM月dd日"))</td>
+                            <td>@item.Item3</td>
+                            <td>@item.Item4</td>
+                            <td>@item.Item5</td>
+                            <td>@(item.Item6)%</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>合计</td>
+                        <td></td>
+                        <td>@Model?.ExamModel?.ThemeTwoMonthExamCount</td>
+                        <td>@Model?.ExamModel?.ThemeTwoMonthPassCount</td>
+                        <td>@(Model?.ExamModel?.ThemeTwoMonthPassScaling)%</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>总考试人数</td>
+                        <td>总通过数</td>
+                        <td>综合通过率</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>@Model?.ExamModel?.ThemeTwoAllExamCount</td>
+                        <td>@Model?.ExamModel?.ThemeTwoAllPassCount</td>
+                        <td>@(Model?.ExamModel?.ThemeTwoAllPassScaling)%</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+            <table class="am-table am-table-striped am-table-hover table-main am-margin-top-lg am-table-bordered">
+                <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>科目三</th>
+                        <th>考试人数</th>
+                        <th>通过数</th>
+                        <th>通过率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in examThemeThreeList)
+                    {
+                        <tr>
+                            <td>@(item.Item2.ToString("MM月dd日"))</td>
+                            <td>@item.Item3</td>
+                            <td>@item.Item4</td>
+                            <td>@item.Item5</td>
+                            <td>@(item.Item6)%</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>合计</td>
+                        <td></td>
+                        <td>@Model?.ExamModel?.ThemeThreeMonthExamCount</td>
+                        <td>@Model?.ExamModel?.ThemeThreeMonthPassCount</td>
+                        <td>@(Model?.ExamModel?.ThemeThreeMonthPassScaling)%</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>总考试人数</td>
+                        <td>总通过数</td>
+                        <td>综合通过率</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>@Model?.ExamModel?.ThemeThreeAllExamCount</td>
+                        <td>@Model?.ExamModel?.ThemeThreeAllPassCount</td>
+                        <td>@(Model?.ExamModel?.ThemeThreeAllPassScaling)%</td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+        <div class="am-u-lg-5">
+            <div class="am-g am-margin-top-lg ">
+                <div class="am-u-sm-12 am-u-sm-centered am-text-center">
+                    <p>@(Model?.CoachName)教练@(Model?.StartTime.ToString("MM月dd日"))到@(Model?.EndTime.ToString("MM月dd日"))工资表</p>
+                </div>
+
+            </div>
+            <table class="am-table am-table-striped am-table-hover table-main am-table-bordered">
+                <thead>
+                    <tr>
+                        <th>薪资级别</th>
+                        <th>计数</th>
+                        <th>金额</th>
+                        <th>小计</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>底薪</td>
+                        <td>1</td>
+                        <td>@Model?.ThemeSalaryModel?.BasicSalary</td>
+                        <td>@Model?.ThemeSalaryModel?.BasicSalary</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"  class="am-text-center">科目二</td>
+                    </tr>
+                    @foreach (var item in themeTwoSalary)
+                    {
+                        <tr>
+                            <td>@item.Item3</td>
+                            <td>@item.Item4</td>
+                            <td>@item.Item5</td>
+                            <td>@item.Item6</td>
+                        </tr>
+                    }
+                    <tr><td colspan="4"></td></tr>
+                    <tr>
+                        <td colspan="4" class="am-text-center">科目三</td>
+                    </tr>
+                    @foreach (var item in themeThreeSalary)
+                    {
+                        <tr>
+                            <td>@item.Item3</td>
+                            <td>@item.Item4</td>
+                            <td>@item.Item5</td>
+                            <td>@item.Item6</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>总计</td>
+                        <td>@Model?.ThemeSalaryModel?.TotalMoeny</td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+@section scripts
+{
+    <script>
+
+
+        function fastSearch() {
+            var value = $("#selectFastRangSelect").val();
+
+            $("[name=searchTimeEnd]").val(dayNow);
+            switch (value) {
+                case "1":
+                    $("[name=searchTimeStart]").val(sevenDay);
+                    Search();
+                    break;
+                case "2":
+                    $("[name=searchTimeStart]").val(thrityDay);
+                    Search();
+                    break;
+                case "3":
+                    $("[name=searchTimeStart]").val(thisMonth);
+                    Search();
+                    break;
+                case "4":
+                    $("[name=searchTimeStart]").val(lastMonth);
+                    $("[name=searchTimeEnd]").val(lastMonthDay);
+                    Search();
+                    break;
+                default:
+                    return false;
+                    break;
+            }
+        }
+
+        $('[name=searchTime]').datepicker({ format: 'yyyy-mm', viewMode: 'years', minViewMode: 'months' });
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+        }
+        function Search() {
+            window.location.href = "/Coach/Wages?searchTime=" + $("[name='searchTime']").val();
+        }
+
+    </script>
+}

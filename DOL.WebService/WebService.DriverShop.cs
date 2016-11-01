@@ -100,6 +100,7 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.UpdatedTime = DateTime.Now;
+                model.UpdaterID = Client.LoginUser.ID;
                 entities.DriverShop.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -138,6 +139,7 @@ namespace DOL.Service
                     oldEntity.Sort = model.Sort;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.Name = model.Name;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);

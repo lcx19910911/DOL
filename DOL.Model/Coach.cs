@@ -83,6 +83,10 @@ namespace DOL.Model
         [RegularExpression(@"((\d{11})$)", ErrorMessage = "手机格式不正确")]
         public string Mobile { get; set; }
 
+        /// <summary>
+        /// 底薪
+        /// </summary>
+        public decimal BasicSalary { get; set; }
 
 
 
