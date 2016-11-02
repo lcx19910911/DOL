@@ -114,5 +114,11 @@ namespace DOL.Model
         /// </summary>
         [NotMapped]
         public List<string> OperateList { get; set; }
+
+        /// <summary>
+        /// 报名点集合
+        /// </summary>
+        [Column("EnteredPointIDStr", TypeName = "text")]
+        public string EnteredPointIDStr { get; set; }
     }
 }

@@ -286,7 +286,7 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Update_UserMenu(string ID,long MenuFlag)
+        public WebResult<bool> Update_UserMenuFlag(string ID,long MenuFlag)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -359,7 +359,48 @@ namespace DOL.Service
             }
 
         }
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> Update_UserEnteredPointIDStr(string ID, string enteredPointIDStr)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var oldEntity = entities.User.Find(ID);
+                if (oldEntity != null)
+                {
+                    oldEntity.EnteredPointIDStr = enteredPointIDStr;
+                }
+                else
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_UserList();
+                    var index = list.FindIndex(x => x.ID.Equals(ID));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+
         
+
         /// <summary>
         /// 删除分类
         /// </summary>

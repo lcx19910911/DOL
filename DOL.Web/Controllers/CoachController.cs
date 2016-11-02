@@ -1,4 +1,5 @@
 ﻿using DOL.Model;
+using DOL.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,24 +26,30 @@ namespace DOL.Web.Controllers
         }
 
 
-        public ViewResult Train(DateTime? searchTime, string coachId)
+        /// <summary>
+        /// 教练培训信息
+        /// </summary>
+        /// <param name="searchTime"></param>
+        /// <param name="driverShopId"></param>
+        /// <param name="coachId"></param>
+        /// <returns></returns>
+        public ViewResult Train(DateTime? searchTime, string driverShopId, string coachId)
         {
-            if (string.IsNullOrEmpty(coachId))
+            CoacheInfoModel model = new CoacheInfoModel();
+
+            model.DriverShopList = WebService.Get_DriverShopSelectItem("");
+
+            if (model.DriverShopList != null && model.DriverShopList.Count > 0)
             {
-                var driverShopList = WebService.Get_DriverShopSelectItem("");
-                
-                if (driverShopList != null && driverShopList.Count > 0)
+                driverShopId = string.IsNullOrEmpty(driverShopId) ? model.DriverShopList[0].Value : driverShopId;
+                model.CoachList = WebService.Get_CoachSelectItem(model.DriverShopList[0].Value);
+                if (model.CoachList != null && model.CoachList.Count > 0)
                 {
-                    var driverShopId = driverShopList[0].Value;
-                    var coachList = WebService.Get_CoachSelectItem(driverShopId);
-                    if (coachList != null && coachList.Count > 0)
-                    {
-                        return View(WebService.Get_CoachSalary(searchTime, coachList[0].Value));
-                    }
+                    coachId = string.IsNullOrEmpty(coachId) ? model.CoachList[0].Value : coachId;
+                    model.CoachReportModel = WebService.Get_CoachSalary(searchTime, coachId);
                 }
             }
-           
-            return View(WebService.Get_CoachSalary(searchTime, coachId));
+            return View(model);
         }
 
         public ViewResult Exams(DateTime? searchTime)
@@ -156,6 +163,15 @@ namespace DOL.Web.Controllers
         public ActionResult GetSalary(DateTime? time, string id)
         {
             return JResult(WebService.Get_CoachSalary(time,id));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetSelectItem(string driverShopId)
+        {
+            return JResult(WebService.Get_CoachSelectItem(driverShopId));
         }
         
     }

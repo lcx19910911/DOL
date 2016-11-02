@@ -1,27 +1,58 @@
-﻿@model CoachReportModel
-@{ 
+﻿@model DOL.Web.Models.CoacheInfoModel
+@{
     var examThemeTwoList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
     var examThemeThreeList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
-    var themeTwoSalary = new List<Tuple<ThemeCode,int, string, int, decimal, decimal>>();
+    var themeTwoSalary = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
     var themeThreeSalary = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
-    if (Model!=null&&Model.ExamModel.List != null && Model.ExamModel.List.Count > 0)
+    string DriverShopID = Request["DriverShopID"];
+    string CoachID = Request["CoachID"];
+    if (Model.CoachReportModel != null && Model.CoachReportModel.ExamModel.List != null && Model.CoachReportModel.ExamModel.List.Count > 0)
     {
-        examThemeTwoList = Model.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).ToList();
-        examThemeThreeList = Model.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).ToList();
-        themeTwoSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
-        themeThreeSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x=>x.Item2).ToList();
+        examThemeTwoList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).ToList();
+        examThemeThreeList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).ToList();
+        themeTwoSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
+        themeThreeSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
     }
-        }
+}
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>我的工资</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>教学信息</small></div>
 </div>
 <div id="searchDomain">
 
     <div class="am-g">
-        <div class="am-u-lg-3">
+        <div class="am-u-lg-7">
             <div class="am-input-group am-input-group-sm">
-                <span class="am-input-group-label">时间</span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" value="@(Model!=null?(Model.StartTime.ToString("yyyy-MM")):"")" name="searchTime" readonly style="width:100px;">
+
+                <span class="am-input-group-label">驾校</span>
+                <select name="DriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;" onchange="LoadCoach(this)">
+                    @foreach (var item in Model.DriverShopList)
+                    {
+                        if (item.Value.Equals(DriverShopID))
+                        {
+                            <option value="@(item.Value)" selected>@item.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@(item.Value)">@item.Text</option>
+                        }
+                    }
+                </select>
+                <span class="am-input-group-label  am-margin-left-sm">教练</span>
+                <select name="CoachID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                    @foreach (var item in Model.CoachList)
+                    {
+                        if (item.Value.Equals(CoachID))
+                        {
+                            <option value="@(item.Value)" selected>@item.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@(item.Value)">@item.Text</option>
+                        }
+                    }
+                </select>
+                <span class="am-input-group-label am-margin-left-sm">时间</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" value="@(Model.CoachReportModel!=null?(Model.CoachReportModel.StartTime.ToString("yyyy-MM")):"")" name="searchTime" readonly style="width:100px;">
 
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" onclick="Search()" type="button">搜索</button>
@@ -34,10 +65,12 @@
 
 <div class="grid_container">
     <div class="am-g">
+        @if (Model.CoachReportModel != null)
+        {
         <div class="am-u-lg-7">
             <div class="am-g am-margin-top-lg ">
                 <div class="am-u-sm-12 am-u-sm-centered am-text-center">
-                    <p>@(Model.CoachName)教练@(Model.StartTime.ToString("MM月dd日"))到@(Model.EndTime.ToString("MM月dd日"))考试情况</p>
+                    <p>@(Model.CoachReportModel.CoachName)教练@(Model.CoachReportModel.StartTime.ToString("MM月dd日"))到@(Model.CoachReportModel.EndTime.ToString("MM月dd日"))考试情况</p>
                 </div>
 
             </div>
@@ -53,7 +86,7 @@
                 </thead>
                 <tbody>
                     @foreach (var item in examThemeTwoList)
-                    {
+                        {
                         <tr>
                             <td>@(item.Item2.ToString("MM月dd日"))</td>
                             <td>@item.Item3</td>
@@ -61,13 +94,13 @@
                             <td>@item.Item5</td>
                             <td>@(item.Item6)%</td>
                         </tr>
-                    }
+                        }
                     <tr>
                         <td>合计</td>
                         <td></td>
-                        <td>@Model?.ExamModel?.ThemeTwoMonthExamCount</td>
-                        <td>@Model?.ExamModel?.ThemeTwoMonthPassCount</td>
-                        <td>@(Model?.ExamModel?.ThemeTwoMonthPassScaling)%</td>
+                        <td>@Model.CoachReportModel.ExamModel.ThemeTwoMonthExamCount</td>
+                        <td>@Model.CoachReportModel.ExamModel.ThemeTwoMonthPassCount</td>
+                        <td>@(Model.CoachReportModel.ExamModel.ThemeTwoMonthPassScaling)%</td>
                     </tr>
                     <tr>
                         <td></td>
@@ -79,9 +112,9 @@
                     <tr>
                         <td></td>
                         <td></td>
-                        <td>@Model?.ExamModel?.ThemeTwoAllExamCount</td>
-                        <td>@Model?.ExamModel?.ThemeTwoAllPassCount</td>
-                        <td>@(Model?.ExamModel?.ThemeTwoAllPassScaling)%</td>
+                        <td>@Model.CoachReportModel.ExamModel.ThemeTwoAllExamCount</td>
+                        <td>@Model.CoachReportModel.ExamModel.ThemeTwoAllPassCount</td>
+                        <td>@(Model?.CoachReportModel.ExamModel.ThemeTwoAllPassScaling)%</td>
                     </tr>
                 </tbody>
 
@@ -99,7 +132,7 @@
                 </thead>
                 <tbody>
                     @foreach (var item in examThemeThreeList)
-                    {
+                        {
                         <tr>
                             <td>@(item.Item2.ToString("MM月dd日"))</td>
                             <td>@item.Item3</td>
@@ -107,13 +140,13 @@
                             <td>@item.Item5</td>
                             <td>@(item.Item6)%</td>
                         </tr>
-                    }
+                        }
                     <tr>
                         <td>合计</td>
                         <td></td>
-                        <td>@Model?.ExamModel?.ThemeThreeMonthExamCount</td>
-                        <td>@Model?.ExamModel?.ThemeThreeMonthPassCount</td>
-                        <td>@(Model?.ExamModel?.ThemeThreeMonthPassScaling)%</td>
+                        <td>@Model.CoachReportModel.ExamModel.ThemeThreeMonthExamCount</td>
+                        <td>@Model.CoachReportModel.ExamModel.ThemeThreeMonthPassCount</td>
+                        <td>@(Model.CoachReportModel.ExamModel.ThemeThreeMonthPassScaling)%</td>
                     </tr>
                     <tr>
                         <td></td>
@@ -125,9 +158,9 @@
                     <tr>
                         <td></td>
                         <td></td>
-                        <td>@Model?.ExamModel?.ThemeThreeAllExamCount</td>
-                        <td>@Model?.ExamModel?.ThemeThreeAllPassCount</td>
-                        <td>@(Model?.ExamModel?.ThemeThreeAllPassScaling)%</td>
+                        <td>@Model.CoachReportModel.ExamModel.ThemeThreeAllExamCount</td>
+                        <td>@Model.CoachReportModel.ExamModel.ThemeThreeAllPassCount</td>
+                        <td>@(Model.CoachReportModel.ExamModel.ThemeThreeAllPassScaling)%</td>
                     </tr>
                 </tbody>
 
@@ -136,7 +169,7 @@
         <div class="am-u-lg-5">
             <div class="am-g am-margin-top-lg ">
                 <div class="am-u-sm-12 am-u-sm-centered am-text-center">
-                    <p>@(Model?.CoachName)教练@(Model?.StartTime.ToString("MM月dd日"))到@(Model?.EndTime.ToString("MM月dd日"))工资表</p>
+                    <p>@(Model.CoachReportModel.CoachName)教练@(Model.CoachReportModel.StartTime.ToString("MM月dd日"))到@(Model.CoachReportModel.EndTime.ToString("MM月dd日"))工资表</p>
                 </div>
 
             </div>
@@ -153,44 +186,45 @@
                     <tr>
                         <td>底薪</td>
                         <td>1</td>
-                        <td>@Model?.ThemeSalaryModel?.BasicSalary</td>
-                        <td>@Model?.ThemeSalaryModel?.BasicSalary</td>
+                        <td>@Model.CoachReportModel.ThemeSalaryModel.BasicSalary</td>
+                        <td>@Model.CoachReportModel.ThemeSalaryModel.BasicSalary</td>
                     </tr>
                     <tr>
-                        <td colspan="4"  class="am-text-center">科目二</td>
+                        <td colspan="4" class="am-text-center">科目二</td>
                     </tr>
                     @foreach (var item in themeTwoSalary)
-                    {
+                        {
                         <tr>
                             <td>@item.Item3</td>
                             <td>@item.Item4</td>
                             <td>@item.Item5</td>
                             <td>@item.Item6</td>
                         </tr>
-                    }
+                        }
                     <tr><td colspan="4"></td></tr>
                     <tr>
                         <td colspan="4" class="am-text-center">科目三</td>
                     </tr>
                     @foreach (var item in themeThreeSalary)
-                    {
+                        {
                         <tr>
                             <td>@item.Item3</td>
                             <td>@item.Item4</td>
                             <td>@item.Item5</td>
                             <td>@item.Item6</td>
                         </tr>
-                    }
+                        }
                     <tr>
                         <td></td>
                         <td></td>
                         <td>总计</td>
-                        <td>@Model?.ThemeSalaryModel?.TotalMoeny</td>
+                        <td>@Model.CoachReportModel.ThemeSalaryModel.TotalMoeny</td>
                     </tr>
                 </tbody>
 
             </table>
         </div>
+        }
     </div>
 
 </div>
@@ -198,43 +232,27 @@
 {
     <script>
 
-
-        function fastSearch() {
-            var value = $("#selectFastRangSelect").val();
-
-            $("[name=searchTimeEnd]").val(dayNow);
-            switch (value) {
-                case "1":
-                    $("[name=searchTimeStart]").val(sevenDay);
-                    Search();
-                    break;
-                case "2":
-                    $("[name=searchTimeStart]").val(thrityDay);
-                    Search();
-                    break;
-                case "3":
-                    $("[name=searchTimeStart]").val(thisMonth);
-                    Search();
-                    break;
-                case "4":
-                    $("[name=searchTimeStart]").val(lastMonth);
-                    $("[name=searchTimeEnd]").val(lastMonthDay);
-                    Search();
-                    break;
-                default:
-                    return false;
-                    break;
-            }
-        }
-
         $('[name=searchTime]').datepicker({ format: 'yyyy-mm', viewMode: 'years', minViewMode: 'months' });
 
         function ClearFilter() {
             $("#searchDomain input").val("");
         }
         function Search() {
-            window.location.href = "/Coach/Wages?searchTime=" + $("[name='searchTime']").val();
+            window.location.href = "/Coach/Train?searchTime=" + $("[name='searchTime']").val() + "&DriverShopID=" + $("[name='DriverShopID']").val() + "&CoachID=" + $("[name='CoachID']").val();
         }
 
+
+        //根据市加载报名点
+        function LoadCoach(obj) {
+            $("select[name='CoachID']").empty();
+            var driverShopId = $(obj).val();
+            if (driverShopId != "") {
+                $.Nuoya.action("/Coach/GetSelectItem", { driverShopId: driverShopId }, function (json) {
+                    $(json).each(function () {
+                        $("select[name='CoachID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                    });
+                });
+            }
+        }
     </script>
 }

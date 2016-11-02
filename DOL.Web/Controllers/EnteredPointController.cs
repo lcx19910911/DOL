@@ -17,6 +17,16 @@ namespace DOL.Web.Controllers
         }
 
         /// <summary>
+        /// 报名点统计
+        /// </summary>
+        /// <param name="searchTime"></param>
+        /// <returns></returns>
+        public ViewResult Report(DateTime? searchTime)
+        {
+            return View(WebService.Get_EnteredPointReport(searchTime));
+        }
+
+        /// <summary>
         /// 新增
         /// </summary>
         /// <param name="entity"></param>

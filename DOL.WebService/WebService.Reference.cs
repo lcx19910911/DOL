@@ -108,7 +108,7 @@ namespace DOL.Service
                 {
                     oldEntity.Mobile = model.Mobile;
                     oldEntity.Name = model.Name;
-                    oldEntity.ShopIDStr = model.ShopIDStr;
+                    oldEntity.EnteredPointIDStr = model.EnteredPointIDStr;
                     oldEntity.GenderCode = model.GenderCode;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     oldEntity.UpdatedTime = DateTime.Now;
@@ -178,7 +178,7 @@ namespace DOL.Service
                 }
                 else
                 {
-                    query.Where(x=>x.ShopIDStr.Contains(enteredPointId)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    query.Where(x=>x.EnteredPointIDStr.Contains(enteredPointId)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
                         list.Add(new SelectItem()
                         {

@@ -376,7 +376,7 @@ namespace DOL.Service
         {
             var referenceList = Cache_Get_ReferenceList();
             var driverShopList = Cache_Get_DriverShopList();
-            var enteredPointList = Cache_Get_EnteredPointList();
+            var enteredPointList = Cache_Get_EnteredPointList().Where(x => Client.LoginUser.MenuFlag != -1 ? (Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
             var coachList = Cache_Get_CoachList();
             return Result(new StudentIndexModel()
             {
@@ -683,7 +683,7 @@ namespace DOL.Service
                     return Result(false, ErrorCode.sys_fail);
                 }
             }
-        }
+        } 
 
     }
 }

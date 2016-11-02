@@ -72,7 +72,7 @@
         }
 
         function formInit(dataitem) {
-            $("[name=ShopIDStrSelect]").ztreeSelect($("[name=ShopIDStr]"), "/EnteredPoint/GetZTreeFlagChildren", dataitem != null ? dataitem.ShopIDStr : 0, true, false);
+            $("[name=EnteredPointIDStrSelect]").ztreeSelect($("[name=EnteredPointIDStr]"), "/EnteredPoint/GetZTreeFlagChildren", dataitem != null ? dataitem.EnteredPoint : 0, true, false);
 
             //添加表单验证
             $.Nuoya.form("form").validate({

@@ -52,7 +52,8 @@ namespace DOL.Web
                         CreaterId = "1",
                         OperateFlag = -1,
                         DepartmentID = "1",
-                        RoleID = "1"
+                        RoleID = "1",
+                        UpdaterID="1"
                     });
                     dbcontext.SaveChanges();
                 }

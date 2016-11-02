@@ -85,18 +85,43 @@ namespace DOL.Web.Controllers
             }
         }
 
-
-        public ActionResult UpdateMenu(string ID, long MenuFlag)
+        /// <summary>
+        /// 菜单权限
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="MenuFlag"></param>
+        /// <returns></returns>
+        public ActionResult UpdateMenuFlag(string ID, long MenuFlag)
         {
-            return JResult(WebService.Update_UserMenu(ID, MenuFlag));
+            return JResult(WebService.Update_UserMenuFlag(ID, MenuFlag));
         }
+        /// <summary>
+        /// 操作权限
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="OperateFlag"></param>
+        /// <returns></returns>
 
         public ActionResult UpdateOperate(string ID, long OperateFlag)
         {
             return JResult(WebService.Update_UserOperate(ID, OperateFlag));
         }
 
+        /// <summary>
+        /// 报名点权限
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="enteredPointIDStr"></param>
+        /// <returns></returns>
+        public ActionResult UpdateEnteredPointIDStr(string ID, string enteredPointIDStr)
+        {
+            return JResult(WebService.Update_UserEnteredPointIDStr(ID, enteredPointIDStr));
+        }
         
+
+        
+
+
 
         /// <summary>
         /// 删除

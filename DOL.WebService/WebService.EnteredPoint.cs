@@ -53,6 +53,8 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 var query = Cache_Get_EnteredPointList().AsQueryable().AsNoTracking();
+                if (Client.LoginUser.MenuFlag != -1)
+                    query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.ID));
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -227,25 +229,56 @@ namespace DOL.Service
             List<SelectItem> list = new List<SelectItem>();
             if (!string.IsNullOrEmpty(cityCode))
             {
-                Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x=>x.CityCode.Equals(cityCode)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                //是否管理员
+                if (Client.LoginUser.MenuFlag == -1)
                 {
-                    list.Add(new SelectItem()
+                    Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x => x.CityCode.Equals(cityCode)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
-                        Text = x.Name,
-                        Value = x.ID
+                        list.Add(new SelectItem()
+                        {
+                            Text = x.Name,
+                            Value = x.ID
+                        });
                     });
-                });
+                }
+                else
+                {
+
+                    Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x => x.CityCode.Equals(cityCode)&&Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    {
+                        list.Add(new SelectItem()
+                        {
+                            Text = x.Name,
+                            Value = x.ID
+                        });
+                    });
+                }
             }
             else
             {
-                Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                if (Client.LoginUser.MenuFlag == -1)
                 {
-                    list.Add(new SelectItem()
+                    Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
-                        Text = x.Name,
-                        Value = x.ID
+                        list.Add(new SelectItem()
+                        {
+                            Text = x.Name,
+                            Value = x.ID
+                        });
                     });
-                });
+                }
+                else
+                {
+
+                    Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    {
+                        list.Add(new SelectItem()
+                        {
+                            Text = x.Name,
+                            Value = x.ID
+                        });
+                    });
+                }
             }
             return list;
         }
@@ -256,13 +289,124 @@ namespace DOL.Service
         /// <returns></returns>
         public List<ZTreeNode> Get_EnteredPointZTreeStr()
         {
-            List<ZTreeNode> ztreeNodes = Cache_Get_EnteredPointList().Select(
-                    x => new ZTreeNode()
-                    {
-                        name = x.Name,
-                        value=x.ID
-                    }).ToList();
+            List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
+            var list = Cache_Get_EnteredPointList().Where(x => Client.LoginUser.MenuFlag != -1 ? (Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
+            list.GroupBy(x => x.CityCode).ToList().ForEach(x =>
+            {
+                ztreeNodes.Add(new ZTreeNode()
+                {
+                    //地区名
+                    name = GetValue(GroupCode.Area, x.Key),
+                    children = Get_CityEnteredPointList(x.Key, list)
+                });
+            });
+
             return ztreeNodes;
+        }
+
+        /// <summary>
+        /// 获取城市的ztree集合
+        /// </summary>
+        /// <param name="cityCode"></param>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public List<ZTreeNode> Get_CityEnteredPointList(string cityCode, List<EnteredPoint> list)
+        {
+            List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
+            list.Where(x => x.CityCode.Equals(cityCode)).ToList().ForEach(x =>
+            {
+                ztreeNodes.Add(new ZTreeNode()
+                {
+                    //地区名
+                    name = x.Name,
+                    value=x.ID
+                });
+            });
+            return ztreeNodes;
+        }
+
+
+        /// <summary>
+        /// 获取报名点的统计报表
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public EnteredPointReportModel Get_EnteredPointReport(DateTime? time)
+        {
+            //赋值本月
+            if (time == null)
+                time = DateTime.Parse(DateTime.Now.ToString("yyyy-MM"));
+
+            //本月结束时间
+            var endTime = DateTime.Parse(time.Value.AddMonths(1).ToString("yyyy-MM")).AddDays(-1);// && x.Code == ThemeCode.Two
+
+            EnteredPointReportModel model = new EnteredPointReportModel();
+            model.StartTime = time.Value;
+            model.EndDay = endTime.Day;
+
+            model.List = new List<Tuple<string, string, Dictionary<int, int>, int>>();
+
+            model.TotalDic = new Dictionary<int, int>();
+
+
+            //学员报名记录集合
+            var studenLtist = Cache_Get_StudentList().Where(x => x.EnteredDate >= time && x.EnteredDate <= endTime&&x.Flag== (long)GlobalFlag.Normal).ToList();
+
+            //报名点集合
+            var enteredPointIDList = new List<string>();
+            if (this.Client.LoginUser.MenuFlag == -1)
+                enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal).Select(x=>x.ID).ToList();
+            else
+                enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).Select(x => x.ID).ToList();
+            model.TotalDic = new Dictionary<int, int>();
+            //月份天数
+            var dayCount = (endTime - time.Value).Days+1;
+            model.TotalDic.Add(0,0);
+            //遍历报名点
+            foreach (var item in enteredPointIDList)
+            {
+                //报名点
+                var enteredModel = Cache_Get_EnteredPoint_Dic()[item];
+
+
+                    //推荐人集合
+                    var referenceList = Cache_Get_ReferenceList().Where(x => x.Flag == (long)GlobalFlag.Normal &&!string.IsNullOrEmpty(x.EnteredPointIDStr)&&x.EnteredPointIDStr.Contains(item)).ToList();
+                    referenceList.ForEach(x => {
+                        //日期集合
+                        var dic = new Dictionary<int, int>();
+                        dic.Add(0, 0);
+                        //该推荐人总数
+                        var totalCount = 0;
+                        //根据日期groupby 
+                        var referenceStudentDayDic = studenLtist.Where(y => y.EnteredPointID.Equals(item) && y.ReferenceID.Equals(x.ID)).GroupBy(y=>y.CreatedTime.Day).ToDictionary(y=>y.Key) ;
+                        //遍历日期
+                        for (var i = 1; i <= dayCount; i++)
+                        {
+                            //如果该推荐人当天有新报名学生
+                            if (referenceStudentDayDic.ContainsKey(i))
+                            {
+                                //判断该天统计是否存在
+                                if (model.TotalDic.ContainsKey(i))
+                                {
+                                    model.TotalDic[i] = model.TotalDic[i] + referenceStudentDayDic[i].Count();
+                                }
+                                else
+                                    model.TotalDic.Add(i, referenceStudentDayDic[i].Count());
+                                //总计人数
+                                model.TotalCount += referenceStudentDayDic[i].Count();
+                                //该推荐人总数
+                                totalCount += referenceStudentDayDic[i].Count();
+                                dic.Add(i, referenceStudentDayDic[i].Count());
+                            }
+                            else
+                                dic.Add(i, 0);
+                        }
+                        //添加集合
+                        model.List.Add(new Tuple<string, string, Dictionary<int, int>, int>(enteredModel.Name, x.Name, dic, totalCount));                        
+                    });
+       
+            }
+            return model;
         }
     }
 }

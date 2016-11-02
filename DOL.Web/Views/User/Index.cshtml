@@ -258,8 +258,8 @@
                     }
                 },
                 {
-                    className: "am-text-secondary",
-                    icon: "icon-pencil-square-o",
+                    className: "am-text-success",
+                    icon: "icon-hand-pointer-o",
                     name: "页面权限",
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
@@ -278,7 +278,7 @@
                                 callback: function (e) {
 
                                     $.Nuoya.form("form").ajaxSubmit({
-                                        ajaxUrl: "/User/UpdateMenu",
+                                        ajaxUrl: "/User/UpdateMenuFlag",
                                         params: {
                                             ID: item.ID
                                         },
@@ -298,8 +298,8 @@
                 }
                 ,
                 {
-                    className: "am-text-secondary",
-                    icon: "icon-pencil-square-o",
+                    className: "am-text-danger",
+                    icon: "icon-hand-rock-o",
                     name: "操作权限",
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
@@ -319,6 +319,47 @@
 
                                     $.Nuoya.form("form").ajaxSubmit({
                                         ajaxUrl: "/User/UpdateOperate",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-hand-paper-o",
+                    name: "报名点权限",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "500px",
+                            height: "500px",
+                            ajaxUrl: "/HtmlTemplates/User/SelectEnteredPoint.html",
+                            title: "报名点权限",
+                            callback: function (e) {
+                                $.Nuoya.action("/User/Find", { id: item.ID }, function (model) {
+                                    $("[name=EnteredPointIDStr]").val(model != null ? model.EnteredPointIDStr:"")
+                                    $("[name=EnteredPointIDStrSelect]").ztreeSelect($("[name=EnteredPointIDStr]"), "/EnteredPoint/GetZTreeFlagChildren","", true, false);
+                                  });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/User/UpdateEnteredPointIDStr",
                                         params: {
                                             ID: item.ID
                                         },

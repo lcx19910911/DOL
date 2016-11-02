@@ -1,0 +1,106 @@
+﻿@model EnteredPointReportModel
+@{
+    var entredPointName = string.Empty;
+}
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>人数汇总</small></div>
+</div>
+<div id="searchDomain">
+
+    <div class="am-g">
+        <div class="am-u-lg-3">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">时间</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" value="@(Model.StartTime.ToString("yyyy-MM"))" name="searchTime" readonly style="width:100px;;">
+
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" onclick="Search()" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid_container">
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <div class="am-g am-margin-top-lg ">
+                <div class="am-u-sm-12 am-u-sm-centered am-text-center">
+                    <p>@(Model.StartTime.ToString("MM月"))招生人数汇总</p>
+                </div>
+
+            </div>
+            <table class="am-table am-table-striped am-table-hover table-main am-table-bordered">
+                <thead>
+                    <tr>
+                        <th>报名点</th>
+                        <th>推荐人</th>
+                        @for (int i = 1; i <= Model.EndDay; i++)
+                        {
+                            <th>@i</th>
+                        }
+                        <th>合计</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.List)
+                    {
+                        if (string.IsNullOrEmpty(entredPointName))
+                        {
+                            entredPointName = item.Item1;
+                        }
+                        else if (!entredPointName.Equals(item.Item1))
+                        {
+                            entredPointName = item.Item1;
+
+                            <tr><td colspan="@(Model.EndDay+3)"></td></tr>
+                        }
+
+                        <tr>
+                            <td>@(item.Item1)</td>
+                            <td>@item.Item2</td>
+                            @for (int i = 1; i <= Model.EndDay; i++)
+                            {
+                                <th>@(item.Item3[i]==0?"": item.Item3[i].ToString())</th>
+                            }
+                            <th>@item.Item4</th>
+                        </tr>
+
+
+                    }
+                    <tr>
+                        <td colspan="2">合计</td>
+                        @for (int i = 1; i <= Model.EndDay; i++)
+                        {
+                            <th>@(Model.TotalDic.ContainsKey(i)?Model.TotalDic[i].ToString():"")</th>
+                        }
+                        <td>@(Model.TotalCount)</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+
+        </div>
+    </div>
+
+</div>
+@section scripts
+{
+    <script>
+
+
+
+        $('[name=searchTime]').datepicker({ format: 'yyyy-mm', viewMode: 'years', minViewMode: 'months' });
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+        }
+        function Search() {
+            window.location.href = "/EnteredPoint/Report?searchTime=" + $("[name='searchTime']").val();
+        }
+
+    </script>
+}

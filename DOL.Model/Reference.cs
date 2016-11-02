@@ -43,8 +43,8 @@ namespace DOL.Model
         /// 报名点权限
         /// </summary>
         [MaxLength(5120)]
-        [Column("ShopIDStr", TypeName = "varchar")]
-        public string ShopIDStr { get; set; }
+        [Column("EnteredPointIDStr", TypeName = "varchar")]
+        public string EnteredPointIDStr { get; set; }
 
         /// <summary>
         /// 备注

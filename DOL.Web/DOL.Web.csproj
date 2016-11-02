@@ -140,6 +140,7 @@
     <Content Include="HtmlTemplates\Student\WantDrop.html" />
     <Content Include="HtmlTemplates\ThemeSalary\Update.html" />
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
+    <Content Include="HtmlTemplates\User\SelectEnteredPoint.html" />
     <Content Include="HtmlTemplates\User\SelectOperate.html" />
     <Content Include="HtmlTemplates\User\SelectMenu.html" />
     <Content Include="HtmlTemplates\User\Pay.html" />
@@ -254,6 +255,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CoacheInfoModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +294,7 @@
     <Content Include="Views\Coach\Wages.cshtml" />
     <Content Include="Views\Coach\Exams.cshtml" />
     <Content Include="Views\Coach\Train.cshtml" />
+    <Content Include="Views\EnteredPoint\Report.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -301,7 +304,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DOL.Core\DOL.Core.csproj">

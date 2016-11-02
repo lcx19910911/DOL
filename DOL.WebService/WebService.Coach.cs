@@ -383,16 +383,22 @@ namespace DOL.Service
             }
         }
 
+        /// <summary>
+        /// 获取教练员学员考试信息 和工资
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public CoachReportModel Get_CoachSalary(DateTime? time, string id)
         {
             if (string.IsNullOrEmpty(id))
                 return null;
             //赋值本月
             if (time == null)
-                time = DateTime.Now.AddMonths(-1).AddDays(1);
+                time =DateTime.Parse(DateTime.Now.ToString("yyyy-MM"));
 
             //本月结束时间
-            var endTime = time.Value.AddMonths(1).AddDays(-1);// && x.Code == ThemeCode.Two
+            var endTime = DateTime.Parse(time.Value.AddMonths(1).ToString("yyyy-MM")).AddDays(-1);// && x.Code == ThemeCode.Two
             var coachItem = Cache_Get_CoachList().Where(x => x.ID.Equals(id)).FirstOrDefault();
             if (coachItem == null)
                 return null;
