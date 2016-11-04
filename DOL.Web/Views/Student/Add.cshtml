@@ -17,39 +17,37 @@
                         <div class="am-u-md-2 am-text-right">
                             学员姓名<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
                         </div>
-                        <div class="am-u-md-2 am-text-left">
+                        <div class="am-u-md-1 am-text-left">
                             <input type="text" name="Name" class="am-input-sm" maxlength="32" style="width:160px;">
                         </div>
                         <div class="am-u-md-2 am-text-right">
-                            户籍地<strong class="am-text-danger am-text-sm">*</strong>：
+                            手机<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
                         </div>
-                        <div class="am-u-md-5 am-text-left am-u-end">
-                            <select name="ProvinceCode" readonly data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" onchange="ShowCity(false,1)" style="width:120px;"></select>省
-                            <select name="CityCode" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>市
+                        <div class="am-u-md-2 am-text-left">
+                            <input type="text" name="Mobile" class="am-input-sm" maxlength="11" style="width:160px;">
+                        </div>
+                        <div class="am-u-md-2 am-text-right">
+                            性别<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
+                        </div>
+                        <div class="am-u-md-1 am-text-left  am-u-end">
+                            <input type="text" name="Sex" class="am-input-sm" maxlength="11" style="width:160px;" readonly>
+                            <input type="hidden" name="GenderCode">
                         </div>
                     </div>
                     <div class="am-g am-margin-top">
                         <div class="am-u-md-2 am-text-right">
                             身份证号码<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
                         </div>
-                        <div class="am-u-md-4 am-text-left  am-u-end">
+                        <div class="am-u-md-2 am-text-left  am-u-end">
                             <input type="text" name="IDCard" class="am-input-sm" maxlength="20" onkeyup="isCardID(this, $('[name=\'GenderCode\']'), $('[name=\'Sex\']'))">
                         </div>
-                    </div>
-                    <div class="am-g am-margin-top">
+
                         <div class="am-u-md-2 am-text-right">
-                            手机<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
+                            户籍地<strong class="am-text-danger am-text-sm">*</strong>：
                         </div>
-                        <div class="am-u-md-3 am-text-left">
-                            <input type="text" name="Mobile" class="am-input-sm" maxlength="11" style="width:160px;">
-                        </div>
-                        <div class="am-u-md-1"></div>
-                        <div class="am-u-md-1 am-text-right">
-                            性别<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
-                        </div>
-                        <div class="am-u-md-2 am-text-left  am-u-end">
-                            <input type="text" name="Sex" class="am-input-sm" maxlength="11" style="width:160px;" readonly>
-                            <input type="hidden" name="GenderCode">
+                        <div class="am-u-md-5 am-text-left am-u-end">
+                            <select name="ProvinceCode" readonly data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" onchange="ShowCity(false,1)" style="width:120px;"></select>省
+                            <select name="CityCode" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>市
                         </div>
                     </div>
                     <div class="am-g am-margin-top">
@@ -312,6 +310,10 @@
 
     //新增
     function addPay() {
+
+        var money = $("#form [name='Money']").val();
+
+
         $.Nuoya.ajaxDialog({
             closeViaDimmer: false,
             ajaxUrl: "/HtmlTemplates/User/Pay.html",
@@ -320,7 +322,8 @@
             height: "700px",
             pageUrl: "/PayOrder/Add",
             callback: function (e) {
-                formInit();//表单初始化
+                formInit();//表单初始化     
+                $("#tipsDiv").html("学费总价" + money + "元，当前已缴费0元");
             },
             buttons: [{
                 label: "保存",

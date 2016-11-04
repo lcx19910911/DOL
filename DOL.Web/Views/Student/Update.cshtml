@@ -1,6 +1,7 @@
 ﻿<div class="admin-content-body">
     <form id="form" class="am-form  am-form-inline">
         <input type="hidden" name="ID" value="@Request["ID"]" />
+        <input type="hidden" name="HadPayMoney"  />
         <div class="am-tabs am-margin" data-am-tabs="">
             <ul class="am-tabs-nav am-nav am-nav-tabs" id="selectTabUl">
                 <li @(Html.Raw(string.IsNullOrEmpty(Request["trian"])?"class='am-active'":""))  ><a href="#tab1">报名收费</a></li>
@@ -507,6 +508,8 @@
 
     //新增
     function addPay() {
+        var money = $("#form [name='Money']").val();
+        var hadMoney = $("#form [name='HadPayMoney']").val();
         $.Nuoya.ajaxDialog({
             closeViaDimmer: false,
             ajaxUrl: "/HtmlTemplates/User/Pay.html",
@@ -516,6 +519,7 @@
             pageUrl: "/PayOrder/Add",
             callback: function (e) {
                 formInit();//表单初始化
+                $("#tipsDiv").html("学费总价" + money + "元，当前已缴费" + hadMoney + "元");
             },
             buttons: [{
                 label: "保存",

@@ -226,6 +226,10 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
+                if (Cache_Get_PayOrderList().Where(x => x.StudentID.Equals(model.StudentID) && x.IsConfirm == YesOrNoCode.No).Any())
+                {
+                    return Result(false, ErrorCode.unconfirm_payorder__had);
+                }
                 model.ID = Guid.NewGuid().ToString("N");
                 model.UpdatedTime = DateTime.Now;
                 model.CreatedTime = DateTime.Now;
@@ -458,13 +462,17 @@ namespace DOL.Service
                     {
                         student.HadPayMoney -= x.PayMoney;
 
-                        if (student.MoneyIsFull==YesOrNoCode.Yes)
+                        if (student.HadPayMoney >= student.Money)
+                        {
+                            student.MoneyIsFull = YesOrNoCode.Yes;
+                        }
+                        else
                         {
                             student.MoneyIsFull = YesOrNoCode.No;
                         }
                     }
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
-                    var studentIndex = Cache_Get_StudentList().FindIndex(y => y.ID.Equals(x.ID));
+                    var studentIndex = Cache_Get_StudentList().FindIndex(y => y.ID.Equals(x.StudentID));
                     if (index > -1)
                     {
                         list[index] = x;

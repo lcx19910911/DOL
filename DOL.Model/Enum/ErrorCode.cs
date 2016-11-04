@@ -70,6 +70,13 @@ namespace DOL.Model
         [Description("手机号码已存在.")]
         datadatabase_mobile__had = 63,
 
+
+        /// <summary>
+        /// 已存在未确认的缴费记录
+        /// </summary>
+        [Description("已存在未确认的缴费记录.")]
+        unconfirm_payorder__had = 64,
+
         #endregion
 
         #region 业务逻辑

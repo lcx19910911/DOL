@@ -69,7 +69,7 @@
                 $("#form select[name='EnteredPointID']").empty();
             }
             var cityCode = $(obj).val();
-            if (cityCode != "") {
+            if (cityCode != "" && cityCode != null) {
                 $.Nuoya.action("/EnteredPoint/GetSelectItem", { cityCode: cityCode }, function (json) {
                     $(json).each(function () {
                         if (isIndex) {
@@ -95,6 +95,7 @@
         }
         //根据报名点加载推荐人
         function LoadReference(isIndex, obj) {
+
             if (isIndex) {
                 $("#searchDomain select[name='ReferenceID']").empty();
             }
@@ -102,7 +103,7 @@
                 $("#form select[name='ReferenceID']").empty();
             }
             var enteredPointId = $(obj).val();
-            if (enteredPointId != "") {
+            if (enteredPointId != "" && enteredPointId!=null) {
                 $.Nuoya.action("/Reference/GetSelectItem", { enteredPointId: enteredPointId }, function (json) {
                     $(json).each(function () {
                         if (isIndex) {
@@ -515,7 +516,7 @@
 <body>
     <header class="am-topbar am-topbar-inverse admin-header">
         <div class="am-topbar-brand">
-            <a href="/home/index"><strong>驾校网上报名管理平台</strong></a>
+            <a href="/home/index"><strong>驾校网上报名管理平台---@ViewBag.Title</strong></a>
         </div>
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
         <div class="am-collapse am-topbar-collapse" id="topbar-collapse">

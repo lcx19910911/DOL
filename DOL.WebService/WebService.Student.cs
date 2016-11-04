@@ -330,10 +330,13 @@ namespace DOL.Service
             {
                 if (Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => x.IDCard.Equals(model.IDCard)).Any())
                     return Result(false, ErrorCode.datadatabase_idcards__had);
-                var makecardShop = Cache_Get_DriverShopList().FirstOrDefault(x => x.ID.Equals(model.MakeDriverShopID));
-                if (makecardShop == null)
-                    return Result(false, ErrorCode.sys_param_format_error);
-                model.MakeCardCityCode = makecardShop.CityCode;
+                if (!string.IsNullOrEmpty(model.MakeDriverShopID))
+                {
+                    var makecardShop = Cache_Get_DriverShopList().FirstOrDefault(x => x.ID.Equals(model.MakeDriverShopID));
+                    if (makecardShop == null)
+                        return Result(false, ErrorCode.sys_param_format_error);
+                    model.MakeCardCityCode = makecardShop.CityCode;
+                }
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
                 model.State = StudentCode.Entered;

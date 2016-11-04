@@ -111,6 +111,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public JsonResult Update(PayOrder entity)
         {
+            ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
