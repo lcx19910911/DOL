@@ -1,10 +1,11 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "学员管理";
+    ViewBag.Title = "培训信息";
 }
 
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a onclick="unState()"><strong class="am-text-primary am-text-lg">菜单</strong></a> /<small>学员管理</small></div>
+
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>培训信息</small></div>
 </div>
 <div id="searchDomain">
 
@@ -12,39 +13,35 @@
         <div class="am-u-lg-12">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">姓名：</span>
-                <input type="text" class="am-form-field" placeholder="按姓名搜索" style="width:100px;" name="name" ;>
+                <input type="text" class="am-form-field" placeholder="按姓名搜索" style="width:80px;" name="name" ;>
                 <span class="am-input-group-label am-margin-left-sm">身份证：</span>
-                <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:140px;" name="no" ;>
+                <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:100px;" name="no" ;>
 
 
                 <span class="am-input-group-label am-margin-left-sm">培训驾校：</span>
-                <select name="DriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}">
+                <select name="DriverShopID" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}">
                     <option value="-1">不限</option>
                 </select>
-
                 <span class="am-input-group-label am-margin-left-sm">培训方式：</span>
-                <select name="TrianID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;"><option value="-1">不限</option></select>
-
+                <select name="TrianID" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" style="width:auto;"><option value="-1">不限</option></select>
 
                 <span class="am-input-group-label  am-margin-left-sm">科一日期</span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeOneTimeStart" readonly style="width:100px;">
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeOneTimeStart" readonly style="width:90px;">
                 <span class="am-input-group-label"> - </span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeOneTimeEnd" readonly style="width:100px;">
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeOneTimeEnd" readonly style="width:90px;">
 
-                <span class="am-input-group-label  am-margin-left-sm">科二日期</span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeTwoTimeStart" readonly style="width:100px;">
-                <span class="am-input-group-label"> - </span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeTwoTimeEnd" readonly style="width:100px;">
             </div>
         </div>
     </div>
-
     <div class="am-g am-margin-top">
-
-
         <div class="am-u-lg-12">
             <div class="am-input-group am-input-group-sm">
 
+
+                <span class="am-input-group-label">科二日期</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeTwoTimeStart" readonly style="width:90px;">
+                <span class="am-input-group-label"> - </span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="themeTwoTimeEnd" readonly style="width:90px;">
 
                 <span class="am-input-group-label">科三日期</span>
                 <input type="text" class="am-form-field" placeholder="请选择日期" name="themeThreeTimeStart" readonly style="width:100px;">
@@ -56,7 +53,18 @@
                 <span class="am-input-group-label"> - </span>
                 <input type="text" class="am-form-field" placeholder="请选择日期" name="themeFourTimeEnd" readonly style="width:100px;">
 
-                <span class="am-input-group-label am-margin-left-sm">科一通过：</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="am-g am-margin-top">
+
+
+        <div class="am-u-lg-12">
+            <div class="am-input-group am-input-group-sm">
+
+
+                <span class="am-input-group-label">科一通过：</span>
                 <select name="ThemeOnePass" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;">
                     <option value="-1">不限</option>
                     <option value="1">通过</option>
@@ -134,12 +142,11 @@
 
 </div>
 <div class="grid_container">
-    <table id="dataTable" class="am-table am-table-striped am-table-hover table-main">
+    <table id="dataTable" class="am-table am-table-compact am-table-hover table-main">
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
                 <th dataname="Name">姓名</th>
-                <th render="ShowState">学员状态</th>
                 <th dataname="IDCard">身份证</th>
                 <th dataname="Mobile">手机</th>
                 <th dataname="DriverShopName">培训驾校</th>
@@ -188,7 +195,7 @@
             else
                 return "未通过";
         }
-        $('.admin-sidebar').hide();
+       // $('.admin-sidebar').hide();
         $('[name=themeOneTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
         $('[name=themeOneTimeEnd]').datepicker({ format: 'yyyy-mm-dd' });
         $('[name=themeTwoTimeStart]').datepicker({ format: 'yyyy-mm-dd' });

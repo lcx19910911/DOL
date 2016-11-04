@@ -12,11 +12,11 @@
         <div class="am-u-lg-7">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">省份：</span>
-                <select name="ProvinceCode" data-am-selected="{btnSize: 'sm'}" onchange="ShowCity(true, 1)" style="width:120px;"></select>
+                <select name="ProvinceCode" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" onchange="ShowCity(true, 1)" style="width:120px;"></select>
                 <span class="am-input-group-label">市：</span>
-                <select name="CityCode" data-am-selected="{btnSize: 'sm'}" onchange="ShowArea(true, this)" style="width:120px;"></select>
+                <select name="CityCode" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" onchange="ShowArea(true, this)" style="width:120px;"></select>
                 <span class="am-input-group-label">县区：</span>
-                <select name="DistrictCode" data-am-selected="{btnSize: 'sm'}" style="width:120px;"></select>
+                <select name="DistrictCode" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" style="width:120px;"></select>
             </div>
         </div>
         <div class="am-u-lg-5 am-u-end">
@@ -46,7 +46,7 @@
 
 </div>
 <div class="grid_container">
-    <table id="dataTable" class="am-table am-table-striped am-table-hover table-main">
+    <table id="dataTable" class="am-table am-table-compact am-table-hover table-main">
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>

@@ -27,15 +27,10 @@
         <div class="am-u-lg-6 am-u-end">
             <div class="am-input-group am-input-group-sm">
 
-                <span class="am-input-group-label  am-margin-left-sm">创建日期</span>
-                <input type="text" class="am-form-field"  placeholder="请选择日期" name="startTimeStart" readonly style="width:auto;">
+                <span class="am-input-group-label">创建日期</span>
+                <input type="text" class="am-form-field"  placeholder="请选择日期" name="startTimeStart" readonly style="width:120px;">
                 <span class="am-input-group-label"> - </span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" name="endTimeEnd" readonly style="width:auto;">
-                <span class="am-input-group-btn am-margin-left-sm">
-                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
-                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
-                </span>
-
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="endTimeEnd" readonly style="width:120px;">
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -61,7 +56,7 @@
 
 </div>
 <div class="grid_container">
-    <table id="dataTable" class="am-table am-table-striped am-table-hover table-main">
+    <table id="dataTable" class="am-table am-table-compact am-table-hover table-main">
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
