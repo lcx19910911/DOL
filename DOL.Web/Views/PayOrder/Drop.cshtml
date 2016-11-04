@@ -189,7 +189,7 @@
                             ajaxUrl: "/HtmlTemplates/PayOrder/Confirm.html",
                             title: "退款详情",
                             width: "1000px",
-                            height: "800px",
+                            height: "700px",
                             callback: function (e) {
                                 $.Nuoya.action("/PayOrder/Find", { id: item.ID }, function (model) {
                                     //载入数据
@@ -224,7 +224,7 @@
                             ajaxUrl: "/HtmlTemplates/PayOrder/Confirm.html",
                             title: "退款转账",
                             width: "1000px",
-                            height: "800px",
+                            height: "700px",
                             callback: function (e) {
                                 formInit();//表单初始化
                             },
@@ -261,14 +261,6 @@
                     icon: "icon-trash-o",
                     name: "删除",
                     url: "/PayOrder/Delete",
-                    formula: function (item) {
-                        if (item.IsConfirm == 0) {
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
-                    },
                     click: function (item) {
 
                         $.Nuoya.confirm("确认删除？", function () {

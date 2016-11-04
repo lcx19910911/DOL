@@ -78,6 +78,15 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Get_ThemeSalaryPageList(pageIndex, pageSize, name));
         }
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public ActionResult Find(string id)
+        {
+            return JResult(WebService.Find_ThemeSalary(id));
+        }
 
         /// <summary>
         /// 删除

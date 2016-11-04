@@ -10578,7 +10578,7 @@
             '    <i class="am-selected-icon am-icon-caret-' +
             '<%= dropUp ? \'up\' : \'down\' %>"></i>' +
             '  </button>' +
-            '  <div class="am-selected-content am-dropdown-content">' +
+            '  <div class="am-selected-content am-dropdown-content" style="max-height:300px;overflow:auto">' +
             '    <h2 class="am-selected-header">' +
             '<span class="am-icon-chevron-left">返回</span></h2>' +
             '   <% if (searchBox) { %>' +

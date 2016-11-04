@@ -177,6 +177,7 @@
                                             }
                                         },
                                         click: function (model) {
+
                                             $.Nuoya.confirm("确认已收款？", function () {
                                                 $.Nuoya.action("/PayOrder/Confirm", {
                                                     ID: model.ID
@@ -193,14 +194,6 @@
                                         icon: "icon-trash-o",
                                         name: "删除",
                                         url: "/PayOrder/Delete",
-                                        formula: function (model) {
-                                            if (model.IsConfirm == 0) {
-                                                return true;
-                                            }
-                                            else {
-                                                return false;
-                                            }
-                                        },
                                         click: function (model) {
                                             $.Nuoya.confirm("确认删除？", function () {
                                                 $.Nuoya.deleteAction("/PayOrder/Delete", {
@@ -241,7 +234,7 @@
                             ajaxUrl: "/HtmlTemplates/User/Pay.html",
                             title: "缴费记录",
                             width: "1000px",
-                            height: "800px",
+                            height: "700px",
                             callback: function (e) {
                                 $.Nuoya.action("/PayOrder/Find", { id: item.ID }, function (model) {
                                     //载入数据
@@ -255,20 +248,13 @@
                             buttons: [{
                                 label: "确认",
                                 callback: function (e) {
-                                    $.Nuoya.confirm("确认收款？", function () {
-                                        $.Nuoya.form("form").ajaxSubmit({
-                                            ajaxUrl: "/PayOrder/Confirm",
-                                            params: {
-                                                ID: item.ID
-                                            },
-                                            callback: function (data) {
-                                                if (!data.ErrorDesc) {
-                                                    e.hide();
-                                                    grid.reload();
-                                                }
-                                                else
-                                                    $.Nuoya.alert(data.ErrorDesc);
-                                            }
+                                   
+                                    $.Nuoya.confirm("确认已收款？", function () {
+                                        $.Nuoya.action("/PayOrder/Confirm", {
+                                            ID: item.ID
+                                        },
+                                        function () {
+                                            payGrid.reload();
                                         });
                                     });
                                 }
@@ -281,14 +267,6 @@
                     icon: "icon-trash-o",
                     name: "删除",
                     url: "/PayOrder/Delete",
-                    formula: function (item) {
-                        if (item.IsConfirm == 0) {
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
-                    },
                     click: function (item) {
                         $.Nuoya.confirm("确认删除？", function () {
                             $.Nuoya.deleteAction("/PayOrder/Delete", {

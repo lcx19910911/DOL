@@ -108,26 +108,38 @@ namespace DOL.Service
                 {
                     student.ThemeOnePass = YesOrNoCode.Yes;
                     student.NowTheme = ThemeCode.Two;
+                    student.ThemeOneDate = DateTime.Now;
                 }
                 else if (model.Code == ThemeCode.Two && model.Result == ExamCode.Pass)
                 {
                     student.ThemeTwoPass = YesOrNoCode.Yes;
                     student.NowTheme = ThemeCode.Three;
+                    student.ThemeTwoDate = DateTime.Now;
+                    student.ThemeTwoTimeCode = ThemeTimeCode.Complete;
                 }
                 else if (model.Code == ThemeCode.Three && model.Result == ExamCode.Pass)
                 {
                     student.ThemeThreePass = YesOrNoCode.Yes;
                     student.NowTheme = ThemeCode.Four;
+                    student.ThemeThreeDate = DateTime.Now;
+
+                    student.ThemeThreeTimeCode = ThemeTimeCode.Complete;
                 }
                 else if (model.Code == ThemeCode.Four && model.Result == ExamCode.Pass)
                 {
                     student.ThemeFourPass = YesOrNoCode.Yes;
                     student.NowTheme = ThemeCode.Four;
+                    student.ThemeFourDate = DateTime.Now;
                 }
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_ExamList();
                     list.Add(model);
+                    var index = studentList.FindIndex(y => y.ID.Equals(model.StudentID));
+                    if (index > -1)
+                    {
+                        studentList[index]= student;
+                    }
                     return Result(true);
                 }
                 else

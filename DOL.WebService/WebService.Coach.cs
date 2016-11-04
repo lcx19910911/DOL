@@ -116,6 +116,7 @@ namespace DOL.Service
                     CreaterId = Client.LoginUser.ID,
                     DepartmentID = "1",
                     RoleID = "1",
+                    UpdaterID = Client.LoginUser.ID,
                     CoachID = model.ID
                 });
                 if (entities.SaveChanges() > 0)

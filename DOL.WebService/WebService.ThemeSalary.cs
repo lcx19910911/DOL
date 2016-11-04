@@ -68,7 +68,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_ThemeSalaryList().AsQueryable().AsNoTracking();
+                var query = Cache_Get_ThemeSalaryList().Where(x=>x.Flag==(long)GlobalFlag.Normal).AsQueryable().AsNoTracking();
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -125,12 +125,21 @@ namespace DOL.Service
                 var oldEntity = entities.ThemeSalary.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    oldEntity.Code = model.Code;
-                    oldEntity.Name = model.Name;
-                    oldEntity.Count = model.Count;
-                    oldEntity.Money = model.Money;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
+                    oldEntity.Flag = (long)GlobalFlag.Unabled;
+                    entities.ThemeSalary.Add(new ThemeSalary()
+                    {
+                        ID = Guid.NewGuid().ToString("N"),
+                        CreatedTime = DateTime.Now,
+                        UpdatedTime = DateTime.Now,
+                        UpdaterID = Client.LoginUser.ID,
+                        Code = model.Code,
+                        Name = model.Name,
+                        Count = model.Count,
+                        Money = model.Money,
+                        Flag = (long)GlobalFlag.Normal
+                    });
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);

@@ -1,0 +1,31 @@
+﻿<div id="searchPayOrderDomain" style="display:none;">
+    <div class="am-g">         
+        <div class="am-u-lg-9">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnPayOrderSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="PayOrderClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="grid_container">
+    <table id="payOrderDataTable" class="am-table am-table-striped am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th dataname="PayTime" datatype="jsondate">缴款日期</th>
+                <th dataname="PayMoney">缴款金额</th>
+                <th dataname="PayTypeName">支付方式</th>
+                <th dataname="AccountName">收款账户</th>
+                <th dataname="VoucherNO">凭证号</th>
+                <th render="ShowThum">缩略图</th>
+                <th render="ShowConfirm">确认情况</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>

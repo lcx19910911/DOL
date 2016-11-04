@@ -141,8 +141,10 @@
                             $("#form select[name='EnteredProvinceCode']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
                         }
                     });
-                    ShowCity(false, 1, dataitem.CityCode);
-                    ShowCity(false, 2, dataitem.EnteredCityCode);
+                    if (dataitem != null) {
+                        ShowCity(false, 1, dataitem.CityCode);
+                        ShowCity(false, 2, dataitem.EnteredCityCode);
+                    }
                 });
 
             }
@@ -155,10 +157,12 @@
                         $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
                     }
                     else {
-                        if (dataitem != null && dataitem.ReferenceID == this.ID) {
-                            $("#form select[name='ReferenceID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
-                        } else {
-                            $("#form select[name='ReferenceID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                        if (dataitem != null) {
+                            if (dataitem.ReferenceID == this.ID) {
+                                $("#form select[name='ReferenceID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                            } else {
+                                $("#form select[name='ReferenceID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                            }
                         }
                     }
                 });
@@ -191,10 +195,12 @@
                         $("#searchDomain select[name='EnteredPointID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
                     }
                     else {
-                        if (dataitem != null && dataitem.EnteredPointID == this.ID) {
-                            $("#form select[name='EnteredPointID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
-                        } else {
-                            $("#form select[name='EnteredPointID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                        if (dataitem != null) {
+                            if (dataitem.EnteredPointID == this.ID) {
+                                $("#form select[name='EnteredPointID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                            } else {
+                                $("#form select[name='EnteredPointID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                            }
                         }
                     }
                 });
@@ -299,6 +305,14 @@
                             }
                     }
                 });
+                if (!isIndex)
+                {
+                    if (tabe == 1) {
+                        $("#form select[name='CityCode']").find('option').eq(1).attr('selected', true);
+                    }
+                    else if (tabe == 2)
+                        $("#form select[name='EnteredCityCode']").find('option').eq(1).attr('selected', true);
+                }
             });
         }
 
@@ -428,7 +442,71 @@
             }
         }
 
+        //验证身份证
+        function isCardID(obj, sexObj, htmloObj) {
+            var sId = $(obj).val();
+            if(sId!=""&&sId.length==18)
+            {
+                var iSum = 0;
+                var info = "";
 
+                if (!/^\d{17}(\d|x)$/i.test(sId))
+                {
+                    $.Nuoya.alert("你输入的身份证长度或格式错误")
+                    return false;
+                }
+                sId = sId.replace(/x$/i, "a");
+                if (parseInt(sId.substr(0, 2)) == null) {
+                    $.Nuoya.alert("你的身份证地区非法")
+                    return false;
+                }
+                var sBirthday = sId.substr(6, 4) + "-" + Number(sId.substr(10, 2)) + "-" + Number(sId.substr(12, 2));
+                var d = new Date(sBirthday.replace(/-/g, "/"));
+                if (sBirthday != (d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate())) {
+                    $.Nuoya.alert("身份证上的出生日期非法")
+                    return false;
+                }
+                for (var i = 17; i >= 0; i--) iSum += (Math.pow(2, i) % 11) * parseInt(sId.charAt(17 - i), 11);
+                if (iSum % 11 != 1) {
+                    $.Nuoya.alert("你输入的身份证号非法");
+                    return false;
+                }
+                //此次还可以判断出输入的身份证号的人性别
+                var sex = parseInt(sId.substr(16, 1))%2;
+                {
+                    
+                    $(sexObj).val(sex);
+                    $(htmloObj).val(sex==1 ? "男" : "女");
+                }
+                return true;
+            }}
+
+        //验证学生数据
+        function ValidStudent()
+        {
+
+            if (!isCardID($("[name='IDCard']"), $('[name=\'GenderCode\']'), $('[name=\'Sex\']'))) {
+                return false;
+            }
+
+            if ($('#form [name="CertificateID"]').val() == "" || $('#form [name="CertificateID"]').val() == "-1") {
+                $.Nuoya.alert("请选择培训车型");
+                return false;
+            }
+            if ($('#form [name="WantDriverShopID"]').val() == "" || $('#form [name="WantDriverShopID"]').val() == "-1") {
+                $.Nuoya.alert("请选择意向驾校");
+                return false;
+            }
+            if ($('#form [name="PayMethodID"]').val() == "" || $('#form [name="PayMethodID"]').val() == "-1") {
+                $.Nuoya.alert("请选择缴费方式");
+                return false;
+            }
+            
+            if ($('#form [name="MakeDriverShopID"]').val() == "-1") {
+                $('#form [name="MakeDriverShopID"]').val("");
+            }
+            return true;
+        }
     </script>
 
 
@@ -452,7 +530,7 @@
     <div class="am-cf admin-main am-text-left">
 
         <div id="imgDiv" style="opacity:1;background-color:black;width:100%;height:100%;z-index:9000; display:none; position:absolute;">
-            <div style="width:600px; margin:0 auto; z-index:9001;margin-top:10%">
+            <div style="width:500px; margin:0 auto; z-index:9001;margin-top:10%">
                 <img src="" style="width:100%;" />
             </div>
         </div>

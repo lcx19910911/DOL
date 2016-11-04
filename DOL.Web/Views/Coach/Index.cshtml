@@ -80,7 +80,8 @@
         }
 
         function formInit(dataitem) {
-
+            if (dataitem!=null)
+                $('[name=\'Sex\']').val(dataitem.GenderCode == 1 ? "男" : "女")
             $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
                 $(json).each(function () {
                     if (dataitem != null) {
