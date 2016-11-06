@@ -78,6 +78,8 @@ namespace DOL.Repository
         public DbSet<Coach> Coach { get; set; }
 
         public DbSet<ThemeSalary> ThemeSalary { get; set; }
+
+        public DbSet<Log> Log { get; set; }
     }
 
 }

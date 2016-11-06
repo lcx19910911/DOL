@@ -13,7 +13,7 @@ namespace DOL.Repository.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201611020914133_2"; }
+            get { return "201611061430237_2"; }
         }
         
         string IMigrationMetadata.Source

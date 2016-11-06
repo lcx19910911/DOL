@@ -175,7 +175,7 @@ namespace DOL.Service
                 }
 
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).Distinct().ToList();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];

@@ -242,6 +242,19 @@ namespace DOL.Service
             return list;
         }
 
+        /// <summary>
+        /// 获取地区数据
+        /// </summary>
+        /// <param name="value">地区编码</param>
+        /// <returns></returns>
+        public Tuple<string,string> Get_ByCityCode(string cityCode)
+        {
+
+            var provniceName = GetValue(GroupCode.Area, cityCode.Substring(0, 2) + "0000");
+            var cityName = GetValue(GroupCode.Area, cityCode);
+            return new Tuple<string, string>(provniceName, cityName);
+        }
+
 
         /// <summary>
         /// 获取下拉框

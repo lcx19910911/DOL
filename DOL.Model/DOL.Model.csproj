@@ -49,6 +49,7 @@
     <Compile Include="Dto\MenuItem.cs" />
     <Compile Include="DriverShop.cs" />
     <Compile Include="Enum\ErrorCode.cs" />
+    <Compile Include="Enum\LogCode.cs" />
     <Compile Include="Enum\GenderCode.cs" />
     <Compile Include="Enum\GlobalFlag.cs" />
     <Compile Include="Enum\ExamCode.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Enum\GroupCode.cs" />
     <Compile Include="Enum\YesOrNo.cs" />
     <Compile Include="EnteredPoint.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="ThemeSalary.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Operate.cs" />

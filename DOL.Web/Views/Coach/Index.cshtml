@@ -80,34 +80,10 @@
         }
 
         function formInit(dataitem) {
-            if (dataitem!=null)
-                $('[name=\'Sex\']').val(dataitem.GenderCode == 1 ? "男" : "女")
-            $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
-                $(json).each(function () {
-                    if (dataitem != null) {
-                        if (dataitem.ProvinceCode == this.Value)
-                            $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
-                        else
-                            $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                    }
-                    else
-                        $("#form select[name='ProvinceCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                });
-            });
 
             if (dataitem != null) {
-                if (dataitem.ProvinceCode != null) {
-                    $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: dataitem.ProvinceCode }, function (json) {
-                        $(json).each(function () {
-                            if (dataitem.CityCode == this.Value)
-                                $("#form select[name='CityCode']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
-                            else
-                                $("#form select[name='CityCode']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                        });
-                    });
-                }
+                isCardID($("#form [name='IDCard']"), $("#form [name='GenderCode']"));
             }
-
 
             $.Nuoya.action("/DriverShop/SelectItem", { id: dataitem ? dataitem.DriverShopID : "" }, function (json) {
                 $(json).each(function () {

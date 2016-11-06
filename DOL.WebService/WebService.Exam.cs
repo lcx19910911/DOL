@@ -96,40 +96,47 @@ namespace DOL.Service
                 model.ID = Guid.NewGuid().ToString("N");
 
                 entities.Exam.Add(model);
-                if(Cache_Get_ExamList().Where(x=>x.Code==model.Code&&x.Result==ExamCode.Pass&&x.StudentID.Equals(model.StudentID)).Any())
+                if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.Result == ExamCode.Pass && x.StudentID.Equals(model.StudentID)).Any())
                     return Result(false, ErrorCode.theme_had_pass);
                 if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.Count == model.Count && x.StudentID.Equals(model.StudentID)).Any())
                     return Result(false, ErrorCode.count_had_exit);
                 var studentList = Cache_Get_StudentList();
                 var student = entities.Student.Find(model.StudentID);
-                if (student==null)
+                if (student == null)
                     return Result(false, ErrorCode.sys_param_format_error);
-                if (model.Code == ThemeCode.One&&model.Result==ExamCode.Pass)
+                if (model.Result == ExamCode.Pass)
                 {
-                    student.ThemeOnePass = YesOrNoCode.Yes;
-                    student.NowTheme = ThemeCode.Two;
-                    student.ThemeOneDate = DateTime.Now;
-                }
-                else if (model.Code == ThemeCode.Two && model.Result == ExamCode.Pass)
-                {
-                    student.ThemeTwoPass = YesOrNoCode.Yes;
-                    student.NowTheme = ThemeCode.Three;
-                    student.ThemeTwoDate = DateTime.Now;
-                    student.ThemeTwoTimeCode = ThemeTimeCode.Complete;
-                }
-                else if (model.Code == ThemeCode.Three && model.Result == ExamCode.Pass)
-                {
-                    student.ThemeThreePass = YesOrNoCode.Yes;
-                    student.NowTheme = ThemeCode.Four;
-                    student.ThemeThreeDate = DateTime.Now;
+                    if (model.Code == ThemeCode.One)
+                    {
+                        student.ThemeOnePass = YesOrNoCode.Yes;
+                        student.NowTheme = ThemeCode.Two;
+                        student.ThemeOneDate = DateTime.Now;
+                        student.State = StudentCode.ThemeTwo;
+                    }
+                    else if (model.Code == ThemeCode.Two)
+                    {
+                        student.ThemeTwoPass = YesOrNoCode.Yes;
+                        student.NowTheme = ThemeCode.Three;
+                        student.ThemeTwoDate = DateTime.Now;
+                        student.ThemeTwoTimeCode = ThemeTimeCode.Complete;
+                        student.State = StudentCode.ThemeThree;
+                    }
+                    else if (model.Code == ThemeCode.Three)
+                    {
+                        student.ThemeThreePass = YesOrNoCode.Yes;
+                        student.NowTheme = ThemeCode.Four;
+                        student.ThemeThreeDate = DateTime.Now;
+                        student.State = StudentCode.ThemeFour;
 
-                    student.ThemeThreeTimeCode = ThemeTimeCode.Complete;
-                }
-                else if (model.Code == ThemeCode.Four && model.Result == ExamCode.Pass)
-                {
-                    student.ThemeFourPass = YesOrNoCode.Yes;
-                    student.NowTheme = ThemeCode.Four;
-                    student.ThemeFourDate = DateTime.Now;
+                        student.ThemeThreeTimeCode = ThemeTimeCode.Complete;
+                    }
+                    else if (model.Code == ThemeCode.Four)
+                    {
+                        student.ThemeFourPass = YesOrNoCode.Yes;
+                        student.NowTheme = ThemeCode.Four;
+                        student.ThemeFourDate = DateTime.Now;
+                        student.State = StudentCode.Graduate;
+                    }
                 }
                 if (entities.SaveChanges() > 0)
                 {
@@ -138,7 +145,7 @@ namespace DOL.Service
                     var index = studentList.FindIndex(y => y.ID.Equals(model.StudentID));
                     if (index > -1)
                     {
-                        studentList[index]= student;
+                        studentList[index] = student;
                     }
                     return Result(true);
                 }
@@ -149,7 +156,7 @@ namespace DOL.Service
             }
 
         }
-          
+
         /// <summary>
         /// 删除考试记录
         /// </summary>
@@ -169,34 +176,49 @@ namespace DOL.Service
                 entities.Exam.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     var student = entities.Student.Find(x.StudentID);
-                    if (student!=null)
+                    if (student != null)
                     {
                         if (x.Result == ExamCode.Pass)
                         {
                             if (x.Code == ThemeCode.One)
                             {
                                 student.ThemeOnePass = YesOrNoCode.No;
+                                student.ThemeOneDate = null;
+                                student.State = StudentCode.ThemeOne;
+                                student.NowTheme = ThemeCode.One;
                             }
                             else if (x.Code == ThemeCode.Two)
                             {
                                 student.ThemeTwoPass = YesOrNoCode.No;
+                                student.ThemeTwoDate = null;
+                                student.State = StudentCode.ThemeTwo;
+                                student.ThemeTwoTimeCode = ThemeTimeCode.Lock;
+                                student.NowTheme = ThemeCode.Two;
                             }
                             else if (x.Code == ThemeCode.Three)
                             {
                                 student.ThemeThreePass = YesOrNoCode.No;
+                                student.ThemeThreeDate = null;
+                                student.State = StudentCode.ThemeThree;
+                                student.ThemeThreeTimeCode = ThemeTimeCode.Lock;
+                                student.NowTheme = ThemeCode.Three;
                             }
                             else if (x.Code == ThemeCode.Four)
                             {
                                 student.ThemeFourPass = YesOrNoCode.No;
+                                student.ThemeFourDate = null;
+                                student.State = StudentCode.ThemeFour;
+                                student.NowTheme = ThemeCode.Four;
                             }
                         }
+                        Add_Log(LogCode.DeleteExam, student.ID, string.Format("{0}在{1}删除了学员{2}的考试（{3}）考试时间{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, x.ID, x.CreatedTime), "", "");
                         entities.Exam.Remove(x);
                         var index = list.FindIndex(y => y.ID.Equals(x.ID));
                         var studentIndex = studentList.FindIndex(y => y.ID.Equals(x.StudentID));
                         if (index > -1)
                         {
-                            studentList.RemoveAt(studentIndex);
                             list.RemoveAt(index);
+                            studentList[index] = student;
                         }
                     }
                 });

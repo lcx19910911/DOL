@@ -78,7 +78,7 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.Mobile.Contains(mobile));
                 }
-                if (state != StudentCode.None)
+                if ((int)state != -1)
                 {
                     query = query.Where(x => x.State.Equals(state));
                 }
@@ -298,7 +298,7 @@ namespace DOL.Service
                         x.TrianName = trianDic[x.TrianID]?.Value;
                     //制卡驾校
                     if (!string.IsNullOrEmpty(x.DriverShopID) && driverShopDic.ContainsKey(x.DriverShopID))
-                        x.DriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
+                        x.DriverShopName = driverShopDic[x.DriverShopID]?.Name;
 
                     //科目二教练
                     if (!string.IsNullOrEmpty(x.ThemeThreeCoachID) && coachDic.ContainsKey(x.ThemeThreeCoachID))
@@ -339,23 +339,24 @@ namespace DOL.Service
                 }
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
-                model.State = StudentCode.Entered;
+                model.State = StudentCode.DontMakeCard;
                 model.UpdaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
                 if (model.MakeDriverShopID == "-1")
                     model.MakeDriverShopID = string.Empty;
                 model.MoneyIsFull = YesOrNoCode.No;
-                if (model.ThemeOnePass == YesOrNoCode.Yes)
-                    model.NowTheme = ThemeCode.One;
-                if (model.ThemeTwoPass == YesOrNoCode.Yes)
-                    model.NowTheme = ThemeCode.Two;
-                if (model.ThemeThreePass == YesOrNoCode.Yes)
-                    model.NowTheme = ThemeCode.Three;
-                if (model.ThemeFourPass == YesOrNoCode.Yes)
-                {
-                    model.NowTheme = ThemeCode.Four;
-                    model.State = StudentCode.Graduated;
-                }
+                //if (model.ThemeOnePass == YesOrNoCode.Yes)
+                //{
+                //    model.NowTheme = ThemeCode.One;
+                //}
+                //if (model.ThemeTwoPass == YesOrNoCode.Yes)
+                //    model.NowTheme = ThemeCode.Two;
+                //if (model.ThemeThreePass == YesOrNoCode.Yes)
+                //    model.NowTheme = ThemeCode.Three;
+                //if (model.ThemeFourPass == YesOrNoCode.Yes)
+                //{
+                //    model.NowTheme = ThemeCode.Four;
+                //}
                 entities.Student.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -415,6 +416,9 @@ namespace DOL.Service
                 {
                     if (list.AsQueryable().Where(x => x.Name.Equals(model.IDCard) && !x.ID.Equals(model.ID)).Any())
                         return Result(false, ErrorCode.datadatabase_idcards__had);
+                    //修改前
+                    string beforeJson = oldEntity.ToJson();
+
                     oldEntity.IDCard = model.IDCard;
                     oldEntity.Mobile = model.Mobile;
                     oldEntity.Name = model.Name;
@@ -459,19 +463,22 @@ namespace DOL.Service
                     oldEntity.ThemeTwoTimeCode = model.ThemeTwoTimeCode;
                     oldEntity.ThemeThreeTimeCode = model.ThemeThreeTimeCode;
 
-                    if (model.ThemeOnePass == YesOrNoCode.Yes)
-                        oldEntity.NowTheme = ThemeCode.One;
-                    if (model.ThemeTwoPass == YesOrNoCode.Yes)
-                        oldEntity.NowTheme = ThemeCode.Two;
-                    if (model.ThemeThreePass == YesOrNoCode.Yes)
-                        oldEntity.NowTheme = ThemeCode.Three;
-                    if (model.ThemeFourPass == YesOrNoCode.Yes)
-                    {
-                        oldEntity.NowTheme = ThemeCode.Four;
-                        oldEntity.State = StudentCode.Graduated;
-                    }
+                    //if (model.ThemeOnePass == YesOrNoCode.Yes)
+                    //    oldEntity.NowTheme = ThemeCode.One;
+                    //if (model.ThemeTwoPass == YesOrNoCode.Yes)
+                    //    oldEntity.NowTheme = ThemeCode.Two;
+                    //if (model.ThemeThreePass == YesOrNoCode.Yes)
+                    //    oldEntity.NowTheme = ThemeCode.Three;
+                    //if (model.ThemeFourPass == YesOrNoCode.Yes)
+                    //{
+                    //    oldEntity.NowTheme = ThemeCode.Four;
+                    //    oldEntity.State = StudentCode.Graduate;
+                    //}
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
+                    string afterJSon = oldEntity.ToJson();
+
+                    Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name),beforeJson,afterJSon);
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -514,6 +521,7 @@ namespace DOL.Service
                 entities.Student.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     x.Flag = x.Flag | (long)GlobalFlag.Removed;
+                    Add_Log(LogCode.DeleteStudent, x.ID, string.Format("{0}在{1}删除了学员{2}", Client.LoginUser.Name, DateTime.Now.ToString(), x.Name), "","");
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
                     if (index > -1)
                     {
@@ -607,86 +615,5 @@ namespace DOL.Service
                 return Cache_Get_StudentList().FirstOrDefault(x => x.ID.Equals(id));
             }
         }
-
-
-        /// <summary>
-        /// 启用
-        /// </summary>
-        /// <param name="ids">id，多个id用逗号分隔</param>
-        /// <returns>影响条数</returns>
-        public WebResult<bool> Enable_Student(string ids)
-        {
-            if (string.IsNullOrEmpty(ids))
-                return Result(false, ErrorCode.sys_param_format_error);
-            using (DbRepository entities = new DbRepository())
-            {
-                //按逗号分隔符分隔开得到unid列表
-                var unidArray = ids.Split(',');
-                var list = Cache_Get_StudentList();
-                entities.Student.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
-                {
-                    x.Flag = x.Flag & ~(long)GlobalFlag.Unabled;
-                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
-                    if (index > -1)
-                    {
-                        list[index] = x;
-                    }
-                    else
-                    {
-                        list.Add(x);
-                    }
-                });
-
-                if (entities.SaveChanges() > 0)
-                {
-                    return Result(true);
-                }
-                else
-                {
-                    return Result(false, ErrorCode.sys_fail);
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// 禁用
-        /// </summary>
-        /// <param name="ids">ids，多个id用逗号分隔</param>
-        /// <returns>影响条数</returns>
-        public WebResult<bool> Disable_Student(string ids)
-        {
-            if (string.IsNullOrEmpty(ids))
-                return Result(false, ErrorCode.sys_param_format_error);
-            using (DbRepository entities = new DbRepository())
-            {
-                //按逗号分隔符分隔开得到unid列表
-                var unidArray = ids.Split(',');
-                var list = Cache_Get_StudentList();
-                entities.Student.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
-                {
-                    x.Flag = x.Flag | (long)GlobalFlag.Unabled;
-                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
-                    if (index > -1)
-                    {
-                        list[index] = x;
-                    }
-                    else
-                    {
-                        list.Add(x);
-                    }
-                });
-
-                if (entities.SaveChanges() > 0)
-                {
-                    return Result(true);
-                }
-                else
-                {
-                    return Result(false, ErrorCode.sys_fail);
-                }
-            }
-        } 
-
     }
 }

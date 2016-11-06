@@ -99,5 +99,15 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Get_AreaList(value));
         }
+
+        /// <summary>
+        /// 根据身份证
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetByCityCode(string cityCode)
+        {
+            return JResult(WebService.Get_ByCityCode(cityCode));
+        }
+
     }
 }

@@ -283,18 +283,18 @@ namespace DOL.Service
 
                 if (student == null)
                     return Result(false, ErrorCode.sys_param_format_error);
-                student.State = StudentCode.Training;
                 list.AsQueryable().Where(x => x.StudentID.Equals(student.ID) && x.IsConfirm == YesOrNoCode.Yes).ToList().ForEach(x =>
                 {
                     student.HadPayMoney += x.PayMoney;
                 });
                 student.HadPayMoney += oldEntity.PayMoney;
+                student.State = StudentCode.ThemeOne;
 
                 if (student.HadPayMoney >= student.Money)
                 {
                     student.MoneyIsFull = YesOrNoCode.Yes;
                 }
-
+                Add_Log(LogCode.ConfirmPayOrder, student.ID, string.Format("{0}在{1}确认了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name,oldEntity.ID,oldEntity.PayMoney), "", "");
                 if (entities.SaveChanges() > 0)
                 {
 
@@ -406,6 +406,7 @@ namespace DOL.Service
                 var oldEntity = entities.PayOrder.Find(model.ID);
                 if (oldEntity != null)
                 {
+                    string beforeJson = oldEntity.ToJson();
                     oldEntity.PayMoney = model.PayMoney;
                     oldEntity.PayTime = model.PayTime;
                     oldEntity.PayTypeID = model.PayTypeID;
@@ -413,6 +414,9 @@ namespace DOL.Service
                     oldEntity.VoucherThum = model.VoucherThum;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     oldEntity.UpdatedTime = DateTime.Now;
+                    string afterJson = oldEntity.ToJson();
+                    var student = Cache_Get_StudentList_Dic()[oldEntity.StudentID];
+                    Add_Log(LogCode.UpdatePayOrder, oldEntity.StudentID, string.Format("{0}在{1}修改了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, oldEntity.ID, oldEntity.PayMoney), beforeJson, afterJson);
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -470,6 +474,7 @@ namespace DOL.Service
                         {
                             student.MoneyIsFull = YesOrNoCode.No;
                         }
+                        Add_Log(LogCode.UpdatePayOrder, student.ID, string.Format("{0}在{1}修改了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, x.ID, x.PayMoney), "", "");
                     }
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
                     var studentIndex = Cache_Get_StudentList().FindIndex(y => y.ID.Equals(x.StudentID));

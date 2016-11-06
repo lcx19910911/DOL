@@ -150,6 +150,17 @@ namespace DOL.Web.Controllers
         }
 
         /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public ActionResult Delete(string ids)
+        {
+            return JResult(WebService.Delete_Student(ids));
+        }
+
+
+        /// <summary>
         /// 申请退学
         /// </summary>
         /// <param name="id"></param>
@@ -180,5 +191,22 @@ namespace DOL.Web.Controllers
                 return ParamsErrorJResult(ModelState);
             }
         }
+
+        public ActionResult GetLogList(int pageIndex,
+            int pageSize, string StudentID)
+        {
+            return JResult(WebService.Get_LogByStudentId(pageIndex, pageSize,StudentID));
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public ActionResult FindLog(string ID)
+        {
+            return JResult(WebService.Find_Log(ID));
+        }
+
     }
 }

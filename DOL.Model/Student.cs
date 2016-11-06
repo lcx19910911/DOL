@@ -32,7 +32,6 @@ namespace DOL.Model
         [MaxLength(32)]
         [Required(ErrorMessage = "身份证号码不能为空")]
         [Column("IDCard", TypeName = "varchar")]
-        [RegularExpression(@"(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$)", ErrorMessage = "身份证号码格式不正确")]
         public string IDCard { get; set; }
 
         /// <summary>
