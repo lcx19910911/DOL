@@ -520,17 +520,30 @@
                     //此次还可以判断出输入的身份证号的人性别
                     var sex = parseInt(sId.substr(16, 1)) % 2;
                     {
-                        $(sexObj).find('option').eq(parseInt(sex)).attr('selected', true);
+                        if (sex == 0) {
+                            $(sexObj).find('option').eq(2).attr('selected', true);
+                        }
+                        else {
+                            $(sexObj).find('option').eq(1).attr('selected', true);
+                        }
                     }
                     var cityCode = sId.substr(0, 4) + "00";
                     var provinceCode = sId.substr(0, 2) + "0000";
+
                     $("#form #ProvinceCode").val(provinceCode);
                     $("#form #CityCode").val(cityCode);
-                    $.Nuoya.action("/Area/GetByCityCode", { cityCode: cityCode }, function (json) {
-                        $("#form #ProvinceName").val(json.Item1);
-                        $("#form #CityName").val(json.Item2);
+                    if (cityCode == "352200") {
+                        $("#form #ProvinceName").val("福建省");
+                        $("#form #CityName").val("宁德市（旧）");
+                    }
+                    else {
 
-                    });
+                        $.Nuoya.action("/Area/GetByCityCode", { cityCode: cityCode }, function (json) {
+                            $("#form #ProvinceName").val(json.Item1);
+                            $("#form #CityName").val(json.Item2);
+
+                        });
+                    }
                     return true;
                 }
 

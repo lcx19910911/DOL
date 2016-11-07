@@ -26,7 +26,7 @@ namespace DOL.Service
             {
                 using (var db = new DbRepository())
                 {
-                    List<Student> list = db.Student.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).OrderByDescending(x => x.CreatedTime).ThenBy(x => x.ID).ToList();
+                    List<Student> list = db.Student.OrderByDescending(x => x.CreatedTime).ThenBy(x => x.ID).ToList();
                     return list;
                 }
             });

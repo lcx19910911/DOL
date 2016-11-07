@@ -73,11 +73,16 @@ namespace DOL.Service
             {
                 var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.IsDrop == YesOrNoCode.No);
 
-
+                var studentList = Cache_Get_StudentList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
                 if (no.IsNotNullOrEmpty())
                 {
-                    var studentIdList = Cache_Get_StudentList().Where(x => x.IDCard.Contains(no)).Select(x => x.ID).ToList();
-                    query = query.Where(x => studentIdList.Contains(x.StudentID));
+                    var studentIdList = studentList.Where(x => x.IDCard.Contains(no)).Select(x => x.ID.Trim()).ToList();
+                    query = query.Where(x => studentIdList.Contains(x.StudentID.Trim()));
+                }
+                else
+                {
+                    var studentIdList = studentList.Select(x => x.ID.Trim()).ToList();
+                    query = query.Where(x => studentIdList.Contains(x.StudentID.Trim()));
                 }
 
                 if (state != -1)
@@ -86,7 +91,7 @@ namespace DOL.Service
                 }
 
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.PayTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var studentDic = Cache_Get_StudentList_Dic();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
@@ -283,7 +288,8 @@ namespace DOL.Service
 
                 if (student == null)
                     return Result(false, ErrorCode.sys_param_format_error);
-                list.AsQueryable().Where(x => x.StudentID.Equals(student.ID) && x.IsConfirm == YesOrNoCode.Yes).ToList().ForEach(x =>
+                student.HadPayMoney = 0;
+                list.AsQueryable().Where(x => x.StudentID.Equals(student.ID) && x.IsConfirm == YesOrNoCode.Yes&&x.Flag==(long)GlobalFlag.Normal).ToList().ForEach(x =>
                 {
                     student.HadPayMoney += x.PayMoney;
                 });

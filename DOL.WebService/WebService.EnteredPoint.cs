@@ -331,7 +331,7 @@ namespace DOL.Service
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>
-        public EnteredPointReportModel Get_EnteredPointReport(DateTime? time)
+        public EnteredPointReportModel Get_EnteredPointReport(DateTime? time,string EnteredPointID)
         {
             //赋值本月
             if (time == null)
@@ -354,10 +354,17 @@ namespace DOL.Service
 
             //报名点集合
             var enteredPointIDList = new List<string>();
-            if (this.Client.LoginUser.MenuFlag == -1)
-                enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal).Select(x=>x.ID).ToList();
+            if (!string.IsNullOrEmpty(EnteredPointID))
+            {
+                enteredPointIDList.Add(EnteredPointID);
+            }
             else
-                enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).Select(x => x.ID).ToList();
+            {
+                if (this.Client.LoginUser.MenuFlag == -1)
+                    enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal).Select(x => x.ID).ToList();
+                else
+                    enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).Select(x => x.ID).ToList();
+            }
             model.TotalDic = new Dictionary<int, int>();
             //月份天数
             var dayCount = (endTime - time.Value).Days+1;

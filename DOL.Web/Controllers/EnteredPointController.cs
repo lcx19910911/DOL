@@ -21,9 +21,9 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="searchTime"></param>
         /// <returns></returns>
-        public ViewResult Report(DateTime? searchTime)
+        public ViewResult Report(DateTime? searchTime,string EnteredPointID)
         {
-            return View(WebService.Get_EnteredPointReport(searchTime));
+            return View(WebService.Get_EnteredPointReport(searchTime, EnteredPointID));
         }
 
         /// <summary>
