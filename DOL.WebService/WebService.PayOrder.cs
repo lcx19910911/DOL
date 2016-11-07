@@ -244,6 +244,8 @@ namespace DOL.Service
                 model.CreaterID = Client.LoginUser.ID;
                 model.UpdaterID = Client.LoginUser.ID;
                 entities.PayOrder.Add(model);
+                
+                Add_Log(LogCode.AddPayOrder, model.ID, string.Format("{0}在{1}新增了学员{2}的缴费{3}", Client.LoginUser.Name, DateTime.Now.ToString(), Cache_Get_StudentList_Dic()[model.StudentID].Name, model.ID), "", "");
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_PayOrderList();

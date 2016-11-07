@@ -8,14 +8,14 @@
 <div class="admin-content-body">
     <form id="form" class="am-form  am-form-inline">
         <input type="hidden" name="ID" value="@Request["ID"]" />
-        <input type="hidden" name="HadPayMoney"  />
+        <input type="hidden" name="HadPayMoney" />
         <div class="am-tabs am-margin" data-am-tabs="">
             <ul class="am-tabs-nav am-nav am-nav-tabs" id="selectTabUl">
-                <li @(Html.Raw(string.IsNullOrEmpty(Request["trian"])?"class='am-active'":""))  ><a href="#tab1">报名收费</a></li>
-                <li @(Html.Raw(!string.IsNullOrEmpty(Request["trian"])&&Request["trian"]=="1" ? "class='am-active'":"")) ><a href="#tab2">培训信息</a></li>
+                <li @(Html.Raw(string.IsNullOrEmpty(Request["trian"]) ? "class='am-active'" : ""))><a href="#tab1">报名收费</a></li>
+                <li @(Html.Raw(!string.IsNullOrEmpty(Request["trian"]) && Request["trian"] == "1" ? "class='am-active'" : ""))><a href="#tab2">培训信息</a></li>
             </ul>
             <div class="am-tabs-bd" style="touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);overflow-x:hidden">
-                <div @(Html.Raw(string.IsNullOrEmpty(Request["trian"])? "class='am-tab-panel am-fade am-in am-active'" : "class='am-tab-panel am-fade'"))  id="tab1">                  
+                <div @(Html.Raw(string.IsNullOrEmpty(Request["trian"]) ? "class='am-tab-panel am-fade am-in am-active'" : "class='am-tab-panel am-fade'")) id="tab1">
                     <div class="am-g am-margin-top">
                         <div class="am-u-md-12 am-text-left">
                             <label for="user-name" class="am-form-label">身份信息：</label>
@@ -26,7 +26,7 @@
                             学员姓名<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
                         </div>
                         <div class="am-u-md-2 am-text-left">
-                            <input type="text" name="Name"  class="am-input-sm" maxlength="32" style="width:160px;">
+                            <input type="text" name="Name" class="am-input-sm" maxlength="32" style="width:160px;">
                         </div>
                         <div class="am-u-md-2 am-text-right">
                             户籍地<strong class="am-text-danger am-text-sm">*</strong>：
@@ -72,7 +72,7 @@
                             身份证地址<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
                         </div>
                         <div class="am-u-md-7 am-text-left  am-u-end">
-                            <input type="text" name="Address" class="am-input-sm" maxlength="512" >
+                            <input type="text" name="Address" class="am-input-sm" maxlength="512">
                         </div>
                     </div>
 
@@ -90,15 +90,15 @@
                             报名地点<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
                         </div>
                         <div class="am-u-md-5 am-text-left">
-                            <select name="EnteredProvinceCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"  style="width:120px;"></select>省
-                            <select name="EnteredCityCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"  style="width:120px;"></select>市
-                            <select name="EnteredPointID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"  style="width:120px;"></select>
+                            <select name="EnteredProvinceCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>省
+                            <select name="EnteredCityCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>市
+                            <select name="EnteredPointID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
                         </div>
                         <div class="am-u-md-2 am-text-right">
                             推荐人<strong class="am-text-danger am-text-sm">*</strong>：
                         </div>
                         <div class="am-u-md-2 am-u-end">
-                            <select name="ReferenceID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"  style="width:120px;"></select>
+                            <select name="ReferenceID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
                         </div>
                     </div>
 
@@ -107,7 +107,7 @@
                             学习车型<strong class="am-text-danger am-text-sm">*</strong>：
                         </div>
                         <div class="am-u-md-2">
-                            <select name="CertificateID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"  style="width:120px;"></select>
+                            <select name="CertificateID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
                         </div>
                         <div class="am-u-md-2 am-text-right">
                             报名时间<strong class="am-text-danger am-text-sm">*</strong>：
@@ -122,7 +122,7 @@
                             意向驾校：
                         </div>
                         <div class="am-u-md-2 am-text-left">
-                            <select name="WantDriverShopID"  data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                            <select name="WantDriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
                                 <option value="-1">请选择</option>
                             </select>
                         </div>
@@ -130,18 +130,18 @@
                             制卡驾校：
                         </div>
                         <div class="am-u-md-1 am-u-end">
-                            <select name="MakeDriverShopID"  data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                            <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
                                 <option value="-1">请选择</option>
                             </select>
                         </div>
-                     
+
                     </div>
                     <div class="am-g am-margin-top">
                         <div class="am-u-md-2 am-text-right">
                             制卡备注：
                         </div>
                         <div class="am-u-md-7 am-text-left  am-u-end">
-                            <input type="text" name="MakeCardRemark"  class="am-input-sm" maxlength="128">
+                            <input type="text" name="MakeCardRemark" class="am-input-sm" maxlength="128">
                         </div>
                     </div>
 
@@ -157,13 +157,13 @@
                             学费总价<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
                         </div>
                         <div class="am-u-md-2 am-text-left  am-u-end">
-                            <input type="text" name="Money"  class="am-input-sm" maxlength="10">
+                            <input type="text" name="Money" class="am-input-sm" maxlength="10">
                         </div>
                         <div class="am-u-md-2 am-text-right">
                             培训班别<strong class="am-text-danger am-text-sm">*</strong>：
                         </div>
                         <div class="am-u-md-3 am-u-end">
-                            <select name="TrianID"  data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                            <select name="TrianID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
                         </div>
                     </div>
 
@@ -186,7 +186,10 @@
                         <div class="am-u-lg-6">
                             <div class="am-btn-toolbar">
                                 <div class="am-btn-group am-btn-group-sm">
-                                    <button onclick="addPay()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                                    @if (string.IsNullOrEmpty(Request["readonly"]))
+                                    {
+                                        <button onclick="addPay()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -217,7 +220,7 @@
                     </div>
                 </div>
 
-                <div @(Html.Raw(!string.IsNullOrEmpty(Request["trian"])&&Request["trian"]=="1" ? "class='am-tab-panel am-fade am-in am-active'" : "class='am-tab-panel am-fade'")) id="tab2">
+                <div @(Html.Raw(!string.IsNullOrEmpty(Request["trian"]) && Request["trian"] == "1" ? "class='am-tab-panel am-fade am-in am-active'" : "class='am-tab-panel am-fade'")) id="tab2">
                     <div class="am-g am-margin-top">
                         <div class="am-u-md-12 am-text-left">
                             <label for="user-name" class="am-form-label">学员所在驾校：</label>
@@ -254,14 +257,14 @@
                             科目一时间：
                         </div>
                         <div class="am-u-md-1 am-text-left">
-                            <input type="text" name="ThemeOneDate" class="am-input-sm" style="width:130px;" placeholder="请选择时间" readonly  />
+                            <input type="text" name="ThemeOneDate" class="am-input-sm" style="width:130px;" placeholder="请选择时间" readonly />
                         </div>
                         <div class="am-u-md-2 am-text-right">
                             是否通过：
                         </div>
                         <div class="am-u-md-1  am-u-end">
-                            <input type="text" readonly  class="am-input-sm" name="ThemeOnePassStr" style="width:120px;" />
-                            <input type="hidden" name="ThemeOnePass"/>
+                            <input type="text" readonly class="am-input-sm" name="ThemeOnePassStr" style="width:120px;" />
+                            <input type="hidden" name="ThemeOnePass" />
                         </div>
                     </div>
 
@@ -286,7 +289,7 @@
                             科目二时间：
                         </div>
                         <div class="am-u-md-1 am-text-left am-u-end">
-                            <input type="text" name="ThemeTwoDate" class="am-input-sm" style="width:120px;"  readonly />
+                            <input type="text" name="ThemeTwoDate" class="am-input-sm" style="width:120px;" readonly />
                         </div>
                     </div>
 
@@ -329,7 +332,7 @@
                             科目三时间：
                         </div>
                         <div class="am-u-md-1 am-text-left am-u-end">
-                            <input type="text" name="ThemeThreeDate" class="am-input-sm" style="width:120px;"  readonly  />
+                            <input type="text" name="ThemeThreeDate" class="am-input-sm" style="width:120px;" readonly />
                         </div>
 
                     </div>
@@ -364,7 +367,7 @@
                             科目四时间：
                         </div>
                         <div class="am-u-md-1 am-text-left">
-                            <input type="text" name="ThemeFourDate" class="am-input-sm" style="width:120px;"  readonly />
+                            <input type="text" name="ThemeFourDate" class="am-input-sm" style="width:120px;" readonly />
                         </div>
                         <div class="am-u-md-2 am-text-right">
                             是否通过：
@@ -387,7 +390,10 @@
                         <div class="am-u-lg-6">
                             <div class="am-btn-toolbar">
                                 <div class="am-btn-group am-btn-group-sm">
-                                    <button onclick="addExam()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                                    @if (string.IsNullOrEmpty(Request["readonly"]))
+                                    {
+                                        <button onclick="addExam()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -418,11 +424,14 @@
     </form>
     <div class="am-g am-margin-top-sm am-text-center">
         <button type="button" onclick="BackUrl()" class="am-btn am-btn-primary">返回</button>
-        <button type="button" onclick="UpdateStudent()" class="am-btn am-btn-primary">保存修改</button>
+        @if (string.IsNullOrEmpty(Request["readonly"]))
+        {
+            <button type="button" onclick="UpdateStudent()" class="am-btn am-btn-primary">保存修改</button>
+        }
     </div>
 </div>
 <script>
-
+    var readonly = '@Request["readonly"]';
     function formInit(dataitem) {
 
         if (dataitem != null) {
@@ -592,11 +601,9 @@
         })
     }
 
-    function IsAddCertificateFun(obj)
-    {
+    function IsAddCertificateFun(obj) {
         var value = $(obj).val();
-        if (value == "1")
-        {
+        if (value == "1") {
             $("[name='OldCertificate']").removeAttr("readonly");
         }
         else
@@ -684,7 +691,12 @@
                     event.preventDefault();
                 }
             }
-        ]
+        ],
+        callback: function () {
+            if (readonly != "" && readonly != null) {
+                $(".eventList").hide();
+            }
+        }
     });
 
     var examGrid = $.Nuoya.grid({
@@ -719,11 +731,16 @@
                     event.preventDefault();
                 }
             }
-        ]
+        ],
+        callback: function () {
+            if (readonly != "" && readonly != null)
+            {
+                $(".eventList").hide();
+            }
+        }
     });
 
-    function init()
-    {
+    function init() {
         $.Nuoya.action("/Student/Find", { ID: $("[name='ID']").val() }, function (model) {
             //载入数据
             $.Nuoya.form("form").dataLoad({
@@ -732,7 +749,7 @@
 
             LoadProvince(false, model);
             LoadItemList(false, model);
-            
+
             $("#form select[name='GenderCode']").find('option').eq(parseInt(model.GenderCode)).attr('selected', true);
 
             //是否增驾
@@ -909,17 +926,15 @@
         }
     });
 
-    function UpdateStudent()
-    {
+    function UpdateStudent() {
         if (!ValidStudent()) {
             return false;
         }
-        if ($("[name='ThemeTwoCoachID']").val() == "-1") {
-            $("[name='ThemeTwoCoachID']").val("")
+        if ($("#form [name='ThemeTwoCoachID']").val() == "-1") {
+            $("#form [name='ThemeTwoCoachID']").val("")
         }
-        if ($("[name='ThemeThreeCoachID']").val() == "-1")
-        {
-            $("[name='ThemeThreeCoachID']").val("")
+        if ($("#form [name='ThemeThreeCoachID']").val() == "-1") {
+            $("#form [name='ThemeThreeCoachID']").val("")
         }
         $.Nuoya.form("form").ajaxSubmit({
             ajaxUrl: "/Student/Update",
@@ -933,3 +948,11 @@
         });
     }
 </script>
+
+@if (!string.IsNullOrEmpty(Request["readonly"]) && Request["readonly"] == "1")
+{
+    <script>
+        $("#form input").attr("readonly", true);
+    </script>
+}
+

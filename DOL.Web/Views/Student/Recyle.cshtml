@@ -1,0 +1,179 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "已删除学员";
+}
+
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>已删除学员</small></div>
+</div>
+<div id="searchDomain">
+
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label ">姓名：</span>
+                <input type="text" class="am-form-field" placeholder="按姓名搜索" style="width:80px;" name="name" ;>
+
+                <span class="am-input-group-label   am-margin-left-sm">身份证：</span>
+                <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:100px;" name="no" ;>
+
+                <span class="am-input-group-label   am-margin-left-sm">手机：</span>
+                <input type="text" class="am-form-field" placeholder="按手机号码搜索" style="width:80px;" name="mobile" ;>
+
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+<div class="grid_container">
+    <table id="dataTable" class="am-table am-table-compact am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th dataname="EnteredDate" datatype="jsondate">报名日期</th>
+                @*<th dataname="MakeCardDate" datatype="jsondate">制卡日期</th>*@
+                <th dataname="EnteredCityName">报名地点</th>
+                <th dataname="TrianName">培训方式</th>
+                <th dataname="MakeCardCityName">制卡地</th>
+                <th dataname="MakeDriverShopName">制卡驾校</th>
+                <th dataname="PayMethodName">缴费方式</th>
+                <th dataname="Money">总价</th>
+                <th dataname="HadPayMoney">已缴</th>
+                <th dataname="Name">姓名</th>
+                <th dataname="ProvinceName">户籍省份</th>
+                <th dataname="CityName">户籍城市</th>
+                <th dataname="IDCard">身份证</th>
+                <th dataname="Mobile">电话号码</th>
+                <th dataname="CertificateName">车型</th>
+                <th dataname="ReferenceName">推荐人</th>
+                <th render="ShowState">状态</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+      
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+            $('#searchDomain select').each(function () {
+                $(this).find('option').eq(0).attr('selected', true);
+            })
+        }
+
+
+        var grid = $.Nuoya.grid({
+            tableId: "dataTable",
+            //表格id
+            search: {
+                domainId: "searchDomain",
+                subId: "btnSearch"
+            },
+            ajaxUrl: "/Student/GetDeletePageList",
+            //数据请求地址
+            pageSize: 10,
+            events: [
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "详情",
+                    click: function (item) {
+                        window.location.href = "/Student/Update?ID=" + item.ID+"&readonly=1";
+                    }
+                },
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-search",
+                    name: "修改记录",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "1000px",
+                            height: "600px",
+                            ajaxUrl: "/HtmlTemplates/Student/Log.html",
+                            title: "修改记录",
+                            callback: function (e) {
+
+                                var logGrid = $.Nuoya.grid({
+                                    tableId: "logDataTable",
+                                    //表格id
+                                    search: {
+                                        domainId: "searchLogDomain",
+                                        subId: "btnLogSearch"
+                                    },
+                                    ajaxUrl: "/Student/GetLogList",
+                                    params: {
+                                        StudentID: item.ID
+                                    },
+                                    //数据请求地址
+                                    pageSize: 10,
+                                    events: [
+                                        {
+                                            className: "am-text-secondary",
+                                            icon: "icon-pencil-square-o",
+                                            name: "修改详情",
+                                            click: function (model) {
+                                                $.Nuoya.ajaxDialog({
+                                                    closeViaDimmer: false,
+                                                    ajaxUrl: "/HtmlTemplates/Student/LogDetials.html",
+                                                    title: "修改详情",
+                                                    width: "1000px",
+                                                    height: "620px",
+                                                    callback: function (e) {
+                                                        $.Nuoya.action("/Student/FindLog", { id: model.ID }, function (json) {
+                                                            //载入数据
+                                                            $.Nuoya.form("form").dataLoad({
+                                                                data: json
+                                                            });
+                                                        });
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    ]
+                                });
+
+                                event.preventDefault();
+                            }
+                        })
+                    }
+                }
+            ]
+        });
+
+
+        function ShowLogCode(item) {
+
+            switch (item.Code) {
+                case 1:
+                    return "编辑学员信息";
+                    break;
+                case 2:
+                    return "删除学员信息";
+                    break;
+                case 3:
+                    return "确认缴费记录";
+                    break;
+                case 4:
+                    return "修改缴费记录";
+                    break;
+                case 5:
+                    return "删除缴费记录";
+                    break;
+                case 6:
+                    return "删除考试记录";
+                    break;
+            }
+
+        }
+    </script>
+}

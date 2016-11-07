@@ -60,12 +60,21 @@ namespace DOL.Service
             string makeDriverShopId,
             StudentCode state,
             DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
-            DateTime? makedTimeStart, DateTime? makeTimeEnd
+            DateTime? makedTimeStart, DateTime? makeTimeEnd,
+            bool isDelete=false
             )
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                var query = Cache_Get_StudentList().AsQueryable().AsNoTracking();
+                if (!isDelete)
+                {
+                    query = query.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                }
+                else
+                {
+                    query = query.Where(x => (x.Flag & (long)GlobalFlag.Removed) != 0);
+                }
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -78,7 +87,7 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.Mobile.Contains(mobile));
                 }
-                if ((int)state != -1)
+                if ((int)state != -1&&!isDelete)
                 {
                     query = query.Where(x => x.State.Equals(state));
                 }
@@ -358,6 +367,7 @@ namespace DOL.Service
                 //    model.NowTheme = ThemeCode.Four;
                 //}
                 entities.Student.Add(model);
+                Add_Log(LogCode.AddStudent, model.ID, string.Format("{0}在{1}新增了学员{2}", Client.LoginUser.Name, DateTime.Now.ToString(), model.Name), "", "");
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_StudentList();
@@ -416,9 +426,17 @@ namespace DOL.Service
                 {
                     if (list.AsQueryable().Where(x => x.Name.Equals(model.IDCard) && !x.ID.Equals(model.ID)).Any())
                         return Result(false, ErrorCode.datadatabase_idcards__had);
+
                     //修改前
                     string beforeJson = oldEntity.ToJson();
 
+                    if (!string.IsNullOrEmpty(model.MakeDriverShopID))
+                    {
+                        var makecardShop = Cache_Get_DriverShopList().FirstOrDefault(x => x.ID.Equals(model.MakeDriverShopID));
+                        if (makecardShop == null)
+                            return Result(false, ErrorCode.sys_param_format_error);
+                        oldEntity.MakeCardCityCode = makecardShop.CityCode;
+                    }
                     oldEntity.IDCard = model.IDCard;
                     oldEntity.Mobile = model.Mobile;
                     oldEntity.Name = model.Name;
@@ -566,6 +584,8 @@ namespace DOL.Service
 
                 student.State = StudentCode.WantDropOut;
                 student.Remark = remark;
+                student.UpdatedTime = DateTime.Now;
+                student.HadPayMoney -= money;
                 entities.PayOrder.Add(new PayOrder()
                 {
                     StudentID = id,
@@ -576,9 +596,12 @@ namespace DOL.Service
                     WantDropMoney = money,
                     CreatedTime = DateTime.Now,
                     UpdatedTime = DateTime.Now,
-                    IsDrop=YesOrNoCode.Yes,
-                    WantDropDate= DateTime.Now,
-                    Flag =(long)GlobalFlag.Normal
+                    IsDrop = YesOrNoCode.Yes,
+                    WantDropDate = DateTime.Now,
+                    Flag = (long)GlobalFlag.Normal,
+                    UpdaterID = Client.LoginUser.ID,
+                    PayTime = DateTime.Now
+                    
                 });
                 if (entities.SaveChanges() > 0)
                 {

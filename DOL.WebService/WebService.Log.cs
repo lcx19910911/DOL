@@ -68,7 +68,8 @@ namespace DOL.Service
             {
                 var model = new Log();
                 model.ID = Guid.NewGuid().ToString("N");
-                model.CreatedTime = DateTime.Now;
+
+                    model.CreatedTime = DateTime.Now;
                 model.CreaterID = Client.LoginUser.ID;
                 model.Remark = remark;
                 model.Code = code;
@@ -96,7 +97,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_LogList().AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId)).OrderBy(x => x.Code);
+                var query = Cache_Get_LogList().AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId)).OrderByDescending(x => x.CreatedTime);
                 var count = query.Count();
                 var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 return ResultPageList(list, pageIndex, pageSize, count);

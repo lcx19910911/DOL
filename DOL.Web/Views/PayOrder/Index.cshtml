@@ -246,6 +246,7 @@
                                     });
                                     formInit(model);//表单初始化
                                     $("#payForm  input,select").attr("readonly", true);
+                                    $("#tipsDiv").html("学费总价" + item.Money + "元，当前已缴费" + item.HadPayMoney + "元");
                                 });
                             },
                             buttons: [{
@@ -257,6 +258,8 @@
                                             ID: item.ID
                                         },
                                         function () {
+
+                                            e.hide();
                                             grid.reload();
                                         });
                                     });

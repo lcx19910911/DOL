@@ -15,7 +15,7 @@
                 <input type="text" class="am-form-field" placeholder="请选择日期" value="@(Model.StartTime.ToString("yyyy-MM"))" name="searchTime" readonly style="width:100px;;">
 
                 <span class="am-input-group-label am-margin-left-sm">省份：</span>
-                <select name="ProvinceCode" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" onchange="ShowCity(true,1)" style="width:120px;"></select>
+                <select name="ProvinceCode" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}"  onchange="ShowCity(true,1)" style="width:120px;"></select>
                 <span class="am-input-group-label am-margin-left-sm">市：</span>
                 <select name="CityCode" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}"  onchange="LoadEnteredPoint(true, this)" style="width:120px;"></select>
                 <span class="am-input-group-label am-margin-left-sm">门店：</span>
@@ -107,7 +107,7 @@
             $("#searchDomain input").val("");
         }
         function Search() {
-            window.location.href = "/EnteredPoint/Report?searchTime=" + $("[name='searchTime']").val();
+            window.location.href = "/EnteredPoint/Report?searchTime=" + $("[name='searchTime']").val() + "&EnteredPointID=" + $("[name='EnteredPointID']").val() + "&ProvinceName=" + $("[name='ProvinceCode']").find("option:selected").text() + "&CityCode=" + $("[name='CityCode']").val();
         }
 
         LoadProvince(true, null);

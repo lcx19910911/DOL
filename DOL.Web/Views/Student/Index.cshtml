@@ -235,11 +235,13 @@
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,
                             width: "600px",
-                            height: "400px",
+                            height: "500px",
                             ajaxUrl: "/HtmlTemplates/Student/WantDrop.html",
                             title: "申请退学",
                             callback: function (e) {
                                 formInit();//表单初始化
+                                $("#form [name='Money']").val(item.Money);
+                                $("#form [name='HadPayMoney']").val(item.HadPayMoney);
                             },
                             buttons: [{
                                 label: "保存",
@@ -330,21 +332,30 @@
 
             switch (item.Code) {
                 case 1:
-                    return "编辑学员信息";
+                    return "新增学员信息";
                     break;
                 case 2:
-                    return "删除学员信息";
+                    return "编辑学员信息";
                     break;
                 case 3:
-                    return "确认缴费记录";
+                    return "删除学员信息";
                     break;
                 case 4:
-                    return "修改缴费记录";
+                    return "新增缴费记录";
                     break;
                 case 5:
-                    return "删除缴费记录";
+                    return "确认缴费记录";
                     break;
                 case 6:
+                    return "修改缴费记录";
+                    break;
+                case 7:
+                    return "删除缴费记录";
+                    break;
+                case 8:
+                    return "新增考试记录";
+                    break;
+                case 9:
                     return "删除考试记录";
                     break;
             }

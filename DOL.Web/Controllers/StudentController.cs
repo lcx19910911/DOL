@@ -39,7 +39,11 @@ namespace DOL.Web.Controllers
         {
             return View();
         }
-        
+
+        public ViewResult Recyle()
+        {
+            return View();
+        }
 
         /// <summary>
         /// 查找实体
@@ -73,6 +77,23 @@ namespace DOL.Web.Controllers
             DateTime? makedTimeStart, DateTime? makeTimeEnd)
         {
             return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId,state, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd));
+        }
+
+        /// <summary>
+        /// 获取删除的分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="name">名称 - 搜索项</param>
+        /// <param name="no">编号 - 搜索项</param>
+        /// <returns></returns>
+        public ActionResult GetDeletePageList(int pageIndex,
+            int pageSize,
+            string name,
+            string no,
+            string mobile)
+        {
+            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, null, no, mobile, null, null, StudentCode.DontMakeCard, null, null, null, null, true));
         }
 
 

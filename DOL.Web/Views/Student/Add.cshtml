@@ -599,7 +599,7 @@
         $("#payDataTable tbody").html("");
 
         $("[name='ID']").val(guid.newGUID());
-        $('#form [name="MakeDriverShopID"],[name="WantDriverShopID"],[name="CertificateID"],[name="PayMethodID"]').each(function () {
+        $('#form [name="MakeDriverShopID"],[name="WantDriverShopID"],[name="CertificateID"],[name="PayMethodID"],[name="GenderCode"]').each(function () {
             $(this).find('option').eq(0).attr('selected', true);
         })
     }

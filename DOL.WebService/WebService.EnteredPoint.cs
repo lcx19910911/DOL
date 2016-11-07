@@ -349,8 +349,8 @@ namespace DOL.Service
             model.TotalDic = new Dictionary<int, int>();
 
 
-            //学员报名记录集合
-            var studenLtist = Cache_Get_StudentList().Where(x => x.EnteredDate >= time && x.EnteredDate <= endTime&&x.Flag== (long)GlobalFlag.Normal).ToList();
+            //学员报名记录集合 不包含退学的
+            var studenLtist = Cache_Get_StudentList().Where(x => x.EnteredDate >= time && x.EnteredDate <= endTime&&x.Flag== (long)GlobalFlag.Normal&&x.State!=StudentCode.WantDropOut&&x.State!=StudentCode.HadDropOut).ToList();
 
             //报名点集合
             var enteredPointIDList = new List<string>();

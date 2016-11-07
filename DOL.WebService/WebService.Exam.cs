@@ -138,6 +138,7 @@ namespace DOL.Service
                         student.State = StudentCode.Graduate;
                     }
                 }
+                Add_Log(LogCode.AddExam, student.ID, string.Format("{0}在{1}新增了学员{2}的考试{3}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name,model.ID), "", "");
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_ExamList();
