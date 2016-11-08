@@ -1,5 +1,5 @@
 ﻿@model CoachReportModel
-@{ 
+@{
     var examThemeTwoList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
     var examThemeThreeList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
     if (Model.ExamModel.List != null && Model.ExamModel.List.Count > 0)
@@ -7,6 +7,8 @@
         examThemeTwoList = Model.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).ToList();
         examThemeThreeList = Model.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).ToList();
     }
+    ViewBag.Title = "考试汇总";
+
         }
 <div class="am-cf am-padding">
     <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>考试汇总</small></div>

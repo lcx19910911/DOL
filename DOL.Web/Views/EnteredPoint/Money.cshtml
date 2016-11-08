@@ -1,6 +1,8 @@
 ﻿@model EnteredPointMoneyModel
 @{
     var entredPointName = string.Empty;
+    ViewBag.Title = "收款汇总";
+    int tdCount = 0;
 }
 <div class="am-cf am-padding">
     <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>收款汇总</small></div>
@@ -46,7 +48,11 @@
                         <th>缴费方式</th>
                         @for (int i = 1; i <= Model.EndDay; i++)
                         {
+                            if (Model.TotalDic.ContainsKey(i))
+                            {
+                                tdCount++;
                             <th>@(i)日</th>
+                            }
                         }
                         <th>合计</th>
                     </tr>
@@ -62,7 +68,7 @@
                         {
                             entredPointName = item.Item1;
 
-                            <tr><td colspan="@(Model.EndDay+3)"></td></tr>
+                            <tr><td colspan="@(tdCount+3)"></td></tr>
                         }
 
                         <tr>
@@ -70,7 +76,10 @@
                             <td>@item.Item2</td>
                             @for (int i = 1; i <= Model.EndDay; i++)
                             {
-                                <th>@(item.Item3[i]==0?"": item.Item3[i].ToString())</th>
+                                if (Model.TotalDic.ContainsKey(i))
+                                {
+                                    <th>@(item.Item3[i] == 0 ? "" : item.Item3[i].ToString())</th>
+                                }
                             }
                             <th>@item.Item4</th>
                         </tr>
@@ -81,7 +90,10 @@
                         <td colspan="2">合计</td>
                         @for (int i = 1; i <= Model.EndDay; i++)
                         {
-                            <th>@(Model.TotalDic.ContainsKey(i)?Model.TotalDic[i].ToString():"")</th>
+                            if (Model.TotalDic.ContainsKey(i))
+                            {
+                            <th>@(Model.TotalDic.ContainsKey(i) ? Model.TotalDic[i].ToString() : "")</th>
+                            }
                         }
                         <td>@(Model.TotalCount)</td>
                     </tr>

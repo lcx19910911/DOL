@@ -432,10 +432,16 @@ namespace DOL.Service
 
                     if (!string.IsNullOrEmpty(model.MakeDriverShopID))
                     {
-                        var makecardShop = Cache_Get_DriverShopList().FirstOrDefault(x => x.ID.Equals(model.MakeDriverShopID));
-                        if (makecardShop == null)
-                            return Result(false, ErrorCode.sys_param_format_error);
-                        oldEntity.MakeCardCityCode = makecardShop.CityCode;
+                        if (Cache_Get_DriverShopList_Dic().ContainsKey(model.MakeDriverShopID))
+                        {
+
+                            oldEntity.MakeCardCityCode = Cache_Get_DriverShopList_Dic()[model.MakeDriverShopID].CityCode;
+                        }
+                    }
+                    if (string.IsNullOrEmpty(oldEntity.DriverShopID) && !string.IsNullOrEmpty(model.DriverShopID))
+                    {
+                        oldEntity.State = StudentCode.ThemeOne;
+                        oldEntity.NowTheme = ThemeCode.One;
                     }
                     oldEntity.IDCard = model.IDCard;
                     oldEntity.Mobile = model.Mobile;
@@ -455,7 +461,6 @@ namespace DOL.Service
                     oldEntity.Money = model.Money;
                     oldEntity.PayMethodID = model.PayMethodID;
                     oldEntity.MakeDriverShopID = model.MakeDriverShopID;
-                    oldEntity.MakeCardCityCode = model.MakeCardCityCode;
                     oldEntity.MakeCardRemark = model.MakeCardRemark;
                     oldEntity.CertificateID = model.CertificateID;
 

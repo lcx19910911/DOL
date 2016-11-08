@@ -276,7 +276,11 @@
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
-
+                                    if (parseFloat(item.HadPayMoney) < parseFloat($("#form [name='money']").val()))
+                                    {
+                                        $.Nuoya.alert("退款金额不能超过已缴金额" + item.HadPayMoney + "元");
+                                        return false;
+                                    }
                                     $.Nuoya.form("form").ajaxSubmit({
                                         ajaxUrl: "/Student/WantDrop", params: {
                                             ID: item.ID
@@ -359,5 +363,14 @@
         LoadItemList(true, null);
 
 
+        function ValiteValue(obj)
+        {
+            var value = $(obj).val();
+            var hadMoney = $("[name='HadPayMoney']").val();
+            if(parseFloat(value)>parseFloat(hadMoney))
+            {
+                $.Nuoya.alert("退款金额不能超过已缴金额" + hadMoney + "元");
+            }
+        }
     </script>
 }

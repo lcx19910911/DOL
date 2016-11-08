@@ -33,7 +33,7 @@ ul {
 }
 
 .admin-sidebar {
-    width: 200px;
+    width: 130px;
     min-height: 100%;
     float: left;
     border-right: 1px solid #cecece;
@@ -45,7 +45,7 @@ ul {
 
     .admin-sidebar-list li a {
         color: #5c5c5c;
-        padding-left: 24px;
+        padding-left: 10px;
     }
 
     .admin-sidebar-list li:first-child {

@@ -7,6 +7,7 @@
         themeTwoSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
         themeThreeSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x=>x.Item2).ToList();
     }
+    ViewBag.Title = "我的工资";
         }
 <div class="am-cf am-padding">
     <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>我的工资</small></div>
