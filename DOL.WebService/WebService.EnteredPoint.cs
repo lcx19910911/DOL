@@ -415,5 +415,98 @@ namespace DOL.Service
             }
             return model;
         }
+
+        /// <summary>
+        /// 获取报名点的统计报表
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public EnteredPointMoneyModel Get_EnteredPointMoney(DateTime? time, string EnteredPointID)
+        {
+            //赋值本月
+            if (time == null)
+                time = DateTime.Parse(DateTime.Now.ToString("yyyy-MM"));
+
+            //本月结束时间
+            var endTime = DateTime.Parse(time.Value.AddMonths(1).ToString("yyyy-MM")).AddDays(-1);// && x.Code == ThemeCode.Two
+
+            EnteredPointMoneyModel model = new EnteredPointMoneyModel();
+            model.StartTime = time.Value;
+            model.EndDay = endTime.Day;
+
+            model.List = new List<Tuple<string, string, Dictionary<int, decimal>, decimal>>();
+
+            model.TotalDic = new Dictionary<int, decimal>();
+
+
+            //学员缴费ID集合 不包含未确认的
+            var payOrderList = Cache_Get_PayOrderList().Where(x => x.PayTime >= time && x.PayTime <= endTime && x.Flag == (long)GlobalFlag.Normal && x.IsConfirm ==YesOrNoCode.Yes&&x.IsDrop==YesOrNoCode.No).ToList();
+
+            //报名点集合
+            var enteredPointIDList = new List<string>();
+            if (!string.IsNullOrEmpty(EnteredPointID))
+            {
+                enteredPointIDList.Add(EnteredPointID);
+            }
+            else
+            {
+                if (this.Client.LoginUser.MenuFlag == -1)
+                    enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal).Select(x => x.ID).ToList();
+                else
+                    enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).Select(x => x.ID).ToList();
+            }
+            model.TotalDic = new Dictionary<int, decimal>();
+            //月份天数
+            var dayCount = (endTime - time.Value).Days + 1;
+            model.TotalDic.Add(0, 0);
+            var studentIDList = payOrderList.Select(x => x.StudentID).Distinct().ToList();
+            var studentList = Cache_Get_StudentList().Where(x => studentIDList.Contains(x.ID)).ToList();
+            //遍历报名点
+            foreach (var item in enteredPointIDList)
+            {
+                //报名点
+                var enteredModel = Cache_Get_EnteredPoint_Dic()[item];
+
+                
+                //推荐人集合
+                var payTypeList = Get_DataDictorySelectItem(GroupCode.PayType);
+                payTypeList.ForEach(x => {
+                    //日期集合
+                    var dic = new Dictionary<int, decimal>();
+                    dic.Add(0, 0);
+                    //该推荐人总数
+                    decimal totalCount = 0;
+                    var enPointStudentIdList = studentList.Where(y => y.EnteredPointID.Equals(item)).Select(y => y.ID).ToList();
+                    //根据日期groupby 
+                    var enPointStudentDayDic = payOrderList.Where(y => enPointStudentIdList.Contains(y.StudentID)&&y.PayTypeID.Equals(x.Value)).GroupBy(y => y.PayTime.Day).ToDictionary(y => y.Key);
+                    //遍历日期
+                    for (var i = 1; i <= dayCount; i++)
+                    {
+                        //如果该推荐人当天有新报名学生
+                        if (enPointStudentDayDic.ContainsKey(i))
+                        {
+                            //判断该天统计是否存在
+                            if (model.TotalDic.ContainsKey(i))
+                            {
+                                model.TotalDic[i] = model.TotalDic[i] + enPointStudentDayDic[i].Sum(y=>y.PayMoney);
+                            }
+                            else
+                                model.TotalDic.Add(i, enPointStudentDayDic[i].Sum(y => y.PayMoney));
+                            //总收账数
+                            model.TotalCount += enPointStudentDayDic[i].Sum(y => y.PayMoney); 
+                            //该推荐人总数
+                            totalCount += enPointStudentDayDic[i].Sum(y => y.PayMoney);
+                            dic.Add(i, enPointStudentDayDic[i].Sum(y => y.PayMoney));
+                        }
+                        else
+                            dic.Add(i, 0);
+                    }
+                    //添加集合
+                    model.List.Add(new Tuple<string, string, Dictionary<int, decimal>, decimal>(enteredModel.Name, x.Text, dic, totalCount));
+                });
+
+            }
+            return model;
+        }
     }
 }

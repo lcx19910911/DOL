@@ -298,6 +298,7 @@
     <Content Include="Views\EnteredPoint\Report.cshtml" />
     <Content Include="Views\Student\Recyle.cshtml" />
     <Content Include="Views\Student\History.cshtml" />
+    <Content Include="Views\EnteredPoint\Money.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
