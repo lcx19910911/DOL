@@ -27,7 +27,7 @@
                 <select name="ReferenceID" data-am-selected="{ btnWidth: '90px',btnSize: 'sm'}"><option value="-1">不限</option></select>
 
                 <span class="am-input-group-label  am-margin-left-sm">制卡驾校：</span>
-                <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '90px',btnSize: 'sm'}" ><option value="-1">不限</option></select>
+                <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '90px',btnSize: 'sm'}"><option value="-1">不限</option></select>
             </div>
         </div>
     </div>
@@ -47,7 +47,7 @@
 
                 <span class="am-input-group-label  am-margin-left-sm">学员状态</span>
                 <select name="State" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
-                <option value="-1">不限</option>
+                    <option value="-1">不限</option>
                     <option value="0">未制卡</option>
                     <option value="1">科目一</option>
                     <option value="2">科目二</option>
@@ -111,7 +111,7 @@
 @section scripts
 {
     <script type="text/javascript">
-      
+
 
         //$('.admin-sidebar').hide();
         $('[name=enteredTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
@@ -198,8 +198,38 @@
                     icon: "icon-pencil-square-o",
                     name: "编辑",
                     url: "/Student/Update",
+                    formula: function (model) {
+                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
                     click: function (item) {
-                        window.location.href = "/Student/Update?ID=" + item.ID;
+                        if (item.State == "5" || item.State == "6" || item.State == "7") {
+                            window.location.href = "/Student/Update?ID=" + item.ID + "&readonly=1";
+                        }
+                        else {
+                            window.location.href = "/Student/Update?ID=" + item.ID;
+                        }
+                    }
+                },
+                {
+                    className: "am-text-success",
+                    icon: "icon-pencil-square-o",
+                    name: "详情",
+                    url: "/Student/Update",
+                    formula: function (item) {
+                        if (item.State == "5" || item.State == "6" || item.State == "7") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+                        window.location.href = "/Student/Update?ID=" + item.ID + "&readonly=1";
                     }
                 },
                 {
@@ -224,7 +254,7 @@
                     name: "退学",
                     url: "/Student/WantDrop",
                     formula: function (model) {
-                        if (model.State != "4" && model.State != "5") {
+                        if (model.State != "5" && model.State != "6" && model.State != "7") {
                             return true;
                         }
                         else {
@@ -240,7 +270,7 @@
                             title: "申请退学",
                             callback: function (e) {
                                 formInit();//表单初始化
-                                $("#form [name='Money']").val(item.Money);
+                                $("#form [name='AllMoney']").val(item.Money);
                                 $("#form [name='HadPayMoney']").val(item.HadPayMoney);
                             },
                             buttons: [{
@@ -328,38 +358,6 @@
 
         LoadItemList(true, null);
 
-        function ShowLogCode(item) {
 
-            switch (item.Code) {
-                case 1:
-                    return "新增学员信息";
-                    break;
-                case 2:
-                    return "编辑学员信息";
-                    break;
-                case 3:
-                    return "删除学员信息";
-                    break;
-                case 4:
-                    return "新增缴费记录";
-                    break;
-                case 5:
-                    return "确认缴费记录";
-                    break;
-                case 6:
-                    return "修改缴费记录";
-                    break;
-                case 7:
-                    return "删除缴费记录";
-                    break;
-                case 8:
-                    return "新增考试记录";
-                    break;
-                case 9:
-                    return "删除考试记录";
-                    break;
-            }
-
-        }
     </script>
 }

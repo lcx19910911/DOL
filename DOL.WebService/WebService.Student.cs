@@ -481,6 +481,7 @@ namespace DOL.Service
                     oldEntity.ThemeTwoTimeCode = model.ThemeTwoTimeCode;
                     oldEntity.ThemeThreeTimeCode = model.ThemeThreeTimeCode;
 
+                    oldEntity.MakeCardDate = model.MakeCardDate;
                     //if (model.ThemeOnePass == YesOrNoCode.Yes)
                     //    oldEntity.NowTheme = ThemeCode.One;
                     //if (model.ThemeTwoPass == YesOrNoCode.Yes)

@@ -20,11 +20,22 @@ namespace DOL.Service
 
             return CacheHelper.Get<Dictionary<GroupCode, Dictionary<string, DataDictionary>>>(dictionaryKey, () =>
             {
+                var listss = new List<string>();
                 using (var db = new DbRepository())
                 {
                     var dic = db.DataDictionary.GroupBy(x => x.GroupCode).ToDictionary(x => x.Key, x => x.ToList());
                     return dic.ToDictionary(x => x.Key,
-                        x => x.Value.OrderByDescending(c => c.Sort).ToDictionary(d => d.Key));
+                        x => {
+                            var returnDic = new Dictionary<string, DataDictionary>();
+                            x.Value.ForEach(y =>
+                            {
+                                if (!returnDic.ContainsKey(y.Key))
+                                {
+                                    returnDic.Add(y.Key, y);
+                                }
+                            });
+                            return returnDic;
+                        });
                 }
             });
 

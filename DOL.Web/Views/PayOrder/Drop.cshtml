@@ -206,8 +206,8 @@
                     }
                 },
                 {
-                    className: "am-text-danger",
-                    icon: "icon-trash-o",
+                    className: "am-text-secondary",
+                    icon: "icon-search",
                     name: "确认",
                     url: "/PayOrder/ConfirmDrop",
                     formula: function (model) {
@@ -231,6 +231,11 @@
                             buttons: [{
                                 label: "确认",
                                 callback: function (e) {
+                                    if (parseFloat(item.HadPayMoney) < parseFloat($("#form [name='PayMoney']").val()))
+                                    {
+                                        $.Nuoya.alert("退款金额不能超过已缴金额" + item.HadPayMoney + "元");
+                                        return false;
+                                    }
                                     $.Nuoya.confirm("确认退款？", function () {
                                         $.Nuoya.form("form").ajaxSubmit({
                                             ajaxUrl: "/PayOrder/ConfirmDrop",

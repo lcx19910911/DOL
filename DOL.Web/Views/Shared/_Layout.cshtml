@@ -521,10 +521,21 @@
                     var sex = parseInt(sId.substr(16, 1)) % 2;
                     {
                         if (sex == 0) {
+                            $(sexObj).find('option').eq(0).attr('selected', false);
+                            $(sexObj).find('option').eq(1).attr('selected', false);
                             $(sexObj).find('option').eq(2).attr('selected', true);
+
+                            $(sexObj).next().find(".am-selected-list li").eq(0).removeClass("am-checked");
+                            $(sexObj).next().find(".am-selected-list li").eq(1).removeClass("am-checked");
+                            $(sexObj).next().find(".am-selected-list li").eq(2).addClass("am-checked");
                         }
                         else {
+                            $(sexObj).find('option').eq(0).attr('selected', false);
                             $(sexObj).find('option').eq(1).attr('selected', true);
+                            $(sexObj).find('option').eq(2).attr('selected', false);
+                            $(sexObj).next().find(".am-selected-list li").eq(0).removeClass("am-checked");
+                            $(sexObj).next().find(".am-selected-list li").eq(1).addClass("am-checked");
+                            $(sexObj).next().find(".am-selected-list li").eq(2).removeClass("am-checked");
                         }
                     }
                     var cityCode = sId.substr(0, 4) + "00";
@@ -625,6 +636,48 @@
                     return str1 + str2 + str3 + str4 + str5;
                 }
             }
+        }
+
+
+        function ShowHistory(obj,isAtter)
+        {
+            var name = $(obj).attr("data-name");
+            var id = $("[name='" + name + "']").val();
+            window.open("/Student/History?Id=" + id + "&isAfter="+isAtter);
+        }
+
+        function ShowLogCode(item) {
+
+            switch (item.Code) {
+                case 1:
+                    return "新增学员信息";
+                    break;
+                case 2:
+                    return "编辑学员信息";
+                    break;
+                case 3:
+                    return "删除学员信息";
+                    break;
+                case 4:
+                    return "新增缴费记录";
+                    break;
+                case 5:
+                    return "确认缴费记录";
+                    break;
+                case 6:
+                    return "修改缴费记录";
+                    break;
+                case 7:
+                    return "删除缴费记录";
+                    break;
+                case 8:
+                    return "新增考试记录";
+                    break;
+                case 9:
+                    return "删除考试记录";
+                    break;
+            }
+
         }
     </script>
 

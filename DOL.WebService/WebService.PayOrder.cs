@@ -72,19 +72,12 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.IsDrop == YesOrNoCode.No);
-
-                var studentList = Cache_Get_StudentList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+                
                 if (no.IsNotNullOrEmpty())
                 {
-                    var studentIdList = studentList.Where(x => x.IDCard.Contains(no)).Select(x => x.ID.Trim()).ToList();
+                    var studentIdList = Cache_Get_StudentList().Where(x => x.IDCard.Contains(no)).Select(x => x.ID.Trim()).ToList();
                     query = query.Where(x => studentIdList.Contains(x.StudentID.Trim()));
                 }
-                else
-                {
-                    var studentIdList = studentList.Select(x => x.ID.Trim()).ToList();
-                    query = query.Where(x => studentIdList.Contains(x.StudentID.Trim()));
-                }
-
                 if (state != -1)
                 {
                     query = query.Where(x => (int)x.IsConfirm == state);

@@ -45,6 +45,14 @@ namespace DOL.Web.Controllers
             return View();
         }
 
+        public ActionResult History(string Id,int isAfter)
+        {
+            var history = WebService.Find_Log(Id);
+            if(history!=null)
+                ViewBag.Data = isAfter == 1 ? history.AfterJson.Replace("&quot;","") : history.BeforeJson.Replace("&quot;", "");
+            return View();
+        }
+
         /// <summary>
         /// 查找实体
         /// </summary>

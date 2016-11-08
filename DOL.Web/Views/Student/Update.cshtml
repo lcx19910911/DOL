@@ -590,7 +590,7 @@
                         callback: function (data) {
                             if (!data.ErrorDesc) {
                                 e.hide();
-                                examGrid.reload();
+                                window.location.reload();
                             }
                             else
                                 $.Nuoya.alert(data.ErrorDesc);

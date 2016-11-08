@@ -599,8 +599,13 @@
         $("#payDataTable tbody").html("");
 
         $("[name='ID']").val(guid.newGUID());
+        //$(sexObj).find('option').eq(0).attr('selected', false);
+        //$(sexObj).find('option').eq(1).attr('selected', false);
+        //$(sexObj).find('option').eq(2).attr('selected', true);
         $('#form [name="MakeDriverShopID"],[name="WantDriverShopID"],[name="CertificateID"],[name="PayMethodID"],[name="GenderCode"]').each(function () {
             $(this).find('option').eq(0).attr('selected', true);
-        })
+            $(this).find('option:not(:eq(0))').attr('selected', false);
+        });
+
     }
 </script>

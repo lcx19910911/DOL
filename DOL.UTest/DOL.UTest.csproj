@@ -74,6 +74,24 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DOL.Core\DOL.Core.csproj">
+      <Project>{64b2ff31-185d-481d-ba51-eff5427487c6}</Project>
+      <Name>DOL.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DOL.Model\DOL.Model.csproj">
+      <Project>{b9d2ab6d-aaf7-4f28-a16b-8c59d43faab3}</Project>
+      <Name>DOL.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DOL.Repository\DOL.Repository.csproj">
+      <Project>{df273afb-91b3-4565-8470-ebdf4e844a06}</Project>
+      <Name>DOL.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DOL.WebService\DOL.WebService.csproj">
+      <Project>{d0cb8e6b-7fb3-4099-85ec-63eaba0016fd}</Project>
+      <Name>DOL.WebService</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
