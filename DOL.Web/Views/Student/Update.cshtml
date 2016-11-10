@@ -12,7 +12,7 @@
         <div class="am-tabs am-margin" data-am-tabs="">
             <ul class="am-tabs-nav am-nav am-nav-tabs" id="selectTabUl">
                 <li @(Html.Raw(string.IsNullOrEmpty(Request["trian"]) ? "class='am-active'" : ""))><a href="#tab1">报名收费</a></li>
-                <li @(Html.Raw(!string.IsNullOrEmpty(Request["trian"]) && Request["trian"] == "1" ? "class='am-active'" : ""))><a href="#tab2">培训信息</a></li>
+                <li @(Html.Raw(!string.IsNullOrEmpty(Request["trian"]) && Request["trian"] == "1" ? "class='am-active'" : ""))><a href="#tab2">培训计划</a></li>
             </ul>
             <div class="am-tabs-bd" style="touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);overflow-x:hidden">
                 <div @(Html.Raw(string.IsNullOrEmpty(Request["trian"]) ? "class='am-tab-panel am-fade am-in am-active'" : "class='am-tab-panel am-fade'")) id="tab1">
@@ -129,12 +129,17 @@
                         <div class="am-u-md-2 am-text-right">
                             制卡驾校：
                         </div>
-                        <div class="am-u-md-1 am-u-end">
+                        <div class="am-u-md-1">
                             <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
                                 <option value="-1">请选择</option>
                             </select>
                         </div>
-
+                        <div class="am-u-md-2 am-text-right">
+                            制卡时间：
+                        </div>
+                        <div class="am-u-md-1 am-u-end">
+                            <input type="text" name="MakeCardDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                        </div>
                     </div>
                     <div class="am-g am-margin-top">
                         <div class="am-u-md-2 am-text-right">
@@ -226,23 +231,6 @@
                             <label for="user-name" class="am-form-label">学员所在驾校：</label>
                         </div>
                     </div>
-
-                    <div class="am-g am-margin-top">
-                        <div class="am-u-md-2 am-text-right">
-                            分配驾校<strong class="am-text-danger am-text-sm am-text-left">*</strong>：
-                        </div>
-                        <div class="am-u-md-1">
-                            <select name="DriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
-                        </div>
-
-                        <div class="am-u-md-2 am-text-right">
-                            制卡时间：
-                        </div>
-                        <div class="am-u-md-1 am-u-end">
-                            <input type="text" name="MakeCardDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
-                        </div>
-                    </div>
-
 
                     <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
 
@@ -539,7 +527,7 @@
             ajaxUrl: "/HtmlTemplates/User/Pay.html",
             title: "新增缴费记录",
             width: "1000px",
-            height: "700px",
+            height: "600px",
             pageUrl: "/PayOrder/Add",
             callback: function (e) {
                 formInit();//表单初始化
@@ -635,7 +623,7 @@
                         ajaxUrl: "/HtmlTemplates/User/Pay.html",
                         title: "编辑缴费记录",
                         width: "1000px",
-                        height: "700px",
+                        height: "600px",
                         callback: function (e) {
                             $.Nuoya.action("/PayOrder/Find", { id: item.ID }, function (model) {
                                 //载入数据

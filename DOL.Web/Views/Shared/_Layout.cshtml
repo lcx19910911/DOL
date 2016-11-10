@@ -8,7 +8,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta name="apple-mobile-web-app-title" content="Amaze UI" />
-    <title>驾校网上报名管理平台</title>
+    <title>驾校网上报名管理平台@(!string.IsNullOrEmpty(ViewBag.Title)? "---"+ ViewBag.Title:"")</title>
     <link href="~/Styles/css/amazeui.css" rel="stylesheet" />
     @Styles.Render("~/Content/Admin")
     @RenderSection("linkcss", required: false)   
@@ -176,13 +176,6 @@
                             $("#form select[name='WantDriverShopID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
                         } else {
                             $("#form select[name='WantDriverShopID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
-                        }
-                        if ($("#form select[name='DriverShopID']") != null) {
-                            if (dataitem != null && dataitem.DriverShopID == this.ID) {
-                                $("#form select[name='DriverShopID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
-                            } else {
-                                $("#form select[name='DriverShopID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
-                            }
                         }
                     }
                 });

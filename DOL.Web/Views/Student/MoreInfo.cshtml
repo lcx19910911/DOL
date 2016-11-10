@@ -17,11 +17,6 @@
                 <span class="am-input-group-label am-margin-left-sm">身份证：</span>
                 <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:100px;" name="no" ;>
 
-
-                <span class="am-input-group-label am-margin-left-sm">培训驾校：</span>
-                <select name="DriverShopID" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}">
-                    <option value="-1">不限</option>
-                </select>
                 <span class="am-input-group-label am-margin-left-sm">培训方式：</span>
                 <select name="TrianID" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" style="width:auto;"><option value="-1">不限</option></select>
 
@@ -149,7 +144,7 @@
                 <th dataname="Name">姓名</th>
                 <th dataname="IDCard">身份证</th>
                 <th dataname="Mobile">手机</th>
-                <th dataname="DriverShopName">培训驾校</th>
+                <th dataname="MakeDriverShopName">制卡驾校</th>
                 <th dataname="TrianName">培训方式</th>
                 <th dataname="ThemeOneDate" datatype="jsondateNo">科一时间</th>
                 <th render="ShowThemeOnePass">科一通过</th>
@@ -209,9 +204,6 @@
         //加载学员信息的下拉框集合
         function Inti() {
             $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
-                $(json.DriverShopList).each(function () {
-                    $("select[name='DriverShopID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
-                });
 
                 $(json.TrainList).each(function () {
                     $("select[name='TrianID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");

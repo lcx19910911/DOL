@@ -114,6 +114,13 @@ namespace DOL.Web.Controllers
             var list = WebService.Export_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, state, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd);
             string fileName = DateTime.Now.ToString("yyyyMMddhhmmss") + ".xls";
             string filePath = Path.Combine(Server.MapPath("~/") + @"Export\" + fileName);
+       
+            NPOIHelper<StudentExportModel>.GetExcel(list, GetHT(), filePath);
+            return File(filePath, "application/vnd.ms-excel", fileName);
+        }
+
+        private Hashtable GetHT()
+        {
             Hashtable hs = new Hashtable();
             hs["Name"] = "姓名";
             hs["IDCard"] = "身份证";
@@ -140,7 +147,6 @@ namespace DOL.Web.Controllers
             hs["MakeCardDate"] = "制卡日期";
             hs["MakeCardCityName"] = "制卡地";
             hs["MakeCardRemark"] = "制卡备注";
-            hs["DriverShopName"] = "分配院校";
             hs["ThemeOneDate"] = "科一时间";
             hs["ThemeOnePass"] = "科一是否通过";
             hs["ThemeTwoDate"] = "科二时间";
@@ -156,9 +162,22 @@ namespace DOL.Web.Controllers
             hs["State"] = "学员状态";
             hs["NowTheme"] = "当前科目";
             hs["DropOutDate"] = "退学时间";
-            NPOIHelper<StudentExportModel>.GetExcel(list, hs, filePath);
-            return File(filePath, "application/vnd.ms-excel", fileName);
+            return hs;
         }
+
+        public ActionResult ExportInto(string mark)
+        {
+            HttpPostedFileBase file = Request.Files[0];
+            if (file != null)
+            {
+                string path = UploadHelper.Save(file, mark);
+
+                var list = NPOIHelper<StudentExportModel>.FromExcel(GetHT(), path);
+            }
+            else
+                return Content("");
+        }
+
 
         /// <summary>
         /// 获取删除的分页列表

@@ -77,6 +77,12 @@ namespace DOL.Model
         [Description("已存在未确认的缴费记录.")]
         unconfirm_payorder__had = 64,
 
+        /// <summary>
+        /// 不能删除，存在未确认的缴费记录
+        /// </summary>
+        [Description("不能删除，存在未确认的缴费记录.")]
+        cant_delete_unconfirm_payorder__had = 65,
+
         #endregion
 
         #region 业务逻辑

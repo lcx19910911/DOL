@@ -127,10 +127,16 @@
                         <div class="am-u-md-2 am-text-right">
                             制卡驾校：
                         </div>
-                        <div class="am-u-md-1 am-u-end">
+                        <div class="am-u-md-1">
                             <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
                                 <option value="-1">请选择</option>
                             </select>
+                        </div>
+                        <div class="am-u-md-2 am-text-right">
+                            制卡时间：
+                        </div>
+                        <div class="am-u-md-1 am-u-end">
+                            <input type="text" name="MakeCardDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
                         </div>
 
                     </div>
@@ -334,7 +340,7 @@
             ajaxUrl: "/HtmlTemplates/User/Pay.html",
             title: "新增缴费记录",
             width: "1000px",
-            height: "700px",
+            height: "600px",
             pageUrl: "/PayOrder/Add",
             callback: function (e) {
                 formInit();//表单初始化     
@@ -398,7 +404,7 @@
                         ajaxUrl: "/HtmlTemplates/User/Pay.html",
                         title: "编辑缴费记录",
                         width: "1000px",
-                        height: "700px",
+                        height: "600px",
                         callback: function (e) {
                             $.Nuoya.action("/PayOrder/Find", { id: item.ID }, function (model) {
                                 //载入数据

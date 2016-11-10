@@ -275,21 +275,6 @@ namespace DOL.Model
         [MaxLength(32)]
         [Column("OldCertificate", TypeName = "varchar")]
         public string OldCertificate { get; set; }
-
-        /// <summary>
-        /// 所在驾校ID
-        /// </summary>
-        [Column("DriverShopID", TypeName = "char"), MaxLength(32)]
-        public string DriverShopID { get; set; }
-
-
-        /// <summary>
-        ///  分配院校
-        /// </summary>
-        [NotMapped]
-        public string DriverShopName { get; set; }
-
-
         #endregion
 
         #region 科目情况

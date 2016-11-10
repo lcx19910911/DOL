@@ -59,7 +59,8 @@
                 </select>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
-                    <button class="am-btn am-btn-default" onclick="ExportExecle()"  type="button">导出</button>
+                    <button class="am-btn am-btn-default" onclick="ExportOutExecle()"  type="button">导出</button>
+                    <button class="am-btn am-btn-default" id="ExportIntoExecle" type="button">导入</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
                 </span>
             </div>
@@ -74,7 +75,6 @@
             <div class="am-btn-toolbar">
                 <div class="am-btn-group am-btn-group-sm">
                     <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
-                    <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
                 </div>
             </div>
         </div>
@@ -113,11 +113,61 @@
 {
     <script type="text/javascript">
 
-        function ExportExecle()
+        function ExportOutExecle()
         {
             var data = grid.getParams();
             var url = "/Student/ExportPageList?tt=1" + urlEncode(data);
             window.open(url);
+        }
+        function UploadFile() {
+            var headimgbtn = $("#ExportIntoExecle").uploadFile({
+                url: '/Student/ExportInto?mark=execle',
+                fileSuffixs: ["xls", "xlsx"],
+                maximumFilesUpload: 1,//最大文件上传数
+                onComplete: function (data) {
+                    grid.reload();
+                },
+                onChosen: function (file, obj, fileSize, errorText) {
+                    if (errorText) {
+                        $.Nuoya.alert(errorText);
+                        return false;
+                    }
+                    //Loading("图片正在上传中...", "请稍等");
+                    uploadheadimg.submitUpload();
+                    return true;//返回false将取消当前选择的文件
+                },
+            });
+            var uploadheadimg = headimgbtn.data("uploadFileData");
+        }
+     
+        UploadFile();
+        function ExportIntoExecle()
+        {
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                width: "600px",
+                height: "500px",
+                ajaxUrl: "/HtmlTemplates/Student/SelectFile.html",
+                title: "选择文件",
+
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+                        $.Nuoya.form("form").ajaxSubmit({
+                            ajaxUrl: "/Student/ExportInto", params: {
+                            },
+                            callback: function (data) {
+                                if (!data.ErrorDesc) {
+                                    e.hide();
+                                    grid.reload();
+                                }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+                            }
+                        });
+                    }
+                }]
+            })
         }
 
         var urlEncode = function (param, key, encode) {  

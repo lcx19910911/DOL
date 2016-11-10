@@ -238,7 +238,7 @@ namespace DOL.Service
                 model.UpdaterID = Client.LoginUser.ID;
                 entities.PayOrder.Add(model);
                 
-                Add_Log(LogCode.AddPayOrder, model.ID, string.Format("{0}在{1}新增了学员{2}的缴费{3}", Client.LoginUser.Name, DateTime.Now.ToString(), Cache_Get_StudentList_Dic()[model.StudentID].Name, model.ID), "", "");
+                Add_Log(LogCode.AddPayOrder, model.ID, string.Format("{0}在{1}新增了学员{2}的缴费{3},缴费日期{4}，金额{5}", Client.LoginUser.Name, DateTime.Now.ToString(), Cache_Get_StudentList_Dic()[model.StudentID].Name, model.ID,model.PayTime.ToString("yyyy年MM月dd日"),model.PayMoney), "", "");
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_PayOrderList();
@@ -294,6 +294,7 @@ namespace DOL.Service
                 {
                     student.MoneyIsFull = YesOrNoCode.Yes;
                 }
+                
                 Add_Log(LogCode.ConfirmPayOrder, student.ID, string.Format("{0}在{1}确认了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name,oldEntity.ID,oldEntity.PayMoney), "", "");
                 if (entities.SaveChanges() > 0)
                 {
@@ -406,7 +407,8 @@ namespace DOL.Service
                 var oldEntity = entities.PayOrder.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    string beforeJson = oldEntity.ToJson();
+                    var payType = GetValue(GroupCode.PayType, oldEntity.PayTypeID);
+                    string beforeJson = string.Format("金额：{0},支付方式:{1},凭证：{2},图片:{3},支付时间{4}", oldEntity.PayMoney, payType, oldEntity.VoucherNO, oldEntity.VoucherThum, oldEntity.PayTime.ToString("yyyy年MM月dd日"));
                     oldEntity.PayMoney = model.PayMoney;
                     oldEntity.PayTime = model.PayTime;
                     oldEntity.PayTypeID = model.PayTypeID;
@@ -414,8 +416,9 @@ namespace DOL.Service
                     oldEntity.VoucherThum = model.VoucherThum;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     oldEntity.UpdatedTime = DateTime.Now;
-                    string afterJson = oldEntity.ToJson();
+                    string afterJson = string.Format("金额：{0},支付方式:{1},凭证：{2},图片:{3},支付时间{4}", oldEntity.PayMoney, payType, oldEntity.VoucherNO, oldEntity.VoucherThum, oldEntity.PayTime.ToString("yyyy年MM月dd日"));
                     var student = Cache_Get_StudentList_Dic()[oldEntity.StudentID];
+
                     Add_Log(LogCode.UpdatePayOrder, oldEntity.StudentID, string.Format("{0}在{1}修改了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, oldEntity.ID, oldEntity.PayMoney), beforeJson, afterJson);
                 }
                 else

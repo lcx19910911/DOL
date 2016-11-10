@@ -148,13 +148,6 @@ namespace DOL.Core
         /// </summary>
         public string MakeCardRemark { get; set; }        
 
-
-        /// <summary>
-        ///  分配院校
-        /// </summary>
-        public string DriverShopName { get; set; }
-
-
         #endregion
 
         #region 科目情况
