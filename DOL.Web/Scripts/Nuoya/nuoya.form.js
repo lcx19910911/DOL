@@ -83,6 +83,9 @@
                     if (datatype == "jsondate") {
                         value = $.Nuoya.jsonFormatDate(value, dateformat);
                     }
+                    else if (datatype == "jsondateNo") {
+                        value = $.Nuoya.jsonFormatDateNo(value, dateformat);
+                    }
                 } catch (e) {
                 }
                 if ($item.is("input") || $item.is("select") || $item.is("textarea")) {

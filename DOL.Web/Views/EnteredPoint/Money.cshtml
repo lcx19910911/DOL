@@ -1,10 +1,11 @@
-﻿@model EnteredPointReportModel
+﻿@model EnteredPointMoneyModel
 @{
     var entredPointName = string.Empty;
-    ViewBag.Title = "人数汇总";
+    ViewBag.Title = "收款汇总";
+    int tdCount = 0;
 }
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>人数汇总</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>收款汇总</small></div>
 </div>
 <div id="searchDomain">
 
@@ -36,7 +37,7 @@
         <div class="am-u-lg-12">
             <div class="am-g am-margin-top-lg ">
                 <div class="am-u-sm-12 am-u-sm-centered am-text-center">
-                    <p>@(Model.StartTime.ToString("MM月"))招生人数汇总</p>
+                    <p>@(Model.StartTime.ToString("MM月"))收款汇总</p>
                 </div>
 
             </div>
@@ -44,10 +45,14 @@
                 <thead>
                     <tr>
                         <th>报名点</th>
-                        <th>推荐人</th>
+                        <th>缴费方式</th>
                         @for (int i = 1; i <= Model.EndDay; i++)
                         {
+                            if (Model.TotalDic.ContainsKey(i))
+                            {
+                                tdCount++;
                             <th>@(i)日</th>
+                            }
                         }
                         <th>合计</th>
                     </tr>
@@ -63,7 +68,7 @@
                         {
                             entredPointName = item.Item1;
 
-                            <tr><td colspan="@(Model.EndDay+3)"></td></tr>
+                            <tr><td colspan="@(tdCount+3)"></td></tr>
                         }
 
                         <tr>
@@ -71,7 +76,10 @@
                             <td>@item.Item2</td>
                             @for (int i = 1; i <= Model.EndDay; i++)
                             {
-                                <th>@(item.Item3[i]==0?"": item.Item3[i].ToString())</th>
+                                if (Model.TotalDic.ContainsKey(i))
+                                {
+                                    <th>@(item.Item3[i] == 0 ? "" : item.Item3[i].ToString())</th>
+                                }
                             }
                             <th>@item.Item4</th>
                         </tr>
@@ -82,7 +90,10 @@
                         <td colspan="2">合计</td>
                         @for (int i = 1; i <= Model.EndDay; i++)
                         {
-                            <th>@(Model.TotalDic.ContainsKey(i)?Model.TotalDic[i].ToString():"")</th>
+                            if (Model.TotalDic.ContainsKey(i))
+                            {
+                            <th>@(Model.TotalDic.ContainsKey(i) ? Model.TotalDic[i].ToString() : "")</th>
+                            }
                         }
                         <td>@(Model.TotalCount)</td>
                     </tr>
@@ -108,7 +119,7 @@
             $("#searchDomain input").val("");
         }
         function Search() {
-            window.location.href = "/EnteredPoint/Report?searchTime=" + $("[name='searchTime']").val() + "&EnteredPointID=" + $("[name='EnteredPointID']").val() + "&ProvinceName=" + $("[name='ProvinceCode']").find("option:selected").text() + "&CityCode=" + $("[name='CityCode']").val();
+            window.location.href = "/EnteredPoint/Money?searchTime=" + $("[name='searchTime']").val() + "&EnteredPointID=" + $("[name='EnteredPointID']").val() + "&ProvinceName=" + $("[name='ProvinceCode']").find("option:selected").text() + "&CityCode=" + $("[name='CityCode']").val();
         }
 
         LoadProvince(true, null);

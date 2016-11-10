@@ -44,6 +44,7 @@
     <Compile Include="BaseEntity.cs" />
     <Compile Include="DataDictionary.cs" />
     <Compile Include="Department.cs" />
+    <Compile Include="Dto\EnteredPointMoneyModel.cs" />
     <Compile Include="Dto\EnteredPointReportModel.cs" />
     <Compile Include="Dto\CoachReportModel.cs" />
     <Compile Include="Dto\MenuItem.cs" />

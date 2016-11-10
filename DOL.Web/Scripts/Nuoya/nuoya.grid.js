@@ -89,6 +89,9 @@
             if (column.dataType == "jsondate") {
                 columnValue = $.Nuoya.jsonFormatDate(columnValue, column.dateformat);
             }
+            if (column.dataType == "jsondateNo") {
+                columnValue = $.Nuoya.jsonFormatDateNo(columnValue, column.dateformat);
+            }
             if (!$.isEmptyObject(column.strLength)) {
                 columnValue = $.Nuoya.setStrLength(columnValue, column.strLength); //设置字符长度                
             }
@@ -179,7 +182,7 @@
             var previous_Page = $('<li><a href="#">上一页</a></li>');//上一页            
             var next_Page = $('<li><a href="#">下一页</a></li>');//下一页
             var end_Page = $('<li><a href="#">末页</a></li>');//末页
-            var pageSizeMenu = $("<select data-am-selected='{dropUp: 1}'></select>");//每页显示条数
+            var pageSizeMenu = $("<select data-am-selected='{dropUp: 1,btnWidth: 120px,btnSize: sm}'></select>");//每页显示条数
 
             for (var i = 0; i < lengthMenu.length; i++) {
                 var option = $('<option value="' + lengthMenu[i] + '">' + lengthMenu[i] + '</option>');

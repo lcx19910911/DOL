@@ -83,6 +83,7 @@
     <Compile Include="Helper\CookieHelper.cs" />
     <Compile Include="Helper\CryptoHelper.cs" />
     <Compile Include="Helper\EnumHelper.cs" />
+    <Compile Include="Helper\ExcelHelper.cs" />
     <Compile Include="Helper\LogHelper.cs" />
     <Compile Include="Helper\NPOIHelper.cs" />
     <Compile Include="Helper\UploadHelper.cs" />

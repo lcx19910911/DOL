@@ -257,6 +257,18 @@
                 return "";
             }
         },
+        //由json序列化出来的时间格式进行转换
+        jsonFormatDateNo: function (jsondate, format) {
+            if (jsondate != null && jsondate != "") {
+                format = format != null ? format : "yyyy-M-d hh:mm:ss";
+                var date = new Date(parseInt(jsondate.replace("/Date(", "").replace(")/", ""), 10));
+                var value = date.format(format);
+                value = value.split(' ')[0].trim();
+                return value;
+            } else {
+                return "";
+            }
+        },
         //设置字符串长度
         setStrLength: function (value, length) {
             if ($.Nuoya.getStrLength(value) > length) {

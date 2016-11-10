@@ -289,7 +289,6 @@ namespace DOL.Service
                     student.HadPayMoney += x.PayMoney;
                 });
                 student.HadPayMoney += oldEntity.PayMoney;
-                student.State = StudentCode.ThemeOne;
 
                 if (student.HadPayMoney >= student.Money)
                 {
