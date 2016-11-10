@@ -508,5 +508,10 @@ namespace DOL.Service
             }
             return model;
         }
+
+        public EnteredPoint Get_EnteredPointByName(string name)
+        {
+            return Cache_Get_EnteredPointList().Where(x => x.Name.Equals(name)).FirstOrDefault();
+        }
     }
 }

@@ -28,6 +28,11 @@ namespace DOL.Model
         [Description("参数值格式有误.")]
         sys_param_format_error = 2,
 
+        /// <summary>
+        /// 数据为空
+        /// </summary>
+        [Description("数据为空.")]
+        param_null = 3,
 
         /// <summary>
         /// 授权码无效

@@ -278,31 +278,32 @@ namespace DOL.Service
                     //(x.GenderCode == GenderCode.Female ? "女" : (x.GenderCode == GenderCode.Male ? "男" : "未知"));
                     model.Address = x.Address;
                     model.Mobile = x.Mobile;
-                    model.Money = x.Money;
+                    model.Money = x.Money.ToString();
                     model.MoneyIsFull = EnumHelper.GetEnumDescription(x.MoneyIsFull);
+                    model.HadPayMoney = x.HadPayMoney.ToString();
                     model.Remark = x.Remark;
-                    model.EnteredDate = x.EnteredDate;
-                    model.MakeCardDate = x.MakeCardDate;
+                    model.EnteredDate = x.EnteredDate.ToString("yyyy-MM-dd");
+                    model.MakeCardDate = x.MakeCardDate.HasValue? x.MakeCardDate.Value.ToString("yyyy-MM-dd"):"";
                     model.MakeCardRemark = x.MakeCardRemark;
 
-                    model.ThemeOneDate = x.ThemeOneDate;
+                    model.ThemeOneDate = x.ThemeOneDate.HasValue ? x.ThemeOneDate.Value.ToString("yyyy-MM-dd") : "" ;
                     model.ThemeOnePass = EnumHelper.GetEnumDescription(x.ThemeOnePass);
 
 
-                    model.ThemeTwoDate = x.ThemeTwoDate;
+                    model.ThemeTwoDate = x.ThemeTwoDate.HasValue ? x.ThemeTwoDate.Value.ToString("yyyy-MM-dd") : "";
                     model.ThemeTwoPass = EnumHelper.GetEnumDescription(x.ThemeTwoPass);
                     model.ThemeTwoTimeCode = EnumHelper.GetEnumDescription(x.ThemeTwoTimeCode);
 
-                    model.ThemeThreeDate = x.ThemeThreeDate;
+                    model.ThemeThreeDate = x.ThemeThreeDate.HasValue ? x.ThemeThreeDate.Value.ToString("yyyy-MM-dd") : "";
                     model.ThemeThreePass = EnumHelper.GetEnumDescription(x.ThemeThreePass);
                     model.ThemeThreeTimeCode = EnumHelper.GetEnumDescription(x.ThemeThreeTimeCode);
 
-                    model.ThemeFourDate = x.ThemeFourDate;
+                    model.ThemeFourDate = x.ThemeFourDate.HasValue ? x.ThemeFourDate.Value.ToString("yyyy-MM-dd") : "";
                     model.ThemeFourPass = EnumHelper.GetEnumDescription(x.ThemeFourPass);
 
                     model.State = EnumHelper.GetEnumDescription(x.State);
                     model.NowTheme = EnumHelper.GetEnumDescription(x.NowTheme);
-                    model.DropOutDate = x.DropOutDate;
+                    model.DropOutDate = x.DropOutDate.HasValue ? x.DropOutDate.Value.ToString("yyyy-MM-dd") : "";
 
                     //报名地
                     if (!string.IsNullOrEmpty(x.EnteredProvinceCode) && areaDic.ContainsKey(x.EnteredProvinceCode))
@@ -369,9 +370,13 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public void ExportInto_Student(List<StudentExportModel> list
+        public WebResult<bool> ExportInto_Student(List<StudentExportModel> list
             )
         {
+            if (list == null)
+            {
+                return Result(false, ErrorCode.param_null);
+            }
             using (DbRepository entities = new DbRepository())
             {
                 var query = Cache_Get_StudentList().AsQueryable().AsNoTracking();
@@ -386,101 +391,289 @@ namespace DOL.Service
                 var coachDic = Cache_Get_CoachList_Dic();
                 var userDic = Cache_Get_UserDic();
                 var returnList = new List<Student>();
+                string msg = string.Empty;
                 list.ForEach(x =>
                 {
-                    var model = new Student();
-                    model.ID = Guid.NewGuid().ToString("N");
-                    model.CreatedTime = DateTime.Now;
-                    model.Flag = (long)GlobalFlag.Normal;
-                    model.UpdatedTime = DateTime.Now;
-                    model.UpdaterID = Client.LoginUser.ID;
-                    model.Name = x.Name;
-                    model.IDCard = x.IDCard;
-                    model.GenderCode = (GenderCode)EnumHelper.GetEnumKey(typeof(GenderCode),x.GenderCode);
-                    //(x.GenderCode == GenderCode.Female ? "女" : (x.GenderCode == GenderCode.Male ? "男" : "未知"));
-                    model.Address = x.Address;
-                    model.Mobile = x.Mobile;
-                    model.Money = x.Money;
-                    model.MoneyIsFull = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.MoneyIsFull); 
-                    model.Remark = x.Remark;
-                    model.EnteredDate = x.EnteredDate;
-                    model.MakeCardDate = x.MakeCardDate;
-                    model.MakeCardRemark = x.MakeCardRemark;
+                    if (string.IsNullOrEmpty(msg))
+                    {
+                        var model = new Student();
+                        model.ID = Guid.NewGuid().ToString("N");
+                        model.CreatedTime = DateTime.Now;
+                        model.Flag = (long)GlobalFlag.Normal;
+                        model.UpdatedTime = DateTime.Now;
+                        model.UpdaterID = Client.LoginUser.ID;
+                        model.Name = x.Name;
+                        model.IDCard = x.IDCard;
+                        if (Cache_Get_StudentList().Where(y => y.IDCard.Equals(model.IDCard)).Any())
+                        {
+                            msg = "学生" + x.Name + "身份证已存在";
+                        }
+                        model.GenderCode = (GenderCode)EnumHelper.GetEnumKey(typeof(GenderCode), x.GenderCode);
+                        //(x.GenderCode == GenderCode.Female ? "女" : (x.GenderCode == GenderCode.Male ? "男" : "未知"));
+                        model.Address = x.Address;
+                        model.Mobile = x.Mobile;
+                        model.Money = x.Money.GetDecimal();
+                        model.HadPayMoney = x.HadPayMoney.GetDecimal();
+                        if (model.HadPayMoney > 0)
+                        {
+                            var newPay = new PayOrder()
+                            {
+                                ID = Guid.NewGuid().ToString("N"),
+                                UpdatedTime = DateTime.Now,
+                                CreatedTime = DateTime.Now,
+                                Flag = (long)GlobalFlag.Normal,
+                                IsConfirm = YesOrNoCode.Yes,
+                                IsDrop = YesOrNoCode.No,
+                                CreaterID = Client.LoginUser.ID,
+                                UpdaterID = Client.LoginUser.ID,
+                                ConfirmUserID = Client.LoginUser.ID,
+                                VoucherThum = "",
+                                VoucherNO = x.VoucherNO,
+                                ConfirmDate = DateTime.Now,
+                                PayMoney = model.HadPayMoney
+                            };
+                            //培训方式
+                            if (!string.IsNullOrEmpty(x.PayOrderTypeName))
+                            {
+                                var typeList = Get_DataDictorySelectItem(GroupCode.PayType);
 
-                    model.ThemeOneDate = x.ThemeOneDate;
-                    model.ThemeOnePass = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.ThemeOnePass);
+                                var dicModel = typeList.Where(y => y.Text.Equals(x.PayOrderTypeName)).FirstOrDefault();
+                                if (dicModel == null)
+                                {
+                                    msg = "学生" + x.Name + "支付渠道不存在,请新增";
+                                }
+                                else
+                                {
+                                    newPay.PayTypeID = dicModel.Value;
+                                }
+                            }
+                            else
+                            {
+                                msg = "学生" + x.Name + "支付渠道为空";
+                            }
+                            entities.PayOrder.Add(newPay);
+
+                        }
+                        model.MoneyIsFull = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.MoneyIsFull);
+                        model.Remark = x.Remark;
+                        if(x.EnteredDate.IsNotNullOrEmpty())
+                            model.EnteredDate =  x.EnteredDate.GetDateTime();
+                        if (x.MakeCardDate.IsNotNullOrEmpty())
+                            model.MakeCardDate = x.MakeCardDate.GetDateTime();
+                        model.MakeCardRemark = x.MakeCardRemark;
+
+                        if (x.ThemeOneDate.IsNotNullOrEmpty())
+                            model.ThemeOneDate = x.ThemeOneDate.GetDateTime();
+                        model.ThemeOnePass = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.ThemeOnePass);
 
 
-                    model.ThemeTwoDate = x.ThemeTwoDate;
-                    model.ThemeTwoPass = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.ThemeTwoPass);
-                    model.ThemeTwoTimeCode = (ThemeTimeCode)EnumHelper.GetEnumKey(typeof(ThemeTimeCode), x.ThemeTwoTimeCode);
+                        if (x.ThemeTwoDate.IsNotNullOrEmpty())
+                            model.ThemeTwoDate = x.ThemeTwoDate.GetDateTime();
+                        model.ThemeTwoPass = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.ThemeTwoPass);
+                        model.ThemeTwoTimeCode = (ThemeTimeCode)EnumHelper.GetEnumKey(typeof(ThemeTimeCode), x.ThemeTwoTimeCode);
 
-                    model.ThemeThreeDate = x.ThemeThreeDate;
-                    model.ThemeThreePass = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.ThemeThreePass);
-                    model.ThemeThreeTimeCode = (ThemeTimeCode)EnumHelper.GetEnumKey(typeof(ThemeTimeCode), x.ThemeThreeTimeCode);
+                        if (x.ThemeThreeDate.IsNotNullOrEmpty())
+                            model.ThemeThreeDate = x.ThemeThreeDate.GetDateTime();
+                        model.ThemeThreePass = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.ThemeThreePass);
+                        model.ThemeThreeTimeCode = (ThemeTimeCode)EnumHelper.GetEnumKey(typeof(ThemeTimeCode), x.ThemeThreeTimeCode);
 
-                    model.ThemeFourDate = x.ThemeFourDate;
-                    model.ThemeFourPass = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.ThemeFourPass);
+                        if (x.ThemeFourDate.IsNotNullOrEmpty())
+                            model.ThemeFourDate = x.ThemeFourDate.GetDateTime();
+                        model.ThemeFourPass = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.ThemeFourPass);
 
-                    model.State = (StudentCode)EnumHelper.GetEnumKey(typeof(StudentCode), x.State);
-                    model.NowTheme = (ThemeCode)EnumHelper.GetEnumKey(typeof(ThemeCode), x.NowTheme);
-                    model.DropOutDate = x.DropOutDate;
+                        model.State = (StudentCode)EnumHelper.GetEnumKey(typeof(StudentCode), x.State);
+                        model.NowTheme = (ThemeCode)EnumHelper.GetEnumKey(typeof(ThemeCode), x.NowTheme);
+                        if (x.DropOutDate.IsNotNullOrEmpty())
+                            model.DropOutDate = x.DropOutDate.GetDateTime();
 
-                    
+                        model.ProvinceCode = x.IDCard.Substring(0, 2) + "0000";
+                        model.CityCode = x.IDCard.Substring(0, 4) + "00";
+                        model.GenderCode = (GenderCode)EnumHelper.GetEnumKey(typeof(GenderCode), x.GenderCode);
+                        
+                        model.MakeCardRemark = x.MakeCardRemark;
+                        if (!string.IsNullOrEmpty(x.MakeDriverShopName))
+                        {
+                            var makeShop = Get_DriverShopByName(x.MakeDriverShopName);
+                            if (makeShop == null)
+                            {
+                                msg = "学生" + x.Name + "制卡驾校不存在,请新增该驾校";
+                            }
+                            else
+                            {
+                                model.MakeDriverShopID = makeShop.ID;
+                                model.MakeCardCityCode = makeShop.CityCode;
+                            }
+                        }
 
-                    //报名地
-                    if (!string.IsNullOrEmpty(x.EnteredProvinceCode) && areaDic.ContainsKey(x.EnteredProvinceCode))
-                        model.EnteredProvinceName = areaDic[x.EnteredProvinceCode]?.Value;
-                    //报名地
-                    if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
-                        model.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
-                    //制卡地
-                    if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
-                        model.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
-                    //培训方式
-                    if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
-                        model.TrianName = trianDic[x.TrianID]?.Value;
-                    //制卡驾校
-                    if (!string.IsNullOrEmpty(x.WantDriverShopID) && driverShopDic.ContainsKey(x.WantDriverShopID))
-                        model.WantDriverShopName = driverShopDic[x.WantDriverShopID]?.Name;
-                    //制卡驾校
-                    if (!string.IsNullOrEmpty(x.MakeDriverShopID) && driverShopDic.ContainsKey(x.MakeDriverShopID))
-                        model.MakeDriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
-                    //制卡地
-                    if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
-                        model.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
 
-                    //报名点
-                    if (!string.IsNullOrEmpty(x.EnteredPointID) && enPointDic.ContainsKey(x.EnteredPointID))
-                        model.EnteredPointName = enPointDic[x.EnteredPointID]?.Name;
-                    //推荐人
-                    if (!string.IsNullOrEmpty(x.ReferenceID) && referenceDic.ContainsKey(x.ReferenceID))
-                        model.ReferenceName = referenceDic[x.ReferenceID]?.Name;
-                    //支付方式
-                    if (!string.IsNullOrEmpty(x.PayMethodID) && payMethodDic.ContainsKey(x.PayMethodID))
-                        model.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
+                        //培训方式
+                        if (!string.IsNullOrEmpty(x.TrianName))
+                        {
+                            var trianList = Get_DataDictorySelectItem(GroupCode.Train);
 
-                    //省
-                    if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
-                        model.ProvinceName = areaDic[x.ProvinceCode]?.Value;
-                    //省
-                    if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
-                        model.CityName = areaDic[x.CityCode]?.Value;
+                            var dicModel = trianList.Where(y => y.Text.Equals(x.TrianName)).FirstOrDefault();
+                            if (dicModel == null)
+                            {
+                                msg = "学生" + x.Name + "培训班别不存在,请新增";
+                            }
+                            else
+                            {
+                                model.TrianID = dicModel.Value;
+                            }
+                        }
+                        else
+                        {
+                            msg = "学生" + x.Name + "培训班别为空";
+                        }
 
-                    //证书
-                    if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
-                        model.CertificateName = cerDic[x.CertificateID]?.Value;
+                        //意向驾校
+                        if (!string.IsNullOrEmpty(x.WantDriverShopName))
+                        {
+                            var wantShop = Get_DriverShopByName(x.WantDriverShopName);
+                            if (wantShop == null)
+                            {
+                                msg = "学生" + x.Name + "意向驾校不存在,请新增该驾校";
+                            }
+                            else
+                            {
+                                model.WantDriverShopID = wantShop.ID;
+                            }
+                        }
 
-                    //科目二教练
-                    if (!string.IsNullOrEmpty(x.ThemeThreeCoachID) && coachDic.ContainsKey(x.ThemeThreeCoachID))
-                        model.ThemeThreeCoachName = coachDic[x.ThemeThreeCoachID]?.Name;
-                    //科目三教练
-                    if (!string.IsNullOrEmpty(x.ThemeTwoCoachID) && coachDic.ContainsKey(x.ThemeTwoCoachID))
-                        model.ThemeTwoCoachName = coachDic[x.ThemeTwoCoachID]?.Name;
-                    returnList.Add(model);
+                        //报名点
+                        if (!string.IsNullOrEmpty(x.EnteredPointName))
+                        {
+                            var enPointModel = Get_EnteredPointByName(x.EnteredPointName);
+                            if (enPointModel == null)
+                            {
+                                msg = "学生" + x.Name + "报名点不存在,请新增该报名点";
+                            }
+                            else
+                            {
+                                model.EnteredPointID = enPointModel.ID;
+                                model.EnteredDate = x.EnteredDate.GetDateTime();
+                                model.EnteredProvinceCode = enPointModel.ProvinceCode;
+                                model.EnteredCityCode = enPointModel.CityCode;
+
+                            }
+                        }
+                        else
+                        {
+                            msg = "学生" + x.Name + "报名点为空";
+                        }
+
+                        //推荐人
+                        if (!string.IsNullOrEmpty(x.ReferenceName))
+                        {
+                            var reFerModel = Get_ReferenceByName(x.ReferenceName);
+                            if (reFerModel == null)
+                            {
+                                msg = "学生" + x.Name + "报名点不存在,请新增该报名点";
+                            }
+                            else
+                            {
+                                model.ReferenceID = reFerModel.ID;
+
+                            }
+                        }
+                        else
+                        {
+                            msg = "学生" + x.Name + "报名点为空";
+                        }
+
+
+                        //培训方式
+                        if (!string.IsNullOrEmpty(x.PayMethodName))
+                        {
+                            var mehtodList = Get_DataDictorySelectItem(GroupCode.PayMethod);
+
+                            var dicModel = mehtodList.Where(y => y.Text.Equals(x.PayMethodName)).FirstOrDefault();
+                            if (dicModel == null)
+                            {
+                                msg = "学生" + x.Name + "支付方式不存在,请新增";
+                            }
+                            else
+                            {
+                                model.PayMethodID = dicModel.Value;
+                            }
+                        }
+                        else
+                        {
+                            msg = "学生" + x.Name + "支付方式为空";
+                        }
+                        //证书
+                        if (!string.IsNullOrEmpty(x.CertificateName))
+                        {
+                            var ceList = Get_DataDictorySelectItem(GroupCode.Certificate);
+
+                            var dicModel = ceList.Where(y => y.Text.Equals(x.CertificateName)).FirstOrDefault();
+                            if (dicModel == null)
+                            {
+                                msg = "学生" + x.Name + "证书类别不存在,请新增";
+                            }
+                            else
+                            {
+                                model.CertificateID = dicModel.Value;
+                            }
+                        }
+                        else
+                        {
+                            msg = "学生" + x.Name + "证书类别为空";
+                        }
+
+                        //科二教练
+                        if (!string.IsNullOrEmpty(x.ThemeTwoCoachName))
+                        {
+                            var reFerModel = Get_CoachByName(x.ThemeTwoCoachName);
+                            if (reFerModel == null)
+                            {
+                                msg = "学生" + x.Name + "科二教练不存在,请新增";
+                            }
+                            else
+                            {
+                                model.ReferenceID = reFerModel.ID;
+
+                            }
+                        }
+
+                        //科二教练
+                        if (!string.IsNullOrEmpty(x.ThemeThreeCoachName))
+                        {
+                            var reFerModel = Get_CoachByName(x.ThemeThreeCoachName);
+                            if (reFerModel == null)
+                            {
+                                msg = "学生" + x.Name + "科三教练不存在,请新增";
+                            }
+                            else
+                            {
+                                model.ReferenceID = reFerModel.ID;
+
+                            }
+                        }
+
+                        returnList.Add(model);
+                    }
                 });
-                return returnList;
 
+                if (msg.IsNotNullOrEmpty())
+                {
+                    return Result(false, ErrorCode.sys_fail,msg);
+                }
+                else
+                {
+
+                    entities.Student.AddRange(returnList);
+                    if (entities.SaveChanges() > 0)
+                    {
+                        Cache_Get_StudentList().AddRange(returnList);
+                        return Result(false, ErrorCode.sys_success);
+                    }
+                    else
+                    {
+                        return Result(false, ErrorCode.sys_fail);
+                    }
+
+                }
             }
         }
 

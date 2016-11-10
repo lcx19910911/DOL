@@ -253,5 +253,10 @@ namespace DOL.Service
                     }).ToList();
             return ztreeNodes;
         }
+
+        public DriverShop Get_DriverShopByName(string name)
+        {
+            return Cache_Get_DriverShopList().Where(x => x.Name.Equals(name)).FirstOrDefault();
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using DOL.Core;
 using System.IO;
 using System.Text;
+using System.Collections;
 
 namespace DOL.UTest
 {
@@ -16,6 +17,11 @@ namespace DOL.UTest
         [TestMethod]
         public void TestMethod1()
         {
+
+            Hashtable ht = new Hashtable();
+            ht["s"] = "1";
+            ht["t"] = "2";
+            string sss = ht.ToJson();
             using (DbRepository entities = new DbRepository())
             {
 
