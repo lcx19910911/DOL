@@ -471,7 +471,8 @@
                             }
                             else {
                                 var sex = sId.substr(1, 1);
-                                $(sexObj).find('option').eq(parseInt(sex)).attr('selected', true);
+                                //$(sexObj).find('option').eq(parseInt(sex)).attr('selected', true);
+                                CreateSexSelect(sexObj, sex);
                                 $("#form #ProvinceName").val("台湾");
                                 $("#form #ProvinceCode").val("710000");
                                 $("#form #CityName").val("台湾");
@@ -484,7 +485,8 @@
                         }
                         else {
                             var sex = sId.substr(1, 1);
-                            $(sexObj).find('option').eq(parseInt(sex)).attr('selected', true);
+                            CreateSexSelect(sexObj, sex);
+                            //$(sexObj).find('option').eq(parseInt(sex)).attr('selected', true);
                             $("#form #ProvinceName").val("香港");
                             $("#form #ProvinceCode").val("810000");
                             $("#form #CityName").val("香港");
@@ -520,23 +522,7 @@
                     //此次还可以判断出输入的身份证号的人性别
                     var sex = parseInt(sId.substr(16, 1)) % 2;
                     {
-                        if (sex == 0) {
-                            $(sexObj).find('option').eq(0).attr('selected', false);
-                            $(sexObj).find('option').eq(1).attr('selected', false);
-                            $(sexObj).find('option').eq(2).attr('selected', true);
-
-                            $(sexObj).next().find(".am-selected-list li").eq(0).removeClass("am-checked");
-                            $(sexObj).next().find(".am-selected-list li").eq(1).removeClass("am-checked");
-                            $(sexObj).next().find(".am-selected-list li").eq(2).addClass("am-checked");
-                        }
-                        else {
-                            $(sexObj).find('option').eq(0).attr('selected', false);
-                            $(sexObj).find('option').eq(1).attr('selected', true);
-                            $(sexObj).find('option').eq(2).attr('selected', false);
-                            $(sexObj).next().find(".am-selected-list li").eq(0).removeClass("am-checked");
-                            $(sexObj).next().find(".am-selected-list li").eq(1).addClass("am-checked");
-                            $(sexObj).next().find(".am-selected-list li").eq(2).removeClass("am-checked");
-                        }
+                        CreateSexSelect(sexObj, sex);
                     }
                     var cityCode = sId.substr(0, 4) + "00";
                     var provinceCode = sId.substr(0, 2) + "0000";
@@ -586,6 +572,15 @@
                 $('#form [name="MakeDriverShopID"]').val("");
             }
             return true;
+        }
+
+        function CreateSexSelect(obj,selectIndex)
+        {
+            $(obj).empty();
+            $(obj).append("<option value='-1'>未知</option>");
+            $(obj).append("<option value='1'>男</option>");
+            $(obj).append("<option value='2'>女</option>");
+            $(obj).find('option').eq(selectIndex==0?2:1).attr('selected', true);
         }
 
         //返回上一页

@@ -175,6 +175,194 @@ namespace DOL.Service
             }
         }
 
+
+        /// <summary>
+        ///导出 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="name">名称 - 搜索项</param>
+        /// <param name="no">编号 - 搜索项</param>
+        /// <returns></returns>
+        public List<StudentExportModel> Export_StudentPageList(
+            int pageIndex,
+            int pageSize,
+            string name,
+            string referenceId,
+            string no,
+            string mobile,
+            string enteredPointId,
+            string makeDriverShopId,
+            StudentCode state,
+            DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
+            DateTime? makedTimeStart, DateTime? makeTimeEnd,
+            bool isAll = false
+            )
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var query = Cache_Get_StudentList().AsQueryable().AsNoTracking();
+                if (!isAll)
+                {
+
+                    query = query.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                    if (name.IsNotNullOrEmpty())
+                    {
+                        query = query.Where(x => x.Name.Contains(name));
+                    }
+                    if (no.IsNotNullOrEmpty())
+                    {
+                        query = query.Where(x => x.IDCard.Contains(no));
+                    }
+                    if (mobile.IsNotNullOrEmpty())
+                    {
+                        query = query.Where(x => x.Mobile.Contains(mobile));
+                    }
+                    if ((int)state != -1)
+                    {
+                        query = query.Where(x => x.State.Equals(state));
+                    }
+                    if (referenceId.IsNotNullOrEmpty() && referenceId != "-1")
+                    {
+                        query = query.Where(x => x.ReferenceID.Equals(referenceId));
+                    }
+
+                    if (enteredPointId.IsNotNullOrEmpty() && enteredPointId != "-1")
+                    {
+                        query = query.Where(x => x.EnteredPointID.Equals(enteredPointId));
+                    }
+                    if (makeDriverShopId.IsNotNullOrEmpty() && makeDriverShopId != "-1")
+                    {
+                        query = query.Where(x => x.MakeDriverShopID.Equals(makeDriverShopId));
+                    }
+                    if (enteredTimeStart != null)
+                    {
+                        query = query.Where(x => x.EnteredDate >= enteredTimeStart);
+                    }
+                    if (enteredTimeEnd != null)
+                    {
+                        enteredTimeEnd = enteredTimeEnd.Value.AddDays(1);
+                        query = query.Where(x => x.EnteredDate < enteredTimeEnd);
+                    }
+
+                    if (makedTimeStart != null)
+                    {
+                        query = query.Where(x => x.MakeCardDate >= makedTimeStart);
+                    }
+                    if (makeTimeEnd != null)
+                    {
+                        makeTimeEnd = makeTimeEnd.Value.AddDays(1);
+                        query = query.Where(x => x.MakeCardDate < makeTimeEnd);
+                    }
+                }
+                var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var enPointDic = Cache_Get_EnteredPoint_Dic();
+                var referenceDic = Cache_Get_ReferenceList_Dic();
+                var driverShopDic = Cache_Get_DriverShopList_Dic();
+                var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
+                var enteredPointDic = Cache_Get_EnteredPoint_Dic();
+                var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
+                var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
+                var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
+                var coachDic = Cache_Get_CoachList_Dic();
+                var userDic = Cache_Get_UserDic();
+                var returnList = new List<StudentExportModel>();
+                list.ForEach(x =>
+                {
+                    var model = new StudentExportModel();
+
+                    model.Name = x.Name;
+                    model.IDCard = x.IDCard;
+                    model.GenderCode = EnumHelper.GetEnumDescription(x.GenderCode);
+                    //(x.GenderCode == GenderCode.Female ? "女" : (x.GenderCode == GenderCode.Male ? "男" : "未知"));
+                    model.Address = x.Address;
+                    model.Mobile = x.Mobile;
+                    model.Money = x.Money;
+                    model.MoneyIsFull = EnumHelper.GetEnumDescription(x.MoneyIsFull);
+                    model.Remark = x.Remark;
+                    model.EnteredDate = x.EnteredDate;
+                    model.MakeCardDate = x.MakeCardDate;
+                    model.MakeCardRemark = x.MakeCardRemark;
+
+                    model.ThemeOneDate = x.ThemeOneDate;
+                    model.ThemeOnePass = EnumHelper.GetEnumDescription(x.ThemeOnePass);
+
+
+                    model.ThemeTwoDate = x.ThemeTwoDate;
+                    model.ThemeTwoPass = EnumHelper.GetEnumDescription(x.ThemeTwoPass);
+                    model.ThemeTwoTimeCode = EnumHelper.GetEnumDescription(x.ThemeTwoTimeCode);
+
+                    model.ThemeThreeDate = x.ThemeThreeDate;
+                    model.ThemeThreePass = EnumHelper.GetEnumDescription(x.ThemeThreePass);
+                    model.ThemeThreeTimeCode = EnumHelper.GetEnumDescription(x.ThemeThreeTimeCode);
+
+                    model.ThemeFourDate = x.ThemeFourDate;
+                    model.ThemeFourPass = EnumHelper.GetEnumDescription(x.ThemeFourPass);
+
+                    model.State = EnumHelper.GetEnumDescription(x.State);
+                    model.NowTheme = EnumHelper.GetEnumDescription(x.NowTheme);
+                    model.DropOutDate = x.DropOutDate;
+
+                    //报名地
+                    if (!string.IsNullOrEmpty(x.EnteredProvinceCode) && areaDic.ContainsKey(x.EnteredProvinceCode))
+                        model.EnteredProvinceName = areaDic[x.EnteredProvinceCode]?.Value;
+                    //报名地
+                    if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
+                        model.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
+                    //制卡地
+                    if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
+                        model.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
+                    //培训方式
+                    if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
+                        model.TrianName = trianDic[x.TrianID]?.Value;
+                    //制卡驾校
+                    if (!string.IsNullOrEmpty(x.WantDriverShopID) && driverShopDic.ContainsKey(x.WantDriverShopID))
+                        model.WantDriverShopName = driverShopDic[x.WantDriverShopID]?.Name;
+                    //制卡驾校
+                    if (!string.IsNullOrEmpty(x.MakeDriverShopID) && driverShopDic.ContainsKey(x.MakeDriverShopID))
+                        model.MakeDriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
+                    //制卡地
+                    if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
+                        model.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
+
+                    //分配驾校
+                    if (!string.IsNullOrEmpty(x.DriverShopID) && driverShopDic.ContainsKey(x.DriverShopID))
+                        model.DriverShopName = driverShopDic[x.DriverShopID]?.Name;
+
+                    //报名点
+                    if (!string.IsNullOrEmpty(x.EnteredPointID) && enPointDic.ContainsKey(x.EnteredPointID))
+                        model.EnteredPointName = enPointDic[x.EnteredPointID]?.Name;
+                    //推荐人
+                    if (!string.IsNullOrEmpty(x.ReferenceID) && referenceDic.ContainsKey(x.ReferenceID))
+                        model.ReferenceName = referenceDic[x.ReferenceID]?.Name;
+                    //支付方式
+                    if (!string.IsNullOrEmpty(x.PayMethodID) && payMethodDic.ContainsKey(x.PayMethodID))
+                        model.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
+
+                    //省
+                    if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
+                        model.ProvinceName = areaDic[x.ProvinceCode]?.Value;
+                    //省
+                    if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
+                        model.CityName = areaDic[x.CityCode]?.Value;
+
+                    //证书
+                    if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
+                        model.CertificateName = cerDic[x.CertificateID]?.Value;
+
+                    //科目二教练
+                    if (!string.IsNullOrEmpty(x.ThemeThreeCoachID) && coachDic.ContainsKey(x.ThemeThreeCoachID))
+                        model.ThemeThreeCoachName = coachDic[x.ThemeThreeCoachID]?.Name;
+                    //科目三教练
+                    if (!string.IsNullOrEmpty(x.ThemeTwoCoachID) && coachDic.ContainsKey(x.ThemeTwoCoachID))
+                        model.ThemeTwoCoachName = coachDic[x.ThemeTwoCoachID]?.Name;
+                    returnList.Add(model);
+                });
+                return returnList;
+               
+            }
+        }
+
         /// <summary>
         /// 获取分页列表
         /// </summary>

@@ -12,7 +12,8 @@ namespace DOL.Model
     /// </summary>
     public enum ThemeTimeCode
     {
-        None=0,
+        [Description("未知")]
+        None =0,
         /// <summary>
         /// 状态
         /// </summary>

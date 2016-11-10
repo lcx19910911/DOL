@@ -46,6 +46,22 @@
       <HintPath>..\packages\NLog.4.3.10\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NPOI, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
@@ -68,11 +84,13 @@
     <Compile Include="Helper\CryptoHelper.cs" />
     <Compile Include="Helper\EnumHelper.cs" />
     <Compile Include="Helper\LogHelper.cs" />
+    <Compile Include="Helper\NPOIHelper.cs" />
     <Compile Include="Helper\UploadHelper.cs" />
     <Compile Include="Model\LoginUser.cs" />
     <Compile Include="Model\PageList.cs" />
     <Compile Include="Model\Params.cs" />
     <Compile Include="Model\SelectItem.cs" />
+    <Compile Include="Model\StudentExportModel.cs" />
     <Compile Include="Model\StudentIndexModel.cs" />
     <Compile Include="Model\WebClient.cs" />
     <Compile Include="Model\WebResult.cs" />
@@ -88,6 +106,12 @@
       <Project>{b9d2ab6d-aaf7-4f28-a16b-8c59d43faab3}</Project>
       <Name>DOL.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\NPOI.dll" />
+    <Content Include="lib\NPOI.OOXML.dll" />
+    <Content Include="lib\NPOI.OpenXml4Net.dll" />
+    <Content Include="lib\NPOI.OpenXmlFormats.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

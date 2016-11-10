@@ -198,6 +198,12 @@ namespace DOL.Model
         [MaxLength(6)]
         [Column("EnteredProvinceCode", TypeName = "varchar")]
         public string EnteredProvinceCode { get; set; }
+        /// <summary>
+        /// 报名地点（省份）
+        /// </summary>
+        [NotMapped]
+        public string EnteredProvinceName { get; set; }
+
 
         /// <summary>
         /// 报名地点（市）

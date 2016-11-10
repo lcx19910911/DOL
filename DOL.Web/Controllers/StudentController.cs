@@ -2,7 +2,9 @@
 using DOL.Core;
 using DOL.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -45,11 +47,11 @@ namespace DOL.Web.Controllers
             return View();
         }
 
-        public ActionResult History(string Id,int isAfter)
+        public ActionResult History(string Id, int isAfter)
         {
             var history = WebService.Find_Log(Id);
-            if(history!=null)
-                ViewBag.Data = isAfter == 1 ? history.AfterJson.Replace("&quot;","") : history.BeforeJson.Replace("&quot;", "");
+            if (history != null)
+                ViewBag.Data = isAfter == 1 ? history.AfterJson.Replace("&quot;", "") : history.BeforeJson.Replace("&quot;", "");
             return View();
         }
 
@@ -84,7 +86,78 @@ namespace DOL.Web.Controllers
             DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
             DateTime? makedTimeStart, DateTime? makeTimeEnd)
         {
-            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId,state, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd));
+            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, state, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd));
+        }
+
+        /// <summary>
+        /// 导出获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="name">名称 - 搜索项</param>
+        /// <param name="no">编号 - 搜索项</param>
+        /// <returns></returns>
+        public ActionResult ExportPageList(int pageIndex,
+            int pageSize,
+            string name,
+            string referenceId,
+            string no,
+            string mobile,
+            string enteredPointId,
+            string makeDriverShopId,
+            StudentCode state,
+            DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
+            DateTime? makedTimeStart, DateTime? makeTimeEnd,
+            bool isAll = false)
+        {
+
+            var list = WebService.Export_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, state, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd);
+            string fileName = DateTime.Now.ToString("yyyyMMddhhmmss") + ".xls";
+            string filePath = Path.Combine(Server.MapPath("~/") + @"Export\" + fileName);
+            Hashtable hs = new Hashtable();
+            hs["Name"] = "姓名";
+            hs["IDCard"] = "身份证";
+            hs["GenderCode"] = "性别";
+            hs["ProvinceName"] = "省份";
+            hs["CityName"] = "市";
+            hs["Address"] = "地址";
+            hs["Mobile"] = "手机号";
+            hs["CertificateName"] = "证书";
+            hs["EnteredPointName"] = "报名点";
+            hs["ReferenceName"] = "推荐人";
+            hs["WantDriverShopName"] = "意向驾校";
+            hs["TrianName"] = "培训班别";
+            hs["Money"] = "费用";
+            hs["HadPayMoney"] = "已交费用";
+            hs["MoneyIsFull"] = "是否缴清";
+            hs["PayMethodName"] = "缴费方式";
+            hs["Remark"] = "备注";
+            hs["EnteredDate"] = "报名时间";
+            hs["EnteredProvinceName"] = "报名省份";
+            hs["EnteredCityName"] = "报名市";
+
+            hs["MakeDriverShopName"] = "制卡驾校";
+            hs["MakeCardDate"] = "制卡日期";
+            hs["MakeCardCityName"] = "制卡地";
+            hs["MakeCardRemark"] = "制卡备注";
+            hs["DriverShopName"] = "分配院校";
+            hs["ThemeOneDate"] = "科一时间";
+            hs["ThemeOnePass"] = "科一是否通过";
+            hs["ThemeTwoDate"] = "科二时间";
+            hs["ThemeTwoPass"] = "科二是否通过";
+            hs["ThemeTwoTimeCode"] = "科二学时状态";
+            hs["ThemeTwoCoachName"] = "科二教练";
+            hs["ThemeThreeDate"] = "科三时间";
+            hs["ThemeThreePass"] = "科三是否通过";
+            hs["ThemeThreeTimeCode"] = "科三学时状态";
+            hs["ThemeThreeCoachName"] = "科三教练";
+            hs["ThemeFourDate"] = "科四时间";
+            hs["ThemeFourPass"] = "科四是否通过";
+            hs["State"] = "学员状态";
+            hs["NowTheme"] = "当前科目";
+            hs["DropOutDate"] = "退学时间";
+            NPOIHelper<StudentExportModel>.GetExcel(list, hs, filePath);
+            return File(filePath, "application/vnd.ms-excel", fileName);
         }
 
         /// <summary>
@@ -194,11 +267,11 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult WantDrop(string id,string remark,decimal money)
+        public ActionResult WantDrop(string id, string remark, decimal money)
         {
-            return JResult(WebService.WantDrop_Student(id,remark, money));
+            return JResult(WebService.WantDrop_Student(id, remark, money));
         }
-        
+
 
         /// <summary>
         /// 报名
@@ -224,7 +297,7 @@ namespace DOL.Web.Controllers
         public ActionResult GetLogList(int pageIndex,
             int pageSize, string StudentID)
         {
-            return JResult(WebService.Get_LogByStudentId(pageIndex, pageSize,StudentID));
+            return JResult(WebService.Get_LogByStudentId(pageIndex, pageSize, StudentID));
         }
 
         /// <summary>
