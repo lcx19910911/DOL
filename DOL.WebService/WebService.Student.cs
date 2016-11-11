@@ -426,11 +426,14 @@ namespace DOL.Service
                                 IsDrop = YesOrNoCode.No,
                                 CreaterID = Client.LoginUser.ID,
                                 UpdaterID = Client.LoginUser.ID,
+                                StudentID = model.ID,
                                 ConfirmUserID = Client.LoginUser.ID,
                                 VoucherThum = "",
                                 VoucherNO = x.VoucherNO,
                                 ConfirmDate = DateTime.Now,
-                                PayMoney = model.HadPayMoney
+                                PayMoney = model.HadPayMoney,
+                                PayTime=DateTime.Now
+                                
                             };
                             //培训方式
                             if (!string.IsNullOrEmpty(x.PayOrderTypeName))

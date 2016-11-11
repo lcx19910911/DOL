@@ -127,7 +127,7 @@
                 onComplete: function (data) {
                     $("#loadingDiv").hide();
                     var json = jQuery.parseJSON(data.substr(59).replace("</pre>", ""));
-                    if (json.Code != 100) {
+                    if (json.Code != 0) {
                         $.Nuoya.alert(json.ErrorDesc + "," + json.Append);
                     }
                     else {
