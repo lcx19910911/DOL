@@ -148,6 +148,7 @@
     <Content Include="HtmlTemplates\User\Pay.html" />
     <Content Include="HtmlTemplates\User\Update.html" />
     <Content Include="Images\404Pic.png" />
+    <Content Include="Images\loading.jpg" />
     <Content Include="Images\login-sprite.png" />
     <Content Include="Scripts\amazeui.js" />
     <Content Include="Scripts\amazeui.min.js" />

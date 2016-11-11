@@ -131,7 +131,6 @@ namespace DOL.Model
         /// <summary>
         /// 意向驾校ID
         /// </summary>
-        [Required(ErrorMessage = "意向驾校ID不能为空")]
         [Column("WantDriverShopID", TypeName = "char"), MaxLength(32)]
         public string WantDriverShopID { get; set; }
 

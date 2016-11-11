@@ -88,13 +88,13 @@ namespace DOL.Core
         /// <summary>
         /// 费用
         /// </summary>
-        public decimal Money { get; set; }
+        public string Money { get; set; }
 
 
         /// <summary>
         /// 已交费用
         /// </summary>
-        public decimal HadPayMoney { get; set; } = 0;
+        public string HadPayMoney { get; set; }
 
         /// <summary>
         /// 是否缴清费用
@@ -116,7 +116,7 @@ namespace DOL.Core
         /// <summary>
         /// 报名时间
         /// </summary>
-        public DateTime EnteredDate { get; set; }
+        public string EnteredDate { get; set; }
 
         /// <summary>
         /// 报名地点（省份）
@@ -136,7 +136,7 @@ namespace DOL.Core
         /// <summary>
         /// 制卡日期
         /// </summary>
-        public Nullable<DateTime> MakeCardDate { get; set; }
+        public string MakeCardDate { get; set; }
         
         /// <summary>
         /// 制卡地点名称
@@ -157,7 +157,7 @@ namespace DOL.Core
         /// <summary>
         /// 科目一时间
         /// </summary>
-        public Nullable<DateTime> ThemeOneDate { get; set; }
+        public string ThemeOneDate { get; set; }
 
         /// <summary>
         /// 科目一是否通过
@@ -168,7 +168,7 @@ namespace DOL.Core
         /// <summary>
         /// 科目二时间
         /// </summary>
-        public Nullable<DateTime> ThemeTwoDate { get; set; }
+        public string ThemeTwoDate { get; set; }
 
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace DOL.Core
         /// <summary>
         /// 科目三时间
         /// </summary>
-        public Nullable<DateTime> ThemeThreeDate { get; set; }
+        public string ThemeThreeDate { get; set; }
 
         /// <summary>
         /// 科目三是否通过
@@ -211,7 +211,7 @@ namespace DOL.Core
         /// <summary>
         /// 科目四时间
         /// </summary>
-        public Nullable<DateTime> ThemeFourDate { get; set; }
+        public string ThemeFourDate { get; set; }
 
         /// <summary>
         /// 科目四是否通过
@@ -230,13 +230,21 @@ namespace DOL.Core
         /// 退学时间
         /// </summary>
 
-        public Nullable<DateTime> DropOutDate { get; set; }
+        public string DropOutDate { get; set; }
         
 
         /// <summary>
         /// 当前科目
         /// </summary>
         public string NowTheme { get; set; }
-        
+
+
+
+        /// <summary>
+        /// 缴费方式名称
+        /// </summary>
+        public string PayOrderTypeName { get; set; }
+
+        public string VoucherNO { get; set; }
     }
 }

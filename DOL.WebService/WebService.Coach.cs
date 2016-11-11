@@ -565,5 +565,11 @@ namespace DOL.Service
 
             return model;
         }
+
+
+        public Coach Get_CoachByName(string name)
+        {
+            return Cache_Get_CoachList().Where(x => x.Name.Equals(name)).FirstOrDefault();
+        }
     }
 }

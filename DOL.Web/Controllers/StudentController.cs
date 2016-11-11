@@ -116,6 +116,7 @@ namespace DOL.Web.Controllers
             string filePath = Path.Combine(Server.MapPath("~/") + @"Export\" + fileName);
        
             NPOIHelper<StudentExportModel>.GetExcel(list, GetHT(), filePath);
+            Directory.Delete(filePath);
             return File(filePath, "application/vnd.ms-excel", fileName);
         }
 
@@ -162,6 +163,8 @@ namespace DOL.Web.Controllers
             hs["State"] = "学员状态";
             hs["NowTheme"] = "当前科目";
             hs["DropOutDate"] = "退学时间";
+            hs["PayOrderTypeName"] = "支付渠道";
+            hs["VoucherNO"] = "凭证";
             return hs;
         }
 
@@ -170,13 +173,14 @@ namespace DOL.Web.Controllers
             HttpPostedFileBase file = Request.Files[0];
             if (file != null)
             {
-                string path = UploadHelper.Save(file, mark);
-
-                var list = NPOIHelper<StudentExportModel>.FromExcel(GetHT(), path);
-                return Content("");
+                //string path = UploadHelper.Save(file, mark);
+                //string filePath = Path.Combine(Server.MapPath("~/") + path);
+                //var list = NPOIHelper<StudentExportModel>.FromExcel(GetHT(), filePath);
+                //var msg = ;
+                return JResult(WebService.ExportInto_Student(null));
             }
             else
-                return Content("");
+                return JResult(null);
         }
 
 

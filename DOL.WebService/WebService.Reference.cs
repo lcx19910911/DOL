@@ -226,5 +226,11 @@ namespace DOL.Service
                 }
             }
         }
+
+
+        public Reference Get_ReferenceByName(string name)
+        {
+            return Cache_Get_ReferenceList().Where(x => x.Name.Equals(name)).FirstOrDefault();
+        }
     }
 }
