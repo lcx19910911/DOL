@@ -36,5 +36,14 @@ namespace DOL.Model
         /// </summary>
         public decimal Money { get; set; }
 
+
+
+
+        /// <summary>
+        /// 使用截至时间
+        /// </summary>
+        [Display(Name = "使用截至时间")]
+        public System.DateTime? EndTime { get; set; }
+
     }
 }

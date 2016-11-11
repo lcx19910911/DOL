@@ -505,6 +505,17 @@ namespace DOL.Service
             //总科目薪资集合
             var themeSalaryList = Cache_Get_ThemeSalaryList();
 
+
+            ////科目二薪资集合
+            //var themeTwoSalaryList = themeSalaryList.Where(x => x.Code == ThemeCode.Two).ToList();
+            //List<int> countList = themeTwoSalaryList.Select(x => x.Count).ToList();
+            //var dictinctList = countList.Distinct().ToList();
+            //dictinctList.ForEach(x => {
+            //    countList.Remove(x);
+            //});
+            //var themeTwoSalaryDic = themeTwoSalaryList.Where(x => x.EndTime.Value <= x.EndTime).ToDictionary(x => x.ID);
+
+
             //科目二薪资集合
             var themeTwoSalaryDic = themeSalaryList.Where(x => x.Code == ThemeCode.Two).ToDictionary(x => x.Count);
             //有的次数集合

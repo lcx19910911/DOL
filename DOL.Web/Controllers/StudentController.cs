@@ -173,6 +173,7 @@ namespace DOL.Web.Controllers
                 string path = UploadHelper.Save(file, mark);
 
                 var list = NPOIHelper<StudentExportModel>.FromExcel(GetHT(), path);
+                return Content("");
             }
             else
                 return Content("");

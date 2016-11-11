@@ -428,58 +428,58 @@ namespace DOL.Service
 
                     
 
-                    //报名地
-                    if (!string.IsNullOrEmpty(x.EnteredProvinceCode) && areaDic.ContainsKey(x.EnteredProvinceCode))
-                        model.EnteredProvinceName = areaDic[x.EnteredProvinceCode]?.Value;
-                    //报名地
-                    if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
-                        model.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
-                    //制卡地
-                    if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
-                        model.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
-                    //培训方式
-                    if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
-                        model.TrianName = trianDic[x.TrianID]?.Value;
-                    //制卡驾校
-                    if (!string.IsNullOrEmpty(x.WantDriverShopID) && driverShopDic.ContainsKey(x.WantDriverShopID))
-                        model.WantDriverShopName = driverShopDic[x.WantDriverShopID]?.Name;
-                    //制卡驾校
-                    if (!string.IsNullOrEmpty(x.MakeDriverShopID) && driverShopDic.ContainsKey(x.MakeDriverShopID))
-                        model.MakeDriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
-                    //制卡地
-                    if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
-                        model.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
+                    ////报名地
+                    //if (!string.IsNullOrEmpty(x.EnteredProvinceCode) && areaDic.ContainsKey(x.EnteredProvinceCode))
+                    //    model.EnteredProvinceName = areaDic[x.EnteredProvinceCode]?.Value;
+                    ////报名地
+                    //if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
+                    //    model.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
+                    ////制卡地
+                    //if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
+                    //    model.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
+                    ////培训方式
+                    //if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
+                    //    model.TrianName = trianDic[x.TrianID]?.Value;
+                    ////制卡驾校
+                    //if (!string.IsNullOrEmpty(x.WantDriverShopID) && driverShopDic.ContainsKey(x.WantDriverShopID))
+                    //    model.WantDriverShopName = driverShopDic[x.WantDriverShopID]?.Name;
+                    ////制卡驾校
+                    //if (!string.IsNullOrEmpty(x.MakeDriverShopID) && driverShopDic.ContainsKey(x.MakeDriverShopID))
+                    //    model.MakeDriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
+                    ////制卡地
+                    //if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
+                    //    model.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
 
-                    //报名点
-                    if (!string.IsNullOrEmpty(x.EnteredPointID) && enPointDic.ContainsKey(x.EnteredPointID))
-                        model.EnteredPointName = enPointDic[x.EnteredPointID]?.Name;
-                    //推荐人
-                    if (!string.IsNullOrEmpty(x.ReferenceID) && referenceDic.ContainsKey(x.ReferenceID))
-                        model.ReferenceName = referenceDic[x.ReferenceID]?.Name;
-                    //支付方式
-                    if (!string.IsNullOrEmpty(x.PayMethodID) && payMethodDic.ContainsKey(x.PayMethodID))
-                        model.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
+                    ////报名点
+                    //if (!string.IsNullOrEmpty(x.EnteredPointID) && enPointDic.ContainsKey(x.EnteredPointID))
+                    //    model.EnteredPointName = enPointDic[x.EnteredPointID]?.Name;
+                    ////推荐人
+                    //if (!string.IsNullOrEmpty(x.ReferenceID) && referenceDic.ContainsKey(x.ReferenceID))
+                    //    model.ReferenceName = referenceDic[x.ReferenceID]?.Name;
+                    ////支付方式
+                    //if (!string.IsNullOrEmpty(x.PayMethodID) && payMethodDic.ContainsKey(x.PayMethodID))
+                    //    model.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
 
-                    //省
-                    if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
-                        model.ProvinceName = areaDic[x.ProvinceCode]?.Value;
-                    //省
-                    if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
-                        model.CityName = areaDic[x.CityCode]?.Value;
+                    ////省
+                    //if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
+                    //    model.ProvinceName = areaDic[x.ProvinceCode]?.Value;
+                    ////省
+                    //if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
+                    //    model.CityName = areaDic[x.CityCode]?.Value;
 
-                    //证书
-                    if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
-                        model.CertificateName = cerDic[x.CertificateID]?.Value;
+                    ////证书
+                    //if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
+                    //    model.CertificateName = cerDic[x.CertificateID]?.Value;
 
-                    //科目二教练
-                    if (!string.IsNullOrEmpty(x.ThemeThreeCoachID) && coachDic.ContainsKey(x.ThemeThreeCoachID))
-                        model.ThemeThreeCoachName = coachDic[x.ThemeThreeCoachID]?.Name;
-                    //科目三教练
-                    if (!string.IsNullOrEmpty(x.ThemeTwoCoachID) && coachDic.ContainsKey(x.ThemeTwoCoachID))
-                        model.ThemeTwoCoachName = coachDic[x.ThemeTwoCoachID]?.Name;
-                    returnList.Add(model);
+                    ////科目二教练
+                    //if (!string.IsNullOrEmpty(x.ThemeThreeCoachID) && coachDic.ContainsKey(x.ThemeThreeCoachID))
+                    //    model.ThemeThreeCoachName = coachDic[x.ThemeThreeCoachID]?.Name;
+                    ////科目三教练
+                    //if (!string.IsNullOrEmpty(x.ThemeTwoCoachID) && coachDic.ContainsKey(x.ThemeTwoCoachID))
+                    //    model.ThemeTwoCoachName = coachDic[x.ThemeTwoCoachID]?.Name;
+                    //returnList.Add(model);
                 });
-                return returnList;
+                //return returnList;
 
             }
         }
