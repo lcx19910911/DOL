@@ -6770,7 +6770,7 @@ a.am-close:hover {
 .am-input-group-lg > .am-input-group-label,
 .am-input-group-lg > .am-input-group-btn > .am-btn {
   height: 42px;
-  font-size: 1.8rem !important;
+  font-size: 1rem !important;
 }
 .am-input-group-lg > .am-input-group-label {
   line-height: 40px;
@@ -6778,11 +6778,11 @@ a.am-close:hover {
 .am-input-group-sm > .am-form-field,
 .am-input-group-sm > .am-input-group-label,
 .am-input-group-sm > .am-input-group-btn > .am-btn {
-  height: 33px;
-  font-size: 1.4rem !important;
+  height: 26px;
+  font-size: 1rem !important;
 }
 .am-input-group-sm > .am-input-group-label {
-  line-height: 31px;
+  line-height: 24px;
 }
 .am-input-group-primary .am-input-group-label {
   background: #0e90d2;
@@ -7469,7 +7469,7 @@ img.am-thumbnail,
   margin-bottom: 3.2rem;
 }
 .am-margin-top {
-  margin-top: 1.6rem;
+  margin-top: 1rem;
 }
 .am-margin-top-0 {
   margin-top: 0!important;

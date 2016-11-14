@@ -239,9 +239,9 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult GetSelectItemList()
+        public ActionResult GetSelectItemList(bool isAll=false)
         {
-            return JResult(WebService.Get_SelectItemList());
+            return JResult(WebService.Get_SelectItemList(isAll));
         }
 
 
@@ -291,9 +291,9 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult WantDrop(string id, string remark, decimal money)
+        public ActionResult WantDrop(PayOrder model, string remark)
         {
-            return JResult(WebService.WantDrop_Student(id, remark, money));
+            return JResult(WebService.WantDrop_Student(model, remark));
         }
 
 

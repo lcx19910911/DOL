@@ -56,6 +56,7 @@ namespace DOL.Model
         DeleteExam = 9,
 
 
-    
+        [Description("删除退学申请记录")]
+        DeleteDropPayOrder = 10,
     }
 }

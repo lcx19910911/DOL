@@ -163,7 +163,7 @@ namespace DOL.Service
             {
                 List<SelectItem> list = new List<SelectItem>();
 
-                var query = Cache_Get_ReferenceList().AsQueryable().AsNoTracking();
+                var query = Cache_Get_ReferenceList().AsQueryable().Where(x=>(x.Flag&(long)GlobalFlag.Removed)==0).AsNoTracking();
 
                 if (string.IsNullOrEmpty(enteredPointId))
                 {

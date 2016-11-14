@@ -6,14 +6,14 @@
     var themeThreeSalary = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
     string DriverShopID = Request["DriverShopID"];
     string CoachID = Request["CoachID"];
-    if (Model.CoachReportModel != null && Model.CoachReportModel.ExamModel.List != null && Model.CoachReportModel.ExamModel.List.Count > 0)
+    if (Model.CoachReportModel != null && Model.CoachReportModel.ExamModel!=null && Model.CoachReportModel.ExamModel.List != null && Model.CoachReportModel.ExamModel.List.Count > 0)
     {
         examThemeTwoList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).ToList();
         examThemeThreeList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).ToList();
         themeTwoSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
         themeThreeSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
     }
-    ViewBag.Title = "教学信息";
+    ViewBag.Title = "教学查询";
 }
 <div class="am-cf am-padding">
     <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>教学信息</small></div>
@@ -99,9 +99,9 @@
                     <tr>
                         <td>合计</td>
                         <td></td>
-                        <td>@Model.CoachReportModel.ExamModel.ThemeTwoMonthExamCount</td>
-                        <td>@Model.CoachReportModel.ExamModel.ThemeTwoMonthPassCount</td>
-                        <td>@(Model.CoachReportModel.ExamModel.ThemeTwoMonthPassScaling)%</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthExamCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassScaling)%</td>
                     </tr>
                     <tr>
                         <td></td>
@@ -113,9 +113,9 @@
                     <tr>
                         <td></td>
                         <td></td>
-                        <td>@Model.CoachReportModel.ExamModel.ThemeTwoAllExamCount</td>
-                        <td>@Model.CoachReportModel.ExamModel.ThemeTwoAllPassCount</td>
-                        <td>@(Model?.CoachReportModel.ExamModel.ThemeTwoAllPassScaling)%</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoAllExamCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoAllPassCount)</td>
+                        <td>@(Model?.CoachReportModel.ExamModel?.ThemeTwoAllPassScaling)%</td>
                     </tr>
                 </tbody>
 
@@ -145,9 +145,9 @@
                     <tr>
                         <td>合计</td>
                         <td></td>
-                        <td>@Model.CoachReportModel.ExamModel.ThemeThreeMonthExamCount</td>
-                        <td>@Model.CoachReportModel.ExamModel.ThemeThreeMonthPassCount</td>
-                        <td>@(Model.CoachReportModel.ExamModel.ThemeThreeMonthPassScaling)%</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthExamCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassScaling)%</td>
                     </tr>
                     <tr>
                         <td></td>
@@ -159,9 +159,9 @@
                     <tr>
                         <td></td>
                         <td></td>
-                        <td>@Model.CoachReportModel.ExamModel.ThemeThreeAllExamCount</td>
-                        <td>@Model.CoachReportModel.ExamModel.ThemeThreeAllPassCount</td>
-                        <td>@(Model.CoachReportModel.ExamModel.ThemeThreeAllPassScaling)%</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllExamCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllPassCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllPassScaling)%</td>
                     </tr>
                 </tbody>
 
@@ -187,8 +187,8 @@
                     <tr>
                         <td>底薪</td>
                         <td>1</td>
-                        <td>@Model.CoachReportModel.ThemeSalaryModel.BasicSalary</td>
-                        <td>@Model.CoachReportModel.ThemeSalaryModel.BasicSalary</td>
+                        <td>@(Model.CoachReportModel.ThemeSalaryModel?.BasicSalary)</td>
+                        <td>@(Model.CoachReportModel.ThemeSalaryModel?.BasicSalary)</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="am-text-center">科目二</td>
@@ -219,7 +219,7 @@
                         <td></td>
                         <td></td>
                         <td>总计</td>
-                        <td>@Model.CoachReportModel.ThemeSalaryModel.TotalMoeny</td>
+                        <td>@(Model.CoachReportModel.ThemeSalaryModel?.TotalMoeny)</td>
                     </tr>
                 </tbody>
 

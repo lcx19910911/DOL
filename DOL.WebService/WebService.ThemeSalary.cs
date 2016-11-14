@@ -91,7 +91,7 @@ namespace DOL.Service
             {
                 model.ID = Guid.NewGuid().ToString("N");
                 entities.ThemeSalary.Add(model);
-                if (Cache_Get_ThemeSalaryList().Where(x => x.Code == model.Code && x.Count == model.Count).Any())
+                if (Cache_Get_ThemeSalaryList().Where(x => x.Code == model.Code && x.Count == model.Count&&!x.EndTime.HasValue).Any())
                     return Result(false, ErrorCode.count_had_exit);
 
                 model.CreatedTime = DateTime.Now;
@@ -122,30 +122,33 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
+                if (Cache_Get_ThemeSalaryList().Where(x => x.Code == model.Code && x.Count == model.Count && !x.EndTime.HasValue&&!x.ID.Equals(model.ID)).Any())
+                    return Result(false, ErrorCode.count_had_exit);
+
                 var oldEntity = entities.ThemeSalary.Find(model.ID);
                 if (oldEntity != null)
                 {
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     //如修改金额和次数 把以前数据隐藏 新增数据
-                    if (oldEntity.Money != model.Money && oldEntity.Count != model.Count)
+                    if (oldEntity.Money != model.Money || oldEntity.Count != model.Count)
                     {
 
                         oldEntity.Flag = (long)GlobalFlag.Unabled;
                         oldEntity.EndTime = DateTime.Now;
+                        entities.ThemeSalary.Add(new ThemeSalary()
+                        {
+                            ID = Guid.NewGuid().ToString("N"),
+                            CreatedTime = DateTime.Now.AddMinutes(1),
+                            UpdatedTime = DateTime.Now,
+                            UpdaterID = Client.LoginUser.ID,
+                            Code = model.Code,
+                            Name = model.Name,
+                            Count = model.Count,
+                            Money = model.Money,
+                            Flag = (long)GlobalFlag.Normal
+                        });
                     }
-                    entities.ThemeSalary.Add(new ThemeSalary()
-                    {
-                        ID = Guid.NewGuid().ToString("N"),
-                        CreatedTime = DateTime.Now.AddMinutes(1),
-                        UpdatedTime = DateTime.Now,
-                        UpdaterID = Client.LoginUser.ID,
-                        Code = model.Code,
-                        Name = model.Name,
-                        Count = model.Count,
-                        Money = model.Money,
-                        Flag = (long)GlobalFlag.Normal
-                    });
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);

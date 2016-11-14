@@ -11,8 +11,8 @@
         <input type="hidden" name="HadPayMoney" />
         <div class="am-tabs am-margin" data-am-tabs="">
             <ul class="am-tabs-nav am-nav am-nav-tabs" id="selectTabUl">
-                <li @(Html.Raw(string.IsNullOrEmpty(Request["trian"]) ? "class='am-active'" : ""))><a href="#tab1">报名收费</a></li>
-                <li @(Html.Raw(!string.IsNullOrEmpty(Request["trian"]) && Request["trian"] == "1" ? "class='am-active'" : ""))><a href="#tab2">培训计划</a></li>
+                <li @(Html.Raw(string.IsNullOrEmpty(Request["trian"]) ? "class='am-active'" : ""))><a href="#tab1">基础信息</a></li>
+                <li @(Html.Raw(!string.IsNullOrEmpty(Request["trian"]) && Request["trian"] == "1" ? "class='am-active'" : ""))><a href="#tab2">培训信息</a></li>
             </ul>
             <div class="am-tabs-bd" style="touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);overflow-x:hidden">
                 <div @(Html.Raw(string.IsNullOrEmpty(Request["trian"]) ? "class='am-tab-panel am-fade am-in am-active'" : "class='am-tab-panel am-fade'")) id="tab1">
@@ -81,7 +81,7 @@
 
                     <div class="am-g am-margin-top">
                         <div class="am-u-md-12 am-text-left">
-                            <label for="user-name" class="am-form-label">培训信息：</label>
+                            <label for="user-name" class="am-form-label">培训计划：</label>
                         </div>
                     </div>
 
@@ -104,20 +104,11 @@
 
                     <div class="am-g am-margin-top">
                         <div class="am-u-md-2 am-text-right">
-                            学习车型<strong class="am-text-danger am-text-sm">*</strong>：
-                        </div>
-                        <div class="am-u-md-2">
-                            <select name="CertificateID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
-                        </div>
-                        <div class="am-u-md-2 am-text-right">
                             报名时间<strong class="am-text-danger am-text-sm">*</strong>：
                         </div>
-                        <div class="am-u-md-1 am-u-end">
+                        <div class="am-u-md-1">
                             <input type="text" name="EnteredDate" class="am-input-sm" style="width:190px;" placeholder="请选择报名时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
                         </div>
-                    </div>
-
-                    <div class="am-g am-margin-top">
                         <div class="am-u-md-2 am-text-right">
                             意向驾校：
                         </div>
@@ -127,18 +118,29 @@
                             </select>
                         </div>
                         <div class="am-u-md-2 am-text-right">
-                            制卡驾校：
+                            学习车型<strong class="am-text-danger am-text-sm">*</strong>：
                         </div>
-                        <div class="am-u-md-1">
-                            <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
-                                <option value="-1">请选择</option>
-                            </select>
+                        <div class="am-u-md-2  am-u-end">
+                            <select name="CertificateID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
                         </div>
+                      
+                    </div>
+
+                    <div class="am-g am-margin-top">
+
                         <div class="am-u-md-2 am-text-right">
                             制卡时间：
                         </div>
-                        <div class="am-u-md-1 am-u-end">
+                        <div class="am-u-md-1">
                             <input type="text" name="MakeCardDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                        </div>
+                        <div class="am-u-md-2 am-text-right">
+                            制卡驾校：
+                        </div>
+                        <div class="am-u-md-1  am-u-end">
+                            <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                                <option value="-1">请选择</option>
+                            </select>
                         </div>
                     </div>
                     <div class="am-g am-margin-top">
@@ -190,7 +192,7 @@
                     <div class="am-g am-margin-top-sm">
                         <div class="am-u-lg-6">
                             <div class="am-btn-toolbar">
-                                <div class="am-btn-group am-btn-group-sm">
+                                <div class="am-btn-group am-btn-group-xs">
                                     @if (string.IsNullOrEmpty(Request["readonly"]))
                                     {
                                         <button onclick="addPay()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
@@ -377,7 +379,7 @@
                     <div class="am-g am-margin-top-sm">
                         <div class="am-u-lg-6">
                             <div class="am-btn-toolbar">
-                                <div class="am-btn-group am-btn-group-sm">
+                                <div class="am-btn-group am-btn-group-xs">
                                     @if (string.IsNullOrEmpty(Request["readonly"]))
                                     {
                                         <button onclick="addExam()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
@@ -528,7 +530,6 @@
             title: "新增缴费记录",
             width: "1000px",
             height: "600px",
-            pageUrl: "/PayOrder/Add",
             callback: function (e) {
                 formInit();//表单初始化
                 $("#tipsDiv").html("学费总价" + money + "元，当前已缴费" + hadMoney + "元");
@@ -561,7 +562,7 @@
             closeViaDimmer: false,
             ajaxUrl: "/HtmlTemplates/Exam/Update.html",
             title: "新增考试",
-            width: "700px",
+            width: "600px",
             height: "500px",
             pageUrl: "/Exam/Add",
             callback: function (e) {
@@ -729,6 +730,8 @@
     });
 
     function init() {
+
+        $("#loadingDiv").show();
         $.Nuoya.action("/Student/Find", { ID: $("[name='ID']").val() }, function (model) {
             //载入数据
             $.Nuoya.form("form").dataLoad({
@@ -736,7 +739,6 @@
             });
 
             LoadProvince(false, model);
-            LoadItemList(false, model);
 
             $("#form select[name='GenderCode']").find('option').eq(parseInt(model.GenderCode)).attr('selected', true);
 
@@ -778,21 +780,29 @@
             $("#form [name='ThemeTwoTimeCodeStr']").val(model.ThemeTwoTimeCode == 1 ? "完成" : "未完成");
             $("#form [name='ThemeThreeTimeCodeStr']").val(model.ThemeThreeTimeCode == 1 ? "完成" : "未完成");
 
-            $("#form select[name='ProvinceCode']").change(function () {
-                ShowCity(false, 1);
+            isCardID($("#form [name='IDCard']"), $("#form [name='GenderCode']"));
+
+            LoadItemList(false, model, function () {
+
+                setTimeout(function () {
+                    LoadReference(false, $("#form select[name='EnteredPointID']"));
+                    $("#form select[name='ProvinceCode']").change(function () {
+                        ShowCity(false, 1);
+                    });
+
+                    $("#form select[name='EnteredProvinceCode']").change(function () {
+                        ShowCity(false, 2);
+                    });
+                    $("#form select[name='EnteredCityCode']").change(function () {
+                        LoadEnteredPoint(false, this);
+                    });
+                    $("#form select[name='EnteredPointID']").change(function () {
+                        LoadReference(false, this);
+                    });
+                    $("#loadingDiv").hide();
+                }, 1000)
             });
 
-            $("#form select[name='EnteredProvinceCode']").change(function () {
-                ShowCity(false, 2);
-            });
-            $("#form select[name='EnteredCityCode']").change(function () {
-                LoadEnteredPoint(false, this);
-            });
-            $("#form select[name='EnteredPointID']").change(function () {
-                LoadReference(false, this);
-            });
-            //$('[name=\'Sex\']').val(model.GenderCode == 1 ? "男" : "女")
-            isCardID($("#form [name='IDCard']"), $("#form [name='GenderCode']"));
         });
     }
     init();

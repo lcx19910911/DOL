@@ -99,5 +99,15 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Delete_Operate(ids));
         }
+
+
+        /// <summary>
+        /// 获取下拉框 flag
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetZTreeFlagChildren()
+        {
+            return JResult(WebService.Get_OperateZTreeFlagChildren());
+        }
     }
 }

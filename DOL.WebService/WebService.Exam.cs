@@ -95,50 +95,75 @@ namespace DOL.Service
             {
                 model.ID = Guid.NewGuid().ToString("N");
 
-                entities.Exam.Add(model);
                 if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.Result == ExamCode.Pass && x.StudentID.Equals(model.StudentID)).Any())
                     return Result(false, ErrorCode.theme_had_pass);
                 if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.Count == model.Count && x.StudentID.Equals(model.StudentID)).Any())
                     return Result(false, ErrorCode.count_had_exit);
+                if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.Count <= model.Count && x.StudentID.Equals(model.StudentID)).Count() != model.Count - 1)
+                    return Result(false, ErrorCode.exam_had_lose);
+                if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.CreatedTime > model.CreatedTime && x.StudentID.Equals(model.StudentID)).Count() != model.Count)
+                    return Result(false, ErrorCode.exam_timer_error);
                 var studentList = Cache_Get_StudentList();
                 var student = entities.Student.Find(model.StudentID);
                 if (student == null)
                     return Result(false, ErrorCode.sys_param_format_error);
-                if (model.Result == ExamCode.Pass)
+
+                if (model.Code == ThemeCode.One)
                 {
-                    if (model.Code == ThemeCode.One)
+                    student.ThemeOneDate = DateTime.Now;
+                    if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeOnePass = YesOrNoCode.Yes;
                         student.NowTheme = ThemeCode.Two;
-                        student.ThemeOneDate = DateTime.Now;
                         student.State = StudentCode.ThemeTwo;
                     }
-                    else if (model.Code == ThemeCode.Two)
+                }
+                else if (model.Code == ThemeCode.Two)
+                {
+                    if (student.ThemeTwoCoachID.IsNullOrEmpty())
+                    {
+                        return Result(false, ErrorCode.exam_coache_not_exit);
+                    }
+
+                    student.ThemeTwoDate = DateTime.Now;
+                    if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeTwoPass = YesOrNoCode.Yes;
                         student.NowTheme = ThemeCode.Three;
-                        student.ThemeTwoDate = DateTime.Now;
                         student.ThemeTwoTimeCode = ThemeTimeCode.Complete;
                         student.State = StudentCode.ThemeThree;
                     }
-                    else if (model.Code == ThemeCode.Three)
+                }
+                else if (model.Code == ThemeCode.Three)
+                {
+                    if (student.ThemeThreeCoachID.IsNullOrEmpty())
+                    {
+                        return Result(false, ErrorCode.exam_coache_not_exit);
+                    }
+
+                    student.ThemeThreeDate = DateTime.Now;
+                    if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeThreePass = YesOrNoCode.Yes;
                         student.NowTheme = ThemeCode.Four;
-                        student.ThemeThreeDate = DateTime.Now;
                         student.State = StudentCode.ThemeFour;
 
                         student.ThemeThreeTimeCode = ThemeTimeCode.Complete;
                     }
-                    else if (model.Code == ThemeCode.Four)
+                }
+                else if (model.Code == ThemeCode.Four)
+                {
+                    student.ThemeFourDate = DateTime.Now;
+                    if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeFourPass = YesOrNoCode.Yes;
                         student.NowTheme = ThemeCode.Four;
-                        student.ThemeFourDate = DateTime.Now;
                         student.State = StudentCode.Graduate;
                     }
                 }
-                Add_Log(LogCode.AddExam, student.ID, string.Format("{0}在{1}新增了学员{2}的考试{3}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name,model.ID), "", "");
+
+                entities.Exam.Add(model);
+                Add_Log(LogCode.AddExam, student.ID, string.Format("{0}在{1}新增了学员{2}的考试{3}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, model.ID), "", "");
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_ExamList();
@@ -248,6 +273,23 @@ namespace DOL.Service
                 var query = Cache_Get_ExamList().AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId)).OrderBy(x => x.Code);
                 var count = query.Count();
                 var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var coachDic = Cache_Get_CoachList_Dic();
+                var student = Cache_Get_StudentList_Dic()[studentId];
+                string themeTwoCoachName = string.Empty;
+                string themeThreeCoachName = string.Empty;
+                if (student.ThemeTwoCoachID.IsNotNullOrEmpty() && coachDic.ContainsKey(student.ThemeTwoCoachID))
+                {
+                    themeTwoCoachName = coachDic[student.ThemeTwoCoachID].Name;
+                }
+                if (student.ThemeThreeCoachID.IsNotNullOrEmpty() && coachDic.ContainsKey(student.ThemeThreeCoachID))
+                {
+                    themeThreeCoachName = coachDic[student.ThemeThreeCoachID].Name;
+                }
+                list.ForEach(x =>
+                {
+                    x.ThemeTwoCoachName = themeTwoCoachName;
+                    x.themeThreeCoachName = themeThreeCoachName;
+                });
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }

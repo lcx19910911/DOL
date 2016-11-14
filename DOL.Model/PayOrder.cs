@@ -196,5 +196,12 @@ namespace DOL.Model
         [NotMapped]
         public string Mobile { get; set; }
 
+        /// <summary>
+        /// ±¸×¢
+        /// </summary>
+        [NotMapped]
+        public string Remark { get; set; }
+        
+
     }
 }

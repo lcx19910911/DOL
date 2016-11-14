@@ -54,5 +54,12 @@ namespace DOL.Model
         [Required]
         public System.DateTime CreatedTime { get; set; }
 
+
+        [NotMapped]
+        public string ThemeTwoCoachName { get; set; }
+
+        [NotMapped]
+        public string themeThreeCoachName { get; set; }
+
     }
 }

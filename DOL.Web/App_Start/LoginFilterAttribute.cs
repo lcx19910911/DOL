@@ -36,15 +36,15 @@ namespace DOL.Web
             else
             {
                 var url = filterContext.HttpContext.Request.RawUrl;
-                //if (user.MenuFlag != -1)
-                //{
+                if (user.MenuFlag != -1)
+                {
 
-                //    var menuFlag = user.MenuFlag.HasValue ? user.MenuFlag.Value : 0;
-                //    if (!new WebService(new WebClient(filterContext.HttpContext)).IsHavePage(menuFlag, url))
-                //    {
-                //        filterContext.Result = new RedirectResult("/Home/Index");
-                //    }
-                //}
+                    var menuFlag = user.MenuFlag.HasValue ? user.MenuFlag.Value : 0;
+                    if (!new WebService(new WebClient(filterContext.HttpContext)).IsHavePage(menuFlag, url))
+                    {
+                        filterContext.Result = new RedirectResult("/Home/Index");
+                    }
+                }
                 if (user.OperateFlag != -1)
                 {
 

@@ -48,6 +48,16 @@ namespace DOL.Web.Controllers
                     coachId = string.IsNullOrEmpty(coachId) ? model.CoachList[0].Value : coachId;
                     model.CoachReportModel = WebService.Get_CoachSalary(searchTime, coachId);
                 }
+                else
+                {
+                    model.CoachList = new List<Core.SelectItem>();
+                    model.CoachReportModel = new CoachReportModel();
+                }
+            }
+            else
+            {
+                model.CoachList = new List<Core.SelectItem>();
+                model.CoachReportModel = new CoachReportModel();
             }
             return View(model);
         }

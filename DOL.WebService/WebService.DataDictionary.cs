@@ -15,6 +15,7 @@ namespace DOL.Service
     {
         string dictionaryKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "DataDictionary");
 
+
         private Dictionary<GroupCode, Dictionary<string, DataDictionary>> Cache_Get_DataDictionary()
         {
 

@@ -142,6 +142,7 @@
     <Content Include="HtmlTemplates\Student\WantDrop.html" />
     <Content Include="HtmlTemplates\ThemeSalary\Update.html" />
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
+    <Content Include="HtmlTemplates\User\ExamList.html" />
     <Content Include="HtmlTemplates\User\SelectEnteredPoint.html" />
     <Content Include="HtmlTemplates\User\SelectOperate.html" />
     <Content Include="HtmlTemplates\User\SelectMenu.html" />

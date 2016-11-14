@@ -43,7 +43,7 @@
     <div class="am-g am-margin-top-sm">
         <div class="am-u-lg-6">
             <div class="am-btn-toolbar">
-                <div class="am-btn-group am-btn-group-sm">
+                <div class="am-btn-group am-btn-group-xs">
                     <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
                     <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
                     <button onclick="batchEnable()" type="button" class="am-btn am-btn-default"><span class="am-icon-check"></span> 启用</button>
@@ -346,7 +346,7 @@
                             callback: function (e) {
                                 $.Nuoya.action("/User/Find", { id: item.ID }, function (model) {
                                     $("[name=EnteredPointIDStr]").val(model != null ? model.EnteredPointIDStr:"")
-                                    $("[name=EnteredPointIDStrSelect]").ztreeSelect($("[name=EnteredPointIDStr]"), "/EnteredPoint/GetZTreeFlagChildren","", true, false);
+                                    $("[name=EnteredPointIDStrSelect]").ztreeSelect($("[name=EnteredPointIDStr]"), "/EnteredPoint/GetZTreeFlagChildren", "", true, false);
                                   });
                             },
                             buttons: [{

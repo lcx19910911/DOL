@@ -64,7 +64,7 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult Add(PayOrder entity)
+        public JsonResult Add(PayOrder entity, string StudentName)
         {
             ModelState.Remove("ID");
             ModelState.Remove("UpdaterID");
@@ -72,7 +72,7 @@ namespace DOL.Web.Controllers
             ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
-                var result = WebService.Add_PayOrder(entity);
+                var result = WebService.Add_PayOrder(entity, StudentName);
                 return JResult(result);
             }
             else
@@ -154,5 +154,16 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Delete_PayOrder(ids));
         }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public ActionResult DeleteDrop(string id)
+        {
+            return JResult(WebService.Delete_DropPayOrder(id));
+        }
+        
     }
 }

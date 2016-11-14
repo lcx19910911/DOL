@@ -52,7 +52,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_EnteredPointList().AsQueryable().AsNoTracking();
+                var query = Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x=>(x.Flag&(long)GlobalFlag.Removed)==0);
                 if (Client.LoginUser.MenuFlag != -1)
                     query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.ID));
                 if (name.IsNotNullOrEmpty())
@@ -232,7 +232,7 @@ namespace DOL.Service
                 //是否管理员
                 if (Client.LoginUser.MenuFlag == -1)
                 {
-                    Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x => x.CityCode.Equals(cityCode)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    Cache_Get_EnteredPointList().AsQueryable().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).AsNoTracking().Where(x => x.CityCode.Equals(cityCode)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
                         list.Add(new SelectItem()
                         {
@@ -244,7 +244,7 @@ namespace DOL.Service
                 else
                 {
 
-                    Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x => x.CityCode.Equals(cityCode)&&Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    Cache_Get_EnteredPointList().AsQueryable().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).AsNoTracking().Where(x => x.CityCode.Equals(cityCode)&&Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
                         list.Add(new SelectItem()
                         {
@@ -258,7 +258,7 @@ namespace DOL.Service
             {
                 if (Client.LoginUser.MenuFlag == -1)
                 {
-                    Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    Cache_Get_EnteredPointList().AsQueryable().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
                         list.Add(new SelectItem()
                         {
@@ -270,7 +270,7 @@ namespace DOL.Service
                 else
                 {
 
-                    Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.ID)&& (x.Flag & (long)GlobalFlag.Removed) == 0).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
                         list.Add(new SelectItem()
                         {
@@ -290,7 +290,7 @@ namespace DOL.Service
         public List<ZTreeNode> Get_EnteredPointZTreeStr()
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var list = Cache_Get_EnteredPointList().Where(x => Client.LoginUser.MenuFlag != -1 ? (Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
+            var list = Cache_Get_EnteredPointList().ToList();
             list.GroupBy(x => x.CityCode).ToList().ForEach(x =>
             {
                 ztreeNodes.Add(new ZTreeNode()

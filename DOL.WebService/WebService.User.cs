@@ -197,9 +197,9 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile)).Any())
+                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile)&&x.Flag==(long)GlobalFlag.Normal).Any())
                     return Result(false, ErrorCode.datadatabase_mobile__had);
-                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Account.Equals(model.Account)).Any())
+                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Account.Equals(model.Account) && x.Flag == (long)GlobalFlag.Normal).Any())
                     return Result(false, ErrorCode.user_name_already_exist);
                 var role = Cache_Get_RoleList().Where(x => x.ID.Equals(model.RoleID)).FirstOrDefault();
                 if(role==null)
@@ -238,9 +238,9 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && !x.ID.Equals(model.ID)).Any())
+                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && !x.ID.Equals(model.ID) && x.Flag == (long)GlobalFlag.Normal).Any())
                     return Result(false, ErrorCode.datadatabase_mobile__had);
-                var oldEntity = Cache_Get_UserList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(model.ID));
+                var oldEntity = Cache_Get_UserList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(model.ID) && x.Flag == (long)GlobalFlag.Normal);
                 if (oldEntity != null)
                 {
                     var role = Cache_Get_RoleList().Where(x => x.ID.Equals(model.RoleID)).FirstOrDefault();

@@ -125,7 +125,7 @@ namespace DOL.Service
                     query = query.Where(x => x.MakeCardDate < makeTimeEnd);
                 }
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
@@ -736,21 +736,40 @@ namespace DOL.Service
                     query = query.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(themeTwoCoachID));
                 }
 
-                if (themeOnePass!=null&& (int)themeOnePass!=-1)
+                if (themeOnePass.Equals(YesOrNoCode.Yes))
                 {
-                    query = query.Where(x => x.ThemeOnePass.Equals(themeOnePass));
+                    query = query.Where(x => x.ThemeOnePass.Equals(YesOrNoCode.Yes));
                 }
-                if (themeTwoPass != null && (int)themeOnePass != -1)
+                else if(themeOnePass.Equals(YesOrNoCode.No))
                 {
-                    query = query.Where(x => x.ThemeTwoPass.Equals(themeTwoPass));
+                    query = query.Where(x => x.ThemeOnePass.Equals(YesOrNoCode.No));
                 }
-                if (themeThreePass != null && (int)themeOnePass != -1)
+
+                if (themeTwoPass.Equals(YesOrNoCode.Yes))
                 {
-                    query = query.Where(x => x.ThemeThreePass.Equals(themeThreePass));
+                    query = query.Where(x => x.ThemeTwoPass.Equals(YesOrNoCode.Yes));
                 }
-                if (themeFourPass != null && (int)themeOnePass != -1)
+                else if (themeTwoPass.Equals(YesOrNoCode.No))
                 {
-                    query = query.Where(x => x.ThemeFourPass.Equals(themeFourPass));
+                    query = query.Where(x => x.ThemeTwoPass.Equals(YesOrNoCode.No));
+                }
+
+                if (themeThreePass.Equals(YesOrNoCode.Yes))
+                {
+                    query = query.Where(x => x.ThemeThreePass.Equals(YesOrNoCode.Yes));
+                }
+                else if (themeThreePass.Equals(YesOrNoCode.No))
+                {
+                    query = query.Where(x => x.ThemeThreePass.Equals(YesOrNoCode.No));
+                }
+
+                if (themeFourPass.Equals(YesOrNoCode.Yes))
+                {
+                    query = query.Where(x => x.ThemeFourPass.Equals(YesOrNoCode.Yes));
+                }
+                else if (themeFourPass.Equals(YesOrNoCode.No))
+                {
+                    query = query.Where(x => x.ThemeFourPass.Equals(YesOrNoCode.No));
                 }
 
                 if (themeOneTimeStart != null)
@@ -795,7 +814,7 @@ namespace DOL.Service
                 }
 
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x=>x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var coachDic = Cache_Get_CoachList_Dic(); 
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
@@ -891,12 +910,28 @@ namespace DOL.Service
         /// 获取搜索集合
         /// </summary>
         /// <returns></returns>
-        public WebResult<StudentIndexModel> Get_SelectItemList()
+        public WebResult<StudentIndexModel> Get_SelectItemList(bool isAll)
         {
             var referenceList = Cache_Get_ReferenceList();
-            var driverShopList = Cache_Get_DriverShopList();
+            if(!isAll)
+            {
+                referenceList = referenceList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+            }
+            var driverShopList = Cache_Get_DriverShopList().ToList();
+            if (!isAll)
+            {
+                driverShopList = driverShopList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+            }
             var enteredPointList = Cache_Get_EnteredPointList().Where(x => Client.LoginUser.MenuFlag != -1 ? (Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
-            var coachList = Cache_Get_CoachList();
+            if (!isAll)
+            {
+                enteredPointList = enteredPointList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+            }
+            var coachList = Cache_Get_CoachList().ToList();
+             if (!isAll)
+            {
+                coachList = coachList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+            }
             return Result(new StudentIndexModel()
             {
                 ReferenceList = referenceList,
@@ -1149,33 +1184,40 @@ namespace DOL.Service
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public WebResult<bool> WantDrop_Student(string id,string remark,decimal money)
+        public WebResult<bool> WantDrop_Student(PayOrder model,string remark)
         {
-            if (!id.IsNotNullOrEmpty())
-            {
-                return Result(false, ErrorCode.sys_param_format_error);
-            }
             using (DbRepository entities = new DbRepository())
             {
-                var list = Cache_Get_StudentList();
-                //找到实体
-                var student=entities.Student.Find(id);
+
+                var studentList = Cache_Get_StudentList();
+                var list = Cache_Get_PayOrderList();
+
+
+                if (list.Where(x => x.StudentID.Equals(model.StudentID) && x.IsConfirm == YesOrNoCode.No && x.IsDrop == YesOrNoCode.No).Any())
+                {
+                    return Result(false, ErrorCode.cant_drop_unconfirm_payorder__had);
+                }
+
+
+                    //找到实体
+                    var student =entities.Student.Find(model.StudentID);
 
                 if(student==null)
                     return Result(false, ErrorCode.sys_param_format_error);
 
                 student.State = StudentCode.WantDropOut;
-                student.Remark = remark;
                 student.UpdatedTime = DateTime.Now;
-                student.HadPayMoney -= money;
-                entities.PayOrder.Add(new PayOrder()
+                student.Remark = remark;
+                var payOrder = new PayOrder()
                 {
-                    StudentID = id,
+                    StudentID = model.StudentID,
                     PayMoney = student.HadPayMoney,
                     CreaterID = Client.LoginUser.ID,
                     IsConfirm = YesOrNoCode.No,
                     ID = Guid.NewGuid().ToString("N"),
-                    WantDropMoney = money,
+                    PayTypeID= model.PayTypeID,
+                    AccountNO= model.AccountNO,
+                    WantDropMoney = model.WantDropMoney,
                     CreatedTime = DateTime.Now,
                     UpdatedTime = DateTime.Now,
                     IsDrop = YesOrNoCode.Yes,
@@ -1183,18 +1225,20 @@ namespace DOL.Service
                     Flag = (long)GlobalFlag.Normal,
                     UpdaterID = Client.LoginUser.ID,
                     PayTime = DateTime.Now
-                    
-                });
+
+                };
+                entities.PayOrder.Add(payOrder);
                 if (entities.SaveChanges() > 0)
                 {
-                    var index = list.FindIndex(y => y.ID.Equals(id));
-                    if (index > -1)
+                    list.Add(payOrder);
+                    var studentIndex = studentList.FindIndex(y => y.ID.Equals(payOrder.StudentID));
+                    if (studentIndex > -1)
                     {
-                        list[index] = student;
+                        studentList[studentIndex] = student;
                     }
                     else
                     {
-                        list.Add(student);
+                        studentList.Add(student);
                     }
 
                     return Result(true);

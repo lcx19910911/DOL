@@ -187,7 +187,7 @@ namespace DOL.Service
                             x.HadPayMoney = student.HadPayMoney;
                             x.Name = student.Name;
                             x.IDCard = student.IDCard;
-
+                            x.Remark = student.Remark;
                             //推荐人
                             if (!string.IsNullOrEmpty(student.ReferenceID) && referenceDic.ContainsKey(student.ReferenceID))
                                 x.ReferenceName = referenceDic[student.ReferenceID]?.Name;
@@ -220,7 +220,7 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Add_PayOrder(PayOrder model)
+        public WebResult<bool> Add_PayOrder(PayOrder model,string StudentName)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -238,7 +238,10 @@ namespace DOL.Service
                 model.UpdaterID = Client.LoginUser.ID;
                 entities.PayOrder.Add(model);
                 
-                Add_Log(LogCode.AddPayOrder, model.ID, string.Format("{0}在{1}新增了学员{2}的缴费{3},缴费日期{4}，金额{5}", Client.LoginUser.Name, DateTime.Now.ToString(), Cache_Get_StudentList_Dic()[model.StudentID].Name, model.ID,model.PayTime.ToString("yyyy年MM月dd日"),model.PayMoney), "", "");
+                if(!string.IsNullOrEmpty(StudentName))
+                    Add_Log(LogCode.AddPayOrder, model.ID, string.Format("{0}在{1}新增了学员{2}的缴费{3},缴费日期{4}，金额{5}", Client.LoginUser.Name, DateTime.Now.ToString(), StudentName, model.ID,model.PayTime.ToString("yyyy年MM月dd日"),model.PayMoney), "", "");
+                else
+                    Add_Log(LogCode.AddPayOrder, model.ID, string.Format("{0}在{1}新增了学员{2}的缴费{3},缴费日期{4}，金额{5}", Client.LoginUser.Name, DateTime.Now.ToString(), Cache_Get_StudentList_Dic()[model.StudentID].Name, model.ID, model.PayTime.ToString("yyyy年MM月dd日"), model.PayMoney), "", "");
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_PayOrderList();
@@ -364,7 +367,7 @@ namespace DOL.Service
 
                 student.State = StudentCode.HadDropOut;
                 student.DropOutDate = DateTime.Now;
-
+                student.HadPayMoney -= model.WantDropMoney;
                 if (entities.SaveChanges() > 0)
                 {
 
@@ -491,6 +494,73 @@ namespace DOL.Service
                         list.Add(list[index]);
                     }
                 });
+                if (entities.SaveChanges() > 0)
+                {
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 删除退学申请
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public WebResult<bool> Delete_DropPayOrder(string id)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var list = Cache_Get_PayOrderList();
+                //找到实体
+                var pay = entities.PayOrder.Find(id);
+
+                var student = entities.Student.FirstOrDefault(y => y.ID.Equals(pay.StudentID));
+                pay.Flag = pay.Flag | (long)GlobalFlag.Removed;
+
+                Add_Log(LogCode.DeleteDropPayOrder, student.ID, string.Format("{0}在{1}删除了学员{2}的退学申请", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name), "", "");
+                var index = list.FindIndex(y => y.ID.Equals(id));
+                var studentIndex = Cache_Get_StudentList().FindIndex(y => y.ID.Equals(pay.StudentID));
+
+                if (student.NowTheme == ThemeCode.One)
+                {
+                    student.State = StudentCode.DontMakeCard;
+                }
+                else if (student.NowTheme == ThemeCode.One)
+                {
+                    student.State = StudentCode.ThemeOne;
+                }
+                else if (student.NowTheme == ThemeCode.Two)
+                {
+                    student.State = StudentCode.ThemeTwo;
+                }
+                else if (student.NowTheme == ThemeCode.Three)
+                {
+                    student.State = StudentCode.ThemeThree;
+                }
+                else if (student.NowTheme == ThemeCode.Four)
+                {
+                    student.State = StudentCode.ThemeFour;
+                }
+                else
+                {
+                    student.State = StudentCode.Graduate;
+                }
+                if (index > -1)
+                {
+                    list[index] = pay;
+                    Cache_Get_StudentList()[studentIndex] = student;
+                }
+                else
+                {
+                    list.Add(list[index]);
+                }
+
+
                 if (entities.SaveChanges() > 0)
                 {
                     return Result(true);

@@ -15,20 +15,20 @@
             title = "支付渠道";
             break;
         case "4":
-            title = "培训方式";
+            title = "培训班别";
             break;
         case "5":
-            title = "证书类型";
+            title = "证书";
             break;
         case "6":
-            title = "收款账号";
+            title = "收款账户";
             break;
     }
-    ViewBag.Title = title+ "管理";
+    ViewBag.Title = title;
 }
 
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>@(title)管理</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>@(title)</small></div>
 </div>
 <div id="searchDomain">
 
@@ -50,7 +50,7 @@
     <div class="am-g am-margin-top-sm">
         <div class="am-u-lg-6">
             <div class="am-btn-toolbar">
-                <div class="am-btn-group am-btn-group-sm">
+                <div class="am-btn-group am-btn-group-xs">
                     <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
                 </div>
             </div>

@@ -23,15 +23,33 @@
                         退款金额：
                     </div>
                     <div class="am-u-md-8 am-u-end">
-                        <input type="number" name="money" class="am-input-sm"  min="0"  value="0" onkeyup="ValiteValue(this)">
+                        <input type="number" name="WantDropMoney" class="am-input-sm"  />
                     </div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        支付渠道：
+                    </div>
+                    <div class="am-u-md-5">
+                        <select name="PayTypeID"></select>
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left"><strong class="am-text-danger am-text-sm">*</strong></div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-md-3 am-text-right">
+                        账户 :
+                    </div>
+                    <div class="am-u-md-5">
+                        <input type="text" name="AccountNO" class="am-input-sm" maxlength="32" placeholder="请输入账户号码">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-4 am-text-left">不能超过32个字符</div>
                 </div>
                 <div class="am-g am-margin-top">
                     <div class="am-u-md-3 am-text-right">
                         退学原因：
                     </div>
                     <div class="am-u-md-8 am-text-left am-u-end">
-                        <textarea rows="8"  name="Remark" class="am-input-sm" maxlength="128"></textarea>
+                        <textarea rows="7"  name="Remark" class="am-input-sm" maxlength="128"></textarea>
                     </div>
                 </div>
             </div>

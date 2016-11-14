@@ -88,6 +88,13 @@ namespace DOL.Model
         [Description("不能删除，存在未确认的缴费记录.")]
         cant_delete_unconfirm_payorder__had = 65,
 
+
+        /// <summary>
+        /// 不能申请退学，存在未确认的缴费记录
+        /// </summary>
+        [Description("不能申请退学，存在未确认的缴费记录.")]
+        cant_drop_unconfirm_payorder__had = 66,
+
         #endregion
 
         #region 业务逻辑
@@ -102,6 +109,25 @@ namespace DOL.Model
         /// </summary>
         [Description("次数已存在.")]
         count_had_exit = 81,
+
+
+        /// <summary>
+        /// 考试记录缺失
+        /// </summary>
+        [Description("考试记录缺失.")]
+        exam_had_lose = 82,
+
+        /// <summary>
+        /// 考试时间必须是本科目上次考试时间之后
+        /// </summary>
+        [Description("考试时间必须是本科目上次考试时间之后.")]
+        exam_timer_error = 83,
+
+        /// <summary>
+        /// 该学员未分配该考试科目教练员
+        /// </summary>
+        [Description("该学员未分配该考试科目教练员.")]
+        exam_coache_not_exit = 84,
 
         #endregion
 

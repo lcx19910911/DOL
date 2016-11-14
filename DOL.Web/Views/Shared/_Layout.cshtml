@@ -8,7 +8,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta name="apple-mobile-web-app-title" content="Amaze UI" />
-    <title>驾校网上报名管理平台@(!string.IsNullOrEmpty(ViewBag.Title)? "---"+ ViewBag.Title:"")</title>
+    <title>@ViewBag.Title</title>
     <link href="~/Styles/css/amazeui.css" rel="stylesheet" />
     @Styles.Render("~/Content/Admin")
     @RenderSection("linkcss", required: false)   
@@ -72,6 +72,12 @@
             var cityCode = $(obj).val();
             if (cityCode != "" && cityCode != null) {
                 $.Nuoya.action("/EnteredPoint/GetSelectItem", { cityCode: cityCode }, function (json) {
+                    if (isIndex) {
+                        $("#searchDomain select[name='EnteredPointID']").append("<option  value='-1'>请选择</option>");
+                    }
+                    else {
+                        $("#form select[name='EnteredPointID']").append("<option  value='-1'>请选择</option>");
+                    }
                     $(json).each(function () {
                         if (isIndex) {
                             $("#searchDomain select[name='EnteredPointID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
@@ -96,7 +102,6 @@
         }
         //根据报名点加载推荐人
         function LoadReference(isIndex, obj) {
-
             if (isIndex) {
                 $("#searchDomain select[name='ReferenceID']").empty();
             }
@@ -104,8 +109,14 @@
                 $("#form select[name='ReferenceID']").empty();
             }
             var enteredPointId = $(obj).val();
-            if (enteredPointId != "" && enteredPointId != null) {
+            if (enteredPointId != "" && enteredPointId != null && enteredPointId != "-1") {
                 $.Nuoya.action("/Reference/GetSelectItem", { enteredPointId: enteredPointId }, function (json) {
+                    if (isIndex) {
+                        $("#searchDomain select[name='ReferenceID']").append("<option  value='-1'>请选择</option>");
+                    }
+                    else {
+                        $("#form select[name='ReferenceID']").append("<option  value='-1'>请选择</option>");
+                    }
                     $(json).each(function () {
                         if (isIndex) {
                             $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
@@ -127,7 +138,6 @@
                 });
             }
             else {
-
                 $.Nuoya.action("/Area/GetAreaCodeSelectItem", {}, function (json) {
 
                     $(json).each(function () {
@@ -138,16 +148,15 @@
                         }
                     });
                     if (dataitem != null) {
-                        ShowCity(false, 1, dataitem.CityCode);
                         ShowCity(false, 2, dataitem.EnteredCityCode);
                     }
                 });
 
             }
         }
-        //加载学员信息的下拉框集合
-        function LoadItemList(isIndex, dataitem) {
-            $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+        //加载学员信息的下拉框集合 
+        function LoadItemList(isIndex, dataitem,callBack) {
+            $.Nuoya.action("/Student/GetSelectItemList", {isAll:dataitem!=null}, function (json) {
                 $(json.ReferenceList).each(function () {
                     if (isIndex) {
                         $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
@@ -245,6 +254,8 @@
                         }
                     }
                 });
+                if (typeof (callBack) == "function")
+                { callBack(); }
             });
         }
 
@@ -296,10 +307,14 @@
                 });
                 if (!isIndex) {
                     if (tabe == 1) {
-                        $("#form select[name='CityCode']").find('option').eq(1).attr('selected', true);
+                        $("#form select[name='CityCode']").find('option').eq(0).attr('selected', true);
+                        ShowArea(false, $("#form select[name='CityCode']"))
                     }
                     else if (tabe == 2)
-                        $("#form select[name='EnteredCityCode']").find('option').eq(1).attr('selected', true);
+                        $("#form select[name='EnteredCityCode']").find('option').eq(0).attr('selected', true);
+                }
+                else {
+                    ShowArea(true, $("select[name='CityCode']"))
                 }
             });
         }
@@ -313,17 +328,18 @@
                 $("#form select[name='DistrictCode']").empty();
             }
             var value = $(obj).val();
-
-            $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
-                $(json).each(function () {
-                    if (isIndex) {
-                        $("#searchDomain select[name='DistrictCode']").append("<option value='" + this.Value + "' selected>" + this.Text + "</option>");
-                    }
-                    else {
-                        $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "' selected>" + this.Text + "</option>");
-                    }
+            if (value != "0") {
+                $.Nuoya.action("/Area/GetAreaCodeSelectItem", { value: value }, function (json) {
+                    $(json).each(function () {
+                        if (isIndex) {
+                            $("#searchDomain select[name='DistrictCode']").append("<option value='" + this.Value + "' selected>" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='DistrictCode']").append("<option value='" + this.Value + "' selected>" + this.Text + "</option>");
+                        }
+                    });
                 });
-            });
+            }
         }
 
         //图片方法 缩小
@@ -553,12 +569,32 @@
                 $.Nuoya.alert("请选择培训车型");
                 return false;
             }
+            if ($('#form [name="ReferenceID"]').val() == "" || $('#form [name="ReferenceID"]').val() == "-1") {
+                $.Nuoya.alert("请选择推荐人");
+                return false;
+            }
+            if ($('#form [name="EnteredPointID"]').val() == "" || $('#form [name="EnteredPointID"]').val() == "-1") {
+                $.Nuoya.alert("请选择报名点");
+                return false;
+            }
             if ($('#form [name="WantDriverShopID"]').val() == "" || $('#form [name="WantDriverShopID"]').val() == "-1") {
                 $.Nuoya.alert("请选择意向驾校");
                 return false;
             }
             if ($('#form [name="PayMethodID"]').val() == "" || $('#form [name="PayMethodID"]').val() == "-1") {
                 $.Nuoya.alert("请选择缴费方式");
+                return false;
+            }
+
+            if (($('#form [name="MakeDriverShopID"]').val() == "" || $('#form [name="MakeDriverShopID"]').val() == "-1") && $('#form [name="MakeCardDate"]').val() != "") {
+                $.Nuoya.alert("制卡时间存在时必须选择制卡驾校");
+                return false;
+            }
+
+
+            if ($('#form [name="MakeDriverShopID"]').val() != "" && $('#form [name="MakeDriverShopID"]').val() != "-1" && $('#form [name="MakeCardDate"]').val() == "")
+            {
+                $.Nuoya.alert("制卡驾校存在时必须选择制卡时间");
                 return false;
             }
 
@@ -635,6 +671,17 @@
             window.open("/Student/History?Id=" + id + "&isAfter="+isAtter);
         }
 
+        function ShowCityName(item) {
+            if (item.CityName.length > 6) {
+                return item.CityName.substr(0, 6) + "..";
+            }
+            else {
+                return item.CityName;
+            }
+        }
+
+
+
         function ShowLogCode(item) {
 
             switch (item.Code) {
@@ -665,6 +712,10 @@
                 case 9:
                     return "删除考试记录";
                     break;
+                case 10:
+                    return "删除退学申请记录";
+                    break;
+                    
             }
 
         }

@@ -9,7 +9,7 @@
 <div id="searchDomain">
 
     <div class="am-g">   
-        <div class="am-u-lg-7">
+        <div class="am-u-lg-9  am-u-end">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">省份：</span>
                 <select name="ProvinceCode" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" onchange="ShowCity(true, 1)" style="width:120px;"></select>
@@ -17,11 +17,8 @@
                 <select name="CityCode" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" onchange="ShowArea(true, this)" style="width:120px;"></select>
                 <span class="am-input-group-label">县区：</span>
                 <select name="DistrictCode" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" style="width:120px;"></select>
-            </div>
-        </div>
-        <div class="am-u-lg-5 am-u-end">
-            <div class="am-input-group am-input-group-sm">
-                <span class="am-input-group-label">名称：</span>
+
+                <span class="am-input-group-label am-margin-left-sm">名称：</span>
                 <input type="text" class="am-form-field" placeholder="按驾校名称搜索" style="width:100px;" name="name" ;>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
@@ -35,7 +32,7 @@
     <div class="am-g am-margin-top-sm">
         <div class="am-u-lg-6">
             <div class="am-btn-toolbar">
-                <div class="am-btn-group am-btn-group-sm">
+                <div class="am-btn-group am-btn-group-xs">
                     <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
                     <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
                 </div>

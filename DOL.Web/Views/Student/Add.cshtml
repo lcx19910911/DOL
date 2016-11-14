@@ -1,13 +1,13 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "新增报名";
+    ViewBag.Title = "报名登记";
 }
 <div class="admin-content-body">
     <form id="form" class="am-form  am-form-inline">
         <input type="hidden" name="ID" value="@(Guid.NewGuid().ToString("N"))" />
         <div class="am-tabs am-margin" data-am-tabs="">
             <ul class="am-tabs-nav am-nav am-nav-tabs" id="selectTabUl">
-                <li class="am-active"><a href="#tab1">报名收费</a></li>
+                <li class="am-active"><a href="#tab1">基础信息</a></li>
             </ul>
             <div class="am-tabs-bd" style="touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);overflow-x:hidden">
                 <div class="am-tab-panel am-fade am-in am-active" id="tab1">
@@ -77,7 +77,7 @@
 
                     <div class="am-g am-margin-top">
                         <div class="am-u-md-12 am-text-left">
-                            <label for="user-name" class="am-form-label">培训信息：</label>
+                            <label for="user-name" class="am-form-label">培训计划：</label>
                         </div>
                     </div>
 
@@ -99,23 +99,13 @@
                     </div>
 
                     <div class="am-g am-margin-top">
-                        <div class="am-u-md-2 am-text-right">
-                            学习车型<strong class="am-text-danger am-text-sm">*</strong>：
-                        </div>
-                        <div class="am-u-md-2">
-                            <select name="CertificateID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
-                                <option value="-1">请选择</option>
-                            </select>
-                        </div>
+
                         <div class="am-u-md-2 am-text-right">
                             报名时间<strong class="am-text-danger am-text-sm">*</strong>：
                         </div>
-                        <div class="am-u-md-1 am-u-end">
+                        <div class="am-u-md-1">
                             <input type="text" name="EnteredDate" class="am-input-sm" style="width:120px;" placeholder="请选择报名时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
                         </div>
-                    </div>
-
-                    <div class="am-g am-margin-top">
                         <div class="am-u-md-2 am-text-right">
                             意向驾校<strong class="am-text-danger am-text-sm">*</strong>：
                         </div>
@@ -125,20 +115,32 @@
                             </select>
                         </div>
                         <div class="am-u-md-2 am-text-right">
-                            制卡驾校：
+                            学习车型<strong class="am-text-danger am-text-sm">*</strong>：
+                        </div>
+                        <div class="am-u-md-2  am-u-end">
+                            <select name="CertificateID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                                <option value="-1">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-right">
+                            制卡时间：
                         </div>
                         <div class="am-u-md-1">
+                            <input type="text" name="MakeCardDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                        </div>
+
+                        <div class="am-u-md-2 am-text-right">
+                            制卡驾校：
+                        </div>
+                        <div class="am-u-md-1  am-u-end">
                             <select name="MakeDriverShopID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
                                 <option value="-1">请选择</option>
                             </select>
                         </div>
-                        <div class="am-u-md-2 am-text-right">
-                            制卡时间：
-                        </div>
-                        <div class="am-u-md-1 am-u-end">
-                            <input type="text" name="MakeCardDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
-                        </div>
-
+                      
                     </div>
                     <div class="am-g am-margin-top">
                         <div class="am-u-md-2 am-text-right">
@@ -189,7 +191,7 @@
                     <div class="am-g am-margin-top-sm">
                         <div class="am-u-lg-6">
                             <div class="am-btn-toolbar">
-                                <div class="am-btn-group am-btn-group-sm">
+                                <div class="am-btn-group am-btn-group-xs">
                                     <button onclick="addPay()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
                                 </div>
                             </div>
@@ -223,12 +225,12 @@
     </form>
     <div class="am-g am-margin-top-sm am-text-center">
         <button type="button" onclick="BackUrl()" class="am-btn am-btn-primary">返回</button>
-        <button type="button" onclick="AddStudent()" class="am-btn am-btn-primary">新增</button>
-        <button type="button" onclick="ClearInfo()" class="am-btn am-btn-primary">清空数据</button>
+        <button type="button" onclick="AddStudent()" class="am-btn am-btn-primary am-margin-left-lg">新增</button>
+        <button type="button" onclick="ClearInfo()" class="am-btn am-btn-primary am-margin-left-lg"  style="float:right;margin-right:100px;">清空数据</button>
     </div>
 </div>
 <script>
-    LoadItemList(false,null);
+    LoadItemList(false, null, function () { });
     LoadProvince(false);
 
     function formInit(dataitem) {
@@ -341,7 +343,6 @@
             title: "新增缴费记录",
             width: "1000px",
             height: "600px",
-            pageUrl: "/PayOrder/Add",
             callback: function (e) {
                 formInit();//表单初始化     
                 $("#tipsDiv").html("学费总价" + money + "元，当前已缴费0元");
@@ -352,7 +353,8 @@
                     $.Nuoya.form("payForm").ajaxSubmit({
                         ajaxUrl: "/PayOrder/Add",
                         params: {
-                            StudentID: $("[name='ID']").val()
+                            StudentID: $("[name='ID']").val(),
+                            StudentName:$("#form [name='Name']").val()
                         },
                         callback: function (data) {
                             if (!data.ErrorDesc) {

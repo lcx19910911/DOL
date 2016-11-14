@@ -268,5 +268,25 @@ namespace DOL.Service
             else
                 return true;
         }
+
+        /// <summary>
+        /// 获取ZTree子节点
+        /// </summary>
+        /// <param name="parentId">父级id</param>
+        /// <param name="groups">分组数据</param>
+        /// <returns></returns>
+        public List<ZTreeNode> Get_OperateZTreeFlagChildren()
+        {
+            List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
+            Cache_Get_OperateList().AsQueryable().AsNoTracking().OrderByDescending(x => x.Sort).ToList().ForEach(x=> {
+                ztreeNodes.Add(new ZTreeNode()
+                {
+                    name = x.Name,
+                    value = x.LimitFlag.ToString()
+                });
+            });
+        
+            return ztreeNodes;
+        }
     }
 }

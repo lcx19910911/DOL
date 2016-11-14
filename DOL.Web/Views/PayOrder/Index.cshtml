@@ -1,24 +1,19 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "招生收款";
+    ViewBag.Title = "收款查询";
 }
 
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>招生收款</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>收款查询</small></div>
 </div>
 <div id="searchDomain">
 
     <div class="am-g">
-        <div class="am-u-lg-3">
+        <div class="am-u-lg-7 am-u-end">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label">身份证：</span>
                 <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:100px;" name="no" ;>
-            </div>
-        </div>
-
-        <div class="am-u-lg-6 am-u-end">
-            <div class="am-input-group am-input-group-sm">
-                <span class="am-input-group-label">状态：</span>
+                <span class="am-input-group-label am-margin-left-sm">状态：</span>
                 <select name="state" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" style="width:120px;">
                     <option value="-1">不限</option>
                     <option value="1">已确认</option>
@@ -38,7 +33,7 @@
     <div class="am-g am-margin-top-sm">
         <div class="am-u-lg-6">
             <div class="am-btn-toolbar">
-                <div class="am-btn-group am-btn-group-sm">
+                <div class="am-btn-group am-btn-group-xs">
                     <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
                 </div>
             </div>
@@ -66,6 +61,7 @@
                 <th dataname="CreaterName">登记人</th>
                 <th dataname="ConfirmUserName">确认人</th>
                 <th render="ShowConfirm">确认情况</th>
+                <th render="ShowState">学员状态</th>
                 <th dataname="ConfirmDate" datatype="jsondate">确认日期</th>
                 <th type="eventlist"></th>
             </tr>
@@ -144,7 +140,7 @@
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,
                             width: "1000px",
-                            height: "700px",
+                            height: "600px",
                             ajaxUrl: "/HtmlTemplates/PayOrder/Index.html",
                             title: "缴费记录",
                             callback: function (e) {
