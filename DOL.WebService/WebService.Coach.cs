@@ -502,10 +502,6 @@ namespace DOL.Service
 
 
             decimal AllMoney = 0;
-            //总科目薪资集合
-            var themeSalaryList = Cache_Get_ThemeSalaryList();
-
-
             ////科目二薪资集合
             //var themeTwoSalaryList = themeSalaryList.Where(x => x.Code == ThemeCode.Two).ToList();
             //List<int> countList = themeTwoSalaryList.Select(x => x.Count).ToList();
@@ -514,6 +510,11 @@ namespace DOL.Service
             //    countList.Remove(x);
             //});
             //var themeTwoSalaryDic = themeTwoSalaryList.Where(x => x.EndTime.Value <= x.EndTime).ToDictionary(x => x.ID);
+
+            //搜索时间内的科目薪资
+            var themeSalaryList = Cache_Get_ThemeSalaryList().Where(x => !x.EndTime.HasValue || (x.EndTime.HasValue && x.EndTime.Value > time) || (x.EndTime.HasValue && x.EndTime.Value < endTime)).ToList();
+
+            var returnModel = new List<string, Dictionary<string,>>
 
 
             //科目二薪资集合
