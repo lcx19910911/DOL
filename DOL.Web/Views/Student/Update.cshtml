@@ -785,10 +785,6 @@
             LoadItemList(false, model, function () {
 
                 setTimeout(function () {
-                    LoadReference(false, $("#form select[name='EnteredPointID']"));
-                    $("#form select[name='ProvinceCode']").change(function () {
-                        ShowCity(false, 1);
-                    });
 
                     $("#form select[name='EnteredProvinceCode']").change(function () {
                         ShowCity(false, 2);
@@ -799,6 +795,8 @@
                     $("#form select[name='EnteredPointID']").change(function () {
                         LoadReference(false, this);
                     });
+
+               
                     $("#loadingDiv").hide();
                 }, 1000)
             });

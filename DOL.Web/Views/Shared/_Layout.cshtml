@@ -52,6 +52,16 @@
             });
         }
 
+        //获取Json的日期
+        function RenderDate(data) {
+            var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
+            return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDate();
+        }
+        //获取Json的时间
+        function RenderTime(data) {
+            var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
+            return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDate() + " " + da.getHours() + ":" + da.getSeconds() + ":" + da.getMinutes();
+        }
         //关闭/展示菜单
         function unState() {
             var state = $(".admin-sidebar").css("display");
@@ -62,7 +72,7 @@
         }
 
         //根据市加载报名点
-        function LoadEnteredPoint(isIndex, obj) {
+        function LoadEnteredPoint(isIndex, obj, setVaule) {
             if (isIndex) {
                 $("#searchDomain select[name='EnteredPointID']").empty();
             }
@@ -83,25 +93,19 @@
                             $("#searchDomain select[name='EnteredPointID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
                         }
                         else {
-                            $("#form select[name='EnteredPointID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                            if (setVaule != null && setVaule != "" && setVaule == this.Value) {
+                                $("#form select[name='EnteredPointID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                            } else {
+                                $("#form select[name='EnteredPointID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                            }
                         }
                     });
                 });
             }
         }
 
-        //获取Json的日期
-        function RenderDate(data) {
-            var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
-            return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDate();
-        }
-        //获取Json的时间
-        function RenderTime(data) {
-            var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
-            return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDate() + " " + da.getHours() + ":" + da.getSeconds() + ":" + da.getMinutes();
-        }
         //根据报名点加载推荐人
-        function LoadReference(isIndex, obj) {
+        function LoadReference(isIndex, obj, setVaule) {
             if (isIndex) {
                 $("#searchDomain select[name='ReferenceID']").empty();
             }
@@ -109,6 +113,7 @@
                 $("#form select[name='ReferenceID']").empty();
             }
             var enteredPointId = $(obj).val();
+            var value = setVaule;
             if (enteredPointId != "" && enteredPointId != null && enteredPointId != "-1") {
                 $.Nuoya.action("/Reference/GetSelectItem", { enteredPointId: enteredPointId }, function (json) {
                     if (isIndex) {
@@ -119,10 +124,14 @@
                     }
                     $(json).each(function () {
                         if (isIndex) {
-                            $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                           $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
                         }
                         else {
-                            $("#form select[name='ReferenceID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                            if (value != null && value != "" && value == this.Value) {
+                                $("#form select[name='ReferenceID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                            } else {
+                                $("#form select[name='ReferenceID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                            }
                         }
                     });
                 });
@@ -295,23 +304,25 @@
                             else {
                                 $("#form select[name='CityCode']").append("<option value='" + this.Value + "' >" + this.Text + "</option>");
                             }
-                        }
-                        else if (tabe == 2)
+                        } else if (tabe == 2) {
                             if (setVaule != null && setVaule == this.Value) {
                                 $("#form select[name='EnteredCityCode']").append("<option value='" + this.Value + "'  selected='selected' >" + this.Text + "</option>");
                             }
                             else {
                                 $("#form select[name='EnteredCityCode']").append("<option value='" + this.Value + "' >" + this.Text + "</option>");
                             }
+                        }
                     }
                 });
                 if (!isIndex) {
                     if (tabe == 1) {
-                        $("#form select[name='CityCode']").find('option').eq(0).attr('selected', true);
-                        ShowArea(false, $("#form select[name='CityCode']"))
+                        if (setVaule == "")
+                            $("#form select[name='CityCode']").find('option').eq(0).attr('selected', true);
+                            ShowArea(false, $("#form select[name='CityCode']"))
                     }
-                    else if (tabe == 2)
-                        $("#form select[name='EnteredCityCode']").find('option').eq(0).attr('selected', true);
+                    else {
+
+                    }
                 }
                 else {
                     ShowArea(true, $("select[name='CityCode']"))

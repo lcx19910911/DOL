@@ -239,9 +239,9 @@ namespace DOL.Service
                 entities.PayOrder.Add(model);
                 
                 if(!string.IsNullOrEmpty(StudentName))
-                    Add_Log(LogCode.AddPayOrder, model.ID, string.Format("{0}在{1}新增了学员{2}的缴费{3},缴费日期{4}，金额{5}", Client.LoginUser.Name, DateTime.Now.ToString(), StudentName, model.ID,model.PayTime.ToString("yyyy年MM月dd日"),model.PayMoney), "", "");
+                    Add_Log(LogCode.AddPayOrder, model.ID, string.Format("{0}在{1}新增了学员{2}的缴费{3},缴费日期{4}，金额{5}", Client.LoginUser.Name, DateTime.Now.ToString(), StudentName, model.ID,model.PayTime.ToString("yyyy年MM月dd日"),model.PayMoney), "", "", "");
                 else
-                    Add_Log(LogCode.AddPayOrder, model.ID, string.Format("{0}在{1}新增了学员{2}的缴费{3},缴费日期{4}，金额{5}", Client.LoginUser.Name, DateTime.Now.ToString(), Cache_Get_StudentList_Dic()[model.StudentID].Name, model.ID, model.PayTime.ToString("yyyy年MM月dd日"), model.PayMoney), "", "");
+                    Add_Log(LogCode.AddPayOrder, model.ID, string.Format("{0}在{1}新增了学员{2}的缴费{3},缴费日期{4}，金额{5}", Client.LoginUser.Name, DateTime.Now.ToString(), Cache_Get_StudentList_Dic()[model.StudentID].Name, model.ID, model.PayTime.ToString("yyyy年MM月dd日"), model.PayMoney), "", "", "");
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_PayOrderList();
@@ -298,7 +298,7 @@ namespace DOL.Service
                     student.MoneyIsFull = YesOrNoCode.Yes;
                 }
                 
-                Add_Log(LogCode.ConfirmPayOrder, student.ID, string.Format("{0}在{1}确认了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name,oldEntity.ID,oldEntity.PayMoney), "", "");
+                Add_Log(LogCode.ConfirmPayOrder, student.ID, string.Format("{0}在{1}确认了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name,oldEntity.ID,oldEntity.PayMoney), "", "", "");
                 if (entities.SaveChanges() > 0)
                 {
 
@@ -422,7 +422,7 @@ namespace DOL.Service
                     string afterJson = string.Format("金额：{0},支付方式:{1},凭证：{2},图片:{3},支付时间{4}", oldEntity.PayMoney, payType, oldEntity.VoucherNO, oldEntity.VoucherThum, oldEntity.PayTime.ToString("yyyy年MM月dd日"));
                     var student = Cache_Get_StudentList_Dic()[oldEntity.StudentID];
 
-                    Add_Log(LogCode.UpdatePayOrder, oldEntity.StudentID, string.Format("{0}在{1}修改了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, oldEntity.ID, oldEntity.PayMoney), beforeJson, afterJson);
+                    Add_Log(LogCode.UpdatePayOrder, oldEntity.StudentID, string.Format("{0}在{1}修改了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, oldEntity.ID, oldEntity.PayMoney), beforeJson, afterJson, "");
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -480,7 +480,7 @@ namespace DOL.Service
                         {
                             student.MoneyIsFull = YesOrNoCode.No;
                         }
-                        Add_Log(LogCode.UpdatePayOrder, student.ID, string.Format("{0}在{1}修改了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, x.ID, x.PayMoney), "", "");
+                        Add_Log(LogCode.UpdatePayOrder, student.ID, string.Format("{0}在{1}修改了学员{2}的缴费（{3}）金额{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, x.ID, x.PayMoney), "", "", "");
                     }
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
                     var studentIndex = Cache_Get_StudentList().FindIndex(y => y.ID.Equals(x.StudentID));
@@ -522,7 +522,7 @@ namespace DOL.Service
                 var student = entities.Student.FirstOrDefault(y => y.ID.Equals(pay.StudentID));
                 pay.Flag = pay.Flag | (long)GlobalFlag.Removed;
 
-                Add_Log(LogCode.DeleteDropPayOrder, student.ID, string.Format("{0}在{1}删除了学员{2}的退学申请", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name), "", "");
+                Add_Log(LogCode.DeleteDropPayOrder, student.ID, string.Format("{0}在{1}删除了学员{2}的退学申请", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name), "", "", "");
                 var index = list.FindIndex(y => y.ID.Equals(id));
                 var studentIndex = Cache_Get_StudentList().FindIndex(y => y.ID.Equals(pay.StudentID));
 

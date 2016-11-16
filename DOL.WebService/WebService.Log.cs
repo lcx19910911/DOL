@@ -62,7 +62,7 @@ namespace DOL.Service
       /// <param name="remark">备注</param>
       /// <param name="beforeJson"></param>
       /// <param name="afterJson"></param>
-        public void Add_Log(LogCode code,string studentId,string remark,string beforeJson,string afterJson)
+        public void Add_Log(LogCode code,string studentId,string remark,string beforeJson,string afterJson,string info)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -76,7 +76,7 @@ namespace DOL.Service
                 model.BeforeJson = beforeJson;
                 model.AfterJson = afterJson;
                 model.StudentID = studentId;
-          
+                model.UpdateInfo = info;
                 entities.Log.Add(model);
                            
                 if (entities.SaveChanges() > 0)

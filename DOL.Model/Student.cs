@@ -36,12 +36,14 @@ namespace DOL.Model
 
         /// <summary>
         /// 性别
-        /// </summary>        
+        /// </summary>      
+        [Display(Name = "性别")]
         public GenderCode GenderCode { get; set; }
 
         /// <summary>
         /// 省份编码
         /// </summary>
+        [Display(Name = "省份编码")]
         [MaxLength(6)]
         [Column("ProvinceCode", TypeName = "varchar")]
         public string ProvinceCode { get; set; }
@@ -49,6 +51,7 @@ namespace DOL.Model
         /// <summary>
         /// 城市编码
         /// </summary>
+        [Display(Name = "城市编码")]
         [MaxLength(6)]
         [Column("CityCode", TypeName = "varchar")]
         public string CityCode { get; set; }
@@ -56,11 +59,13 @@ namespace DOL.Model
         /// 省份名称
         /// </summary>
         [NotMapped]
-        public string ProvinceName { get; set; } 
+        [Display(Name = "省份名称")]
+        public string ProvinceName { get; set; }
 
         /// <summary>
         /// 城市称
         /// </summary>
+        [Display(Name = "城市称")]
         [NotMapped]
         public string CityName { get; set; }
 
@@ -86,6 +91,7 @@ namespace DOL.Model
         /// <summary>
         /// 证书ID
         /// </summary>
+        [Display(Name = "证书ID")]
         [Required(ErrorMessage = "证书不能为空")]
         [Column("CertificateID", TypeName = "char"), MaxLength(32)]
         public string CertificateID { get; set; }
@@ -95,6 +101,7 @@ namespace DOL.Model
         /// 证书名称
         /// </summary>
         [NotMapped]
+        [Display(Name = "证书名称")]
         public string CertificateName { get; set; }
 
         #endregion
@@ -104,6 +111,7 @@ namespace DOL.Model
         /// <summary>
         /// 报名点ID
         /// </summary>
+        [Display(Name = "报名点ID")]
         [Required(ErrorMessage = "报名点ID不能为空")]
         [Column("EnteredPointID", TypeName = "char"), MaxLength(32)]
         public string EnteredPointID { get; set; }
@@ -113,11 +121,13 @@ namespace DOL.Model
         /// 报名点名称
         /// </summary>
         [NotMapped]
+        [Display(Name = "报名点名称")]
         public string EnteredPointName { get; set; }
 
         /// <summary>
         /// 推荐人ID
         /// </summary>
+        [Display(Name = "推荐人ID")]
         [Required(ErrorMessage = "报名点ID不能为空")]
         [Column("ReferenceID", TypeName = "char"), MaxLength(32)]
         public string ReferenceID { get; set; }
@@ -126,11 +136,13 @@ namespace DOL.Model
         /// 推荐人名称
         /// </summary>
         [NotMapped]
+        [Display(Name = "推荐人名称")]
         public string ReferenceName { get; set; }
 
         /// <summary>
         /// 意向驾校ID
         /// </summary>
+        [Display(Name = "意向驾校ID")]
         [Column("WantDriverShopID", TypeName = "char"), MaxLength(32)]
         public string WantDriverShopID { get; set; }
 
@@ -138,11 +150,13 @@ namespace DOL.Model
         /// 意向驾校名称
         /// </summary>
         [NotMapped]
+        [Display(Name = "意向驾校名称")]
         public string WantDriverShopName { get; set; }
 
         /// <summary>
         /// 培训班别ID
         /// </summary>
+        [Display(Name = "培训班别ID")]
         [Required(ErrorMessage = "培训班别ID不能为空")]
         [Column("TrianID", TypeName = "char"), MaxLength(32)]
         public string TrianID { get; set; }
@@ -151,30 +165,35 @@ namespace DOL.Model
         /// 培训班别名称
         /// </summary>
         [NotMapped]
+        [Display(Name = "身份证号码")]
         public string TrianName { get; set; }
 
 
         /// <summary>
         /// 费用
         /// </summary>
+        [Display(Name = "费用")]
         public decimal Money { get; set; }
 
 
         /// <summary>
         /// 已交费用
         /// </summary>
+        [Display(Name = "已交费用")]
         public decimal HadPayMoney { get; set; } = 0;
 
         /// <summary>
         /// 是否缴清费用
         /// </summary>
+        [Display(Name = "是否缴清费用")]
         public YesOrNoCode MoneyIsFull { get; set; } = YesOrNoCode.No;
 
 
         /// <summary>
         /// 缴费方式ID
         /// </summary>
-        [Required(ErrorMessage = "培训班别ID不能为空")]
+        [Display(Name = "缴费方式ID")]
+        [Required(ErrorMessage = "缴费方式ID不能为空")]
         [Column("PayMethodID", TypeName = "char"), MaxLength(32)]
         public string PayMethodID { get; set; }
 
@@ -182,11 +201,13 @@ namespace DOL.Model
         /// 缴费方式名称
         /// </summary>
         [NotMapped]
+        [Display(Name = "缴费方式名称")]
         public string PayMethodName { get; set; }
 
         /// <summary>
         /// 备注
         /// </summary>
+        [Display(Name = "备注")]
         [MaxLength(128)]
         [Column("Remark", TypeName = "varchar")]
         public string Remark { get; set; }
@@ -194,6 +215,7 @@ namespace DOL.Model
         /// <summary>
         /// 报名地点（省份）
         /// </summary>
+        [Display(Name = "报名地点（省份）")]
         [MaxLength(6)]
         [Column("EnteredProvinceCode", TypeName = "varchar")]
         public string EnteredProvinceCode { get; set; }
@@ -201,12 +223,14 @@ namespace DOL.Model
         /// 报名地点（省份）
         /// </summary>
         [NotMapped]
+        [Display(Name = "报名地点（省份）")]
         public string EnteredProvinceName { get; set; }
 
 
         /// <summary>
         /// 报名地点（市）
         /// </summary>
+        [Display(Name = "报名地点（市）")]
         [MaxLength(6)]
         [Column("EnteredCityCode", TypeName = "varchar")]
         public string EnteredCityCode { get; set; }
@@ -214,12 +238,14 @@ namespace DOL.Model
         /// <summary>
         /// 报名时间
         /// </summary>
+        [Display(Name = "报名时间")]
         public DateTime EnteredDate { get; set; }
 
         /// <summary>
         /// 报名地点（市）
         /// </summary>
         [NotMapped]
+        [Display(Name = "报名地点（市）")]
         public string EnteredCityName { get; set; }
 
 
@@ -227,6 +253,7 @@ namespace DOL.Model
         /// <summary>
         /// 制卡驾校ID
         /// </summary>
+        [Display(Name = "制卡驾校ID")]
         [Column("MakeDriverShopID", TypeName = "char"), MaxLength(32)]
         public string MakeDriverShopID { get; set; }
 
@@ -234,16 +261,19 @@ namespace DOL.Model
         /// 制卡驾校名称
         /// </summary>
         [NotMapped]
+        [Display(Name = "制卡驾校名称")]
         public string MakeDriverShopName { get; set; }
 
         /// <summary>
         /// 制卡日期
         /// </summary>
+        [Display(Name = "制卡日期")]
         public Nullable<DateTime> MakeCardDate { get; set; }
 
         /// <summary>
         /// 制卡城市编码
         /// </summary>
+        [Display(Name = "制卡城市编码")]
         [MaxLength(6)]
         [Column("MakeCardCityCode", TypeName = "varchar")]
         public string MakeCardCityCode { get; set; }
@@ -252,28 +282,17 @@ namespace DOL.Model
         /// 制卡地点名称
         /// </summary>
         [NotMapped]
+        [Display(Name = "制卡地点名称")]
         public string MakeCardCityName { get; set; }
 
         /// <summary>
         /// 制卡备注
         /// </summary>
+        [Display(Name = "制卡备注")]
         [MaxLength(128)]
         [Column("MakeCardRemark", TypeName = "varchar")]
         public string MakeCardRemark { get; set; }
 
-
-        /// <summary>
-        /// 是否增驾
-        /// </summary>
-
-        public YesOrNoCode IsAddCertificate { get; set; }
-
-        /// <summary>
-        /// 原驾车型
-        /// </summary>
-        [MaxLength(32)]
-        [Column("OldCertificate", TypeName = "varchar")]
-        public string OldCertificate { get; set; }
         #endregion
 
         #region 科目情况
@@ -283,33 +302,39 @@ namespace DOL.Model
         /// <summary>
         /// 科目一时间
         /// </summary>
-        public Nullable<DateTime> ThemeOneDate { get; set; }     
+        [Display(Name = "科目一时间")]
+        public Nullable<DateTime> ThemeOneDate { get; set; }
 
         /// <summary>
         /// 科目一是否通过
         /// </summary>
+        [Display(Name = "科目一是否通过")]
         public YesOrNoCode ThemeOnePass { get; set; }
 
 
         /// <summary>
         /// 科目二时间
         /// </summary>
+        [Display(Name = "科目二时间")]
         public Nullable<DateTime> ThemeTwoDate { get; set; }
 
 
         /// <summary>
         /// 科目二是否通过
         /// </summary>
+        [Display(Name = "科目二是否通过")]
         public YesOrNoCode ThemeTwoPass { get; set; }
 
         /// <summary>
         /// 科目二学时状态
         /// </summary>
+        [Display(Name = "科目二学时状态")]
         public ThemeTimeCode ThemeTwoTimeCode { get; set; }
 
         /// <summary>
         /// 科目二教练
         /// </summary>
+        [Display(Name = "科目二教练")]
         [Column("ThemeTwoCoachID", TypeName = "char"), MaxLength(32)]
         public string ThemeTwoCoachID { get; set; }
 
@@ -317,33 +342,39 @@ namespace DOL.Model
         ///  科目二教练名称
         /// </summary>
         [NotMapped]
+        [Display(Name = "科目二教练名称")]
         public string ThemeTwoCoachName { get; set; }
 
 
         /// <summary>
         /// 科目三时间
         /// </summary>
+        [Display(Name = "科目三时间")]
         public Nullable<DateTime> ThemeThreeDate { get; set; }
 
         /// <summary>
         /// 科目三是否通过
         /// </summary>
+        [Display(Name = "科目三是否通过")]
         public YesOrNoCode ThemeThreePass { get; set; }
 
         /// <summary>
         /// 科目三学时状态
         /// </summary>
+        [Display(Name = "科目三学时状态")]
         public ThemeTimeCode ThemeThreeTimeCode { get; set; }
 
         /// <summary>
         /// 科目三教练
         /// </summary>
+        [Display(Name = "科目三教练")]
         [Column("ThemeThreeCoachID", TypeName = "char"), MaxLength(32)]
         public string ThemeThreeCoachID { get; set; }
 
         /// <summary>
         ///  科目三教练名称
         /// </summary>
+        [Display(Name = "科目三教练名称")]
         [NotMapped]
         public string ThemeThreeCoachName { get; set; }
 
@@ -351,11 +382,13 @@ namespace DOL.Model
         /// <summary>
         /// 科目四时间
         /// </summary>
+        [Display(Name = "科目四时间")]
         public Nullable<DateTime> ThemeFourDate { get; set; }
 
         /// <summary>
         /// 科目四是否通过
         /// </summary>
+        [Display(Name = "科目四是否通过")]
         public YesOrNoCode ThemeFourPass { get; set; }
 
 
@@ -364,17 +397,20 @@ namespace DOL.Model
         /// <summary>
         /// 学员状态
         /// </summary>
+        [Display(Name = "学员状态")]
         public StudentCode State { get; set; }
 
         /// <summary>
         /// 退学时间
         /// </summary>
+        [Display(Name = "退学时间")]
 
         public Nullable<DateTime> DropOutDate { get; set; }
 
         /// <summary>
-        /// 退款记录
+        /// 退款记录id
         /// </summary>
+        [Display(Name = "退款记录id")]
         [Column("DropOutPayOrderId", TypeName = "char"), MaxLength(32)]
         public string DropOutPayOrderId { get; set; }
 
@@ -382,12 +418,14 @@ namespace DOL.Model
         /// <summary>
         /// 当前科目
         /// </summary>
+        [Display(Name = "当前科目")]
         public ThemeCode NowTheme { get; set; }
 
 
         /// <summary>
         /// 缴费记录
         /// </summary>
+        [Display(Name = "缴费记录")]
         [NotMapped]
         public List<PayOrder> PayOrderList { get; set; }
     }

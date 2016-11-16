@@ -38,7 +38,14 @@ namespace DOL.Model
 
 
         /// <summary>
-        /// 修改后数据
+        /// 修改详情
+        /// </summary>
+        [Column("UpdateInfo", TypeName = "varchar"), MaxLength( 512)]
+        public string UpdateInfo { get; set; }
+
+
+        /// <summary>
+        /// 备注
         /// </summary>
         [Column("Remark", TypeName = "varchar"), MaxLength(256)]
         public string Remark { get; set; }

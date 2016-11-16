@@ -514,7 +514,6 @@ namespace DOL.Service
             //搜索时间内的科目薪资
             var themeSalaryList = Cache_Get_ThemeSalaryList().Where(x => !x.EndTime.HasValue || (x.EndTime.HasValue && x.EndTime.Value > time) || (x.EndTime.HasValue && x.EndTime.Value < endTime)).ToList();
 
-            var returnModel = new List<string, Dictionary<string,>>
 
 
             //科目二薪资集合

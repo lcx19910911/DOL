@@ -163,7 +163,7 @@ namespace DOL.Service
                 }
 
                 entities.Exam.Add(model);
-                Add_Log(LogCode.AddExam, student.ID, string.Format("{0}在{1}新增了学员{2}的考试{3}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, model.ID), "", "");
+                Add_Log(LogCode.AddExam, student.ID, string.Format("{0}在{1}新增了学员{2}的考试{3}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, model.ID), "", "", "");
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_ExamList();
@@ -237,7 +237,7 @@ namespace DOL.Service
                                 student.NowTheme = ThemeCode.Four;
                             }
                         }
-                        Add_Log(LogCode.DeleteExam, student.ID, string.Format("{0}在{1}删除了学员{2}的考试（{3}）考试时间{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, x.ID, x.CreatedTime), "", "");
+                        Add_Log(LogCode.DeleteExam, student.ID, string.Format("{0}在{1}删除了学员{2}的考试（{3}）考试时间{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, x.ID, x.CreatedTime), "", "", "");
                         entities.Exam.Remove(x);
                         var index = list.FindIndex(y => y.ID.Equals(x.ID));
                         var studentIndex = studentList.FindIndex(y => y.ID.Equals(x.StudentID));

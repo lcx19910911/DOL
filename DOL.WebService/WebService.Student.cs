@@ -891,7 +891,7 @@ namespace DOL.Service
                 //    model.NowTheme = ThemeCode.Four;
                 //}
                 entities.Student.Add(model);
-                Add_Log(LogCode.AddStudent, model.ID, string.Format("{0}在{1}新增了学员{2}", Client.LoginUser.Name, DateTime.Now.ToString(), model.Name), "", "");
+                Add_Log(LogCode.AddStudent, model.ID, string.Format("{0}在{1}新增了学员{2}", Client.LoginUser.Name, DateTime.Now.ToString(), model.Name), "", "", "");
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_StudentList();
@@ -966,7 +966,7 @@ namespace DOL.Service
                 {
                     if (list.AsQueryable().Where(x => x.Name.Equals(model.IDCard) && !x.ID.Equals(model.ID)).Any())
                         return Result(false, ErrorCode.datadatabase_idcards__had);
-
+                    
                     //修改前
                     string beforeJson = oldEntity.ToJson();
 
@@ -1018,10 +1018,6 @@ namespace DOL.Service
                     oldEntity.ThemeFourDate = model.ThemeFourDate;
                     oldEntity.ThemeFourPass = model.ThemeFourPass;
 
-                    oldEntity.IsAddCertificate = model.IsAddCertificate;
-                    if (model.IsAddCertificate == YesOrNoCode.Yes)
-                        oldEntity.OldCertificate = model.OldCertificate;
-
                     oldEntity.ThemeTwoTimeCode = model.ThemeTwoTimeCode;
                     oldEntity.ThemeThreeTimeCode = model.ThemeThreeTimeCode;
 
@@ -1040,8 +1036,8 @@ namespace DOL.Service
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     string afterJSon = oldEntity.ToJson();
-
-                    Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name),beforeJson,afterJSon);
+                    string info=SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
+                    Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name),beforeJson,afterJSon, info);
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -1151,7 +1147,7 @@ namespace DOL.Service
                     else
                     {
                         x.Flag = x.Flag | (long)GlobalFlag.Removed;
-                        Add_Log(LogCode.DeleteStudent, x.ID, string.Format("{0}在{1}删除了学员{2}", Client.LoginUser.Name, DateTime.Now.ToString(), x.Name), "", "");
+                        Add_Log(LogCode.DeleteStudent, x.ID, string.Format("{0}在{1}删除了学员{2}", Client.LoginUser.Name, DateTime.Now.ToString(), x.Name), "", "", "");
                         var index = list.FindIndex(y => y.ID.Equals(x.ID));
                         if (index > -1)
                         {

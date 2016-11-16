@@ -86,6 +86,7 @@
     <Compile Include="Helper\ExcelHelper.cs" />
     <Compile Include="Helper\LogHelper.cs" />
     <Compile Include="Helper\NPOIHelper.cs" />
+    <Compile Include="Helper\SearchModifyHelper.cs" />
     <Compile Include="Helper\UploadHelper.cs" />
     <Compile Include="Model\LoginUser.cs" />
     <Compile Include="Model\PageList.cs" />
