@@ -129,6 +129,12 @@ namespace DOL.Model
         [Description("该学员未分配该考试科目教练员.")]
         exam_coache_not_exit = 84,
 
+        /// <summary>
+        /// 该学员正在退学中，不能新增考试记录
+        /// </summary>
+        [Description("该学员正在退学中，不能新增考试记录")]
+        student_want_drop = 85,
+
         #endregion
 
 

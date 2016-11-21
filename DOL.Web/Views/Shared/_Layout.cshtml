@@ -11,7 +11,7 @@
     <title>@ViewBag.Title</title>
     <link href="~/Styles/css/amazeui.css" rel="stylesheet" />
     @Styles.Render("~/Content/Admin")
-    @RenderSection("linkcss", required: false)   
+    @RenderSection("linkcss", required: false)
     @Scripts.Render("~/Scripts/Admin")
     <script>
         function changePassword() {
@@ -124,7 +124,7 @@
                     }
                     $(json).each(function () {
                         if (isIndex) {
-                           $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                            $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
                         }
                         else {
                             if (value != null && value != "" && value == this.Value) {
@@ -163,9 +163,9 @@
 
             }
         }
-        //加载学员信息的下拉框集合 
-        function LoadItemList(isIndex, dataitem,callBack) {
-            $.Nuoya.action("/Student/GetSelectItemList", {isAll:dataitem!=null}, function (json) {
+        //加载学员信息的下拉框集合
+        function LoadItemList(isIndex, dataitem, callBack) {
+            $.Nuoya.action("/Student/GetSelectItemList", { isAll: dataitem != null }, function (json) {
                 $(json.ReferenceList).each(function () {
                     if (isIndex) {
                         $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
@@ -318,7 +318,7 @@
                     if (tabe == 1) {
                         if (setVaule == "")
                             $("#form select[name='CityCode']").find('option').eq(0).attr('selected', true);
-                            ShowArea(false, $("#form select[name='CityCode']"))
+                        ShowArea(false, $("#form select[name='CityCode']"))
                     }
                     else {
 
@@ -603,8 +603,7 @@
             }
 
 
-            if ($('#form [name="MakeDriverShopID"]').val() != "" && $('#form [name="MakeDriverShopID"]').val() != "-1" && $('#form [name="MakeCardDate"]').val() == "")
-            {
+            if ($('#form [name="MakeDriverShopID"]').val() != "" && $('#form [name="MakeDriverShopID"]').val() != "-1" && $('#form [name="MakeCardDate"]').val() == "") {
                 $.Nuoya.alert("制卡驾校存在时必须选择制卡时间");
                 return false;
             }
@@ -615,13 +614,12 @@
             return true;
         }
 
-        function CreateSexSelect(obj,selectIndex)
-        {
+        function CreateSexSelect(obj, selectIndex) {
             $(obj).empty();
             $(obj).append("<option value='-1'>未知</option>");
             $(obj).append("<option value='1'>男</option>");
             $(obj).append("<option value='2'>女</option>");
-            $(obj).find('option').eq(selectIndex==0?2:1).attr('selected', true);
+            $(obj).find('option').eq(selectIndex == 0 ? 2 : 1).attr('selected', true);
         }
 
         //返回上一页
@@ -675,15 +673,14 @@
         }
 
 
-        function ShowHistory(obj,isAtter)
-        {
+        function ShowHistory(obj, isAtter) {
             var name = $(obj).attr("data-name");
             var id = $("[name='" + name + "']").val();
-            window.open("/Student/History?Id=" + id + "&isAfter="+isAtter);
+            window.open("/Student/History?Id=" + id + "&isAfter=" + isAtter);
         }
 
         function ShowCityName(item) {
-            if (item.CityName.length > 6) {
+            if (item.CityName != "" && item.CityName != null && item.CityName.length > 6) {
                 return item.CityName.substr(0, 6) + "..";
             }
             else {
@@ -691,6 +688,33 @@
             }
         }
 
+        function ShowEnteredCityName(item) {
+            if (item.EnteredCityName != "" && item.EnteredCityName != null && item.EnteredCityName.length > 6) {
+                return item.EnteredCityName.substr(0, 6) + "..";
+            }
+            else {
+                return item.EnteredCityName;
+            }
+        }
+
+        function ShowMakeCardCityName(item) {
+            if (item.MakeCardCityName != "" && item.MakeCardCityName != null && item.MakeCardCityName.length > 6) {
+                return item.MakeCardCityName.substr(0, 6) + "..";
+            }
+            else {
+                return item.MakeCardCityName;
+            }
+        }
+
+
+        function ShowProvinceName(item) {
+            if (item.ProvinceName != "" && item.ProvinceName != null && item.ProvinceName.length > 6) {
+                return item.ProvinceName.substr(0, 6) + "..";
+            }
+            else {
+                return item.ProvinceName;
+            }
+        }
 
 
         function ShowLogCode(item) {
@@ -726,7 +750,7 @@
                 case 10:
                     return "删除退学申请记录";
                     break;
-                    
+
             }
 
         }
@@ -757,7 +781,7 @@
                 <img src="" style="width:100%;" />
             </div>
         </div>
-       
+
         <div id="loadingDiv" style="opacity:0.7;background-color:black;width:100%;height:100%;z-index:9000; display:none; position:absolute;">
             <div style="width:500px; margin:0 auto; z-index:9001;margin-top:20%">
                 <img src="~/Images/loading.jpg" />
