@@ -130,10 +130,10 @@ namespace DOL.Model
         exam_coache_not_exit = 84,
 
         /// <summary>
-        /// 制卡时间必须在报名时间之后
+        /// 该学员正在退学中，不能新增考试记录
         /// </summary>
-        [Description("制卡时间必须在报名时间之后.")]
-        make_card_time_error = 85,
+        [Description("该学员正在退学中，不能新增考试记录")]
+        student_want_drop = 85,
 
         #endregion
 

@@ -105,6 +105,10 @@ namespace DOL.Service
                     return Result(false, ErrorCode.exam_timer_error);
                 var studentList = Cache_Get_StudentList();
                 var student = entities.Student.Find(model.StudentID);
+                if (student.State == StudentCode.WantDropOut)
+                {
+                    return Result(false, ErrorCode.student_want_drop);
+                }
                 if (student == null)
                     return Result(false, ErrorCode.sys_param_format_error);
 
@@ -198,10 +202,15 @@ namespace DOL.Service
             {
                 var list = Cache_Get_ExamList();
                 var studentList = Cache_Get_StudentList();
+                ErrorCode msg = ErrorCode.sys_success;
                 //找到实体
                 entities.Exam.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     var student = entities.Student.Find(x.StudentID);
+                    if (student.State == StudentCode.WantDropOut)
+                    {
+                        msg=ErrorCode.student_want_drop;
+                    }
                     if (student != null)
                     {
                         if (x.Result == ExamCode.Pass)
@@ -248,6 +257,10 @@ namespace DOL.Service
                         }
                     }
                 });
+                if (msg != ErrorCode.sys_success)
+                {
+                    return Result(false, msg);
+                }
                 if (entities.SaveChanges() > 0)
                 {
                     return Result(true);
