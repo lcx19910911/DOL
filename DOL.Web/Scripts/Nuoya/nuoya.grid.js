@@ -2,6 +2,7 @@
     $.Nuoya.grid = function (options) {
         var defaults = {
             tableId: null,//表格id
+            isHide: false,//表格id
             ajaxUrl: null,//数据请求地址
             search: null,//{ domainId: "搜索域", subId: "提交按钮" } 
             params: null,//每次请求必带的参数
@@ -12,6 +13,8 @@
             rowCallback: null,//表格行绘制的回调函数                
             drawCallback: null,//绘制完成回调
         }
+
+        var colspanTab = 0;//隐藏的字段td长度
         //权限数据
         var userOperateUrlArray = new Array();
         var options = $.extend(true, defaults, options);
@@ -44,10 +47,9 @@
             var eventList = $("<div class='eventList am-btn-group am-btn-group-xs'></div>");
             if ($.isArray(options.events)) {
                 $.each(options.events, function (index, event) {
-                    var eventSetting = { name: "", icon: "", className: "", click: null, formula: null, url:""};
+                    var eventSetting = { name: "", icon: "", className: "", click: null, formula: null, url: "" };
                     event = $.extend(true, eventSetting, event);
-                    if (event.url == "" || userOperateUrlArray == null||(userOperateUrlArray != null && userOperateUrlArray.indexOf(event.url) > -1))
-                    {
+                    if (event.url == "" || userOperateUrlArray == null || (userOperateUrlArray != null && userOperateUrlArray.indexOf(event.url) > -1)) {
                         var operate = $('<button class="am-btn am-btn-default am-btn-xs ' + event.className + '"><span class="am-' + event.icon + '"></span> ' + event.name + '</button>');
                         operate.bind("click", function () {
                             $.Nuoya.callFunction(event.click, item);
@@ -65,11 +67,10 @@
                 });
             }
             return eventList;
-        
+
         }
 
-        var isHaveOperate=function(url)
-        {
+        var isHaveOperate = function (url) {
 
         }
 
@@ -130,12 +131,19 @@
         //创建表格内容
         var _createContent = function (data) {
             tableObj.find("tr:gt(0)").remove();
-            if (data != null && data.length > 0 && $.isArray(data))
-            {
+            if (data != null && data.length > 0 && $.isArray(data)) {
                 $.each(data, function (index, item) {
                     var tr = $("<tr></tr>");
+                    var isHaseHide = false;
+                    var hideTr = $("<tr data-show='0' style='display:none;'><td></td><td></td></tr>");
+                    var hideTrTable = $("<table class=\"am-table am-table-compact am-table-hover table-main\"></table>");
+                    var hideTrThead = $("<thead><tr></tr></thead>");
+                    hideTrThead.find("tr").append("<th></th><th></th>");
+                    var hideTrTbody = $("<tbody><tr></tr></tbody>");
+                    hideTrTbody.find("tr").append("<td></td><td></td>");
                     for (var i = 0; i < columns.length; i++) {
-                        var td = $("<td></td>");
+                        var td = $("<td ></td>");
+
                         var column = columns[i];
                         //获取实值
                         var columnValue = _evalColumnValue(column.dataname, item);
@@ -150,6 +158,24 @@
                         } else if (column.type == "eventlist") {
                             //创建操作项
                             td.append(_convertEvent(item));
+                        } else if (column.type == "more") {
+
+                            var more = $("<span class=\"am-icon-plus-square\">展示</span>");
+                            more.bind("click", function () {
+                                var obj = $(this).parents("tr").next();
+                                var isOpen = $(obj).attr("data-show");
+                                if (isOpen == "0") {
+                                    $(obj).show();
+                                    $(this).parents("tr").find("td:eq(1) span").removeClass("am-icon-plus-square").addClass("am-icon-minus").text("收起");
+                                    $(obj).attr("data-show", 1);
+                                }
+                                else {
+                                    $(obj).hide();
+                                    $(this).parents("tr").find("td:eq(1) span").removeClass("am-icon-minus").addClass("am-icon-plus-square").text("展开");
+                                    $(obj).attr("data-show", 0);
+                                }
+                            });
+                            td.html(more);
                         } else {
                             if (column.render != null) {
                                 td.append($.Nuoya.callFunction(eval(column.render), item));
@@ -157,10 +183,25 @@
                                 td.html(_convertValue(column, columnValue));
                             }
                         }
-                        tr.append(td);
+                        if (options.isHide && column.isHide == 1) {
+                            hideTrThead.find("tr").append("<th>" + column.trtext + "</th>");
+                            hideTrTbody.find("tr").append(td);
+                            isHaseHide = true;
+                        }
+                        else {
+                            tr.append(td);
+                        }
                         $.Nuoya.callFunction(options.rowCallback, item, tr);
                     }
                     tableObj.append(tr);
+                    if (isHaseHide) {
+                        hideTrTable.append(hideTrThead);
+                        hideTrTable.append(hideTrTbody);
+                        var hidTd = $("<td colspan=" + colspanTab + "></td>");
+                        hidTd.append(hideTrTable);
+                        hideTr.append(hidTd);
+                        tableObj.append(hideTr);
+                    }
                 });
             }
             else {
@@ -244,7 +285,7 @@
 
         //获取权限
         var getOperate = function () {
-           
+
         }
         var _dataload = function () {
 
@@ -315,6 +356,8 @@
             var td = $(this);
             var column = {
                 dataname: td.attr("dataname"),
+                trtext: td.text(),
+                isHide: td.attr("isHide"),
                 strLength: td.attr("strlength"), //字符长度                
                 type: td.attr("type"), //操作类型[checkbox,radio,eventlist]
                 dataType: td.attr("datatype"), //jsondate,默认string
@@ -322,6 +365,9 @@
                 render: td.attr("render"), //渲染
                 suffix: td.attr("suffix"), //后缀    
             };
+            if (column.isHide == "1") {
+                colspanTab++;
+            }
             columns.push(column);
             _convertHead(column, td);//头部进行处理
         });
@@ -364,7 +410,7 @@
                 reload: _reload,
                 getCheckIds: _getCheckIds,
                 getCheckItems: _getCheckItems,
-                getParams:_getParams,
+                getParams: _getParams,
                 del: _del,
                 batchAction: _batchAction
             };
