@@ -286,7 +286,7 @@ namespace DOL.Service
         public List<ZTreeNode> Get_MenuZTreeChildren(string parentId)
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().OrderByDescending(x => x.Sort).GroupBy(x=>x.ParentID).ToList();
+            var group = Cache_Get_MenuList().AsQueryable().Where(x => x.Flag == (long)GlobalFlag.Normal).AsNoTracking().OrderByDescending(x => x.Sort).GroupBy(x=>x.ParentID).ToList();
             return Get_MenuZTreeChildren(parentId, group);
         }
 
@@ -299,7 +299,7 @@ namespace DOL.Service
         public List<ZTreeNode> Get_MenuZTreeFlagChildren(string parentId)
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var group = Cache_Get_MenuList().AsQueryable().AsNoTracking().OrderByDescending(x => x.Sort).GroupBy(x => x.ParentID).ToList();
+            var group = Cache_Get_MenuList().AsQueryable().Where(x => x.Flag == (long)GlobalFlag.Normal).AsNoTracking().OrderByDescending(x => x.Sort).GroupBy(x => x.ParentID).ToList();
             return Get_MenuZTreeFlagChildren(parentId, group);
         }
 

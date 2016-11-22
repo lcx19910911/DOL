@@ -44,6 +44,7 @@
                 <th dataname="HadPayMoney">已缴</th>
                 <th dataname="WantDropMoney">退款金额</th>
                 <th dataname="WantDropDate" datatype="jsondate">申请日期</th>
+                <th render="ShowState">学员状态</th>
                 <th dataname="CreaterName">登记人</th>
                 <th dataname="ConfirmUserName">办理人</th>
                 <th render="ShowConfirm">确认情况</th>
@@ -71,12 +72,16 @@
 
             $.Nuoya.action("/Student/GetPaySelectItemList", {}, function (json) {
                 $(json).each(function () {
-                    $("#form select[name='PayTypeID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                    if (dataitem != null) {
+                        if (this.Value == dataitem.PayTypeID) {
+                            $("#form select[name='PayTypeID']").append("<option  value='" + this.Value + "' selected>" + this.Text + "</option>");
+                        }
+                    }
                 });
             });
 
             //添加表单验证
-            $.Nuoya.form("payForm").validate({
+            $.Nuoya.form("form").validate({
                 rules: {
 
                     PayTime: {
@@ -240,6 +245,10 @@
                                     if (parseFloat(item.HadPayMoney) < parseFloat($("#form [name='PayMoney']").val()))
                                     {
                                         $.Nuoya.alert("退款金额不能超过已缴金额" + item.HadPayMoney + "元");
+                                        return false;
+                                    }
+                                    if (document.forms[0].PayTime.value == "") {
+                                        $.Nuoya.alert("请选择退款时间");
                                         return false;
                                     }
                                     $.Nuoya.confirm("确认退款？", function () {

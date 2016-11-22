@@ -129,6 +129,15 @@
                         required: true,
                         maxlength: 64
                     },
+                    ProvinceCode: {
+                        required: true
+                    },
+                    CityCode: {
+                        required: true
+                    },
+                    DistrictCode: {
+                        required: true
+                    },
                     Sort: {
                         digits: true,
                         max: 2147483647,
@@ -139,6 +148,15 @@
                     Name: {
                         required: "不允许为空",
                         maxlength: "最多{0}个字符"
+                    },
+                    ProvinceCode: {
+                        required: "省份不允许为空",
+                    },
+                    CityCode: {
+                        required: "市不允许为空",
+                    },
+                    DistrictCode: {
+                        required: "县区不允许为空",
                     },
                     Sort: {
                         digits: "请输入数字",
@@ -163,6 +181,10 @@
                 buttons: [{
                     label: "保存",
                     callback: function (e) {
+                        if (document.forms[0].CityCode.value == "0") {
+                            $.Nuoya.alert("请选择市");
+                            return false;
+                        }
                         $.Nuoya.form("form").ajaxSubmit({
                             ajaxUrl: "/DriverShop/Add",
                             callback: function (data) {
@@ -213,7 +235,10 @@
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
-
+                                    if (document.forms[0].CityCode.value == "0") {
+                                        $.Nuoya.alert("请选择市");
+                                        return false;
+                                    }
                                     $.Nuoya.form("form").ajaxSubmit({
                                         ajaxUrl: "/DriverShop/Update",
                                         params: {

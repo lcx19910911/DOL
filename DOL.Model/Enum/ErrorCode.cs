@@ -129,6 +129,12 @@ namespace DOL.Model
         [Description("该学员未分配该考试科目教练员.")]
         exam_coache_not_exit = 84,
 
+        /// <summary>
+        /// 制卡时间必须在报名时间之后
+        /// </summary>
+        [Description("制卡时间必须在报名时间之后.")]
+        make_card_time_error = 85,
+
         #endregion
 
 

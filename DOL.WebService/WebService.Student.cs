@@ -62,7 +62,7 @@ namespace DOL.Service
             StudentCode state,
             DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
             DateTime? makedTimeStart, DateTime? makeTimeEnd,
-            bool isDelete=false
+            bool isDelete = false
             )
         {
             using (DbRepository entities = new DbRepository())
@@ -88,11 +88,11 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.Mobile.Contains(mobile));
                 }
-                if ((int)state != -1&&!isDelete)
+                if ((int)state != -1 && !isDelete)
                 {
                     query = query.Where(x => x.State.Equals(state));
                 }
-                if (referenceId.IsNotNullOrEmpty()&& referenceId!="-1")
+                if (referenceId.IsNotNullOrEmpty() && referenceId != "-1")
                 {
                     query = query.Where(x => x.ReferenceID.Equals(referenceId));
                 }
@@ -283,10 +283,10 @@ namespace DOL.Service
                     model.HadPayMoney = x.HadPayMoney.ToString();
                     model.Remark = x.Remark;
                     model.EnteredDate = x.EnteredDate.ToString("yyyy-MM-dd");
-                    model.MakeCardDate = x.MakeCardDate.HasValue? x.MakeCardDate.Value.ToString("yyyy-MM-dd"):"";
+                    model.MakeCardDate = x.MakeCardDate.HasValue ? x.MakeCardDate.Value.ToString("yyyy-MM-dd") : "";
                     model.MakeCardRemark = x.MakeCardRemark;
 
-                    model.ThemeOneDate = x.ThemeOneDate.HasValue ? x.ThemeOneDate.Value.ToString("yyyy-MM-dd") : "" ;
+                    model.ThemeOneDate = x.ThemeOneDate.HasValue ? x.ThemeOneDate.Value.ToString("yyyy-MM-dd") : "";
                     model.ThemeOnePass = EnumHelper.GetEnumDescription(x.ThemeOnePass);
 
 
@@ -357,7 +357,7 @@ namespace DOL.Service
                     returnList.Add(model);
                 });
                 return returnList;
-               
+
             }
         }
 
@@ -432,8 +432,8 @@ namespace DOL.Service
                                 VoucherNO = x.VoucherNO,
                                 ConfirmDate = DateTime.Now,
                                 PayMoney = model.HadPayMoney,
-                                PayTime=DateTime.Now
-                                
+                                PayTime = DateTime.Now
+
                             };
                             //培训方式
                             if (!string.IsNullOrEmpty(x.PayOrderTypeName))
@@ -459,8 +459,8 @@ namespace DOL.Service
                         }
                         model.MoneyIsFull = (YesOrNoCode)EnumHelper.GetEnumKey(typeof(YesOrNoCode), x.MoneyIsFull);
                         model.Remark = x.Remark;
-                        if(x.EnteredDate.IsNotNullOrEmpty())
-                            model.EnteredDate =  x.EnteredDate.GetDateTime();
+                        if (x.EnteredDate.IsNotNullOrEmpty())
+                            model.EnteredDate = x.EnteredDate.GetDateTime();
                         if (x.MakeCardDate.IsNotNullOrEmpty())
                             model.MakeCardDate = x.MakeCardDate.GetDateTime();
                         model.MakeCardRemark = x.MakeCardRemark;
@@ -492,7 +492,7 @@ namespace DOL.Service
                         model.ProvinceCode = x.IDCard.Substring(0, 2) + "0000";
                         model.CityCode = x.IDCard.Substring(0, 4) + "00";
                         model.GenderCode = (GenderCode)EnumHelper.GetEnumKey(typeof(GenderCode), x.GenderCode);
-                        
+
                         model.MakeCardRemark = x.MakeCardRemark;
                         if (!string.IsNullOrEmpty(x.MakeDriverShopName))
                         {
@@ -660,7 +660,7 @@ namespace DOL.Service
 
                 if (msg.IsNotNullOrEmpty())
                 {
-                    return Result(false, ErrorCode.sys_fail,msg);
+                    return Result(false, ErrorCode.sys_fail, msg);
                 }
                 else
                 {
@@ -721,7 +721,7 @@ namespace DOL.Service
 
                 if (trianID.IsNotNullOrEmpty() && trianID != "-1")
                 {
-                    query = query.Where(x =>!string.IsNullOrEmpty(x.TrianID)&&x.TrianID.Equals(trianID));
+                    query = query.Where(x => !string.IsNullOrEmpty(x.TrianID) && x.TrianID.Equals(trianID));
                 }
                 if (themeTwoCoachID.IsNotNullOrEmpty() && themeTwoCoachID != "-1")
                 {
@@ -740,7 +740,7 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.ThemeOnePass.Equals(YesOrNoCode.Yes));
                 }
-                else if(themeOnePass.Equals(YesOrNoCode.No))
+                else if (themeOnePass.Equals(YesOrNoCode.No))
                 {
                     query = query.Where(x => x.ThemeOnePass.Equals(YesOrNoCode.No));
                 }
@@ -814,9 +814,9 @@ namespace DOL.Service
                 }
 
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x=>x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
-                var coachDic = Cache_Get_CoachList_Dic(); 
+                var coachDic = Cache_Get_CoachList_Dic();
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
                 var userDic = Cache_Get_UserDic();
                 list.ForEach(x =>
@@ -844,7 +844,7 @@ namespace DOL.Service
         }
 
 
-      
+
 
 
         /// <summary>
@@ -854,6 +854,10 @@ namespace DOL.Service
         /// <returns></returns>
         public WebResult<bool> Add_Student(Student model)
         {
+            if (model.MakeCardDate.HasValue && model.MakeCardDate.Value < model.EnteredDate)
+            {
+                return Result(false, ErrorCode.make_card_time_error);
+            }
             using (DbRepository entities = new DbRepository())
             {
                 if (Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => x.IDCard.Equals(model.IDCard)).Any())
@@ -910,28 +914,24 @@ namespace DOL.Service
         /// 获取搜索集合
         /// </summary>
         /// <returns></returns>
-        public WebResult<StudentIndexModel> Get_SelectItemList(bool isAll)
+        public WebResult<StudentIndexModel> Get_SelectItemList(string dsid, bool isAll)
         {
             var referenceList = Cache_Get_ReferenceList();
-            if(!isAll)
+            if (!isAll)
             {
                 referenceList = referenceList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
             }
             var driverShopList = Cache_Get_DriverShopList().ToList();
-            if (!isAll)
-            {
-                driverShopList = driverShopList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
-            }
+            driverShopList = driverShopList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
             var enteredPointList = Cache_Get_EnteredPointList().Where(x => Client.LoginUser.MenuFlag != -1 ? (Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
-            if (!isAll)
-            {
-                enteredPointList = enteredPointList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
-            }
+
+            enteredPointList = enteredPointList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
             var coachList = Cache_Get_CoachList().ToList();
-             if (!isAll)
-            {
+
+            if (dsid.IsNotNullOrEmpty())
+                coachList = coachList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.DriverShopID.Equals(dsid)).ToList();
+            else
                 coachList = coachList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
-            }
             return Result(new StudentIndexModel()
             {
                 ReferenceList = referenceList,
@@ -957,6 +957,10 @@ namespace DOL.Service
                  || !model.Name.IsNotNullOrEmpty()
                 )
                 return Result(false, ErrorCode.sys_param_format_error);
+            if (model.MakeCardDate.HasValue && model.MakeCardDate.Value < model.EnteredDate)
+            {
+                return Result(false, ErrorCode.make_card_time_error);
+            }
             using (DbRepository entities = new DbRepository())
             {
 
@@ -966,7 +970,7 @@ namespace DOL.Service
                 {
                     if (list.AsQueryable().Where(x => x.Name.Equals(model.IDCard) && !x.ID.Equals(model.ID)).Any())
                         return Result(false, ErrorCode.datadatabase_idcards__had);
-                    
+
                     //修改前
                     string beforeJson = oldEntity.ToJson();
 
@@ -978,7 +982,7 @@ namespace DOL.Service
                             oldEntity.MakeCardCityCode = Cache_Get_DriverShopList_Dic()[model.MakeDriverShopID].CityCode;
                         }
                     }
-                    if ((!oldEntity.MakeCardDate.HasValue||string.IsNullOrEmpty(model.MakeDriverShopID)) && !string.IsNullOrEmpty(model.MakeDriverShopID)&&model.MakeCardDate.HasValue)
+                    if ((!oldEntity.MakeCardDate.HasValue || string.IsNullOrEmpty(model.MakeDriverShopID)) && !string.IsNullOrEmpty(model.MakeDriverShopID) && model.MakeCardDate.HasValue)
                     {
                         oldEntity.State = StudentCode.ThemeOne;
                         oldEntity.NowTheme = ThemeCode.One;
@@ -1003,7 +1007,7 @@ namespace DOL.Service
                     oldEntity.MakeDriverShopID = model.MakeDriverShopID;
                     oldEntity.MakeCardRemark = model.MakeCardRemark;
                     oldEntity.CertificateID = model.CertificateID;
-                    
+
                     oldEntity.ThemeOneDate = model.ThemeOneDate;
                     oldEntity.ThemeTwoPass = model.ThemeOnePass;
 
@@ -1036,8 +1040,8 @@ namespace DOL.Service
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     string afterJSon = oldEntity.ToJson();
-                    string info=SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
-                    Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name),beforeJson,afterJSon, info);
+                    string info = SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
+                    Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name), beforeJson, afterJSon, info);
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -1120,7 +1124,7 @@ namespace DOL.Service
         //    hs["DropOutDate"] = "退学时间";
 
         //    hs.GetValue<string,string>()
-            
+
         //}
         /// <summary>
         /// 删除分类
@@ -1136,13 +1140,13 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 var list = Cache_Get_StudentList();
-                ErrorCode code=ErrorCode.sys_success;
+                ErrorCode code = ErrorCode.sys_success;
                 //找到实体
                 entities.Student.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     if (Cache_Get_PayOrderList().Where(y => y.IsConfirm == YesOrNoCode.No && y.StudentID.Equals(x.ID)).Any())
                     {
-                        code = ErrorCode.cant_delete_unconfirm_payorder__had;                     
+                        code = ErrorCode.cant_delete_unconfirm_payorder__had;
                     }
                     else
                     {
@@ -1180,7 +1184,7 @@ namespace DOL.Service
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public WebResult<bool> WantDrop_Student(PayOrder model,string remark)
+        public WebResult<bool> WantDrop_Student(PayOrder model, string remark)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -1195,10 +1199,10 @@ namespace DOL.Service
                 }
 
 
-                    //找到实体
-                    var student =entities.Student.Find(model.StudentID);
+                //找到实体
+                var student = entities.Student.Find(model.StudentID);
 
-                if(student==null)
+                if (student == null)
                     return Result(false, ErrorCode.sys_param_format_error);
 
                 student.State = StudentCode.WantDropOut;
@@ -1211,8 +1215,8 @@ namespace DOL.Service
                     CreaterID = Client.LoginUser.ID,
                     IsConfirm = YesOrNoCode.No,
                     ID = Guid.NewGuid().ToString("N"),
-                    PayTypeID= model.PayTypeID,
-                    AccountNO= model.AccountNO,
+                    PayTypeID = model.PayTypeID,
+                    AccountNO = model.AccountNO,
                     WantDropMoney = model.WantDropMoney,
                     CreatedTime = DateTime.Now,
                     UpdatedTime = DateTime.Now,

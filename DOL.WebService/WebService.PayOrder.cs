@@ -188,6 +188,7 @@ namespace DOL.Service
                             x.Name = student.Name;
                             x.IDCard = student.IDCard;
                             x.Remark = student.Remark;
+                            x.State = student.State;
                             //推荐人
                             if (!string.IsNullOrEmpty(student.ReferenceID) && referenceDic.ContainsKey(student.ReferenceID))
                                 x.ReferenceName = referenceDic[student.ReferenceID]?.Name;
@@ -224,7 +225,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (Cache_Get_PayOrderList().Where(x => x.StudentID.Equals(model.StudentID) && x.IsConfirm == YesOrNoCode.No).Any())
+                if (Cache_Get_PayOrderList().Where(x => x.StudentID.Equals(model.StudentID) && x.IsConfirm == YesOrNoCode.No&&x.Flag==0).Any())
                 {
                     return Result(false, ErrorCode.unconfirm_payorder__had);
                 }

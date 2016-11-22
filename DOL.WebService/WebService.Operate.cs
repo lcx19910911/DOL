@@ -278,7 +278,7 @@ namespace DOL.Service
         public List<ZTreeNode> Get_OperateZTreeFlagChildren()
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            Cache_Get_OperateList().AsQueryable().AsNoTracking().OrderByDescending(x => x.Sort).ToList().ForEach(x=> {
+            Cache_Get_OperateList().AsQueryable().Where(x => x.Flag == (long)GlobalFlag.Normal).AsNoTracking().OrderByDescending(x => x.Sort).ToList().ForEach(x=> {
                 ztreeNodes.Add(new ZTreeNode()
                 {
                     name = x.Name,

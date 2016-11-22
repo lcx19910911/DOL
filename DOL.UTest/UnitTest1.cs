@@ -17,6 +17,8 @@ namespace DOL.UTest
         [TestMethod]
         public void TestMethod1()
         {
+            List<string> aa = new List<string>() { "1", "2", "3" };
+            var dd = aa.ToJson();
 
             Hashtable ht = new Hashtable();
             ht["s"] = "1";

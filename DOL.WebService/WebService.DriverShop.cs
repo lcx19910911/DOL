@@ -75,11 +75,11 @@ namespace DOL.Service
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 list.ForEach(x =>
                 {
-                    if (!string.IsNullOrEmpty(x.ProvinceCode))
+                    if (!string.IsNullOrEmpty(x.ProvinceCode) && !x.ProvinceCode.Equals("0"))
                         x.ProvinceName = GetValue(GroupCode.Area, x.ProvinceCode);
-                    if (!string.IsNullOrEmpty(x.CityCode))
+                    if (!string.IsNullOrEmpty(x.CityCode) && !x.CityCode.Equals("0"))
                         x.CityName = GetValue(GroupCode.Area, x.CityCode);
-                    if (!string.IsNullOrEmpty(x.DistrictCode))
+                    if (!string.IsNullOrEmpty(x.DistrictCode) && !x.DistrictCode.Equals("0"))
                         x.DistrictName = GetValue(GroupCode.Area, x.DistrictCode);
                 });
 
@@ -227,7 +227,7 @@ namespace DOL.Service
         {
             List<SelectItem> list = new List<SelectItem>();
 
-            Cache_Get_DriverShopList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+            Cache_Get_DriverShopList().Where(x=>x.Flag==(long)GlobalFlag.Normal).AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
             {
                 list.Add(new SelectItem()
                 {

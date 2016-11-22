@@ -201,7 +201,7 @@ namespace DOL.Model
         /// </summary>
         [NotMapped]
         public string Remark { get; set; }
-        
-
+        [NotMapped]
+        public StudentCode State { get; set; }
     }
 }

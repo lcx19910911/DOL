@@ -76,11 +76,11 @@ namespace DOL.Service
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 list.ForEach(x =>
                 {
-                    if (!string.IsNullOrEmpty(x.ProvinceCode))
+                    if (!string.IsNullOrEmpty(x.ProvinceCode)&&!x.ProvinceCode.Equals("0"))
                         x.ProvinceName = GetValue(GroupCode.Area, x.ProvinceCode);
-                    if (!string.IsNullOrEmpty(x.CityCode))
+                    if (!string.IsNullOrEmpty(x.CityCode) && !x.CityCode.Equals("0"))
                         x.CityName = GetValue(GroupCode.Area, x.CityCode);
-                    if (!string.IsNullOrEmpty(x.DistrictCode))
+                    if (!string.IsNullOrEmpty(x.DistrictCode) && !x.DistrictCode.Equals("0"))
                         x.DistrictName = GetValue(GroupCode.Area, x.DistrictCode);
                 });
 
@@ -290,7 +290,7 @@ namespace DOL.Service
         public List<ZTreeNode> Get_EnteredPointZTreeStr()
         {
             List<ZTreeNode> ztreeNodes = new List<ZTreeNode>();
-            var list = Cache_Get_EnteredPointList().ToList();
+            var list = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal).ToList();
             list.GroupBy(x => x.CityCode).ToList().ForEach(x =>
             {
                 ztreeNodes.Add(new ZTreeNode()

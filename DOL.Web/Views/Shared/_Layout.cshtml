@@ -73,6 +73,7 @@
 
         //根据市加载报名点
         function LoadEnteredPoint(isIndex, obj, setVaule) {
+            debugger
             if (isIndex) {
                 $("#searchDomain select[name='EnteredPointID']").empty();
             }
@@ -165,7 +166,7 @@
         }
         //加载学员信息的下拉框集合 
         function LoadItemList(isIndex, dataitem,callBack) {
-            $.Nuoya.action("/Student/GetSelectItemList", {isAll:dataitem!=null}, function (json) {
+            $.Nuoya.action("/Student/GetSelectItemList", {isAll:dataitem!=null,dsid:dataitem!=null?dataitem.MakeDriverShopID:null}, function (json) {
                 $(json.ReferenceList).each(function () {
                     if (isIndex) {
                         $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");

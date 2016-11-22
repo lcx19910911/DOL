@@ -239,9 +239,9 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult GetSelectItemList(bool isAll=false)
+        public ActionResult GetSelectItemList(string dsid,bool isAll=false)
         {
-            return JResult(WebService.Get_SelectItemList(isAll));
+            return JResult(WebService.Get_SelectItemList(dsid,isAll));
         }
 
 

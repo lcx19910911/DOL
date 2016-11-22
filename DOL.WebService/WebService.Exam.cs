@@ -99,9 +99,9 @@ namespace DOL.Service
                     return Result(false, ErrorCode.theme_had_pass);
                 if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.Count == model.Count && x.StudentID.Equals(model.StudentID)).Any())
                     return Result(false, ErrorCode.count_had_exit);
-                if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.Count <= model.Count && x.StudentID.Equals(model.StudentID)).Count() != model.Count - 1)
+                if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.Count <= model.Count && x.StudentID.Equals(model.StudentID)).Count() !=(model.Count - 1))
                     return Result(false, ErrorCode.exam_had_lose);
-                if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.CreatedTime > model.CreatedTime && x.StudentID.Equals(model.StudentID)).Count() != model.Count)
+                if (Cache_Get_ExamList().Where(x =>x.CreatedTime > model.CreatedTime).Any())
                     return Result(false, ErrorCode.exam_timer_error);
                 var studentList = Cache_Get_StudentList();
                 var student = entities.Student.Find(model.StudentID);
