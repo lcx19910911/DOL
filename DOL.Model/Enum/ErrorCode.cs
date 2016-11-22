@@ -95,6 +95,13 @@ namespace DOL.Model
         [Description("不能申请退学，存在未确认的缴费记录.")]
         cant_drop_unconfirm_payorder__had = 66,
 
+        /// <summary>
+        /// 制卡时间必须大于报名时间
+        /// </summary>
+        [Description("制卡时间必须大于报名时间.")]
+        make_card_time_error = 67,
+
+        
         #endregion
 
         #region 业务逻辑
