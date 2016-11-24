@@ -154,6 +154,7 @@ namespace DOL.Service
             {
                 if (string.IsNullOrEmpty(Client.LoginUser.CoachID))
                     return null;
+
                 var query = Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
                 query = query.Where(x =>(!string.IsNullOrEmpty(x.ThemeTwoCoachID)&&x.ThemeTwoCoachID.Equals(Client.LoginUser.CoachID)) || (!string.IsNullOrEmpty(x.ThemeThreeCoachID)&&x.ThemeThreeCoachID.Equals(Client.LoginUser.CoachID)));
                 if (name.IsNotNullOrEmpty())
@@ -232,7 +233,7 @@ namespace DOL.Service
                 var oldEntity = entities.Coach.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && !x.ID.Equals(model.ID)).Any())
+                    if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && !string.IsNullOrEmpty(x.CoachID)&&!x.CoachID.Equals(model.ID)).Any())
                         return Result(false, ErrorCode.datadatabase_mobile__had);
                     oldEntity.IDCard = model.IDCard;
                     oldEntity.Mobile = model.Mobile;
@@ -254,34 +255,37 @@ namespace DOL.Service
                     oldEntity.EntryDate = model.EntryDate;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     oldEntity.UpdatedTime = DateTime.Now;
-
                     var user = entities.User.Where(x => x.Mobile.Equals(model.Mobile)).FirstOrDefault();
                     if (user == null)
-                        return Result(false, ErrorCode.sys_param_format_error);
+                         return Result(false, ErrorCode.sys_param_format_error);
                     user.Name = model.Name;
                     user.Mobile = model.Mobile;
-                }
-                else
-                    return Result(false, ErrorCode.sys_param_format_error);
 
-                if (entities.SaveChanges() > 0)
-                {
-                    var list = Cache_Get_CoachList();
-                    var index = list.FindIndex(x => x.ID.Equals(model.ID));
-                    if (index > -1)
+                    if (entities.SaveChanges() > 0)
                     {
-                        list[index] = oldEntity;
+                        var list = Cache_Get_CoachList();
+                        var index = list.FindIndex(x => x.ID.Equals(model.ID));
+                        var userList = Cache_Get_UserList();
+                        var userIndex = userList.FindIndex(x => x.ID.Equals(user.ID));
+                        if (index > -1)
+                        {
+                            list[index] = oldEntity;
+                            userList[userIndex] = user;
+                        }
+                        else
+                        {
+                            list.Add(oldEntity);
+                        }
+                        return Result(true);
                     }
                     else
                     {
-                        list.Add(oldEntity);
+                        return Result(false, ErrorCode.sys_fail);
                     }
-                    return Result(true);
                 }
                 else
-                {
-                    return Result(false, ErrorCode.sys_fail);
-                }
+                    return Result(false, ErrorCode.sys_param_format_error);
+               
             }
 
         }

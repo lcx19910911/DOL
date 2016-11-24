@@ -134,6 +134,8 @@ namespace DOL.Service
                 var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
                 var userDic = Cache_Get_UserDic();
+                var studentIdList = list.Select(x => x.ID).ToList();
+                var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x=>x.Key);
                 list.ForEach(x =>
                 {
                     //报名地
@@ -170,6 +172,9 @@ namespace DOL.Service
                     //修改人
                     if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
                         x.UpdaterName = userDic[x.UpdaterID]?.Name;
+
+                    if (examDic.ContainsKey(x.ID))
+                        x.ExamCount = examDic[x.ID].Where(y=>y.Code==x.NowTheme).Count()+1;
                 });
 
                 return ResultPageList(list, pageIndex, pageSize, count);
@@ -869,18 +874,21 @@ namespace DOL.Service
                         return Result(false, ErrorCode.sys_param_format_error);
                     model.MakeCardCityCode = makecardShop.CityCode;
                 }
+                if (model.MakeDriverShopID == "-1")
+                    model.MakeDriverShopID = string.Empty;
                 if (!string.IsNullOrEmpty(model.MakeDriverShopID) && model.MakeCardDate.HasValue)
                 {
                     model.State = StudentCode.ThemeOne;
                     model.NowTheme = ThemeCode.One;
                 }
+                else
+                {
+                    model.State = StudentCode.DontMakeCard;
+                }
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
-                model.State = StudentCode.DontMakeCard;
                 model.UpdaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
-                if (model.MakeDriverShopID == "-1")
-                    model.MakeDriverShopID = string.Empty;
                 model.MoneyIsFull = YesOrNoCode.No;
                 //if (model.ThemeOnePass == YesOrNoCode.Yes)
                 //{
@@ -1144,7 +1152,7 @@ namespace DOL.Service
                 //找到实体
                 entities.Student.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
-                    if (Cache_Get_PayOrderList().Where(y => y.IsConfirm == YesOrNoCode.No && y.StudentID.Equals(x.ID)).Any())
+                    if (Cache_Get_PayOrderList().Where(y => y.IsConfirm == YesOrNoCode.No&&x.Flag==0 && y.StudentID.Equals(x.ID)).Any())
                     {
                         code = ErrorCode.cant_delete_unconfirm_payorder__had;
                     }
@@ -1261,7 +1269,9 @@ namespace DOL.Service
                 return null;
             using (DbRepository entities = new DbRepository())
             {
-                return Cache_Get_StudentList().FirstOrDefault(x => x.ID.Equals(id));
+                var model=Cache_Get_StudentList().FirstOrDefault(x => x.ID.Equals(id));
+                model.ExamCount = Cache_Get_ExamList().Where(x => x.StudentID.Equals(id)&&x.Code==model.NowTheme).Count()+1;
+                return model;
             }
         }
     }

@@ -157,7 +157,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_UserList().AsQueryable().AsNoTracking().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && !x.ID.Equals(this.Client.LoginUser.ID)&&x.MenuFlag!=-1&&string.IsNullOrEmpty(x.CoachID));
+                var query = Cache_Get_UserList().AsQueryable().AsNoTracking().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && !x.ID.Equals(this.Client.LoginUser.ID)&&x.ID!= "2dad7156a2b644c98cea08e52ab1ddb1" && string.IsNullOrEmpty(x.CoachID));
 
                 if (name.IsNotNullOrEmpty())
                 {

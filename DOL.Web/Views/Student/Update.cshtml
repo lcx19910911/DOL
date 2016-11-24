@@ -7,7 +7,7 @@
 </div>
 <div class="admin-content-body">
     <form id="form" class="am-form  am-form-inline">
-        <input type="hidden" name="ID" value="@Request["ID"]" />
+        <input type="hidden" name="ID" value="@(Request["ID"])" />
         <input type="hidden" name="HadPayMoney" />
         <div class="am-tabs am-margin" data-am-tabs="">
             <ul class="am-tabs-nav am-nav am-nav-tabs" id="selectTabUl">
@@ -295,8 +295,9 @@
                             学时是否完成：
                         </div>
                         <div class="am-u-md-1  am-u-end">
-                            <input type="text" readonly name="ThemeTwoTimeCodeStr" class="am-input-sm" style="width:120px;" />
-                            <input type="hidden" name="ThemeTwoTimeCode" />
+                            <div class="am-u-md-1 am-u-end">
+                                <select name="ThemeTwoTimeCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                            </div>
                         </div>
                     </div>
 
@@ -340,8 +341,7 @@
                             学时是否完成：
                         </div>
                         <div class="am-u-md-1  am-u-end">
-                            <input type="text" readonly name="ThemeThreeTimeCodeStr" class="am-input-sm" style="width:120px;" />
-                            <input type="hidden" name="ThemeThreeTimeCode" />
+                            <select name="ThemeThreeTimeCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
                         </div>
                     </div>
 
@@ -566,6 +566,10 @@
             height: "500px",
             pageUrl: "/Exam/Add",
             callback: function (e) {
+                $.Nuoya.action("/Student/Find", { id: "@(Request["ID"])" }, function (model) {
+                    $("#payForm [name='Code']").find('option').eq(model.NowTheme - 1).attr('selected', true);
+                    $("#payForm [name='Count']").val(model.ExamCount);
+                });
                 formInit();//表单初始化
             },
             buttons: [{
@@ -777,8 +781,10 @@
             $("#form [name='ThemeThreePassStr']").val(model.ThemeThreePass == 1 ? "通过" : "未通过");
             $("#form [name='ThemeFourPassStr']").val(model.ThemeFourPass == 1 ? "通过" : "未通过");
 
-            $("#form [name='ThemeTwoTimeCodeStr']").val(model.ThemeTwoTimeCode == 1 ? "完成" : "未完成");
-            $("#form [name='ThemeThreeTimeCodeStr']").val(model.ThemeThreeTimeCode == 1 ? "完成" : "未完成");
+            //科目二学时是否完成
+            LoadYesOrNoSelectItem($("#form select[name='ThemeTwoTimeCode']"), model.ThemeTwoTimeCode);
+            //科目三学时是否完成
+            LoadYesOrNoSelectItem($("#form select[name='ThemeThreeTimeCode']"), model.ThemeThreeTimeCode);
 
             isCardID($("#form [name='IDCard']"), $("#form [name='GenderCode']"));
 
@@ -796,7 +802,7 @@
                         LoadReference(false, this);
                     });
 
-               
+
                     $("#loadingDiv").hide();
                 }, 1000)
             });

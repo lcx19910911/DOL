@@ -40,7 +40,6 @@ namespace DOL.Model
         /// </summary>
         [Display(Name = "座机号码")]
         [MaxLength(16)]
-        [RegularExpression(@"((\d{3,4}-\d{6,8})$)", ErrorMessage = "座机号码不正确")]
         public string No { get; set; }
 
 

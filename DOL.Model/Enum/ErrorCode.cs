@@ -142,6 +142,17 @@ namespace DOL.Model
         [Description("该学员正在退学中，不能新增考试记录")]
         student_want_drop = 85,
 
+        /// <summary>
+        /// 科目二学时未完成
+        /// </summary>
+        [Description("科目二学时未完成.")]
+        themetwo_timecode_not_complete = 86,
+
+        /// <summary>
+        /// 科目三学时未完成
+        /// </summary>
+        [Description("科目三学时未完成.")]
+        themethree_timecode_not_complete = 87,
         #endregion
 
 

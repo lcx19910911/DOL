@@ -444,7 +444,7 @@ namespace DOL.Service
 
             //报名点集合
             var enteredPointIDList = new List<string>();
-            if (!string.IsNullOrEmpty(EnteredPointID))
+            if (!string.IsNullOrEmpty(EnteredPointID)&& !EnteredPointID.Equals("null"))
             {
                 enteredPointIDList.Add(EnteredPointID);
             }

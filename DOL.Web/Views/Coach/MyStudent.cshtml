@@ -88,8 +88,7 @@
                 return "未知";
         }
 
-        function ShowNowTheme(item)
-        {
+        function ShowNowTheme(item) {
             if (item.NowTheme == 1)
                 return "科目一";
             else if (item.NowTheme == 2)
@@ -220,45 +219,9 @@
                                 });
                             }
                         });
-
-
                     }
                 }
             ]
         });
-
-        //新增
-        function addExam() {
-            $.Nuoya.ajaxDialog({
-                closeViaDimmer: false,
-                ajaxUrl: "/HtmlTemplates/Exam/Update.html",
-                title: "新增考试",
-                width: "600px",
-                height: "500px",
-                callback: function (e) {
-                    formInit();//表单初始化
-                },
-                buttons: [{
-                    label: "保存",
-                    callback: function (e) {
-                        $.Nuoya.form("payForm").ajaxSubmit({
-                            ajaxUrl: "/Exam/Add",
-                            params: {
-                                StudentID: studentId
-                            },
-                            callback: function (data) {
-                                if (!data.ErrorDesc) {
-                                    e.hide();
-                                    examGrid.reload();
-                                }
-                                else
-                                    $.Nuoya.alert(data.ErrorDesc);
-                            }
-                        });
-                    }
-                }]
-            })
-        }
-
     </script>
 }

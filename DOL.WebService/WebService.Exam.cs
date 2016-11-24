@@ -78,7 +78,7 @@ namespace DOL.Service
                     query = query.Where(x => studentIdList.Contains(x.StudentID));
                 }
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.Code).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.Code).ThenBy(x=>x.Count).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
@@ -129,6 +129,12 @@ namespace DOL.Service
                         return Result(false, ErrorCode.exam_coache_not_exit);
                     }
 
+                    if (student.ThemeTwoTimeCode!=ThemeTimeCode.Complete)
+                    {
+                        return Result(false, ErrorCode.themetwo_timecode_not_complete);
+                    }
+
+
                     student.ThemeTwoDate = DateTime.Now;
                     if (model.Result == ExamCode.Pass)
                     {
@@ -143,6 +149,10 @@ namespace DOL.Service
                     if (student.ThemeThreeCoachID.IsNullOrEmpty())
                     {
                         return Result(false, ErrorCode.exam_coache_not_exit);
+                    }
+                    if (student.ThemeThreeTimeCode != ThemeTimeCode.Complete)
+                    {
+                        return Result(false, ErrorCode.themethree_timecode_not_complete);
                     }
 
                     student.ThemeThreeDate = DateTime.Now;

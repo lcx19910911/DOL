@@ -81,28 +81,33 @@
 
 </div>
 <div class="grid_container">
-    <table id="dataTable" class="am-table am-table-compact am-table-hover table-main  am-text-sm"">
+    <table id="dataTable" class="am-table am-table-compact am-table-hover table-main  am-text-sm" ">
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
-                <th  type="more"></th>
+                <th type="more"></th>
                 <th dataname="EnteredDate" datatype="jsondate">报名日期</th>
                 <th dataname="MakeCardDate" datatype="jsondate">制卡日期</th>
                 <th render="ShowEnteredCityName">报名地点</th>
-                <th dataname="TrianName">培训方式</th>
                 <th render="ShowMakeCardCityName">制卡地</th>
                 <th dataname="MakeDriverShopName">制卡驾校</th>
                 <th dataname="PayMethodName">缴费方式</th>
                 <th dataname="Money">总价</th>
                 <th dataname="HadPayMoney">已缴</th>
                 <th dataname="Name">姓名</th>
-                <th render="ShowProvinceName">户籍省份</th>
-                <th render="ShowCityName">户籍城市</th>
+
                 <th dataname="IDCard">身份证</th>
                 <th dataname="Mobile">电话号码</th>
                 @*<th dataname="CertificateName">车型</th>*@
                 @*<th dataname="ReferenceName">推荐人</th>*@
+                @*<th dataname="TrianName">培训方式</th>*@
                 <th render="ShowState">状态</th>
+                @*<th render="ShowProvinceName">户籍省份</th>
+                    <th render="ShowCityName">户籍城市</th>*@
+
+                <th render="ShowProvinceName" isHide="1" style="display:none;">户籍省份</th>
+                <th render="ShowCityName" isHide="1" style="display:none;">户籍城市</th>
+                <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>
                 <th dataname="CertificateName" isHide="1" style="display:none;">车型</th>
                 <th dataname="ReferenceName" isHide="1" style="display:none;">推荐人</th>
                 <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>
@@ -114,368 +119,534 @@
 @section scripts
 {
     <script type="text/javascript">
-   
-        function ExportOutExecle()
-        {
+
+        function ExportOutExecle() {
             var data = grid.getParams();
             var url = "/Student/ExportPageList?tt=1" + urlEncode(data);
             window.open(url);
         }
-            function UploadFile() {
-                var headimgbtn = $("#ExportIntoExecle").uploadFile({
-                    url: '/Student/ExportInto?mark=execle',
-                    fileSuffixs: ["xls", "xlsx"],
-                    maximumFilesUpload: 1,//最大文件上传数
-                    onComplete: function (data) {
-                        $("#loadingDiv").hide();
-                        var json = jQuery.parseJSON(data.substr(59).replace("</pre>", ""));
-                        if (json.Code != 0) {
-                            $.Nuoya.alert(json.ErrorDesc + "," + json.Append);
-                        }
-                        else {
-                            grid.reload();
-                        }
-                    },
-                    onChosen: function (file, obj, fileSize, errorText) {
-                        if (errorText) {
-                            $.Nuoya.alert(errorText);
-                            return false;
-                        }
-                        $("#loadingDiv").show();
-                        //Loading("图片正在上传中...", "请稍等");
-                        uploadheadimg.submitUpload();
-                        return true;//返回false将取消当前选择的文件
-                    },
-                });
-                var uploadheadimg = headimgbtn.data("uploadFileData");
-            }
+        function UploadFile() {
+            var headimgbtn = $("#ExportIntoExecle").uploadFile({
+                url: '/Student/ExportInto?mark=execle',
+                fileSuffixs: ["xls", "xlsx"],
+                maximumFilesUpload: 1,//最大文件上传数
+                onComplete: function (data) {
+                    $("#loadingDiv").hide();
+                    var json = jQuery.parseJSON(data.substr(59).replace("</pre>", ""));
+                    if (json.Code != 0) {
+                        $.Nuoya.alert(json.ErrorDesc + "," + json.Append);
+                    }
+                    else {
+                        grid.reload();
+                    }
+                },
+                onChosen: function (file, obj, fileSize, errorText) {
+                    if (errorText) {
+                        $.Nuoya.alert(errorText);
+                        return false;
+                    }
+                    $("#loadingDiv").show();
+                    //Loading("图片正在上传中...", "请稍等");
+                    uploadheadimg.submitUpload();
+                    return true;//返回false将取消当前选择的文件
+                },
+            });
+            var uploadheadimg = headimgbtn.data("uploadFileData");
+        }
 
-            UploadFile();
-            function ExportIntoExecle()
-            {
-                $.Nuoya.ajaxDialog({
-                    closeViaDimmer: false,
-                    width: "600px",
-                    height: "500px",
-                    ajaxUrl: "/HtmlTemplates/Student/SelectFile.html",
-                    title: "选择文件",
+        UploadFile();
+        function ExportIntoExecle() {
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                width: "600px",
+                height: "500px",
+                ajaxUrl: "/HtmlTemplates/Student/SelectFile.html",
+                title: "选择文件",
 
-                    buttons: [{
-                        label: "保存",
-                        callback: function (e) {
-                            $.Nuoya.form("form").ajaxSubmit({
-                                ajaxUrl: "/Student/ExportInto", params: {
-                                },
-                                callback: function (data) {
-                                    if (!data.ErrorDesc) {
-                                        e.hide();
-                                        grid.reload();
-                                    }
-                                    else
-                                        $.Nuoya.alert(data.ErrorDesc);
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+                        $.Nuoya.form("form").ajaxSubmit({
+                            ajaxUrl: "/Student/ExportInto", params: {
+                            },
+                            callback: function (data) {
+                                if (!data.ErrorDesc) {
+                                    e.hide();
+                                    grid.reload();
                                 }
-                            });
-                        }
-                    }]
-                })
-            }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+                            }
+                        });
+                    }
+                }]
+            })
+        }
 
-            var urlEncode = function (param, key, encode) {
-                if(param==null) return '';
-                var paramStr = '';
-                var t = typeof (param);
-                if (t == 'string' || t == 'number' || t == 'boolean') {
-                    paramStr += '&' + key + '=' + ((encode==null||encode) ? encodeURIComponent(param) : param);
-                } else {
-                    for (var i in param) {
-                        var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);
-                        paramStr += urlEncode(param[i], k, encode);
+        var urlEncode = function (param, key, encode) {
+            if (param == null) return '';
+            var paramStr = '';
+            var t = typeof (param);
+            if (t == 'string' || t == 'number' || t == 'boolean') {
+                paramStr += '&' + key + '=' + ((encode == null || encode) ? encodeURIComponent(param) : param);
+            } else {
+                for (var i in param) {
+                    var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);
+                    paramStr += urlEncode(param[i], k, encode);
+                }
+            }
+            return paramStr;
+        };
+
+        //$('.admin-sidebar').hide();
+        $('[name=enteredTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name=enteredTimeEnd]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name=makedTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name=makeTimeEnd]').datepicker({ format: 'yyyy-mm-dd' });
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+            $('#searchDomain select').each(function () {
+                $(this).find('option').eq(0).attr('selected', true);
+            })
+        }
+        //批量删除
+        function batchDelete() {
+            $.Nuoya.confirm("确认删除？", function () {
+                grid.del({
+                    ajaxUrl: "/Student/Delete",
+                    callback: function (json) {
+                        grid.reload();
+                    }
+                });
+            });
+        }
+        function formInit(dataitem) {
+
+            //添加表单验证
+            $.Nuoya.form("form").validate({
+                rules: {
+                    Name: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    Link: {
+                        maxlength: 128
+                    },
+                    ClassName: {
+                        maxlength: 32
+                    },
+                    PayTypeID: {
+                        required: 32
+                    },
+                    AccountNO: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    Sort: {
+                        digits: true,
+                        max: 2147483647,
+                        min: -2147483647
+                    }
+                },
+                messages: {
+                    Name: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
+                    Link: {
+                        maxlength: "最多{0}个字符"
+                    },
+                    PayTypeID: {
+                        required: "不允许为空"
+                    },
+                    AccountNO: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
+                    ClassName: {
+                        maxlength: "最多{0}个字符"
+                    },
+                    Sort: {
+                        digits: "请输入数字",
+                        max: "必须小于{0}",
+                        min: "必须大于{0}"
                     }
                 }
-                return paramStr;
-            };
+            });
+        }
 
-            //$('.admin-sidebar').hide();
-            $('[name=enteredTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
-            $('[name=enteredTimeEnd]').datepicker({ format: 'yyyy-mm-dd' });
-            $('[name=makedTimeStart]').datepicker({ format: 'yyyy-mm-dd' });
-            $('[name=makeTimeEnd]').datepicker({ format: 'yyyy-mm-dd' });
+        //新增
+        function add() {
+            window.location.href = "/Student/Add";
+        }
 
-            function ClearFilter() {
-                $("#searchDomain input").val("");
-                $('#searchDomain select').each(function () {
-                    $(this).find('option').eq(0).attr('selected', true);
-                })
-            }
-            //批量删除
-            function batchDelete() {
-                $.Nuoya.confirm("确认删除？", function () {
-                    grid.del({
-                        ajaxUrl: "/Student/Delete",
-                        callback: function (json) {
-                            grid.reload();
-                        }
-                    });
+        function payFormInit() {
+            $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+                $(json.PayTypeList).each(function () {
+                    $("#payForm select[name='PayTypeID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
                 });
-            }
-            function formInit(dataitem) {
+                $(json.AccountList).each(function () {
+                    $("#payForm select[name='AccountID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                });
+            });
 
-                //添加表单验证
-                $.Nuoya.form("form").validate({
-                    rules: {
-                        Name: {
-                            required: true,
-                            maxlength: 32
-                        },
-                        Link: {
-                            maxlength: 128
-                        },
-                        ClassName: {
-                            maxlength: 32
-                        },
-                        PayTypeID: {
-                            required: 32
-                        },
-                        AccountNO: {
-                            required: true,
-                            maxlength: 32
-                        },
-                        Sort: {
-                            digits: true,
-                            max: 2147483647,
-                            min: -2147483647
-                        }
+            $.Nuoya.form("payForm").validate({
+                rules: {
+                    PayTypeID: {
+                        required: true
                     },
-                    messages: {
-                        Name: {
-                            required: "不允许为空",
-                            maxlength: "最多{0}个字符"
-                        },
-                        Link: {
-                            maxlength: "最多{0}个字符"
-                        },
-                        PayTypeID: {
-                            required: "不允许为空"
-                        },
-                        AccountNO: {
-                            required: "不允许为空",
-                            maxlength: "最多{0}个字符"
-                        },
-                        ClassName: {
-                            maxlength: "最多{0}个字符"
-                        },
-                        Sort: {
-                            digits: "请输入数字",
-                            max: "必须小于{0}",
-                            min: "必须大于{0}"
-                        }
-                    }
-                });
-            }
-
-            //新增
-            function add() {
-                window.location.href = "/Student/Add";
-            }
-
-            var grid = $.Nuoya.grid({
-                tableId: "dataTable",
-                //表格id
-                search: {
-                    domainId: "searchDomain",
-                    subId: "btnSearch"
+                    AccountID: {
+                        required: true
+                    },
+                    VoucherNO: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    PayMoney: {
+                        required: true,
+                        min: 0,
+                        max: 99999999
+                    },
                 },
-                isHide: true,
-                ajaxUrl: "/Student/GetPageList",
-                //数据请求地址
-                pageSize: 10,
-                events: [
-                    {
-                        className: "am-text-secondary",
-                        icon: "icon-pencil-square-o",
-                        name: "编辑",
-                        url: "/Student/Update",
-                        formula: function (model) {
-                            if (model.State != "5" && model.State != "6" && model.State != "7") {
-                                return true;
-                            }
-                            else {
-                                return false;
-                            }
-                        },
-                        click: function (item) {
-                            if (item.State == "5" || item.State == "6" || item.State == "7") {
-                                window.location.href = "/Student/Update?ID=" + item.ID + "&readonly=1";
-                            }
-                            else {
-                                window.location.href = "/Student/Update?ID=" + item.ID;
-                            }
+                messages: {
+                    PayTypeID: {
+                        required: "不允许为空",
+                    },
+                    AccountID: {
+                        required: "不允许为空",
+                    },
+                    VoucherNO: {
+                        required: "不允许为空",
+                        maxlength: "最多{0}个字符"
+                    },
+                    PayMoney: {
+                        required: "请输入数字",
+                        max: "必须小于{0}",
+                        min: "必须大于{0}"
+                    }
+                }
+            });
+            UploadImg();
+        }
+
+        function UploadImg() {
+            var headimgbtn = $("#imageFile").uploadFile({
+                url: '/upload/uploadimage?mark=PayOrder',
+                fileSuffixs: ["jpg", "png", "gif"],
+                maximumFilesUpload: 1,//最大文件上传数
+                onComplete: function (data) {
+                    if (data) {
+                        $("[name='VoucherThum']").val(data);
+                        $("#imageDiv").show().find("img").attr("src", data);
+                    }
+                    else {
+                        $.Nuoya.alert("上传错误");
+                    }
+
+                },
+                onChosen: function (file, obj, fileSize, errorText) {
+                    if (errorText) {
+                        $.Nuoya.alert(errorText);
+                        return false;
+                    }
+                    //Loading("图片正在上传中...", "请稍等");
+                    uploadheadimg.submitUpload();
+                    return true;//返回false将取消当前选择的文件
+                },
+            });
+            var uploadheadimg = headimgbtn.data("uploadFileData");
+        }
+
+        var grid = $.Nuoya.grid({
+            tableId: "dataTable",
+            //表格id
+            search: {
+                domainId: "searchDomain",
+                subId: "btnSearch"
+            },
+            isHide: true,
+            ajaxUrl: "/Student/GetPageList",
+            //数据请求地址
+            pageSize: 10,
+            events: [
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "编辑",
+                    url: "/Student/Update",
+                    formula: function (model) {
+                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                            return true;
+                        }
+                        else {
+                            return false;
                         }
                     },
-                    {
-                        className: "am-text-success",
-                        icon: "icon-pencil-square-o",
-                        name: "详情",
-                        url: "/Student/Update",
-                        formula: function (item) {
-                            if (item.State == "5" || item.State == "6" || item.State == "7") {
-                                return true;
-                            }
-                            else {
-                                return false;
-                            }
-                        },
-                        click: function (item) {
+                    click: function (item) {
+                        if (item.State == "5" || item.State == "6" || item.State == "7") {
                             window.location.href = "/Student/Update?ID=" + item.ID + "&readonly=1";
                         }
-                    },
-                    {
-                        className: "am-text-danger",
-                        icon: "icon-trash-o",
-                        name: "删除",
-                        url: "/Student/Delete",
-                        click: function (item) {
-                            $.Nuoya.confirm("确认删除？", function () {
-                                $.Nuoya.deleteAction("/Student/Delete", {
-                                    ids: item.ID
-                                },
-                                function () {
-                                    grid.reload();
-                                });
-                            });
-                        }
-                    },
-                    {
-                        className: "am-text-danger",
-                        icon: "icon-close",
-                        name: "退学",
-                        url: "/Student/WantDrop",
-                        formula: function (model) {
-                            if (model.State != "5" && model.State != "6" && model.State != "7") {
-                                return true;
-                            }
-                            else {
-                                return false;
-                            }
-                        },
-                        click: function (item) {
-                            $.Nuoya.ajaxDialog({
-                                closeViaDimmer: false,
-                                width: "600px",
-                                height: "500px",
-                                ajaxUrl: "/HtmlTemplates/Student/WantDrop.html",
-                                title: "申请退学",
-                                callback: function (e) {
-                                    formInit();//表单初始化
-                                    $("#form [name='AllMoney']").val(item.Money);
-                                    $("#form [name='HadPayMoney']").val(item.HadPayMoney);
-
-
-                                    $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
-                                        $(json.PayTypeList).each(function () {
-                                            $("#form select[name='PayTypeID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
-                                        });
-                                    });
-
-                                },
-                                buttons: [{
-                                    label: "保存",
-                                    callback: function (e) {
-                                        if (parseFloat(item.HadPayMoney) < parseFloat($("#form [name='WantDropMoney']").val()))
-                                        {
-                                            $.Nuoya.alert("退款金额不能超过已缴金额" + item.HadPayMoney + "元");
-                                            return false;
-                                        }
-                                        $.Nuoya.form("form").ajaxSubmit({
-                                            ajaxUrl: "/Student/WantDrop", params: {
-                                                StudentID: item.ID
-                                            },
-                                            callback: function (data) {
-                                                if (!data.ErrorDesc) {
-                                                    e.hide();
-                                                    grid.reload();
-                                                }
-                                                else
-                                                    $.Nuoya.alert(data.ErrorDesc);
-                                            }
-                                        });
-                                    }
-                                }]
-                            })
+                        else {
+                            window.location.href = "/Student/Update?ID=" + item.ID;
                         }
                     }
-                    ,
-                    {
-                        className: "am-text-secondary",
-                        icon: "icon-search",
-                        name: "记录",
-                        click: function (item) {
-                            $.Nuoya.ajaxDialog({
-                                closeViaDimmer: false,
-                                width: "1000px",
-                                height: "600px",
-                                ajaxUrl: "/HtmlTemplates/Student/Log.html",
-                                title: "记录",
-                                callback: function (e) {
+                },
+                {
+                    className: "am-text-success",
+                    icon: "icon-pencil-square-o",
+                    name: "详情",
+                    url: "/Student/Update",
+                    formula: function (item) {
+                        if (item.State == "5" || item.State == "6" || item.State == "7") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+                        window.location.href = "/Student/Update?ID=" + item.ID + "&readonly=1";
+                    }
+                },
+                {
+                    className: "am-text-danger",
+                    icon: "icon-trash-o",
+                    name: "删除",
+                    url: "/Student/Delete",
+                    click: function (item) {
+                        $.Nuoya.confirm("确认删除？", function () {
+                            $.Nuoya.deleteAction("/Student/Delete", {
+                                ids: item.ID
+                            },
+                            function () {
+                                grid.reload();
+                            });
+                        });
+                    }
+                },
+                {
+                    className: "am-text-danger",
+                    icon: "icon-close",
+                    name: "退学",
+                    url: "/Student/WantDrop",
+                    formula: function (model) {
+                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "600px",
+                            height: "500px",
+                            ajaxUrl: "/HtmlTemplates/Student/WantDrop.html",
+                            title: "申请退学",
+                            callback: function (e) {
+                                formInit();//表单初始化
+                                $("#form [name='AllMoney']").val(item.Money);
+                                $("#form [name='HadPayMoney']").val(item.HadPayMoney);
 
-                                    var logGrid = $.Nuoya.grid({
-                                        tableId: "logDataTable",
-                                        //表格id
-                                        search: {
-                                            domainId: "searchLogDomain",
-                                            subId: "btnLogSearch"
+
+                                $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+                                    $(json.PayTypeList).each(function () {
+                                        $("#form select[name='PayTypeID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                                    });
+                                });
+
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    if (parseFloat(item.HadPayMoney) < parseFloat($("#form [name='WantDropMoney']").val())) {
+                                        $.Nuoya.alert("退款金额不能超过已缴金额" + item.HadPayMoney + "元");
+                                        return false;
+                                    }
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/Student/WantDrop", params: {
+                                            StudentID: item.ID
                                         },
-                                        ajaxUrl: "/Student/GetLogList",
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                }
+                ,
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-plus",
+                    name: "新增考试",
+                    url: "/Exam/Add",
+                    formula: function (model) {
+                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Exam/Update.html",
+                            title: "新增考试",
+                            width: "600px",
+                            height: "500px",
+                            pageUrl: "/Exam/Add",
+                            callback: function (e) {
+                                $("#payForm [name='Code']").find('option').eq(item.NowTheme - 1).attr('selected', true);
+                                $("#payForm [name='Count']").val(item.ExamCount);
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    $.Nuoya.form("payForm").ajaxSubmit({
+                                        ajaxUrl: "/Exam/Add",
                                         params: {
                                             StudentID: item.ID
                                         },
-                                        //数据请求地址
-                                        pageSize: 10,
-                                        events: [
-                                            {
-                                                className: "am-text-secondary",
-                                                icon: "icon-pencil-square-o",
-                                                name: "修改详情",
-                                                click: function (model) {
-                                                    $.Nuoya.ajaxDialog({
-                                                        closeViaDimmer: false,
-                                                        ajaxUrl: "/HtmlTemplates/Student/LogDetials.html",
-                                                        title: "修改详情",
-                                                        width: "1000px",
-                                                        height: "620px",
-                                                        callback: function (e) {
-                                                            $.Nuoya.action("/Student/FindLog", { id: model.ID }, function (json) {
-                                                                //载入数据
-                                                                $.Nuoya.form("form").dataLoad({
-                                                                    data: json
-                                                                });
-                                                            });
-                                                        }
-                                                    })
-                                                }
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
                                             }
-                                        ]
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
                                     });
-
-                                    event.preventDefault();
                                 }
-                            })
-                        }
+                            }]
+                        })
                     }
-                ]
-            });
-
-            LoadItemList(true, null);
-
-
-            function ValiteValue(obj)
-            {
-                var value = $(obj).val();
-                var hadMoney = $("[name='HadPayMoney']").val();
-                if(parseFloat(value)>parseFloat(hadMoney))
-                {
-                    $.Nuoya.alert("退款金额不能超过已缴金额" + hadMoney + "元");
                 }
+                ,
+                {
+                    className: "am-text-success",
+                    icon: "icon-plus",
+                    name: "新增缴费",
+                    url: "/Exam/Add",
+                    formula: function (model) {
+                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/User/Pay.html",
+                            title: "新增缴费记录",
+                            width: "1000px",
+                            height: "600px",
+                            callback: function (e) {
+                                payFormInit();//表单初始化
+                                $("#tipsDiv").html("学费总价" + item.Money + "元，当前已缴费" + item.HadPayMoney + "元");
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    $.Nuoya.form("payForm").ajaxSubmit({
+                                        ajaxUrl: "/PayOrder/Add",
+                                        params: {
+                                            StudentID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-search",
+                    name: "记录",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "1000px",
+                            height: "600px",
+                            ajaxUrl: "/HtmlTemplates/Student/Log.html",
+                            title: "记录",
+                            callback: function (e) {
+
+                                var logGrid = $.Nuoya.grid({
+                                    tableId: "logDataTable",
+                                    //表格id
+                                    search: {
+                                        domainId: "searchLogDomain",
+                                        subId: "btnLogSearch"
+                                    },
+                                    ajaxUrl: "/Student/GetLogList",
+                                    params: {
+                                        StudentID: item.ID
+                                    },
+                                    //数据请求地址
+                                    pageSize: 10,
+                                    events: [
+                                        {
+                                            className: "am-text-secondary",
+                                            icon: "icon-pencil-square-o",
+                                            name: "修改详情",
+                                            click: function (model) {
+                                                $.Nuoya.ajaxDialog({
+                                                    closeViaDimmer: false,
+                                                    ajaxUrl: "/HtmlTemplates/Student/LogDetials.html",
+                                                    title: "修改详情",
+                                                    width: "1000px",
+                                                    height: "620px",
+                                                    callback: function (e) {
+                                                        $.Nuoya.action("/Student/FindLog", { id: model.ID }, function (json) {
+                                                            //载入数据
+                                                            $.Nuoya.form("form").dataLoad({
+                                                                data: json
+                                                            });
+                                                        });
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    ]
+                                });
+
+                                event.preventDefault();
+                            }
+                        })
+                    }
+                }
+            ]
+        });
+
+        LoadItemList(true, null);
+
+
+        function ValiteValue(obj) {
+            var value = $(obj).val();
+            var hadMoney = $("[name='HadPayMoney']").val();
+            if (parseFloat(value) > parseFloat(hadMoney)) {
+                $.Nuoya.alert("退款金额不能超过已缴金额" + hadMoney + "元");
             }
+        }
     </script>
 }

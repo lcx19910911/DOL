@@ -421,6 +421,12 @@ namespace DOL.Model
         [Display(Name = "当前科目")]
         public ThemeCode NowTheme { get; set; }
 
+        /// <summary>
+        /// 考试次数
+        /// </summary>
+        [NotMapped]
+        public int ExamCount { get; set; }
+
 
         /// <summary>
         /// 缴费记录

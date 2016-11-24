@@ -269,6 +269,14 @@
                     icon: "icon-trash-o",
                     name: "删除",
                     url: "/PayOrder/Delete",
+                    formula: function (model) {
+                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
                     click: function (item) {
                         $.Nuoya.confirm("确认删除？", function () {
                             $.Nuoya.deleteAction("/PayOrder/Delete", {
