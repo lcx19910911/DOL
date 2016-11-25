@@ -295,9 +295,7 @@
                             学时是否完成：
                         </div>
                         <div class="am-u-md-1  am-u-end">
-                            <div class="am-u-md-1 am-u-end">
                                 <select name="ThemeTwoTimeCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
-                            </div>
                         </div>
                     </div>
 
@@ -759,9 +757,9 @@
             LoadYesOrNoSelectItem($("#form select[name='ThemeFourPass']"), model.ThemeFourPass);
 
             //科目二学时是否完成
-            LoadYesOrNoSelectItem($("#form select[name='ThemeTwoTimeCode']"), model.ThemeTwoTimeCode);
+            LoadThemeTimeCodeSelectItem($("#form select[name='ThemeTwoTimeCode']"), model.ThemeTwoTimeCode);
             //科目三学时是否完成
-            LoadYesOrNoSelectItem($("#form select[name='ThemeThreeTimeCode']"), model.ThemeThreeTimeCode);
+            LoadThemeTimeCodeSelectItem($("#form select[name='ThemeThreeTimeCode']"), model.ThemeThreeTimeCode);
 
             if (model.ThemeOneDate != null) {
                 $("#form [name='ThemeOneDate']").val(RenderDate(model.ThemeOneDate));
@@ -780,11 +778,6 @@
             $("#form [name='ThemeTwoPassStr']").val(model.ThemeTwoPass == 1 ? "通过" : "未通过");
             $("#form [name='ThemeThreePassStr']").val(model.ThemeThreePass == 1 ? "通过" : "未通过");
             $("#form [name='ThemeFourPassStr']").val(model.ThemeFourPass == 1 ? "通过" : "未通过");
-
-            //科目二学时是否完成
-            LoadYesOrNoSelectItem($("#form select[name='ThemeTwoTimeCode']"), model.ThemeTwoTimeCode);
-            //科目三学时是否完成
-            LoadYesOrNoSelectItem($("#form select[name='ThemeThreeTimeCode']"), model.ThemeThreeTimeCode);
 
             isCardID($("#form [name='IDCard']"), $("#form [name='GenderCode']"));
 

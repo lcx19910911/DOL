@@ -105,7 +105,7 @@ namespace DOL.Service
                             x.HadPayMoney = student.HadPayMoney;
                             x.Name = student.Name;
                             x.IDCard = student.IDCard;
-                            x.State = student.State;
+                            x.StudentFlag = student.Flag;
                             //制卡驾校
                             if (!string.IsNullOrEmpty(student.MakeDriverShopID) && driverShopDic.ContainsKey(student.MakeDriverShopID))
                                 x.MakeDriverShopName = driverShopDic[student.MakeDriverShopID]?.Name;

@@ -57,9 +57,7 @@
                     <option value="7">已退学</option>
                 </select>
                 <span class="am-input-group-btn am-margin-left-sm">
-                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
-                    <button class="am-btn am-btn-default" onclick="ExportOutExecle()" type="button">导出</button>
-                    <button class="am-btn am-btn-default" id="ExportIntoExecle" type="button">导入</button>
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>                
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
                 </span>
             </div>
@@ -74,6 +72,8 @@
             <div class="am-btn-toolbar">
                 <div class="am-btn-group am-btn-group-xs">
                     <button onclick="add()" type="button" class="am-btn am-btn-xs"><span class="am-icon-plus"></span> 新增</button>
+                    <button class="am-btn am-btn-default" onclick="ExportOutExecle()" type="button">导出</button>
+                    <button class="am-btn am-btn-default" id="ExportIntoExecle" type="button">导入</button>
                 </div>
             </div>
         </div>
@@ -88,14 +88,12 @@
                 <th type="more"></th>
                 <th dataname="EnteredDate" datatype="jsondate">报名日期</th>
                 <th dataname="MakeCardDate" datatype="jsondate">制卡日期</th>
-                <th render="ShowEnteredCityName">报名地点</th>
-                <th render="ShowMakeCardCityName">制卡地</th>
+            
+                <th render="ShowMakeCardCityName" >制卡地</th>
                 <th dataname="MakeDriverShopName">制卡驾校</th>
-                <th dataname="PayMethodName">缴费方式</th>
                 <th dataname="Money">总价</th>
                 <th dataname="HadPayMoney">已缴</th>
                 <th dataname="Name">姓名</th>
-
                 <th dataname="IDCard">身份证</th>
                 <th dataname="Mobile">电话号码</th>
                 @*<th dataname="CertificateName">车型</th>*@
@@ -103,8 +101,10 @@
                 @*<th dataname="TrianName">培训方式</th>*@
                 <th render="ShowState">状态</th>
                 @*<th render="ShowProvinceName">户籍省份</th>
-                    <th render="ShowCityName">户籍城市</th>*@
-
+        <th render="ShowCityName">户籍城市</th>
+    <th render="ShowEnteredCityName">报名地点</th>
+                <th dataname="PayMethodName">缴费方式</th>*@
+                <th dataname="PayMethodName" isHide="1" style="display:none;">缴费方式</th>
                 <th render="ShowProvinceName" isHide="1" style="display:none;">户籍省份</th>
                 <th render="ShowCityName" isHide="1" style="display:none;">户籍城市</th>
                 <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>
@@ -487,7 +487,7 @@
                 {
                     className: "am-text-secondary",
                     icon: "icon-plus",
-                    name: "新增考试",
+                    name: "考试",
                     url: "/Exam/Add",
                     formula: function (model) {
                         if (model.State != "5" && model.State != "6" && model.State != "7") {
@@ -535,7 +535,7 @@
                 {
                     className: "am-text-success",
                     icon: "icon-plus",
-                    name: "新增缴费",
+                    name: "缴费",
                     url: "/Exam/Add",
                     formula: function (model) {
                         if (model.State != "5" && model.State != "6" && model.State != "7") {

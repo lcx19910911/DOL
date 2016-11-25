@@ -4,7 +4,7 @@
 }
 
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a onclick="unState()"><strong class="am-text-primary am-text-lg">菜单</strong></a> /<small>我的学员</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">菜单</strong></a> /<small>我的学员</small></div>
 </div>
 <div id="searchDomain">
 
@@ -19,13 +19,13 @@
                 <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:140px;" name="no" ;>
 
                 <span class="am-input-group-label  am-margin-left-sm">科目二</span>
-                <select name="State" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                <select name="themeTwoCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
                     <option value="-1">不限</option>
                     <option value="1">通过</option>
                     <option value="0">未通过</option>
                 </select>
-                <span class="am-input-group-label  am-margin-left-sm">科目二</span>
-                <select name="State" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                <span class="am-input-group-label  am-margin-left-sm">科目三</span>
+                <select name="themeThreeCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
                     <option value="-1">不限</option>
                     <option value="1">通过</option>
                     <option value="0">未通过</option>
@@ -45,19 +45,30 @@
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
-                <th dataname="EnteredDate" datatype="jsondate">报名日期</th>
-                <th dataname="MakeCardDate" datatype="jsondate">制卡日期</th>
-                <th dataname="EnteredCityName">报名地点</th>
-                <th dataname="MakeCardCityName">制卡地</th>
-                <th dataname="TrianName">培训方式</th>
-                <th dataname="MakeDriverShopName">制卡驾校</th>
+                <th type="more"></th>
+                <th dataname="EnteredDate" datatype="jsondate" isHide="1" style="display:none;">报名日期</th>
+                <th dataname="MakeCardDate" datatype="jsondate" isHide="1" style="display:none;">制卡日期</th>
+                <th dataname="EnteredCityName" isHide="1" style="display:none;">报名地点</th>
+                <th dataname="MakeCardCityName" isHide="1" style="display:none;">制卡地</th>
+                <th dataname="ProvinceName" isHide="1" style="display:none;">户籍省份</th>
+                <th dataname="CityName" isHide="1" style="display:none;">户籍城市</th>
+                <th dataname="MakeDriverShopName" isHide="1" style="display:none;">制卡驾校</th>
+                <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>
+                <th dataname="CertificateName" isHide="1" style="display:none;">车型</th>
+                <th dataname="ReferenceName" isHide="1" style="display:none;">推荐人</th>
+                                                @*<th dataname="EnteredDate" datatype="jsondate">报名日期</th>
+        <th dataname="MakeCardDate" datatype="jsondate">制卡日期</th>
+        <th dataname="ProvinceName">户籍省份</th>
+        <th dataname="CityName">户籍城市</th>
+        <th dataname="EnteredCityName">报名地点</th>
+        <th dataname="MakeCardCityName">制卡地</th>
+                <th dataname="ReferenceName">推荐人</th>
+        <th dataname="TrianName">培训方式</th>
+                    <th dataname="CertificateName">车型</th>
+        <th dataname="MakeDriverShopName">制卡驾校</th>*@
                 <th dataname="Name">姓名</th>
-                <th dataname="ProvinceName">户籍省份</th>
-                <th dataname="CityName">户籍城市</th>
                 <th dataname="IDCard">身份证</th>
                 <th dataname="Mobile">电话号码</th>
-                <th dataname="CertificateName">车型</th>
-                <th dataname="ReferenceName">推荐人</th>
                 <th render="ShowNowTheme">当前科目</th>
                 <th dataname="ThemeOneDate" datatype="jsondate">科一时间</th>
                 <th render="ShowThemeTwoTimeCode">科二学时</th>
@@ -110,8 +121,6 @@
             else
                 return "未知";
         }
-
-        $('.admin-sidebar').hide();
 
         function ClearFilter() {
             $("#searchDomain input").val("");
@@ -166,6 +175,7 @@
                 domainId: "searchDomain",
                 subId: "btnSearch"
             },
+            isHide: true,
             ajaxUrl: "/Coach/GetMyStudentPageList",
             //数据请求地址
             pageSize: 10,
