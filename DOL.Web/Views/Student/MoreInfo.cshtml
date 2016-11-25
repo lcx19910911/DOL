@@ -319,9 +319,136 @@
             events: [
                 {
                     className: "am-text-secondary",
-                    icon: "icon-pencil-square-o",
-                    name: "编辑",
-                    url: "/Student/Update",
+                    icon: "icon-plus",
+                    name: "记录学时",
+                    url: "/Student/UpdateTimeCode",
+                    //formula: function (model) {
+                    //    if (model.State = "" && model.State != "6" && model.State != "7") {
+                    //        return true;
+                    //    }
+                    //    else {
+                    //        return false;
+                    //    }
+                    //},
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Student/SelectTimeCode.html",
+                            title: "记录学时",
+                            width: "600px",
+                            height: "500px",
+                            pageUrl: "/Student/UpdateTimeCode",
+                            callback: function (e) {
+
+                                if (item.ThemeTwoTimeCode == 1) {
+                                    $("#timeForm [name='ThemeTwoTimeCode']").find('option').eq(1).attr('selected', true);
+                                }
+                                if (item.ThemeThreeTimeCode == 1) {
+                                    $("#timeForm [name='ThemeThreeTimeCode']").find('option').eq(1).attr('selected', true);
+                                }
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    $.Nuoya.form("timeForm").ajaxSubmit({
+                                        ajaxUrl: "/Student/UpdateTimeCode",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-plus",
+                    name: "分配教练",
+                    url: "/Student/UpdateCoach",
+                    //formula: function (model) {
+                    //    if (model.State = "" && model.State != "6" && model.State != "7") {
+                    //        return true;
+                    //    }
+                    //    else {
+                    //        return false;
+                    //    }
+                    //},
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Student/SelectCoach.html",
+                            title: "分配教练",
+                            width: "600px",
+                            height: "500px",
+                            pageUrl: "/Student/UpdateCoach",
+                            callback: function (e) {
+
+                                $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+
+                                    $(json.CoachList).each(function () {
+                                        if (item.ThemeTwoCoachID != "") {
+                                            if (item.ThemeTwoCoachID == this.Value) {
+                                                $("select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                                            }
+                                            else {
+                                                $("select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                                            }
+
+                                        }
+                                        else {
+                                            $("select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                                        }
+                                        if (item.ThemeThreeCoachID != "") {
+                                            if (item.ThemeTwoCoachID == this.Value) {
+                                                $("select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                                            }
+                                            else {
+                                                $("select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                                            }
+
+                                        }
+                                        else {
+                                            $("select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                                        }
+                                    });
+                                });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    $.Nuoya.form("timeForm").ajaxSubmit({
+                                        ajaxUrl: "/Student/UpdateCoach",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-plus",
+                    name: "新增考试",
+                    url: "/Exam/Add",
                     formula: function (model) {
                         if (model.State != "5" && model.State != "6" && model.State != "7") {
                             return true;
@@ -331,9 +458,40 @@
                         }
                     },
                     click: function (item) {
-                        window.location.href = "/Student/Update?ID=" + item.ID + "&trian=1";
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Exam/Update.html",
+                            title: "新增考试",
+                            width: "600px",
+                            height: "500px",
+                            pageUrl: "/Exam/Add",
+                            callback: function (e) {
+                                $("#payForm [name='Code']").find('option').eq(item.NowTheme - 1).attr('selected', true);
+                                $("#payForm [name='Count']").val(item.ExamCount);
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    $.Nuoya.form("payForm").ajaxSubmit({
+                                        ajaxUrl: "/Exam/Add",
+                                        params: {
+                                            StudentID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
                     }
-                },
+                }
+                ,
                 {
                     className: "am-text-secondary",
                     icon: "icon-search",
@@ -365,23 +523,6 @@
                                 event.preventDefault();
                             }
                         })
-                    }
-                }
-                ,
-                {
-                    className: "am-text-danger",
-                    icon: "icon-trash-o",
-                    name: "删除",
-                    url: "/Student/Delete",
-                    click: function (item) {
-                        $.Nuoya.confirm("确认删除？", function () {
-                            $.Nuoya.deleteAction("/Student/Delete", {
-                                ids: item.ID
-                            },
-                            function () {
-                                grid.reload();
-                            });
-                        });
                     }
                 }
             ]

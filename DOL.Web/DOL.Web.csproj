@@ -138,6 +138,8 @@
     <Content Include="HtmlTemplates\Role\Update.html" />
     <Content Include="HtmlTemplates\Student\Log.html" />
     <Content Include="HtmlTemplates\Student\LogDetials.html" />
+    <Content Include="HtmlTemplates\Student\SelectTimeCode.html" />
+    <Content Include="HtmlTemplates\Student\SelectCoach.html" />
     <Content Include="HtmlTemplates\Student\SelectFile.html" />
     <Content Include="HtmlTemplates\Student\WantDrop.html" />
     <Content Include="HtmlTemplates\ThemeSalary\Update.html" />
