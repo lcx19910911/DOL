@@ -441,25 +441,26 @@
 
                     event.preventDefault();
                 }
-            },
-            {
-                className: "am-text-danger",
-                icon: "icon-trash-o",
-                name: "删除",
-                url: "/PayOrder/Delete",
-                click: function (item) {
-                    $.Nuoya.confirm("确认删除？", function () {
-                        $.Nuoya.deleteAction("/PayOrder/Delete", {
-                            ids: item.ID
-                        },
-                        function () {
-                            grid.reload();
-                        });
-                    });
-
-                    event.preventDefault();
-                }
             }
+            //,
+            //{
+            //    className: "am-text-danger",
+            //    icon: "icon-trash-o",
+            //    name: "删除",
+            //    url: "/PayOrder/Delete",
+            //    click: function (item) {
+            //        $.Nuoya.confirm("确认删除？", function () {
+            //            $.Nuoya.deleteAction("/PayOrder/Delete", {
+            //                ids: item.ID
+            //            },
+            //            function () {
+            //                grid.reload();
+            //            });
+            //        });
+
+            //        event.preventDefault();
+            //    }
+            //}
         ]
     });
 

@@ -153,6 +153,24 @@ namespace DOL.Model
         /// </summary>
         [Description("科目三学时未完成.")]
         themethree_timecode_not_complete = 87,
+
+        /// <summary>
+        /// 学员当前是科目二，必须分配教练
+        /// </summary>
+        [Description("学员当前是科目二，必须分配教练.")]
+        themetwo_no_had_coach = 88,
+
+        /// <summary>
+        /// 该学员当前不是科目三，不能分配教练
+        /// </summary>
+        [Description("学员当前是科目三，必须分配教练.")]
+        themethree_no_had_coach = 89,
+
+        /// <summary>
+        /// 该学员当前不是科目三或科目三，不能分配教练
+        /// </summary>
+        [Description("该学员当前不是科目三或科目三，必须分配教练.")]
+        themecode_no_allow = 90,
         #endregion
 
 

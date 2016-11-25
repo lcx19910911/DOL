@@ -65,6 +65,17 @@ namespace DOL.Web.Controllers
             return JResult(WebService.Find_Student(ID));
         }
 
+        public ActionResult UpdateTimeCode(string ID, ThemeTimeCode themeTwoTimeCode, ThemeTimeCode themeThreeTimeCode)
+        {
+            return JResult(WebService.Update_StudentTimeCode(ID, themeTwoTimeCode, themeThreeTimeCode));
+        }
+
+
+        public ActionResult UpdateCoach(string ID, string themeTwoCoachID, string themeThreeCoachID)
+        {
+            return JResult(WebService.Update_StudentCoach(ID, themeTwoCoachID, themeThreeCoachID));
+        }
+
 
         /// <summary>
         /// 获取分页列表
