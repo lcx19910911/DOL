@@ -1115,7 +1115,7 @@ namespace DOL.Service
                     //}
                     //修改前
                  
-                    oldEntity.ThemeThreeCoachID = themeTwoCoachID;
+                    oldEntity.ThemeThreeCoachID = themeThreeCoachID;
                     oldEntity.ThemeTwoCoachID = themeTwoCoachID;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;

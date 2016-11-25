@@ -200,7 +200,7 @@ namespace DOL.Service
                 var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
                 var coachDic = Cache_Get_CoachList_Dic();
-                list.ForEach(x =>
+                newList.ForEach(x =>
                 {
                     //报名地
                     if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
@@ -239,7 +239,7 @@ namespace DOL.Service
 
                 });
 
-                return ResultPageList(list, pageIndex, pageSize, count);
+                return ResultPageList(newList, pageIndex, pageSize, count);
             }
         }
 
