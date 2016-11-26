@@ -143,12 +143,13 @@
                 <th dataname="ID" type="checkbox"></th>
                 <th type="more"></th>
                 <th dataname="Name">姓名</th>
+                <th dataname="CertificateName">车型</th>
+                <th dataname="MakeDriverShopName">制卡驾校</th>
                 @*<th dataname="IDCard">身份证</th>
                 <th dataname="Mobile">手机</th>*@
-                <th dataname="IDCard" isHide="1" style="display:none;">身份证</th>
-                <th dataname="Mobile" isHide="1" style="display:none;">手机</th>
+                @*
                 <th dataname="MakeDriverShopName" isHide="1" style="display:none;">驾校</th>
-                <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>
+                <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>*@
                 @*<th dataname="MakeDriverShopName">制卡驾校</th>
                 <th dataname="TrianName">培训方式</th>*@
                 <th dataname="ThemeOneDate" datatype="jsondateNo">科一时间</th>
@@ -162,6 +163,15 @@
                 <th dataname="ThemeFourDate" datatype="jsondateNo">科四时间</th>
                 <th render="ShowThemeFourPass">通过</th>
                 <th render="ShowState">状态</th>
+
+
+                <th dataname="IDCard" isHide="1" style="display:none;">身份证</th>
+                <th dataname="Mobile" isHide="1" style="display:none;">手机</th>
+                <th dataname="ReferenceName" isHide="1" style="display:none;">推荐人</th>
+                <th dataname="EnteredDate" datatype="jsondateNo">报名日期</th>
+                <th dataname="WantDriverShopName" isHide="1" style="display:none;">意向驾校</th>
+                <th dataname="MakeCardDate" datatype="jsondateNo"  isHide="1" style="display:none;">制卡日期</th>
+
                 <th type="eventlist"></th>
             </tr>
         </thead>
@@ -505,7 +515,7 @@
                 {
                     className: "am-text-secondary",
                     icon: "icon-search",
-                    name: "记录",
+                    name: "考试记录",
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,

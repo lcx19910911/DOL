@@ -79,21 +79,6 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var limitFlags = entities.Menu.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).Select(x => x.LimitFlag ?? 0).ToList();
-                var limitFlagAll = 0L;
-                // 获取所有角色位值并集
-                limitFlags.ForEach(x => limitFlagAll |= x);
-                var limitFlag = 0L;
-                // 从低位遍历是否为空
-                for (var i = 0; i < 64; i++)
-                {
-                    if ((limitFlagAll & (1 << i)) == 0)
-                    {
-                        limitFlag = 1 << i;
-                        break;
-                    }
-                }
-                model.LimitFlag = limitFlag;
                 model.ID = Guid.NewGuid().ToString("N");
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
@@ -235,7 +220,7 @@ namespace DOL.Service
                 menuList = group.OrderBy(x=>x.Sort).Select(
                     x =>
                 {
-                    if (this.Client.LoginUser.MenuFlag == -1 || (this.Client.LoginUser.MenuFlag & x.LimitFlag) != 0)
+                    if (this.Client.LoginUser.IsAdmin|| (Cache_Get_UserMenu().Contains(x.ID)))
                     {
                         return new DOL.Model.MenuItem()
                         {
@@ -319,7 +304,7 @@ namespace DOL.Service
                     x => new ZTreeNode()
                     {
                         name = x.Name,
-                        value = x.LimitFlag.ToString(),
+                        value = x.ID,
                         children = Get_MenuZTreeFlagChildren(x.ID, groups)
                     }).ToList();
             }

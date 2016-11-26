@@ -150,7 +150,23 @@
             }
         }
 
+        //加载搞笑
+        function LoadSchool() {
+                $.Nuoya.action("/School/GetSelectItem", {}, function (json) {
+                    $(json).each(function () {
+                        $("#searchDomain select[name='SchoolID']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                    });
+                });
+        }
 
+        function LoadDriverShop() {
+            $.Nuoya.action("/DriverShop/SelectItem", {}, function (json) {
+                $(json).each(function () {
+                    $("#searchDomain select[name='WantDriverShopID']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                    $("#searchDomain select[name='MakeDriverShopID']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                });
+            });
+        }
 
         //根据报名点加载推荐人
         function LoadReference(isIndex, obj, setVaule) {
@@ -558,11 +574,11 @@
         function LoadThemeTimeCodeSelectItem(obj, key) {
             if (key == 1) {
                 $(obj).append("<option value='1' selected>已完成</option>");
-                $(obj).append("<option value='2' >未完成</option>");
-            }
-            else if (key == 2) {
-                $(obj).append("<option value='1' selected>已完成</option>");
                 $(obj).append("<option value='2'>未完成</option>");
+            }
+            else {
+                $(obj).append("<option value='1' >已完成</option>");
+                $(obj).append("<option value='2' selected>未完成</option>");
             }
         }
 

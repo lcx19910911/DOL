@@ -128,27 +128,27 @@ namespace DOL.Service
                 var list = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
-                var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
+               // var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
                 var enteredPointDic = Cache_Get_EnteredPoint_Dic();
                 var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
-                var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
+                //var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
-                var userDic = Cache_Get_UserDic();
+                //var userDic = Cache_Get_UserDic();
                 var studentIdList = list.Select(x => x.ID).ToList();
                 var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x=>x.Key);
                 list.ForEach(x =>
                 {
                     //报名地
-                    if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
-                        x.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
+                   // if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
+                     //   x.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
 
                     //证书
-                    if (!string.IsNullOrEmpty(x.EnteredPointID) && enteredPointDic.ContainsKey(x.CertificateID))
+                    if (!string.IsNullOrEmpty(x.EnteredPointID) && enteredPointDic.ContainsKey(x.EnteredPointID))
                         x.EnteredPointName = enteredPointDic[x.EnteredPointID]?.Name;
 
                     //制卡地
-                    if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
-                        x.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
+                    //if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
+                       // x.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
                     //培训方式
                     if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
                         x.TrianName = trianDic[x.TrianID]?.Value;
@@ -160,23 +160,23 @@ namespace DOL.Service
                     if (!string.IsNullOrEmpty(x.ReferenceID) && referenceDic.ContainsKey(x.ReferenceID))
                         x.ReferenceName = referenceDic[x.ReferenceID]?.Name;
                     //支付方式
-                    if (!string.IsNullOrEmpty(x.PayMethodID) && payMethodDic.ContainsKey(x.PayMethodID))
-                        x.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
+                    //if (!string.IsNullOrEmpty(x.PayMethodID) && payMethodDic.ContainsKey(x.PayMethodID))
+                       // x.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
 
                     //省
-                    if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
-                        x.ProvinceName = areaDic[x.ProvinceCode]?.Value;
+                    //if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
+                       // x.ProvinceName = areaDic[x.ProvinceCode]?.Value;
                     //省
-                    if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
-                        x.CityName = areaDic[x.CityCode]?.Value;
+                   // if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
+                       // x.CityName = areaDic[x.CityCode]?.Value;
 
                     //证书
                     if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
                         x.CertificateName = cerDic[x.CertificateID]?.Value;
 
                     //修改人
-                    if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
-                        x.UpdaterName = userDic[x.UpdaterID]?.Name;
+                    //if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
+                       // x.UpdaterName = userDic[x.UpdaterID]?.Name;
 
                     if (examDic.ContainsKey(x.ID))
                         x.ExamCount = examDic[x.ID].Where(y=>y.Code==x.NowTheme).Count()+1;
@@ -827,23 +827,35 @@ namespace DOL.Service
                 var list = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var coachDic = Cache_Get_CoachList_Dic();
-                var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
-                var userDic = Cache_Get_UserDic();
-
+                //var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
+                //var userDic = Cache_Get_UserDic();
+                var referenceDic = Cache_Get_ReferenceList_Dic();
                 var studentIdList = list.Select(x => x.ID).ToList();
+                var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
                 var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x => x.Key);
                 list.ForEach(x =>
                 {
+                    //制卡驾校
+                    if (!string.IsNullOrEmpty(x.WantDriverShopID) && driverShopDic.ContainsKey(x.WantDriverShopID))
+                        x.WantDriverShopName = driverShopDic[x.WantDriverShopID]?.Name;
+
+                    //推荐人
+                    if (!string.IsNullOrEmpty(x.ReferenceID) && referenceDic.ContainsKey(x.ReferenceID))
+                        x.ReferenceName = referenceDic[x.ReferenceID]?.Name;
+
                     if (examDic.ContainsKey(x.ID))
                         x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
 
                     //培训方式
-                    if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
-                        x.TrianName = trianDic[x.TrianID]?.Value;
+                    //if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
+                    //x.TrianName = trianDic[x.TrianID]?.Value;
                     //制卡驾校
                     if (!string.IsNullOrEmpty(x.MakeDriverShopID) && driverShopDic.ContainsKey(x.MakeDriverShopID))
                         x.MakeDriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
 
+                    //证书
+                    if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
+                        x.CertificateName = cerDic[x.CertificateID]?.Value;
                     //科目二教练
                     if (!string.IsNullOrEmpty(x.ThemeThreeCoachID) && coachDic.ContainsKey(x.ThemeThreeCoachID))
                         x.ThemeThreeCoachName = coachDic[x.ThemeThreeCoachID]?.Name;
@@ -851,15 +863,126 @@ namespace DOL.Service
                     if (!string.IsNullOrEmpty(x.ThemeTwoCoachID) && coachDic.ContainsKey(x.ThemeTwoCoachID))
                         x.ThemeTwoCoachName = coachDic[x.ThemeTwoCoachID]?.Name;
                     //修改人
-                    if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
-                        x.UpdaterName = userDic[x.UpdaterID]?.Name;
+                    //if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
+                        //x.UpdaterName = userDic[x.UpdaterID]?.Name;
                 });
 
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
 
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="name">名称 - 搜索项</param>
+        /// <param name="no">编号 - 搜索项</param>
+        /// <returns></returns>
+        public WebResult<PageList<Student>> Get_StudentSchoolPageList(
+            int pageIndex,
+            int pageSize,
+            string name,
+            string schoolID,
+            string collegeID,
+            string majorID,
+            string age,
+            string wantDriverShopID,
+            string makeDriverShopID,
+            string provinceCode,
+            string cityCode
+            )
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var query = Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                if (name.IsNotNullOrEmpty())
+                {
+                    query = query.Where(x => x.Name.Contains(name));
+                }
+                if (schoolID.IsNotNullOrEmpty() && schoolID != "0")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.SchoolID) && x.SchoolID.Equals(schoolID));
+                }
+                if (collegeID.IsNotNullOrEmpty() && collegeID != "0")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.CollegeID) && x.CollegeID.Equals(collegeID));
+                }
+                if (majorID.IsNotNullOrEmpty() && majorID != "0")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.MajorID) && x.MajorID.Equals(majorID));
+                }
+                if (age.IsNotNullOrEmpty())
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.SchoolAge) && x.SchoolAge.Contains(age));
+                }
+                if (wantDriverShopID.IsNotNullOrEmpty() && wantDriverShopID != "-1")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.WantDriverShopID) && x.WantDriverShopID.Contains(wantDriverShopID));
+                }
+                if (makeDriverShopID.IsNotNullOrEmpty() && makeDriverShopID != "-1")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.MakeDriverShopID) && x.MakeDriverShopID.Contains(makeDriverShopID));
+                }
+                if (provinceCode.IsNotNullOrEmpty() && provinceCode != "0")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.ProvinceCode) && x.ProvinceCode.Contains(provinceCode));
+                }
+                if (cityCode.IsNotNullOrEmpty() && cityCode != "0")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.CityCode) && x.CityCode.Contains(cityCode));
+                }
 
+                var count = query.Count();
+                var list = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var driverShopDic = Cache_Get_DriverShopList_Dic();
+                var referenceDic = Cache_Get_ReferenceList_Dic();
+                var studentIdList = list.Select(x => x.ID).ToList();
+                var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
+                var schoolDic = Cache_Get_DataDictionary()[GroupCode.School];
+                var colelgeDic = Cache_Get_DataDictionary()[GroupCode.College];
+                var majorDic = Cache_Get_DataDictionary()[GroupCode.Major];
+                var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x => x.Key);
+                list.ForEach(x =>
+                {
+                    //意向驾校
+                    if (!string.IsNullOrEmpty(x.WantDriverShopID) && driverShopDic.ContainsKey(x.WantDriverShopID))
+                        x.WantDriverShopName = driverShopDic[x.WantDriverShopID]?.Name;
+                    //制卡驾校
+                    if (!string.IsNullOrEmpty(x.MakeDriverShopID) && driverShopDic.ContainsKey(x.MakeDriverShopID))
+                        x.MakeDriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
+                    //省
+                    if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
+                        x.ProvinceName = areaDic[x.ProvinceCode]?.Value;
+                    //省
+                    if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
+                        x.CityName = areaDic[x.CityCode]?.Value;
+
+                    //推荐人
+                    if (!string.IsNullOrEmpty(x.ReferenceID) && referenceDic.ContainsKey(x.ReferenceID))
+                        x.ReferenceName = referenceDic[x.ReferenceID]?.Name;
+
+                    if (examDic.ContainsKey(x.ID))
+                        x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
+
+                    //高校
+                    if (!string.IsNullOrEmpty(x.SchoolID) && schoolDic.ContainsKey(x.SchoolID))
+                        x.SchoolName = schoolDic[x.SchoolID]?.Value;
+                    //院校
+                    if (!string.IsNullOrEmpty(x.CollegeID) && colelgeDic.ContainsKey(x.CollegeID))
+                        x.CollegeName = colelgeDic[x.CollegeID]?.Value;
+                    //专业
+                    if (!string.IsNullOrEmpty(x.MajorID) && majorDic.ContainsKey(x.MajorID))
+                        x.MajorName = majorDic[x.MajorID]?.Value;
+
+                    //修改人
+                    //if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
+                    //x.UpdaterName = userDic[x.UpdaterID]?.Name;
+                });
+
+                return ResultPageList(list, pageIndex, pageSize, count);
+            }
+        }
 
 
 
@@ -958,7 +1081,7 @@ namespace DOL.Service
             var enteredPointList = Cache_Get_EnteredPointList();
             if (!Client.LoginUser.CoachID.IsNotNullOrEmpty())
             {
-                enteredPointList= enteredPointList.Where(x => Client.LoginUser.MenuFlag != -1 ? (Client.LoginUser.EnteredPointIDStr.IsNotNullOrEmpty() && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
+                enteredPointList= enteredPointList.Where(x =>! Client.LoginUser.IsAdmin ? (Client.LoginUser.EnteredPointIDStr.IsNotNullOrEmpty() && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
             }
             enteredPointList = enteredPointList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
             var coachList = Cache_Get_CoachList().ToList();

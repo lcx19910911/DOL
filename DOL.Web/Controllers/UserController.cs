@@ -86,16 +86,6 @@ namespace DOL.Web.Controllers
         }
 
         /// <summary>
-        /// 菜单权限
-        /// </summary>
-        /// <param name="ID"></param>
-        /// <param name="MenuFlag"></param>
-        /// <returns></returns>
-        public ActionResult UpdateMenuFlag(string ID, long MenuFlag)
-        {
-            return JResult(WebService.Update_UserMenuFlag(ID, MenuFlag));
-        }
-        /// <summary>
         /// 操作权限
         /// </summary>
         /// <param name="ID"></param>

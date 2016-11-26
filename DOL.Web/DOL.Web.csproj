@@ -296,7 +296,7 @@
     <Content Include="Views\Student\MoreInfo.cshtml" />
     <Content Include="Views\Coach\Index.cshtml" />
     <Content Include="Views\PayOrder\Drop.cshtml" />
-    <Content Include="Views\Coach\MyStudent.cshtml" />
+    <Content Include="Views\Coach\ThemeTwoStudent.cshtml" />
     <None Include="Properties\PublishProfiles\dol.pubxml" />
     <Content Include="Views\ThemeSalary\Index.cshtml" />
     <Content Include="Views\Coach\Wages.cshtml" />
@@ -307,6 +307,8 @@
     <Content Include="Views\Student\History.cshtml" />
     <Content Include="Views\EnteredPoint\Money.cshtml" />
     <Content Include="Views\School\Index.cshtml" />
+    <Content Include="Views\Student\School.cshtml" />
+    <Content Include="Views\Coach\ThemeThreeStudent.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -18,7 +18,6 @@ namespace DOL.Core
             this.ID = user.ID;
             this.Account = user.Account;
             this.Name = user.Name;
-            this.MenuFlag = user.MenuFlag;
         }
 
 

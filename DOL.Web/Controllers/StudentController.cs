@@ -42,6 +42,12 @@ namespace DOL.Web.Controllers
             return View();
         }
 
+        public ViewResult School()
+        {
+            return View();
+        }
+
+
         public ViewResult Recyle()
         {
             return View();
@@ -212,6 +218,30 @@ namespace DOL.Web.Controllers
             return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, null, no, mobile, null, null, StudentCode.DontMakeCard, null, null, null, null, true));
         }
 
+        /// <summary>
+        /// 获取客情分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="name">名称 - 搜索项</param>
+        /// <param name="no">编号 - 搜索项</param>
+        /// <returns></returns>
+        public ActionResult GetSchoolPageList(
+            int pageIndex,
+            int pageSize,
+            string name,
+            string schoolID,
+            string collegeID,
+            string majorID,
+            string age,
+            string wantDriverShopID,
+            string makeDriverShopID,
+            string provinceCode,
+            string cityCode
+            )
+        {
+            return JResult(WebService.Get_StudentSchoolPageList(pageIndex, pageSize, name,schoolID,collegeID,majorID,age, wantDriverShopID, makeDriverShopID, provinceCode,cityCode));
+        }
 
 
         /// <summary>

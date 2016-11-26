@@ -15,7 +15,7 @@ namespace DOL.Service
     public partial class WebService
     {
         string userKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "User");
-
+        string userMenuKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "UserMenu");
         /// <summary>
         /// 全局缓存
         /// </summary>
@@ -31,6 +31,23 @@ namespace DOL.Service
                     return list;
                 }
             });
+        }
+
+        /// <summary>
+        /// 全局缓存
+        /// </summary>
+        /// <returns></returns>
+        private string Cache_Get_UserMenu()
+        {
+
+                var role = Cache_Get_RoleList().Where(x=>x.ID.Equals(Client.LoginUser.RoleID)).FirstOrDefault();
+                if (role != null)
+                {
+                    return role.MenuIDStr;
+                }
+                else
+                    return "";
+
         }
 
         /// <summary>
@@ -204,7 +221,6 @@ namespace DOL.Service
                 var role = Cache_Get_RoleList().Where(x => x.ID.Equals(model.RoleID)).FirstOrDefault();
                 if(role==null)
                     return Result(false, ErrorCode.datadatabase_primarykey_not_found);
-                model.MenuFlag = role.MenuFlag;
                 model.OperateFlag = role.OperateFlag;
                 model.Password = CryptoHelper.MD5_Encrypt(model.ConfirmPassword);
                 model.ID = Guid.NewGuid().ToString("N");
@@ -246,11 +262,9 @@ namespace DOL.Service
                     var role = Cache_Get_RoleList().Where(x => x.ID.Equals(model.RoleID)).FirstOrDefault();
                     if (role == null)
                         return Result(false, ErrorCode.datadatabase_primarykey_not_found);
-                    oldEntity.MenuFlag = role.MenuFlag;
                     oldEntity.OperateFlag = role.OperateFlag;
                     oldEntity.Mobile = model.Mobile;
                     oldEntity.Name = model.Name;
-                    oldEntity.MenuFlag = model.MenuFlag;
                     oldEntity.Remark = model.Remark;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     oldEntity.UpdatedTime = DateTime.Now;
@@ -280,45 +294,6 @@ namespace DOL.Service
 
         }
 
-
-        /// <summary>
-        /// 修改
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        public WebResult<bool> Update_UserMenuFlag(string ID,long MenuFlag)
-        {
-            using (DbRepository entities = new DbRepository())
-            {
-                var oldEntity = entities.User.Find(ID);
-                if (oldEntity != null)
-                {
-                    oldEntity.MenuFlag = MenuFlag;
-                }
-                else
-                    return Result(false, ErrorCode.sys_param_format_error);
-
-                if (entities.SaveChanges() > 0)
-                {
-                    var list = Cache_Get_UserList();
-                    var index = list.FindIndex(x => x.ID.Equals(ID));
-                    if (index > -1)
-                    {
-                        list[index] = oldEntity;
-                    }
-                    else
-                    {
-                        list.Add(oldEntity);
-                    }
-                    return Result(true);
-                }
-                else
-                {
-                    return Result(false, ErrorCode.sys_fail);
-                }
-            }
-
-        }
 
 
         /// <summary>

@@ -26,12 +26,7 @@ namespace DOL.Model
         /// </summary>
         [Display(Name = "排序")]
         public int? Sort { get; set; }
-
-        /// <summary>
-        /// 权限位域值
-        /// </summary>
-        public long? LimitFlag { get; set; }
-
+        
         /// <summary>
         /// 链接
         /// </summary>

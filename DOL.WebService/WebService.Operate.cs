@@ -254,19 +254,20 @@ namespace DOL.Service
         /// <param name="menuFlag">页面flag值</param>
         /// <param name="url">相对路径</param>
         /// <returns></returns>
-        public bool IsHavePage(long menuFlag, string url)
+        public bool IsHavePage(string url)
         {
-            var menu = Cache_Get_MenuList().AsQueryable().Where(x =>!string.IsNullOrEmpty(x.Link)&&url.Contains(x.Link)).FirstOrDefault();
-
-            if (menu != null)
+            var menu = Cache_Get_MenuList().Where(x =>!string.IsNullOrEmpty(x.Link)&&x.Link.Contains(url)).FirstOrDefault();
+            if(menu == null)
             {
-                if (((long)menu.LimitFlag & menuFlag) != 0)
-                    return true;
-                else
-                    return false;
+                return true;
+            }
+            
+            if (Cache_Get_UserMenu().Contains(menu.ID))
+            {
+               return true;
             }
             else
-                return true;
+                return false;
         }
 
         /// <summary>

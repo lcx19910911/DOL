@@ -310,12 +310,16 @@ namespace DOL.Model
         [Column("SchoolID", TypeName = "char"), MaxLength(32)]
         public string SchoolID { get; set; }
 
+        [NotMapped]
+        public string SchoolName { get; set; }
         /// <summary>
         /// 学院id
         /// </summary>
         [Display(Name = "学院id")]
         [Column("CollegeID", TypeName = "char"), MaxLength(32)]
         public string CollegeID { get; set; }
+        [NotMapped]
+        public string CollegeName { get; set; }
 
         /// <summary>
         /// 专业id
@@ -323,6 +327,8 @@ namespace DOL.Model
         [Display(Name = "专业id")]
         [Column("MajorID", TypeName = "char"), MaxLength(32)]
         public string MajorID { get; set; }
+        [NotMapped]
+        public string MajorName { get; set; }
         /// <summary>
         /// 年级
         /// </summary>

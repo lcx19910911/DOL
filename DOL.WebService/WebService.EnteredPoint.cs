@@ -53,7 +53,7 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 var query = Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x=>(x.Flag&(long)GlobalFlag.Removed)==0);
-                if (Client.LoginUser.MenuFlag != -1)
+                if (Client.LoginUser.IsAdmin)
                     query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.ID));
                 if (name.IsNotNullOrEmpty())
                 {
@@ -230,7 +230,7 @@ namespace DOL.Service
             if (!string.IsNullOrEmpty(cityCode))
             {
                 //是否管理员
-                if (Client.LoginUser.MenuFlag == -1)
+                if (Client.LoginUser.IsAdmin)
                 {
                     Cache_Get_EnteredPointList().AsQueryable().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).AsNoTracking().Where(x => x.CityCode.Equals(cityCode)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
@@ -256,7 +256,7 @@ namespace DOL.Service
             }
             else
             {
-                if (Client.LoginUser.MenuFlag == -1)
+                if (Client.LoginUser.IsAdmin)
                 {
                     Cache_Get_EnteredPointList().AsQueryable().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
@@ -360,7 +360,7 @@ namespace DOL.Service
             }
             else
             {
-                if (this.Client.LoginUser.MenuFlag == -1)
+                if (this.Client.LoginUser.IsAdmin)
                     enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal).Select(x => x.ID).ToList();
                 else
                     enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).Select(x => x.ID).ToList();
@@ -450,7 +450,7 @@ namespace DOL.Service
             }
             else
             {
-                if (this.Client.LoginUser.MenuFlag == -1)
+                if (this.Client.LoginUser.IsAdmin)
                     enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal).Select(x => x.ID).ToList();
                 else
                     enteredPointIDList = Cache_Get_EnteredPointList().Where(x => x.Flag == (long)GlobalFlag.Normal && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)).Select(x => x.ID).ToList();

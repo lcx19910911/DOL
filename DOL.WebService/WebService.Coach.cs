@@ -111,10 +111,9 @@ namespace DOL.Service
                     Mobile = model.Mobile,
                     Account = model.Mobile,
                     Password = CryptoHelper.MD5_Encrypt("123456"),
-                    MenuFlag = Params.CoachMenuFlag,
                     CreaterId = Client.LoginUser.ID,
                     DepartmentID = "1",
-                    RoleID = "1",
+                    RoleID = Params.CoachRoleId,
                     UpdaterID = Client.LoginUser.ID,
                     CoachID = model.ID
                 };
@@ -148,8 +147,8 @@ namespace DOL.Service
             int pageSize,
             string name,
             string no,
-            ThemeTimeCode? themeTwoCode,
-            ThemeTimeCode? themeThreeCode
+            YesOrNoCode? code,
+            bool isTwo
             )
         {
             using (DbRepository entities = new DbRepository())
@@ -158,7 +157,6 @@ namespace DOL.Service
                     return null;
 
                 var query = Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
-                query = query.Where(x => (!string.IsNullOrEmpty(x.ThemeTwoCoachID)) || (!string.IsNullOrEmpty(x.ThemeThreeCoachID)));
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -167,31 +165,38 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.IDCard.Contains(no));
                 }
-
-                if (themeTwoCode != null && (int)themeTwoCode != -1)
+                if (isTwo)
                 {
-                    query = query.Where(x => x.ThemeTwoTimeCode.Equals(themeTwoCode));
-                }
-                if (themeThreeCode != null && (int)themeThreeCode != -1)
-                {
-                    query = query.Where(x => x.ThemeThreeTimeCode.Equals(themeThreeCode));
-                }
-                var newList = new List<Student>();
-                var list = query.ToList();
-                list.ForEach(x =>
-                {
-                    if (x.ThemeTwoCoachID.IsNotNullOrEmpty() && x.ThemeTwoCoachID.Equals(Client.LoginUser.CoachID))
+                    query = query.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(Client.LoginUser.CoachID));
+                    if (code!=null)
                     {
-                        newList.Add(x);
+                        query = query.Where(x => x.ThemeTwoPass.Equals(code));
                     }
-                    if (x.ThemeThreeCoachID.IsNotNullOrEmpty() && x.ThemeThreeCoachID.Equals(Client.LoginUser.CoachID))
+                }
+                else
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.ThemeThreeCoachID) && x.ThemeThreeCoachID.Equals(Client.LoginUser.CoachID));
+                    if (code != null)
                     {
-                        newList.Add(x);
+                        query = query.Where(x => x.ThemeTwoPass.Equals(code));
                     }
-                });
+                }
+               // var newList = new List<Student>();
+                //var list = query.ToList();
+                //list.ForEach(x =>
+                //{
+                //    if (x.ThemeTwoCoachID.IsNotNullOrEmpty() && x.ThemeTwoCoachID.Equals(Client.LoginUser.CoachID))
+                //    {
+                //        newList.Add(x);
+                //    }
+                //    if (x.ThemeThreeCoachID.IsNotNullOrEmpty() && x.ThemeThreeCoachID.Equals(Client.LoginUser.CoachID))
+                //    {
+                //        newList.Add(x);
+                //    }
+                //});
               
-                var count = newList.AsQueryable().Distinct().Count();
-                list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).Distinct().ToList();
+                var count = query.Count();
+                var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).Distinct().ToList();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
@@ -200,7 +205,7 @@ namespace DOL.Service
                 var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
                 var coachDic = Cache_Get_CoachList_Dic();
-                newList.ForEach(x =>
+                list.ForEach(x =>
                 {
                     //报名地
                     if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
@@ -239,7 +244,7 @@ namespace DOL.Service
 
                 });
 
-                return ResultPageList(newList, pageIndex, pageSize, count);
+                return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
 

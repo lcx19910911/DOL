@@ -251,45 +251,6 @@
                             }]
                         })
                     }
-                },
-                {
-                    className: "am-text-success",
-                    icon: "icon-hand-pointer-o",
-                    name: "页面权限",
-                    click: function (item) {
-                        $.Nuoya.ajaxDialog({
-                            closeViaDimmer: false,
-                            width: "500px",
-                            height: "500px",
-                            ajaxUrl: "/HtmlTemplates/User/SelectMenu.html",
-                            title: "页面权限",
-                            callback: function (e) {
-                                $.Nuoya.action("/User/Find", { id: item.ID }, function (model) {
-                                    $("#form [name=MenuFlagSelect]").ztreeSelect($("[name=MenuFlag]"), "/Menu/GetZTreeFlagChildren", model != null ? model.MenuFlag : 0, true, true);
-                                });
-                            },
-                            buttons: [{
-                                label: "保存",
-                                callback: function (e) {
-
-                                    $.Nuoya.form("form").ajaxSubmit({
-                                        ajaxUrl: "/User/UpdateMenuFlag",
-                                        params: {
-                                            ID: item.ID
-                                        },
-                                        callback: function (data) {
-                                            if (!data.ErrorDesc) {
-                                                e.hide();
-                                                grid.reload();
-                                            }
-                                            else
-                                                $.Nuoya.alert(data.ErrorDesc);
-                                        }
-                                    });
-                                }
-                            }]
-                        })
-                    }                    
                 }
                 ,
                 {

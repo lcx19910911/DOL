@@ -69,7 +69,9 @@
             });
         }
         function formInit(dataitem) {
-           $("[name=MenuFlagSelect]").ztreeSelect($("[name=MenuFlag]"), "/Menu/GetZTreeFlagChildren", dataitem != null ? dataitem.MenuFlag : 0, true, true);
+            $("[name='MenuIDStrSelect']").ztreeSelect($("[name='MenuIDStr']"), "/Menu/GetZTreeFlagChildren", dataitem != null ? dataitem.EnteredPointIDStr : 0, true, false);
+           // $("[name=MenuIDStrSelect]").ztreeSelect($("[name=MenuIDStr]"), "/Menu/GetZTreeFlagChildren", "", true, false);
+
             //添加表单验证
             $.Nuoya.form("form").validate({
                 rules: {

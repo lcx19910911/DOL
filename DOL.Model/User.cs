@@ -23,9 +23,9 @@ namespace DOL.Model
         public string RoleID { get; set; }
 
         /// <summary>
-        /// 菜单权限 
+        /// 是否管理员
         /// </summary>
-        public long? MenuFlag { get; set; }
+        public bool IsAdmin { get; set; }
 
         /// <summary>
         /// 操作权限

@@ -24,7 +24,8 @@ namespace DOL.Model
         /// <summary>
         /// 页面权限
         /// </summary>
-        public long? MenuFlag { get; set; }
+        [Column("MenuIDStr", TypeName = "text")]
+        public string MenuIDStr { get; set; }
 
         /// <summary>
         /// 操作权限

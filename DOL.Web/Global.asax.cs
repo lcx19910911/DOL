@@ -48,7 +48,7 @@ namespace DOL.Web
                         Mobile = "11111111111",
                         Account = "admin",
                         Password = CryptoHelper.MD5_Encrypt("123456"),
-                        MenuFlag = -1,
+                        IsAdmin = true,
                         CreaterId = "1",
                         OperateFlag = -1,
                         DepartmentID = "1",

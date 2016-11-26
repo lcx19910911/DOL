@@ -20,7 +20,11 @@ namespace DOL.Web.Controllers
             return View();
         }
 
-        public ViewResult MyStudent()
+        public ViewResult ThemeTwoStudent()
+        {
+            return View();
+        }
+        public ViewResult ThemeThreeStudent()
         {
             return View();
         }
@@ -129,11 +133,20 @@ namespace DOL.Web.Controllers
         /// 获取分页列表
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetMyStudentPageList(int pageIndex, int pageSize, string name, string no,
-            ThemeTimeCode? themeTwoCode,
-            ThemeTimeCode? themeThreeCode)
+        public ActionResult GetThemeTwoPageList(int pageIndex, int pageSize, string name, string no,
+            YesOrNoCode? code)
         {
-            return JResult(WebService.Get_MyStudenPageList(pageIndex, pageSize, name, no, themeTwoCode, themeThreeCode));
+            return JResult(WebService.Get_MyStudenPageList(pageIndex, pageSize, name, no, code, true));
+        }
+
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetThemeThreePageList(int pageIndex, int pageSize, string name, string no,
+            YesOrNoCode? code )
+        {
+            return JResult(WebService.Get_MyStudenPageList(pageIndex, pageSize, name, no, code, false));
         }
 
 

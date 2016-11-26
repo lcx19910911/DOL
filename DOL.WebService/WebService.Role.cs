@@ -138,7 +138,7 @@ namespace DOL.Service
                 var oldEntity = entities.Role.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    oldEntity.MenuFlag = model.MenuFlag;
+                    oldEntity.MenuIDStr = model.MenuIDStr;
                     oldEntity.Remark = model.Remark;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.Name = model.Name;
