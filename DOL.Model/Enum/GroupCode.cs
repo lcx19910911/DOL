@@ -33,5 +33,14 @@ namespace DOL.Model
 
         [Description("收款账户")]
         Account = 6,
+
+        [Description("学校")]
+        School = 7,
+
+        [Description("学院")]
+        College = 8,
+
+        [Description("专业")]
+        Major = 9,
     }
 }

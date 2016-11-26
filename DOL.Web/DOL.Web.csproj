@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="HtmlTemplates\School\Update.html" />
     <Content Include="HtmlTemplates\Coach\Update.html" />
     <Content Include="HtmlTemplates\DataDictionary\Update.html" />
     <Content Include="HtmlTemplates\Department\Update.html" />
@@ -240,6 +241,7 @@
     <Compile Include="App_Start\LoginFilterAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccoutController.cs" />
+    <Compile Include="Controllers\SchoolController.cs" />
     <Compile Include="Controllers\DataDictionaryController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\AreaController.cs" />
@@ -304,6 +306,7 @@
     <Content Include="Views\Student\Recyle.cshtml" />
     <Content Include="Views\Student\History.cshtml" />
     <Content Include="Views\EnteredPoint\Money.cshtml" />
+    <Content Include="Views\School\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -9,10 +9,10 @@ using System.Web.Mvc;
 namespace DOL.Web.Controllers
 {
     [LoginFilter]
-    public class AreaController : BaseController
+    public class SchoolController : BaseController
     {
 
-        public ViewResult Index(string areacode)
+        public ViewResult Index()
         {
             return View();
         }
@@ -25,6 +25,7 @@ namespace DOL.Web.Controllers
         public JsonResult Add(DataDictionary entity)
         {
             ModelState.Remove("ID");
+            ModelState.Remove("Key");
             if (ModelState.IsValid)
             {
                 var result = WebService.Add_DataDictionary(entity);
@@ -43,6 +44,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public JsonResult Update(DataDictionary entity)
         {
+            ModelState.Remove("Key");
             if (ModelState.IsValid)
             {
                 var result = WebService.Update_DataDictionary(entity);
@@ -63,9 +65,9 @@ namespace DOL.Web.Controllers
         /// <param name="key"> 搜索项</param>
         /// <param name="value">搜索项</param>
         /// <returns></returns>
-        public ActionResult GetPageList(int pageIndex, int pageSize, string key, string value,string parentkey)
+        public ActionResult GetPageList(int pageIndex, int pageSize, string key, string value,string parentkey,GroupCode code)
         {
-            return JResult(WebService.Get_GroupPageList(pageIndex, pageSize, parentkey, GroupCode.Area, key, value));
+            return JResult(WebService.Get_GroupPageList(pageIndex, pageSize, parentkey, code, key, value));
         }
 
 
@@ -90,23 +92,13 @@ namespace DOL.Web.Controllers
         }
 
 
-
         /// <summary>
         /// 获取地区下拉框
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetAreaCodeSelectItem(string value)
+        public ActionResult GetSelectItem(string value,GroupCode code=GroupCode.School)
         {
-            return JResult(WebService.Get_AreaList(value));
-        }
-
-        /// <summary>
-        /// 根据身份证
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetByCityCode(string cityCode)
-        {
-            return JResult(WebService.Get_ByCityCode(cityCode));
+            return JResult(WebService.Get_SchoolList(value,code));
         }
 
     }

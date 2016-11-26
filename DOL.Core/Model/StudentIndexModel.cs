@@ -57,5 +57,23 @@ namespace DOL.Core
         /// 教练员
         /// </summary>
         public List<Coach> CoachList { get; set; }
+
+
+        /// <summary>
+        /// 学校
+        /// </summary>
+        public List<SelectItem> SchoolList { get; set; }
+
+        /// <summary>
+        /// 学院
+        /// </summary>
+        public List<SelectItem> CollegeList { get; set; }
+
+
+        /// <summary>
+        /// 专业
+        /// </summary>
+        public List<SelectItem> MajorList { get; set; }
+
     }
 }

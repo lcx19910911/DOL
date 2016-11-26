@@ -104,6 +104,54 @@
             }
         }
 
+        //加载学院
+        function LoadCollege(isIndex, obj)
+        {
+            if (isIndex) {
+                $("#searchDomain select[name='CollegeID']").empty();
+            }
+            else {
+                $("#form select[name='CollegeID']").empty();
+            }
+            var schoolId = $(obj).val();
+            if (schoolId != "" && schoolId != null) {
+                $.Nuoya.action("/School/GetSelectItem", { value: schoolId,code:8 }, function (json) {
+                    $(json).each(function () {
+                        if (isIndex) {
+                            $("#searchDomain select[name='CollegeID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='CollegeID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                    });
+                });
+            }
+        }
+        //下载专业
+        function LoadMajor(isIndex, obj) {
+            if (isIndex) {
+                $("#searchDomain select[name='MajorID']").empty();
+            }
+            else {
+                $("#form select[name='MajorID']").empty();
+            }
+            var collegeId = $(obj).val();
+            if (collegeId != "" && collegeId != null) {
+                $.Nuoya.action("/School/GetSelectItem", { value: collegeId, code: 9 }, function (json) {
+                    $(json).each(function () {
+                        if (isIndex) {
+                            $("#searchDomain select[name='MajorID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='MajorID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                    });
+                });
+            }
+        }
+
+
+
         //根据报名点加载推荐人
         function LoadReference(isIndex, obj, setVaule) {
             if (isIndex) {
@@ -165,7 +213,7 @@
         }
         //加载学员信息的下拉框集合 
         function LoadItemList(isIndex, dataitem,callBack) {
-            $.Nuoya.action("/Student/GetSelectItemList", {isAll:dataitem!=null,dsid:dataitem!=null?dataitem.MakeDriverShopID:null}, function (json) {
+            $.Nuoya.action("/Student/GetSelectItemList", { isAll: dataitem != null,id:dataitem!=null?dataitem.ID:""}, function (json) {
                 $(json.ReferenceList).each(function () {
                     if (isIndex) {
                         $("#searchDomain select[name='ReferenceID']").append("<option  value='" + this.ID + "'>" + this.Name + "</option>");
@@ -260,6 +308,40 @@
                             $("#form select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
                         } else {
                             $("#form select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                        }
+                    }
+                });
+
+                $(json.SchoolList).each(function () {
+                    if (isIndex) {
+                    }
+                    else {
+                        if (dataitem != null && dataitem.SchoolID == this.Value) {
+                            $("#form select[name='SchoolID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        } else {
+                            $("#form select[name='SchoolID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                    }
+                });
+                $(json.CollegeList).each(function () {
+                    if (isIndex) {
+                    }
+                    else {
+                        if (dataitem != null && dataitem.CollegeID == this.Value) {
+                            $("#form select[name='CollegeID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        } else {
+                            $("#form select[name='CollegeID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                    }
+                });
+                $(json.MajorList).each(function () {
+                    if (isIndex) {
+                    }
+                    else {
+                        if (dataitem != null && dataitem.MajorID == this.Value) {
+                            $("#form select[name='MajorID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        } else {
+                            $("#form select[name='MajorID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
                         }
                     }
                 });

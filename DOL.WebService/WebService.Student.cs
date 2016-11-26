@@ -141,6 +141,11 @@ namespace DOL.Service
                     //报名地
                     if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
                         x.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
+
+                    //证书
+                    if (!string.IsNullOrEmpty(x.EnteredPointID) && enteredPointDic.ContainsKey(x.CertificateID))
+                        x.EnteredPointName = enteredPointDic[x.EnteredPointID]?.Name;
+
                     //制卡地
                     if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
                         x.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
@@ -891,6 +896,18 @@ namespace DOL.Service
                 {
                     model.State = StudentCode.DontMakeCard;
                 }
+                if (model.SchoolID.IsNotNullOrEmpty() && model.SchoolID.Equals("-1"))
+                {
+                    model.SchoolID = null;
+                }
+                if (model.CollegeID.IsNotNullOrEmpty() && model.CollegeID.Equals("0"))
+                {
+                    model.CollegeID = null;
+                }
+                if (model.MajorID.IsNotNullOrEmpty() && model.MajorID.Equals("0"))
+                {
+                    model.MajorID = null;
+                }
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
                 model.UpdaterID = Client.LoginUser.ID;
@@ -928,13 +945,14 @@ namespace DOL.Service
         /// 获取搜索集合
         /// </summary>
         /// <returns></returns>
-        public WebResult<StudentIndexModel> Get_SelectItemList(string dsid, bool isAll)
+        public WebResult<StudentIndexModel> Get_SelectItemList(string id, bool isAll)
         {
             var referenceList = Cache_Get_ReferenceList();
             if (!isAll)
             {
                 referenceList = referenceList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
             }
+            
             var driverShopList = Cache_Get_DriverShopList().ToList();
             driverShopList = driverShopList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
             var enteredPointList = Cache_Get_EnteredPointList().Where(x => Client.LoginUser.MenuFlag != -1 ? (Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
@@ -946,6 +964,17 @@ namespace DOL.Service
             //    coachList = coachList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.DriverShopID.Equals(dsid)).ToList();
             //else
             coachList = coachList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+            var majorList = new List<SelectItem>();
+            var collegeList = new List<SelectItem>();
+            if (id != null)
+            {
+                var student = Cache_Get_StudentList_Dic().ContainsKey(id) ? Cache_Get_StudentList_Dic()[id] : null;
+                if (student != null)
+                {
+                    collegeList = Get_DataDictorySelectItem(GroupCode.College, x => (x.ParentKey == student.SchoolID));
+                    majorList = Get_DataDictorySelectItem(GroupCode.Major, x => (x.ParentKey == student.CollegeID));
+                }
+            }
             return Result(new StudentIndexModel()
             {
                 ReferenceList = referenceList,
@@ -956,7 +985,10 @@ namespace DOL.Service
                 PayMethodList = Get_DataDictorySelectItem(GroupCode.PayMethod),
                 TrainList = Get_DataDictorySelectItem(GroupCode.Train),
                 PayTypeList = Get_DataDictorySelectItem(GroupCode.PayType),
-                AccountList = Get_DataDictorySelectItem(GroupCode.Account)
+                AccountList = Get_DataDictorySelectItem(GroupCode.Account),
+                CollegeList= collegeList,
+                MajorList = majorList,
+                SchoolList = Get_DataDictorySelectItem(GroupCode.School),
             });
         }
 
@@ -1051,6 +1083,25 @@ namespace DOL.Service
                     //    oldEntity.NowTheme = ThemeCode.Four;
                     //    oldEntity.State = StudentCode.Graduate;
                     //}
+
+                  
+                    oldEntity.SchoolID = model.SchoolID;
+                    oldEntity.CollegeID = model.CollegeID;
+                    oldEntity.MajorID = model.MajorID;
+                    oldEntity.SchoolAge = model.SchoolAge;
+                    if (model.SchoolID.IsNotNullOrEmpty() && model.SchoolID.Equals("-1"))
+                    {
+                        oldEntity.SchoolID = null;
+                    }
+                    if (model.CollegeID.IsNotNullOrEmpty() && model.CollegeID.Equals("0"))
+                    {
+                        oldEntity.CollegeID = null;
+                    }
+                    if (model.MajorID.IsNotNullOrEmpty() && model.MajorID.Equals("0"))
+                    {
+                        oldEntity.MajorID = null;
+                    }
+
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     string afterJSon = oldEntity.ToJson();

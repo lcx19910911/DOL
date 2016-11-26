@@ -293,6 +293,48 @@ namespace DOL.Model
         [Column("MakeCardRemark", TypeName = "varchar")]
         public string MakeCardRemark { get; set; }
 
+
+        /// <summary>
+        /// 手机号
+        /// </summary>
+        [Display(Name = "手机号")]
+        [MaxLength(11)]
+        [RegularExpression(@"((\d{11})$)", ErrorMessage = "手机格式不正确")]
+        public string ConactMobile { get; set; }
+
+
+        /// <summary>
+        /// 高校id
+        /// </summary>
+        [Display(Name = "高校id")]
+        [Column("SchoolID", TypeName = "char"), MaxLength(32)]
+        public string SchoolID { get; set; }
+
+        /// <summary>
+        /// 学院id
+        /// </summary>
+        [Display(Name = "学院id")]
+        [Column("CollegeID", TypeName = "char"), MaxLength(32)]
+        public string CollegeID { get; set; }
+
+        /// <summary>
+        /// 专业id
+        /// </summary>
+        [Display(Name = "专业id")]
+        [Column("MajorID", TypeName = "char"), MaxLength(32)]
+        public string MajorID { get; set; }
+        /// <summary>
+        /// 年级
+        /// </summary>
+        [Display(Name = "年级")]
+        [Column("SchoolAge", TypeName = "varchar"), MaxLength(32)]
+        public string SchoolAge { get; set; }
+
+        /// <summary>
+        /// 生源
+        /// </summary>
+        public FromCode From { get; set; }
+
         #endregion
 
         #region 科目情况

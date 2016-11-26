@@ -50,6 +50,7 @@
     <Compile Include="Dto\MenuItem.cs" />
     <Compile Include="DriverShop.cs" />
     <Compile Include="Enum\ErrorCode.cs" />
+    <Compile Include="Enum\FromCode.cs" />
     <Compile Include="Enum\LogCode.cs" />
     <Compile Include="Enum\GenderCode.cs" />
     <Compile Include="Enum\GlobalFlag.cs" />

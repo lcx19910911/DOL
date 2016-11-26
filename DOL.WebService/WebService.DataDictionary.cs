@@ -50,7 +50,7 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<DataDictionary>> Get_AreaPageList(int pageIndex, int pageSize, string parentKey, GroupCode group, string key, string value)
+        public WebResult<PageList<DataDictionary>> Get_GroupPageList(int pageIndex, int pageSize, string parentKey, GroupCode group, string key, string value)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -74,12 +74,26 @@ namespace DOL.Service
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.Sort).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 list.ForEach(x=>{
-                    if(!string.IsNullOrEmpty(x.ParentKey))
-                        x.ParentName = Cache_Get_DataDictionary()[group][x.ParentKey.Trim()]?.Value;
+                    if (!string.IsNullOrEmpty(x.ParentKey))
+                    {
+                        if (x.GroupCode == GroupCode.Area)
+                        {
+                            x.ParentName = Cache_Get_DataDictionary()[group][x.ParentKey.Trim()]?.Value;
+                        }
+                        else if (x.GroupCode == GroupCode.College)
+                        {
+                            x.ParentName = Cache_Get_DataDictionary()[GroupCode.School][x.ParentKey.Trim()]?.Value;
+                        }
+                        else if (x.GroupCode == GroupCode.Major)
+                        {
+                            x.ParentName = Cache_Get_DataDictionary()[GroupCode.College][x.ParentKey.Trim()]?.Value;
+                        }
+                    }
                 });
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
+        
 
         /// <summary>
         /// 获取分页列表
@@ -122,7 +136,13 @@ namespace DOL.Service
             {
                 if(entities.DataDictionary.Where(x=>x.GroupCode==GroupCode.Area&&x.Key.Equals(model.Key)).Any())
                     return Result(false, ErrorCode.sys_param_format_error);
+
                 model.ID = Guid.NewGuid().ToString("N");
+                if (model.GroupCode == GroupCode.School || model.GroupCode == GroupCode.School || model.GroupCode == GroupCode.School)
+                {
+                    if (entities.DataDictionary.Where(x => x.GroupCode == model.GroupCode && x.Value.Equals(model.Value)).Any())
+                        return Result(false, ErrorCode.datadatabase_name_had);
+                }
                 if(string.IsNullOrEmpty(model.Key))
                     model.Key = model.ID;
                 entities.DataDictionary.Add(model);
@@ -180,6 +200,11 @@ namespace DOL.Service
             {
                 if (entities.DataDictionary.Where(x => x.GroupCode == GroupCode.Area && x.Key.Equals(model.Key)&&!x.ID.Equals(model.ID)).Any())
                     return Result(false, ErrorCode.sys_param_format_error);
+                if (model.GroupCode == GroupCode.School || model.GroupCode == GroupCode.School || model.GroupCode == GroupCode.School)
+                {
+                    if (entities.DataDictionary.Where(x => x.GroupCode == model.GroupCode && x.Value.Equals(model.Value) && !x.ID.Equals(model.ID)).Any())
+                        return Result(false, ErrorCode.datadatabase_name_had);
+                }
                 var oldEntity = entities.DataDictionary.Find(model.ID);
                 if (oldEntity != null)
                 {
@@ -187,7 +212,8 @@ namespace DOL.Service
                         oldEntity.Key = model.ID;
                     oldEntity.ParentKey = model.ParentKey;
                     oldEntity.Sort = model.Sort;
-                    oldEntity.Key = model.Key;
+                    if(model.Key.IsNotNullOrEmpty())
+                        oldEntity.Key = model.Key;
                     oldEntity.Remark = model.Remark;
                     oldEntity.Value = model.Value;
                 }
@@ -259,9 +285,27 @@ namespace DOL.Service
         /// </summary>
         /// <param name="value">地区编码</param>
         /// <returns></returns>
+        public List<SelectItem> Get_SchoolList(string parentId,GroupCode code)
+        {
+            var query = Cache_Get_DataDictionary()[code].Values.OrderByDescending(x => x.Sort).ToList().AsQueryable();
+            if (!string.IsNullOrEmpty(parentId) && !parentId.Equals("0"))
+                query = query.Where(x => !string.IsNullOrEmpty(x.ParentKey) && x.ParentKey.Trim().Equals(parentId));
+            else
+                query = query.Where(_ => string.IsNullOrEmpty(_.ParentKey));
+            var list = query.ToList();
+            var itemList = list.Select(x => new SelectItem() { Value = x.Key, Text = x.Value }).ToList();
+            itemList.Insert(0, new SelectItem() { Value = "0", Text = "点击选择..." });
+            return itemList;
+        }
+
+        /// <summary>
+        /// 获取地区数据
+        /// </summary>
+        /// <param name="value">地区编码</param>
+        /// <returns></returns>
         public Tuple<string,string> Get_ByCityCode(string cityCode)
         {
-
+            
             var provniceName = GetValue(GroupCode.Area, cityCode.Substring(0, 2) + "0000");
             var cityName = GetValue(GroupCode.Area, cityCode);
             return new Tuple<string, string>(provniceName, cityName);
@@ -273,21 +317,38 @@ namespace DOL.Service
         /// </summary>
         /// <param name="group"></param>
         /// <returns></returns>
-        public List<SelectItem> Get_DataDictorySelectItem(GroupCode group)
+        public List<SelectItem> Get_DataDictorySelectItem(GroupCode group, Func<DataDictionary, bool> predicate = null)
         {
             var list = new List<SelectItem>();
             var dataDic = Cache_Get_DataDictionary();
             if (dataDic.Keys.Contains(group))
             {
                 var dic = dataDic[group];
-                dic.Values.OrderByDescending(x=>x.Sort).ToList().ForEach(x =>
+                var itemList = dic.Values;
+                if(predicate != null)
                 {
-                    list.Add(new SelectItem()
-                    {
-                        Text = x.Value,
-                        Value = x.Key
-                    });
-                });
+                   itemList.Where(x=>predicate(x)).ToList().ForEach(x =>
+                   {
+                       list.Add(new SelectItem()
+                       {
+                           Text = x.Value,
+                           Value = x.Key,
+                           ParentKey=x.ParentKey
+                       });
+                   }); 
+                }
+                else
+                {
+                    itemList.OrderByDescending(x => x.Sort).ToList().ForEach(x =>
+                      {
+                          list.Add(new SelectItem()
+                          {
+                              Text = x.Value,
+                              Value = x.Key,
+                              ParentKey = x.ParentKey
+                          });
+                      });
+                }
                 return list;
             }
             else
