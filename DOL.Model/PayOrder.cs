@@ -203,5 +203,8 @@ namespace DOL.Model
         public string Remark { get; set; }
         [NotMapped]
         public StudentCode State { get; set; }
+
+        [NotMapped]
+        public long StudentFlag { get; set; }
     }
 }

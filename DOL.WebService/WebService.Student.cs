@@ -955,8 +955,11 @@ namespace DOL.Service
             
             var driverShopList = Cache_Get_DriverShopList().ToList();
             driverShopList = driverShopList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
-            var enteredPointList = Cache_Get_EnteredPointList().Where(x => Client.LoginUser.MenuFlag != -1 ? (Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
-
+            var enteredPointList = Cache_Get_EnteredPointList();
+            if (!Client.LoginUser.CoachID.IsNotNullOrEmpty())
+            {
+                enteredPointList= enteredPointList.Where(x => Client.LoginUser.MenuFlag != -1 ? (Client.LoginUser.EnteredPointIDStr.IsNotNullOrEmpty() && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
+            }
             enteredPointList = enteredPointList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
             var coachList = Cache_Get_CoachList().ToList();
 
@@ -1053,6 +1056,8 @@ namespace DOL.Service
                     oldEntity.MakeDriverShopID = model.MakeDriverShopID;
                     oldEntity.MakeCardRemark = model.MakeCardRemark;
                     oldEntity.CertificateID = model.CertificateID;
+                    oldEntity.ThemeTwoTimeCode = model.ThemeTwoTimeCode;
+                    oldEntity.ThemeThreeTimeCode = model.ThemeThreeTimeCode;
 
                     oldEntity.ThemeOneDate = model.ThemeOneDate;
                     oldEntity.ThemeTwoPass = model.ThemeOnePass;
@@ -1067,10 +1072,7 @@ namespace DOL.Service
 
                     oldEntity.ThemeFourDate = model.ThemeFourDate;
                     oldEntity.ThemeFourPass = model.ThemeFourPass;
-
-                    oldEntity.ThemeTwoTimeCode = model.ThemeTwoTimeCode;
-                    oldEntity.ThemeThreeTimeCode = model.ThemeThreeTimeCode;
-
+                    
                     oldEntity.MakeCardDate = model.MakeCardDate;
                     //if (model.ThemeOnePass == YesOrNoCode.Yes)
                     //    oldEntity.NowTheme = ThemeCode.One;
@@ -1164,7 +1166,7 @@ namespace DOL.Service
                     //}
                     //修改前
                  
-                    oldEntity.ThemeThreeCoachID = themeTwoCoachID;
+                    oldEntity.ThemeThreeCoachID = themeThreeCoachID;
                     oldEntity.ThemeTwoCoachID = themeTwoCoachID;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;

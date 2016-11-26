@@ -62,6 +62,7 @@
                 <th dataname="ConfirmUserName">确认人</th>
                 <th render="ShowConfirm">确认情况</th>
                 <th render="ShowState">学员状态</th>
+                <th render="ShowStudentFlag">学员是否删除</th>
                 <th dataname="ConfirmDate" datatype="jsondate">确认日期</th>
                 <th type="eventlist"></th>
             </tr>
@@ -277,7 +278,7 @@
                     name: "删除",
                     url: "/PayOrder/Delete",
                     formula: function (model) {
-                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                        if (model.State != "5" && model.State != "6" && model.State != "7"&&model.StudentFlag!="1") {
                             return true;
                         }
                         else {

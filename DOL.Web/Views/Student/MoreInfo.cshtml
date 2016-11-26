@@ -141,21 +141,26 @@
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
+                <th type="more"></th>
                 <th dataname="Name">姓名</th>
-                <th dataname="IDCard">身份证</th>
-                <th dataname="Mobile">制卡手机</th>
-                <th dataname="MakeDriverShopName">制卡驾校</th>
-                <th dataname="TrianName">培训方式</th>
+                @*<th dataname="IDCard">身份证</th>
+                <th dataname="Mobile">手机</th>*@
+                <th dataname="IDCard" isHide="1" style="display:none;">身份证</th>
+                <th dataname="Mobile" isHide="1" style="display:none;">手机</th>
+                <th dataname="MakeDriverShopName" isHide="1" style="display:none;">驾校</th>
+                <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>
+                @*<th dataname="MakeDriverShopName">制卡驾校</th>
+                <th dataname="TrianName">培训方式</th>*@
                 <th dataname="ThemeOneDate" datatype="jsondateNo">科一时间</th>
-                <th render="ShowThemeOnePass">科一通过</th>
+                <th render="ShowThemeOnePass">通过</th>
                 <th dataname="ThemeTwoCoachName">科二教练</th>
                 <th dataname="ThemeTwoDate" datatype="jsondateNo">科二时间</th>
-                <th render="ShowThemeTwoPass">科二通过</th>
+                <th render="ShowThemeTwoPass">通过</th>
                 <th dataname="ThemeThreeCoachName">科三教练</th>
                 <th dataname="ThemeThreeDate" datatype="jsondateNo">科三时间</th>
-                <th render="ShowThemeThreePass">科三通过</th>
+                <th render="ShowThemeThreePass">通过</th>
                 <th dataname="ThemeFourDate" datatype="jsondateNo">科四时间</th>
-                <th render="ShowThemeFourPass">科四通过</th>
+                <th render="ShowThemeFourPass">通过</th>
                 <th render="ShowState">状态</th>
                 <th type="eventlist"></th>
             </tr>
@@ -313,12 +318,13 @@
                 domainId: "searchDomain",
                 subId: "btnSearch"
             },
+            isHide: true,
             ajaxUrl: "/Student/GetMoreInfoPageList",
             //数据请求地址
             pageSize: 10,
             events: [
                 {
-                    className: "am-text-secondary",
+                    className: "am-text-success",
                     icon: "icon-plus",
                     name: "记录学时",
                     url: "/Student/UpdateTimeCode",
@@ -395,29 +401,29 @@
                                 $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
 
                                     $(json.CoachList).each(function () {
-                                        if (item.ThemeTwoCoachID != "") {
-                                            if (item.ThemeTwoCoachID == this.Value) {
-                                                $("select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                                        if (item.ThemeTwoCoachID != "" && item.ThemeTwoCoachID != null) {
+                                            if (item.ThemeTwoCoachID == this.ID) {
+                                                $("#coachForm select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
                                             }
                                             else {
-                                                $("select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                                                $("#coachForm select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
                                             }
 
                                         }
                                         else {
-                                            $("select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                                            $("#coachForm select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
                                         }
-                                        if (item.ThemeThreeCoachID != "") {
-                                            if (item.ThemeTwoCoachID == this.Value) {
-                                                $("select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                                        if (item.ThemeThreeCoachID != "" && item.ThemeThreeCoachID != null) {
+                                            if (item.ThemeThreeCoachID == this.ID) {
+                                                $("#coachForm select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
                                             }
                                             else {
-                                                $("select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                                                $("#coachForm select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
                                             }
 
                                         }
                                         else {
-                                            $("select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                                            $("#coachForm select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
                                         }
                                     });
                                 });
@@ -425,7 +431,7 @@
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
-                                    $.Nuoya.form("timeForm").ajaxSubmit({
+                                    $.Nuoya.form("coachForm").ajaxSubmit({
                                         ajaxUrl: "/Student/UpdateCoach",
                                         params: {
                                             ID: item.ID
@@ -445,7 +451,7 @@
                     }
                 },
                 {
-                    className: "am-text-secondary",
+                    className: "am-text-success",
                     icon: "icon-plus",
                     name: "新增考试",
                     url: "/Exam/Add",
@@ -499,7 +505,7 @@
                 {
                     className: "am-text-secondary",
                     icon: "icon-search",
-                    name: "考试记录",
+                    name: "记录",
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,

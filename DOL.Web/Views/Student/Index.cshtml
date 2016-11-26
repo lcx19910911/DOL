@@ -57,9 +57,7 @@
                     <option value="7">已退学</option>
                 </select>
                 <span class="am-input-group-btn am-margin-left-sm">
-                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
-                    <button class="am-btn am-btn-default" onclick="ExportOutExecle()" type="button">导出</button>
-                    <button class="am-btn am-btn-default" id="ExportIntoExecle" type="button">导入</button>
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>                
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
                 </span>
             </div>
@@ -74,6 +72,8 @@
             <div class="am-btn-toolbar">
                 <div class="am-btn-group am-btn-group-xs">
                     <button onclick="add()" type="button" class="am-btn am-btn-xs"><span class="am-icon-plus"></span> 新增</button>
+                    <button class="am-btn am-btn-default" onclick="ExportOutExecle()" type="button">导出</button>
+                    <button class="am-btn am-btn-default" id="ExportIntoExecle" type="button">导入</button>
                 </div>
             </div>
         </div>
@@ -407,7 +407,7 @@
                     className: "am-text-success",
                     icon: "icon-plus",
                     name: "新增缴费",
-                    url: "/Exam/Add",
+                    url: "/PayOrder/Add",
                     formula: function (model) {
                         if (model.State != "5" && model.State != "6" && model.State != "7") {
                             return true;

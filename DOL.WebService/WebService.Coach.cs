@@ -101,8 +101,7 @@ namespace DOL.Service
                 model.UpdatedTime = DateTime.Now;
                 model.UpdaterID = Client.LoginUser.ID;
                 entities.Coach.Add(model);
-
-                entities.User.Add(new Model.User()
+                var userModel = new Model.User()
                 {
                     ID = Guid.NewGuid().ToString("N"),
                     CreatedTime = DateTime.Now,
@@ -118,9 +117,12 @@ namespace DOL.Service
                     RoleID = "1",
                     UpdaterID = Client.LoginUser.ID,
                     CoachID = model.ID
-                });
+                };
+
+                entities.User.Add(userModel);
                 if (entities.SaveChanges() > 0)
                 {
+                    Cache_Get_UserList().Add(userModel);
                     var list = Cache_Get_CoachList();
                     list.Add(model);
                     return Result(true);
@@ -156,7 +158,7 @@ namespace DOL.Service
                     return null;
 
                 var query = Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
-                query = query.Where(x =>(!string.IsNullOrEmpty(x.ThemeTwoCoachID)&&x.ThemeTwoCoachID.Equals(Client.LoginUser.CoachID)) || (!string.IsNullOrEmpty(x.ThemeThreeCoachID)&&x.ThemeThreeCoachID.Equals(Client.LoginUser.CoachID)));
+                query = query.Where(x => (!string.IsNullOrEmpty(x.ThemeTwoCoachID)) || (!string.IsNullOrEmpty(x.ThemeThreeCoachID)));
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -174,17 +176,31 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.ThemeThreeTimeCode.Equals(themeThreeCode));
                 }
-
-                var count = query.Count();
-                var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).Distinct().ToList();
+                var newList = new List<Student>();
+                var list = query.ToList();
+                list.ForEach(x =>
+                {
+                    if (x.ThemeTwoCoachID.IsNotNullOrEmpty() && x.ThemeTwoCoachID.Equals(Client.LoginUser.CoachID))
+                    {
+                        newList.Add(x);
+                    }
+                    if (x.ThemeThreeCoachID.IsNotNullOrEmpty() && x.ThemeThreeCoachID.Equals(Client.LoginUser.CoachID))
+                    {
+                        newList.Add(x);
+                    }
+                });
+              
+                var count = newList.AsQueryable().Distinct().Count();
+                list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).Distinct().ToList();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
                 var enteredPointDic = Cache_Get_EnteredPoint_Dic();
                 var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
                 var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
+                var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
                 var coachDic = Cache_Get_CoachList_Dic();
-                list.ForEach(x =>
+                newList.ForEach(x =>
                 {
                     //报名地
                     if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
@@ -213,10 +229,17 @@ namespace DOL.Service
                     //科三教练
                     if (!string.IsNullOrEmpty(x.ThemeThreeCoachID) && coachDic.ContainsKey(x.ThemeThreeCoachID))
                         x.ThemeThreeCoachName = coachDic[x.ThemeThreeCoachID]?.Name;
+                    //证书
+                    if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
+                        x.CertificateName = cerDic[x.CertificateID]?.Value;
+
+                    //培训方式
+                    if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
+                        x.TrianName = trianDic[x.TrianID]?.Value;
 
                 });
 
-                return ResultPageList(list, pageIndex, pageSize, count);
+                return ResultPageList(newList, pageIndex, pageSize, count);
             }
         }
 

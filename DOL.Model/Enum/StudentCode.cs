@@ -40,6 +40,6 @@ namespace DOL.Model
         WantDropOut = 6,
 
         [Description("已退学")]
-        HadDropOut = 7,
+        HadDropOut = 7,     
     }
 }

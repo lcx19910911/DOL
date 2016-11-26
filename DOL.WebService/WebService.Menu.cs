@@ -235,7 +235,7 @@ namespace DOL.Service
                 menuList = group.OrderBy(x=>x.Sort).Select(
                     x =>
                 {
-                    if (this.Client.LoginUser.MenuFlag == -1 || (this.Client.LoginUser.MenuFlag & x.LimitFlag) != 1)
+                    if (this.Client.LoginUser.MenuFlag == -1 || (this.Client.LoginUser.MenuFlag & x.LimitFlag) != 0)
                     {
                         return new DOL.Model.MenuItem()
                         {
