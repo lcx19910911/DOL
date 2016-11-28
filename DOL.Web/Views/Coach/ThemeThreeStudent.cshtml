@@ -210,7 +210,7 @@
                     name: "新增考试",
                     url: "/Exam/Add",
                     formula: function (model) {
-                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                        if (model.State == "3") {
                             return true;
                         }
                         else {
@@ -226,13 +226,13 @@
                             height: "500px",
                             pageUrl: "/Exam/Add",
                             callback: function (e) {
-                                $("#payForm [name='Code']").find('option').eq(item.NowTheme).attr('selected', true);
+                                $("#payForm [name='Code']").find('option').eq(item.NowTheme-1).attr('selected', true);
                                 $("#payForm [name='Count']").val(item.ExamCount);
                             },
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
-                                    if (document.forms[0].Result.value = "-1") {
+                                    if (document.forms[0].Result.value == "-1") {
                                         $.Nuoya.alert("请选择通过情况");
                                         return false;
                                     }

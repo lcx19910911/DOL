@@ -251,6 +251,8 @@ namespace DOL.Service
                         x.TrianName = trianDic[x.TrianID]?.Value;
                     if (examDic.ContainsKey(x.ID))
                         x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
+                    else
+                        x.ExamCount = 1;
 
                 });
 
@@ -643,7 +645,8 @@ namespace DOL.Service
                       }
                       else
                       {
-                          model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
+                          if(themeTwoSalaryDic.ContainsKey(x.Key))
+                            model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
                       }
                   });
 
@@ -704,7 +707,8 @@ namespace DOL.Service
                 }
                 else
                 {
-                    model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
+                    if (themeTwoSalaryDic.ContainsKey(x.Key)) 
+                        model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
                 }
             });
             //没有人员的薪资

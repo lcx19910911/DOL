@@ -176,10 +176,12 @@ namespace DOL.Service
 
                     //修改人
                     //if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
-                       // x.UpdaterName = userDic[x.UpdaterID]?.Name;
+                    // x.UpdaterName = userDic[x.UpdaterID]?.Name;
 
                     if (examDic.ContainsKey(x.ID))
-                        x.ExamCount = examDic[x.ID].Where(y=>y.Code==x.NowTheme).Count()+1;
+                        x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
+                    else
+                        x.ExamCount = 1;
                 });
 
                 return ResultPageList(list, pageIndex, pageSize, count);
