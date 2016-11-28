@@ -66,6 +66,9 @@ namespace DOL.Model
     {
         //              科目  次数    薪资级别  技术  金额 小计
         public List<Tuple<ThemeCode,int,string, int, decimal, decimal>> List { get; set; }
+
+        public List<Tuple<ThemeCode, int, string, int, decimal, decimal>> OldList { get; set; }
+
         public decimal BasicSalary { get; set; }
 
         public decimal TotalMoeny { get; set; }
