@@ -88,6 +88,7 @@
     <Compile Include="Helper\NPOIHelper.cs" />
     <Compile Include="Helper\SearchModifyHelper.cs" />
     <Compile Include="Helper\UploadHelper.cs" />
+    <Compile Include="Helper\WebHelper.cs" />
     <Compile Include="Model\LoginUser.cs" />
     <Compile Include="Model\PageList.cs" />
     <Compile Include="Model\Params.cs" />

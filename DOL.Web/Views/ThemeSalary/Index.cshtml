@@ -199,7 +199,6 @@
                             height: "420px",
                             callback: function (e) {
                                 $.Nuoya.action("/ThemeSalary/Find", { id: item.ID }, function (model) {
-                                    debugger
                                     //载入数据
                                     $.Nuoya.form("form").dataLoad({
                                         data: model

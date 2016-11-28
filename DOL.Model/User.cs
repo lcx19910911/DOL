@@ -120,5 +120,11 @@ namespace DOL.Model
         /// </summary>
         [Column("EnteredPointIDStr", TypeName = "text")]
         public string EnteredPointIDStr { get; set; }
+
+        /// <summary>
+        /// “≥√Ê»®œﬁ
+        /// </summary>
+        [Column("MenuIDStr", TypeName = "text")]
+        public string MenuIDStr { get; set; }
     }
 }

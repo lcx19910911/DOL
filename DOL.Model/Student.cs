@@ -80,13 +80,22 @@ namespace DOL.Model
 
 
         /// <summary>
-        /// 手机号
+        /// 制卡手机号
         /// </summary>
-        [Display(Name = "手机号")]
+        [Display(Name = "制卡手机号")]
         [MaxLength(11)]
-        [Required(ErrorMessage = "手机号不能为空")]
-        [RegularExpression(@"((\d{11})$)", ErrorMessage = "手机格式不正确")]
+        [Required(ErrorMessage = "制卡手机号不能为空")]
+        [RegularExpression(@"((\d{11})$)", ErrorMessage = "制卡手机号格式不正确")]
         public string Mobile { get; set; }
+
+
+        /// <summary>
+        /// 制卡手机归属地
+        /// </summary>
+        [Display(Name = "制卡手机归属地")]
+        [MaxLength(32)]
+        [Column("MobileArea", TypeName = "varchar")]
+        public string MobileArea { get; set; }
 
         /// <summary>
         /// 证书ID
@@ -295,9 +304,9 @@ namespace DOL.Model
 
 
         /// <summary>
-        /// 手机号
+        /// 联系手机号
         /// </summary>
-        [Display(Name = "手机号")]
+        [Display(Name = "联系手机号")]
         [MaxLength(11)]
         [RegularExpression(@"((\d{11})$)", ErrorMessage = "手机格式不正确")]
         public string ConactMobile { get; set; }
@@ -386,6 +395,8 @@ namespace DOL.Model
         [Column("ThemeTwoCoachID", TypeName = "char"), MaxLength(32)]
         public string ThemeTwoCoachID { get; set; }
 
+        public YesOrNoCode ThemeTwoConfirm { get; set; }
+
         /// <summary>
         ///  科目二教练名称
         /// </summary>
@@ -406,6 +417,7 @@ namespace DOL.Model
         [Display(Name = "科目三是否通过")]
         public YesOrNoCode ThemeThreePass { get; set; }
 
+        public YesOrNoCode ThemeThreeConfirm { get; set; }
         /// <summary>
         /// 科目三学时状态
         /// </summary>

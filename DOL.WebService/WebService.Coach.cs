@@ -19,7 +19,7 @@ namespace DOL.Service
         /// 缓存
         /// </summary>
         /// <returns></returns>
-        private List<Coach> Cache_Get_CoachList()
+        public List<Coach> Cache_Get_CoachList()
         {
 
             return CacheHelper.Get<List<Coach>>(coachKey, () =>
@@ -101,6 +101,11 @@ namespace DOL.Service
                 model.UpdatedTime = DateTime.Now;
                 model.UpdaterID = Client.LoginUser.ID;
                 entities.Coach.Add(model);
+                string menuIdStr = string.Empty;
+                if (Cache_Get_RoleList_Dic().ContainsKey(Params.CoachRoleId))
+                {
+                    menuIdStr = Cache_Get_RoleList_Dic()[Params.CoachRoleId].MenuIDStr;
+                }
                 var userModel = new Model.User()
                 {
                     ID = Guid.NewGuid().ToString("N"),
@@ -114,6 +119,7 @@ namespace DOL.Service
                     CreaterId = Client.LoginUser.ID,
                     DepartmentID = "1",
                     RoleID = Params.CoachRoleId,
+                    MenuIDStr= menuIdStr,
                     UpdaterID = Client.LoginUser.ID,
                     CoachID = model.ID
                 };
@@ -168,7 +174,7 @@ namespace DOL.Service
                 if (isTwo)
                 {
                     query = query.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(Client.LoginUser.CoachID));
-                    if (code!=null)
+                    if (code!=null&&(int)code!=-1)
                     {
                         query = query.Where(x => x.ThemeTwoPass.Equals(code));
                     }
@@ -176,7 +182,7 @@ namespace DOL.Service
                 else
                 {
                     query = query.Where(x => !string.IsNullOrEmpty(x.ThemeThreeCoachID) && x.ThemeThreeCoachID.Equals(Client.LoginUser.CoachID));
-                    if (code != null)
+                    if (code != null && (int)code != -1)
                     {
                         query = query.Where(x => x.ThemeTwoPass.Equals(code));
                     }
@@ -205,6 +211,8 @@ namespace DOL.Service
                 var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
                 var coachDic = Cache_Get_CoachList_Dic();
+                var studentIdList = list.Select(x => x.ID).ToList();
+                var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x => x.Key);
                 list.ForEach(x =>
                 {
                     //报名地
@@ -241,6 +249,8 @@ namespace DOL.Service
                     //培训方式
                     if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
                         x.TrianName = trianDic[x.TrianID]?.Value;
+                    if (examDic.ContainsKey(x.ID))
+                        x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
 
                 });
 
@@ -369,6 +379,41 @@ namespace DOL.Service
                 }
                 return list;
 
+            }
+        }
+
+        /// <summary>
+        /// 教练员确认
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public WebResult<bool> Confirm_Coach(string id,int code)
+        {
+            if (!id.IsNotNullOrEmpty()||(code!=2&&code!=3))
+            {
+                return Result(false, ErrorCode.sys_param_format_error);
+            }
+            using (DbRepository entities = new DbRepository())
+            {
+                var list = Cache_Get_StudentList();
+
+                var student = entities.Student.Find(id);
+                if(student == null)
+                    return Result(false, ErrorCode.sys_param_format_error);
+                if (code == 2)
+                    student.ThemeTwoConfirm = YesOrNoCode.Yes;
+                if (code == 3)
+                    student.ThemeThreeConfirm = YesOrNoCode.Yes;
+                if (entities.SaveChanges() > 0)
+                {
+                    var index = list.FindIndex(x => x.ID.Equals(id));
+                    list[index] = student;
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
             }
         }
 

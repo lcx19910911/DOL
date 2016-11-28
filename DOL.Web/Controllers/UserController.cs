@@ -107,8 +107,17 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Update_UserEnteredPointIDStr(ID, enteredPointIDStr));
         }
-        
 
+        /// <summary>
+        /// 菜单权限
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="enteredPointIDStr"></param>
+        /// <returns></returns>
+        public ActionResult UpdateMenuIDStr(string ID, string menuIDStr)
+        {
+            return JResult(WebService.Update_MenuIDStr(ID, menuIDStr));
+        }
         
 
 

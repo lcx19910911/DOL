@@ -1209,7 +1209,7 @@ namespace DOL.Service
                     //    oldEntity.State = StudentCode.Graduate;
                     //}
 
-                  
+                    oldEntity.From = model.From;
                     oldEntity.SchoolID = model.SchoolID;
                     oldEntity.CollegeID = model.CollegeID;
                     oldEntity.MajorID = model.MajorID;
@@ -1288,9 +1288,23 @@ namespace DOL.Service
                     //    return Result(false, ErrorCode.themethree_no_had_coach);
                     //}
                     //修改前
-                 
-                    oldEntity.ThemeThreeCoachID = themeThreeCoachID;
-                    oldEntity.ThemeTwoCoachID = themeTwoCoachID;
+                    if (themeTwoCoachID.IsNotNullOrEmpty() && themeTwoCoachID.Equals("-1"))
+                    {
+                        oldEntity.ThemeTwoCoachID = string.Empty;
+                    }
+                    else
+                    {
+                        oldEntity.ThemeTwoCoachID = themeTwoCoachID;
+                    }
+
+                    if (themeThreeCoachID.IsNotNullOrEmpty() && themeThreeCoachID.Equals("-1"))
+                    {
+                        oldEntity.ThemeThreeCoachID = string.Empty;
+                    }
+                    else
+                    {
+                        oldEntity.ThemeThreeCoachID = themeThreeCoachID;
+                    }
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     string afterJSon = oldEntity.ToJson();
@@ -1333,11 +1347,15 @@ namespace DOL.Service
                 return Result(false, ErrorCode.sys_param_format_error);
             using (DbRepository entities = new DbRepository())
             {
-
+                
                 var list = Cache_Get_StudentList();
                 var oldEntity = entities.Student.Find(id);
                 if (oldEntity != null)
                 {
+                    if (oldEntity.NowTheme == ThemeCode.One)
+                    {
+                        return Result(false, ErrorCode.themeont_no_pass);
+                    }
                     string beforeJson = oldEntity.ToJson();
                     //if (oldEntity.NowTheme != ThemeCode.Two || oldEntity.NowTheme != ThemeCode.Three)
                     //{

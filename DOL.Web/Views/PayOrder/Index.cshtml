@@ -249,11 +249,11 @@
                             buttons: [{
                                 label: "确认",
                                 callback: function (e) {
-                                    if (document.forms[0].PayTypeID.value = "-1") {
+                                    if ($("#payForm [name='PayTypeID']").val()=="-1") {
                                         $.Nuoya.alert("请选择支付方式");
                                         return false;
                                     }
-                                    if (document.forms[0].AccountID.value = "-1") {
+                                    if ($("#payForm [name='AccountID']").val()=="-1") {
                                         $.Nuoya.alert("收款账户");
                                         return false;
                                     }

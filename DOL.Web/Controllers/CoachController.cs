@@ -168,6 +168,12 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Find_Coach(id));
         }
+        public ActionResult Confirm(string id,int code)
+        {
+            return JResult(WebService.Confirm_Coach(id, code));
+        }
+        
+        
 
         /// <summary>
         /// 删除

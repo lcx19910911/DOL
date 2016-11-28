@@ -176,65 +176,70 @@
             pageSize: 10,
             events: [
                 {
-                    className: "am-text-secondary",
+                    className: "am-text-danger",
                     icon: "icon-plus",
-                    name: "分配教练",
-                    url: "/Student/UpdateCoach",
-                    //formula: function (model) {
-                    //    if (model.State = "" && model.State != "6" && model.State != "7") {
-                    //        return true;
-                    //    }
-                    //    else {
-                    //        return false;
-                    //    }
-                    //},
+                    name: "确认",
+                    formula: function (model) {
+                        if (model.ThemeThreeConfirm != "1") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+                        $.Nuoya.confirm("确认已联系该学员？", function () {
+                            $.Nuoya.action("/Coach/Confirm", {
+                                id: item.ID,
+                                code: 3
+                            },
+                            function (data) {
+                                if (data.Code == 0) {
+                                    grid.reload();
+                                }
+                                else {
+                                    $.Nuoya.alert(data.ErrorDesc);
+                                }
+                            });
+                        });
+                    }
+                },
+                {
+                    className: "am-text-success",
+                    icon: "icon-plus",
+                    name: "新增考试",
+                    url: "/Exam/Add",
+                    formula: function (model) {
+                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,
-                            ajaxUrl: "/HtmlTemplates/Student/SelectCoach.html",
-                            title: "分配教练",
+                            ajaxUrl: "/HtmlTemplates/Exam/Update.html",
+                            title: "新增考试",
                             width: "600px",
                             height: "500px",
-                            pageUrl: "/Student/UpdateCoach",
+                            pageUrl: "/Exam/Add",
                             callback: function (e) {
-
-                                $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
-
-                                    $(json.CoachList).each(function () {
-                                        if (item.ThemeTwoCoachID != "" && item.ThemeTwoCoachID != null) {
-                                            if (item.ThemeTwoCoachID == this.ID) {
-                                                $("#coachForm select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
-                                            }
-                                            else {
-                                                $("#coachForm select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
-                                            }
-
-                                        }
-                                        else {
-                                            $("#coachForm select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
-                                        }
-                                        if (item.ThemeThreeCoachID != "" && item.ThemeThreeCoachID != null) {
-                                            if (item.ThemeThreeCoachID == this.ID) {
-                                                $("#coachForm select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
-                                            }
-                                            else {
-                                                $("#coachForm select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
-                                            }
-
-                                        }
-                                        else {
-                                            $("#coachForm select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
-                                        }
-                                    });
-                                });
+                                $("#payForm [name='Code']").find('option').eq(item.NowTheme).attr('selected', true);
+                                $("#payForm [name='Count']").val(item.ExamCount);
                             },
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
-                                    $.Nuoya.form("coachForm").ajaxSubmit({
-                                        ajaxUrl: "/Student/UpdateCoach",
+                                    if (document.forms[0].Result.value = "-1") {
+                                        $.Nuoya.alert("请选择通过情况");
+                                        return false;
+                                    }
+                                    $.Nuoya.form("payForm").ajaxSubmit({
+                                        ajaxUrl: "/Exam/Add",
                                         params: {
-                                            ID: item.ID
+                                            StudentID: item.ID
                                         },
                                         callback: function (data) {
                                             if (!data.ErrorDesc) {
@@ -247,6 +252,39 @@
                                     });
                                 }
                             }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-search",
+                    name: "考试记录",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "1000px",
+                            height: "600px",
+                            ajaxUrl: "/HtmlTemplates/User/ExamList.html",
+                            title: "考试记录",
+                            callback: function (e) {
+
+                                var payGrid = $.Nuoya.grid({
+                                    tableId: "examDataTable",
+                                    //表格id
+                                    search: {
+                                        domainId: "searchExamDomain",
+                                        subId: "btnExamSearch"
+                                    },
+                                    ajaxUrl: "/Exam/GetList",
+                                    params: {
+                                        StudentID: item.ID
+                                    },
+                                    //数据请求地址
+                                    pageSize: 10,
+                                });
+
+                                event.preventDefault();
+                            }
                         })
                     }
                 }

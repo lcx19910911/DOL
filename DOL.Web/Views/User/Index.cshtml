@@ -266,7 +266,7 @@
                             title: "操作权限",
                             callback: function (e) {
                                 $.Nuoya.action("/User/Find", { id: item.ID }, function (model) {
-                                    $("#form [name=OperateFlagSelect]").ztreeSelect($("[name=OperateFlag]"), "/Operate/GetZTreeFlagChildren", model != null ? model.OperateFlag : 0, true, true);
+                                    $("#form [name='OperateFlagSelect']").ztreeSelect($("[name='OperateFlag']"), "/Operate/GetZTreeFlagChildren", model != null ? model.OperateFlag : 0, true, true);
                                 });
                             },
                             buttons: [{
@@ -292,7 +292,46 @@
                         })
                     }
                 },
-                
+                {
+                    className: "am-text-success",
+                    icon: "icon-hand-paper-o",
+                    name: "菜单权限",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "500px",
+                            height: "500px",
+                            ajaxUrl: "/HtmlTemplates/User/SelectMenu.html",
+                            title: "菜单权限",
+                            callback: function (e) {
+                                $.Nuoya.action("/User/Find", { id: item.ID }, function (model) {
+                                    $("[name='MenuIDStr']").val(model != null ? model.MenuIDStr : "")
+                                    $("[name='MenuIDStrSelect']").ztreeSelect($("[name='MenuIDStr']"), "/Menu/GetZTreeFlagChildren", "", true, false);
+                                });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/User/UpdateMenuIDStr",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
                 {
                     className: "am-text-secondary",
                     icon: "icon-hand-paper-o",

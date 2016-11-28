@@ -171,6 +171,12 @@ namespace DOL.Model
         /// </summary>
         [Description("该学员当前不是科目三或科目三，必须分配教练.")]
         themecode_no_allow = 90,
+
+        /// <summary>
+        /// 学员当前是科目一，不能记录学时
+        /// </summary>
+        [Description("学员当前是科目一，不能记录学时.")]
+        themeont_no_pass = 91,
         #endregion
 
 

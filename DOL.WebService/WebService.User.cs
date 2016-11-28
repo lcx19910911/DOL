@@ -40,10 +40,10 @@ namespace DOL.Service
         private string Cache_Get_UserMenu()
         {
 
-                var role = Cache_Get_RoleList().Where(x=>x.ID.Equals(Client.LoginUser.RoleID)).FirstOrDefault();
-                if (role != null)
+                var user = Cache_Get_UserList().Where(x=>x.ID.Equals(Client.LoginUser.ID)).FirstOrDefault();
+                if (user != null)
                 {
-                    return role.MenuIDStr;
+                    return user.MenuIDStr.IsNotNullOrEmpty()?user.MenuIDStr:"";
                 }
                 else
                     return "";
@@ -174,7 +174,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_UserList().AsQueryable().AsNoTracking().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && !x.ID.Equals(this.Client.LoginUser.ID)&&x.ID!= "2dad7156a2b644c98cea08e52ab1ddb1" && string.IsNullOrEmpty(x.CoachID));
+                var query = Cache_Get_UserList().AsQueryable().AsNoTracking().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && !x.ID.Equals(this.Client.LoginUser.ID)&&x.ID!= "2dad7156a2b644c98cea08e52ab1ddb1");
 
                 if (name.IsNotNullOrEmpty())
                 {
@@ -229,6 +229,11 @@ namespace DOL.Service
                 model.UpdatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.UpdaterID = Client.LoginUser.ID;
+                string menuIdStr = string.Empty;
+                if (Cache_Get_RoleList_Dic().ContainsKey(model.RoleID))
+                {
+                    model.MenuIDStr = Cache_Get_RoleList_Dic()[model.RoleID].MenuIDStr;
+                }
                 entities.User.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -268,6 +273,11 @@ namespace DOL.Service
                     oldEntity.Remark = model.Remark;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     oldEntity.UpdatedTime = DateTime.Now;
+                    string menuIdStr = string.Empty;
+                    if (Cache_Get_RoleList_Dic().ContainsKey(model.RoleID))
+                    {
+                        oldEntity.MenuIDStr = Cache_Get_RoleList_Dic()[model.RoleID].MenuIDStr;
+                    }
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -340,6 +350,46 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        public WebResult<bool> Update_MenuIDStr(string ID, string menuIDStr)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var oldEntity = entities.User.Find(ID);
+                if (oldEntity != null)
+                {
+                    oldEntity.MenuIDStr = menuIDStr;
+                }
+                else
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_UserList();
+                    var index = list.FindIndex(x => x.ID.Equals(ID));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public WebResult<bool> Update_UserEnteredPointIDStr(string ID, string enteredPointIDStr)
         {
             using (DbRepository entities = new DbRepository())
@@ -390,9 +440,23 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 var list = Cache_Get_UserList();
+                var coacheList = Cache_Get_CoachList();
                 //找到实体
                 entities.User.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
+                    if (x.CoachID.IsNotNullOrEmpty())
+                    {
+                        var coach = entities.Coach.Find(x.CoachID);
+                        if (coach != null)
+                        {
+                            coach.Flag = coach.Flag | (long)GlobalFlag.Removed;
+                            var coachIndex = coacheList.FindIndex(y => y.ID.Equals(x.CoachID));
+                            if (coachIndex > -1)
+                            {
+                                coacheList[coachIndex] = coach;
+                            }
+                        }
+                    }
                     x.Flag = x.Flag | (long)GlobalFlag.Removed;
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
                     if (index > -1)

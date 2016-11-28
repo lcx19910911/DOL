@@ -156,9 +156,11 @@
                 <th render="ShowThemeOnePass">通过</th>
                 <th dataname="ThemeTwoCoachName">科二教练</th>
                 <th dataname="ThemeTwoDate" datatype="jsondateNo">科二时间</th>
+                <th render="ShowThemeTwoTimeCode" >科二学时</th>
                 <th render="ShowThemeTwoPass">通过</th>
                 <th dataname="ThemeThreeCoachName">科三教练</th>
                 <th dataname="ThemeThreeDate" datatype="jsondateNo">科三时间</th>
+                <th render="ShowThemeThreeTimeCode">科三学时</th>
                 <th render="ShowThemeThreePass">通过</th>
                 <th dataname="ThemeFourDate" datatype="jsondateNo">科四时间</th>
                 <th render="ShowThemeFourPass">通过</th>
@@ -181,6 +183,24 @@
 @section scripts
 {
     <script type="text/javascript">
+
+        function ShowThemeTwoTimeCode(item) {
+            if (item.ThemeTwoTimeCode == 1) {
+                return "完成";
+            }
+            else {
+                return "未完成";
+            }
+        }
+        function ShowThemeThreeTimeCode(item) {
+            if (item.ThemeThreeTimeCode == 1) {
+                return "完成";
+            }
+            else {
+                return "未完成";
+            }
+        }
+
         function ShowThemeOnePass(item) {
             if (item.ThemeOnePass == 1)
                 return "通过";

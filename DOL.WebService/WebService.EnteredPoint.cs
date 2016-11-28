@@ -53,7 +53,7 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 var query = Cache_Get_EnteredPointList().AsQueryable().AsNoTracking().Where(x=>(x.Flag&(long)GlobalFlag.Removed)==0);
-                if (Client.LoginUser.IsAdmin)
+                if (!Client.LoginUser.IsAdmin)
                     query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.ID));
                 if (name.IsNotNullOrEmpty())
                 {

@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using DOL.Service;
 using DOL.Model;
+using System.Text;
+
 namespace DOL.Web.Controllers
 {
     public class BaseController : Controller
@@ -26,6 +28,25 @@ namespace DOL.Web.Controllers
         public ActionResult Forbidden()
         {
             return View("Forbidden");
+        }
+
+
+        /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public JsonResult GetMobileArea(string mobile)
+        {
+            try
+            {
+                var result = WebHelper.GetPage("http://sj.apidata.cn/?mobile=" + mobile,"","get","", Encoding.UTF8);
+                return JResult(result);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
 

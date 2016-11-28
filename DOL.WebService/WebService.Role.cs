@@ -32,6 +32,15 @@ namespace DOL.Service
         }
 
         /// <summary>
+        /// 缓存 dic
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, Role> Cache_Get_RoleList_Dic()
+        {
+            return Cache_Get_RoleList().ToDictionary(x => x.ID);
+        }
+
+        /// <summary>
         /// 获取分页列表
         /// </summary>
         /// <param name="pageIndex">页码</param>
@@ -96,9 +105,26 @@ namespace DOL.Service
                 var oldEntity = entities.Role.Find(ID);
                 if (oldEntity != null)
                 {
+                    var userList = Cache_Get_UserList();
                     oldEntity.OperateFlag = OperateFlag;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     oldEntity.UpdatedTime = DateTime.Now;
+                    if (oldEntity.ID.Equals("a7acd041b51d4aa0bc226da93957b29c"))
+                    {
+                        entities.User.Where(x => x.RoleID.Equals(ID)).ToList().ForEach(x =>
+                        {
+                            x.OperateFlag = OperateFlag;
+                            var index = userList.FindIndex(y => y.ID.Equals(x.ID));
+                            if (index > -1)
+                            {
+                                userList[index] = x;
+                            }
+                            else
+                            {
+                                userList.Add(x);
+                            }
+                        });
+                    }
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -197,15 +223,19 @@ namespace DOL.Service
                 //找到实体
                 entities.Role.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
-                    x.Flag = x.Flag | (long)GlobalFlag.Removed;
-                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
-                    if (index > -1)
+                    //教练员不能删除
+                    if (!x.ID.Equals("a7acd041b51d4aa0bc226da93957b29c"))
                     {
-                        list[index] = x;
-                    }
-                    else
-                    {
-                        list.Add(x);
+                        x.Flag = x.Flag | (long)GlobalFlag.Removed;
+                        var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                        if (index > -1)
+                        {
+                            list[index] = x;
+                        }
+                        else
+                        {
+                            list.Add(x);
+                        }
                     }
                 });
                 if (entities.SaveChanges() > 0)

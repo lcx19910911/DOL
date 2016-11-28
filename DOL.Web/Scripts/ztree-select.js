@@ -117,7 +117,6 @@
             });
             $(document).ready(function () {
                 $.Nuoya.action(jsonUrl, {}, function (json) {
-                    debugger
                     var zNodes = json;
                     ztreeObj = $.fn.zTree.init($(ztree), setting, zNodes);
 
