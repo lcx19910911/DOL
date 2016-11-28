@@ -502,7 +502,7 @@
                             height: "500px",
                             pageUrl: "/Exam/Add",
                             callback: function (e) {
-                                $("#payForm [name='Code']").find('option').eq(item.NowTheme).attr('selected', true);
+                                $("#payForm [name='Code']").find('option').eq(item.NowTheme-1).attr('selected', true);
                                 $("#payForm [name='Count']").val(item.ExamCount);
                             },
                             buttons: [{

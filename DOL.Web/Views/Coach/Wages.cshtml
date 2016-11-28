@@ -65,6 +65,16 @@
                             <td>@item.Item5</td>
                             <td>@item.Item6</td>
                         </tr>
+                        var oldItem = Model.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1)).FirstOrDefault();
+                        if (oldItem != null)
+                        {
+                            <tr>
+                                <td>@oldItem.Item3</td>
+                                <td>@oldItem.Item4</td>
+                                <td>@oldItem.Item5</td>
+                                <td>@oldItem.Item6</td>
+                            </tr>
+                        }
                     }
                     <tr><td colspan="4"></td></tr>
                     <tr>
@@ -78,6 +88,16 @@
                             <td>@item.Item5</td>
                             <td>@item.Item6</td>
                         </tr>
+                        var oldItem = Model.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1)).FirstOrDefault();
+                        if (oldItem != null)
+                        {
+                            <tr>
+                                <td>@oldItem.Item3</td>
+                                <td>@oldItem.Item4</td>
+                                <td>@oldItem.Item5</td>
+                                <td>@oldItem.Item6</td>
+                            </tr>
+                        }
                     }
                     <tr>
                         <td></td>

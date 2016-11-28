@@ -845,6 +845,8 @@ namespace DOL.Service
 
                     if (examDic.ContainsKey(x.ID))
                         x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
+                    else
+                        x.ExamCount = 1;
 
                     //培训方式
                     //if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
@@ -964,7 +966,8 @@ namespace DOL.Service
 
                     if (examDic.ContainsKey(x.ID))
                         x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
-
+                    else
+                        x.ExamCount = 1;
                     //高校
                     if (!string.IsNullOrEmpty(x.SchoolID) && schoolDic.ContainsKey(x.SchoolID))
                         x.SchoolName = schoolDic[x.SchoolID]?.Value;
