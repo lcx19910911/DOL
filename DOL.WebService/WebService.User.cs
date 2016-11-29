@@ -195,9 +195,17 @@ namespace DOL.Service
                 }
                 
                 var count = query.Count();
+                var departDic = Cache_Get_DepartmentList_Dic();
+                var roleDic = Cache_Get_RoleList_Dic();
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 list.ForEach(x =>
                 {
+                    //推荐人
+                    if (!string.IsNullOrEmpty(x.RoleID) && roleDic.ContainsKey(x.RoleID))
+                        x.RoleName = roleDic[x.RoleID]?.Name;
+                    //推荐人
+                    if (!string.IsNullOrEmpty(x.DepartmentID) && departDic.ContainsKey(x.DepartmentID))
+                        x.DepartmentName = departDic[x.DepartmentID]?.Name;
                     x.State = EnumHelper.GetEnumDescription((GlobalFlag)x.Flag);
                 });
                 return ResultPageList(list, pageIndex, pageSize, count);

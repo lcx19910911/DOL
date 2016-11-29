@@ -14,13 +14,24 @@ namespace DOL.Model
         [Required(ErrorMessage = "部门ID不能为空")]
         [Column("DepartmentID", TypeName = "char"), MaxLength(32)]
         public string DepartmentID { get; set; }
-
+        /// <summary>
+        /// 状态
+        /// </summary>
+        [NotMapped]
+        public string DepartmentName { get; set; }
         /// <summary>
         /// 角色
         /// </summary>
         [Required(ErrorMessage = "角色不能为空")]
         [Column("RoleID", TypeName = "char"), MaxLength(32)]
         public string RoleID { get; set; }
+
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        [NotMapped]
+        public string RoleName { get; set; }
 
         /// <summary>
         /// 是否管理员

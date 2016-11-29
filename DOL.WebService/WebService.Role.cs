@@ -224,7 +224,7 @@ namespace DOL.Service
                 entities.Role.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     //教练员不能删除
-                    if (!x.ID.Equals("a7acd041b51d4aa0bc226da93957b29c"))
+                    if (!x.ID.Equals("a4b6e88b815d4e2485c5f538cf225f66"))
                     {
                         x.Flag = x.Flag | (long)GlobalFlag.Removed;
                         var index = list.FindIndex(y => y.ID.Equals(x.ID));
@@ -259,7 +259,7 @@ namespace DOL.Service
         {
             List<SelectItem> list = new List<SelectItem>();
 
-            Cache_Get_RoleList().AsQueryable().AsNoTracking().OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+            Cache_Get_RoleList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
             {
                 list.Add(new SelectItem()
                 {

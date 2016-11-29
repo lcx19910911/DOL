@@ -53,7 +53,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_CoachList().AsQueryable().AsNoTracking();
+                var query = Cache_Get_CoachList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -438,14 +438,18 @@ namespace DOL.Service
                 entities.Coach.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     var user = entities.User.Where(y => !string.IsNullOrEmpty(y.CoachID) && y.CoachID.Equals(x.ID)).FirstOrDefault();
-                    user.Flag = (long)GlobalFlag.Removed;
-                    x.Flag = x.Flag & ~(long)GlobalFlag.Removed;
+                    if(user!=null)
+                        user.Flag = x.Flag |(long)GlobalFlag.Removed;
+                    x.Flag = x.Flag |(long)GlobalFlag.Removed;
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
-                    var userIndex = userList.FindIndex(y => y.ID.Equals(user.ID));
+                    var userIndex = -1;
+                    if(user!=null)
+                        userIndex=userList.FindIndex(y => y.ID.Equals(user.ID));
                     if (index > -1)
                     {
                         list[index] = x;
-                        userList[userIndex] = user;
+                        if(userIndex!=-1)
+                            userList[userIndex] = user;
                     }
                     else
                     {

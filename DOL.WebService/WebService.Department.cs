@@ -200,7 +200,7 @@ namespace DOL.Service
             {
                 List<SelectItem> list = new List<SelectItem>();
 
-                var query = Cache_Get_DepartmentList().OrderByDescending(x => x.Sort).AsQueryable().AsNoTracking();
+                var query = Cache_Get_DepartmentList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).OrderByDescending(x => x.Sort).AsQueryable().AsNoTracking();
 
                 query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                 {
