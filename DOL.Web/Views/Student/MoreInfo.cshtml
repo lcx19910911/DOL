@@ -486,7 +486,7 @@
                     name: "新增考试",
                     url: "/Exam/Add",
                     formula: function (model) {
-                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                        if (model.State != "5" && model.State != "6" && model.State != "7" && model.State != "0") {
                             return true;
                         }
                         else {
@@ -508,7 +508,7 @@
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
-                                    if (document.forms[0].Result.value = "-1") {
+                                    if ($("#payForm [name='Result']").val() == "-1") {
                                         $.Nuoya.alert("请选择通过情况");
                                         return false;
                                     }

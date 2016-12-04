@@ -114,7 +114,11 @@ namespace DOL.Service
 
                 if (model.Code == ThemeCode.One)
                 {
-                    student.ThemeOneDate = DateTime.Now;
+                    if (model.CreatedTime < student.MakeCardDate)
+                    {
+                        return Result(false, ErrorCode.theme_one_time_error);
+                    }
+                    student.ThemeOneDate =model.CreatedTime;
                     if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeOnePass = YesOrNoCode.Yes;
@@ -135,7 +139,7 @@ namespace DOL.Service
                     }
 
 
-                    student.ThemeTwoDate = DateTime.Now;
+                    student.ThemeTwoDate = model.CreatedTime;
                     if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeTwoPass = YesOrNoCode.Yes;
@@ -155,7 +159,7 @@ namespace DOL.Service
                         return Result(false, ErrorCode.themethree_timecode_not_complete);
                     }
 
-                    student.ThemeThreeDate = DateTime.Now;
+                    student.ThemeThreeDate = model.CreatedTime;
                     if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeThreePass = YesOrNoCode.Yes;
@@ -167,7 +171,7 @@ namespace DOL.Service
                 }
                 else if (model.Code == ThemeCode.Four)
                 {
-                    student.ThemeFourDate = DateTime.Now;
+                    student.ThemeFourDate = model.CreatedTime;
                     if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeFourPass = YesOrNoCode.Yes;

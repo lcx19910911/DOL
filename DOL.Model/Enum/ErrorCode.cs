@@ -177,6 +177,12 @@ namespace DOL.Model
         /// </summary>
         [Description("学员当前是科目一，不能记录学时.")]
         themeont_no_pass = 91,
+
+        /// <summary>
+        /// 科目一考试时间必须在制卡时间之后
+        /// </summary>
+        [Description("科目一考试时间必须在制卡时间之后")]
+        theme_one_time_error = 92,
         #endregion
 
 

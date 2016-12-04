@@ -99,6 +99,7 @@
                 <th render="ShowState">状态</th>
                 <th dataname="IDCard" isHide="1" style="display:none;">身份证</th>
                 <th dataname="Mobile" isHide="1" style="display:none;">制卡手机</th>
+                <th dataname="ConactMobile" isHide="1" style="display:none;">联系手机</th>
                 <th dataname="EnteredPointName" isHide="1" style="display:none;">报名门店</th>
                 <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>
                 <th dataname="MakeCardRemark" isHide="1" style="display:none;">制卡备注</th>
@@ -465,7 +466,7 @@
                     name: "新增考试",
                     url: "/Exam/Add",
                     formula: function (model) {
-                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                        if (model.State != "5" && model.State != "6" && model.State != "7" && model.State != "0") {
                             return true;
                         }
                         else {

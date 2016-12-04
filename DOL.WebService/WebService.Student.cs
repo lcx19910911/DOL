@@ -1300,6 +1300,7 @@ namespace DOL.Service
                     else
                     {
                         oldEntity.ThemeTwoCoachID = themeTwoCoachID;
+                        oldEntity.ThemeTwoConfirm = YesOrNoCode.No;
                     }
 
                     if (themeThreeCoachID.IsNotNullOrEmpty() && themeThreeCoachID.Equals("-1"))
@@ -1309,6 +1310,7 @@ namespace DOL.Service
                     else
                     {
                         oldEntity.ThemeThreeCoachID = themeThreeCoachID;
+                        oldEntity.ThemeThreeConfirm = YesOrNoCode.No;
                     }
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;

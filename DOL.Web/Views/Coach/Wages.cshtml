@@ -65,15 +65,18 @@
                             <td>@item.Item5</td>
                             <td>@item.Item6</td>
                         </tr>
-                        var oldItem = Model.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1)).FirstOrDefault();
-                        if (oldItem != null)
+                        if (Model.ThemeSalaryModel.OldList != null && Model.ThemeSalaryModel.OldList.Count > 0)
                         {
+                            var oldItem = Model.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1)).FirstOrDefault();
+                            if (oldItem != null)
+                            {
                             <tr>
                                 <td>@oldItem.Item3</td>
                                 <td>@oldItem.Item4</td>
                                 <td>@oldItem.Item5</td>
                                 <td>@oldItem.Item6</td>
                             </tr>
+                            }
                         }
                     }
                     <tr><td colspan="4"></td></tr>
@@ -87,16 +90,18 @@
                             <td>@item.Item4</td>
                             <td>@item.Item5</td>
                             <td>@item.Item6</td>
-                        </tr>
-                        var oldItem = Model.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1)).FirstOrDefault();
-                        if (oldItem != null)
+                        </tr> if (Model.ThemeSalaryModel.OldList != null && Model.ThemeSalaryModel.OldList.Count > 0)
                         {
+                            var oldItem = Model.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1)).FirstOrDefault();
+                            if (oldItem != null)
+                            {
                             <tr>
                                 <td>@oldItem.Item3</td>
                                 <td>@oldItem.Item4</td>
                                 <td>@oldItem.Item5</td>
                                 <td>@oldItem.Item6</td>
                             </tr>
+                            }
                         }
                     }
                     <tr>
