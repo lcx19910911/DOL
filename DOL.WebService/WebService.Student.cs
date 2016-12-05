@@ -135,6 +135,7 @@ namespace DOL.Service
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
                 //var userDic = Cache_Get_UserDic();
                 var studentIdList = list.Select(x => x.ID).ToList();
+                var payOrderList = Cache_Get_PayOrderList();
                 var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x=>x.Key);
                 list.ForEach(x =>
                 {
@@ -145,10 +146,14 @@ namespace DOL.Service
                     //证书
                     if (!string.IsNullOrEmpty(x.EnteredPointID) && enteredPointDic.ContainsKey(x.EnteredPointID))
                         x.EnteredPointName = enteredPointDic[x.EnteredPointID]?.Name;
-
+                    var parOrder = payOrderList.Where(y => y.StudentID.Equals(x.ID) && y.IsConfirm == YesOrNoCode.No).FirstOrDefault();
+                    if (parOrder!=null)
+                    {
+                        x.DoConfirmMoney = parOrder.PayMoney;
+                     }
                     //制卡地
                     //if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
-                       // x.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
+                    // x.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
                     //培训方式
                     if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
                         x.TrianName = trianDic[x.TrianID]?.Value;
@@ -1261,6 +1266,58 @@ namespace DOL.Service
             }
 
         }
+        
+
+        /// <summary>
+        /// 修改教练
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> Update_StudentDriver(string id, string makeDriverShopID, DateTime makeCardDate)
+        {
+            if (!id.IsNotNullOrEmpty() || !makeDriverShopID.IsNotNullOrEmpty()
+                )
+                return Result(false, ErrorCode.sys_param_format_error);
+            using (DbRepository entities = new DbRepository())
+            {
+
+                var list = Cache_Get_StudentList();
+                var oldEntity = entities.Student.Find(id);
+                if (oldEntity != null)
+                {
+                    string beforeJson = oldEntity.ToJson();
+                    oldEntity.MakeDriverShopID = makeDriverShopID;
+                    oldEntity.MakeCardDate = makeCardDate;
+                    oldEntity.UpdatedTime = DateTime.Now;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                    string afterJSon = oldEntity.ToJson();
+                    string info = SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
+                    Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息,修改制卡院校和制卡时间", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name), beforeJson, afterJSon, info);
+                }
+                else
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                if (entities.SaveChanges() > 0)
+                {
+                    var index = list.FindIndex(x => x.ID.Equals(id));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+
 
         /// <summary>
         /// 修改教练

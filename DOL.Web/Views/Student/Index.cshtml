@@ -91,9 +91,10 @@
                 <th dataname="MakeDriverShopName">制卡驾校</th>
                 <th dataname="CertificateName">车型</th>
                 <th dataname="ReferenceName">推荐人</th>
-                <th dataname="Money">缴费金额</th>
+                <th dataname="Money">总价</th>
                 <th dataname="HadPayMoney">已缴</th>
-                <th render="ShowNeedMoney">已缴</th>
+                <th dataname="DoConfirmMoney">在缴</th>
+                <th render="ShowNeedMoney">未缴</th>
                 <th dataname="Name">姓名</th>
                 <th dataname="ThemeOneDate" datatype="jsondateNo">科一时间</th>
                 <th render="ShowState">状态</th>
@@ -364,7 +365,7 @@
             isHide: true,
             ajaxUrl: "/Student/GetPageList",
             //数据请求地址
-            pageSize: 10,
+            
             events: [
                 {
                     className: "am-text-secondary",
@@ -405,11 +406,63 @@
                         window.location.href = "/Student/Update?ID=" + item.ID + "&readonly=1";
                     }
                 },
-
+                 {
+                     className: "am-text-warning",
+                     icon: "icon-opera",
+                     name: "驾校",
+                     //formula: function (model) {
+                     //    if (model.State = "" && model.State != "6" && model.State != "7") {
+                     //        return true;
+                     //    }
+                     //    else {
+                     //        return false;
+                     //    }
+                     //},
+                     click: function (item) {
+                         $.Nuoya.ajaxDialog({
+                             closeViaDimmer: false,
+                             ajaxUrl: "/HtmlTemplates/Student/SelectDriver.html",
+                             title: "制卡驾校",
+                             width: "600px",
+                             height: "500px",
+                             pageUrl: "/Student/UpdateDriver",
+                             callback: function (e) {                              
+                                 $.Nuoya.action("/DriverShop/SelectItem", {}, function (json) {
+                                     $(json).each(function () {
+                                         if (item.MakeDriverShopID == this.Value)
+                                                 $("#driverForm select[name='MakeDriverShopID']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                                             else
+                                                 $("#driverForm select[name='MakeDriverShopID']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                                     });
+                                 });
+                                 $("#driverForm [name='MakeCardDate']").val(RenderDate(item.MakeCardDate));
+                             },
+                             buttons: [{
+                                 label: "保存",
+                                 callback: function (e) {
+                                     $.Nuoya.form("driverForm").ajaxSubmit({
+                                         ajaxUrl: "/Student/UpdateDriver",
+                                         params: {
+                                             ID: item.ID
+                                         },
+                                         callback: function (data) {
+                                             if (!data.ErrorDesc) {
+                                                 e.hide();
+                                                 grid.reload();
+                                             }
+                                             else
+                                                 $.Nuoya.alert(data.ErrorDesc);
+                                         }
+                                     });
+                                 }
+                             }]
+                         })
+                     }
+                 },
                 {
                     className: "am-text-success",
                     icon: "icon-plus",
-                    name: "新增缴费",
+                    name: "缴费",
                     url: "/PayOrder/Add",
                     formula: function (model) {
                         if (model.State != "5" && model.State != "6" && model.State != "7") {
@@ -463,7 +516,7 @@
                 {
                     className: "am-text-secondary",
                     icon: "icon-plus",
-                    name: "新增考试",
+                    name: "考试",
                     url: "/Exam/Add",
                     formula: function (model) {
                         if (model.State != "5" && model.State != "6" && model.State != "7" && model.State != "0") {
@@ -538,7 +591,7 @@
                                         StudentID: item.ID
                                     },
                                     //数据请求地址
-                                    pageSize: 10,
+                                    
                                     events: [
                                         {
                                             className: "am-text-secondary",

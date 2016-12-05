@@ -6,7 +6,7 @@
             ajaxUrl: null,//数据请求地址
             search: null,//{ domainId: "搜索域", subId: "提交按钮" } 
             params: null,//每次请求必带的参数
-            pageSize: 15,//每页显示条数
+            pageSize: 20,//每页显示条数
             pageIndex: 1,//默认页
             events: [],//事件
             callback: null,//数据加载完成后回调函数
