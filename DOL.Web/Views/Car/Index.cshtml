@@ -1,0 +1,335 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "车辆";
+}
+
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>车辆</small></div>
+</div>
+<div id="searchDomain">
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label ">品牌：</span>
+                <input type="text" class="am-form-field" placeholder="按品牌搜索" style="width:80px;" name="brandName" ;>
+
+                <span class="am-input-group-label   am-margin-left-sm">车型：</span>
+                <input type="text" class="am-form-field" placeholder="按车型搜索" style="width:100px;" name="model" ;>
+
+                <span class="am-input-group-label   am-margin-left-sm">车型编号：</span>
+                <input type="text" class="am-form-field" placeholder="按车型编号搜索" style="width:80px;" name="modelCode" ;>
+
+                <span class="am-input-group-label   am-margin-left-sm">车架号：</span>
+                <input type="text" class="am-form-field" placeholder="按车架号搜索" style="width:80px;" name="engineNumber" ;>
+
+                <span class="am-input-group-label   am-margin-left-sm">车架代码：</span>
+                <input type="text" class="am-form-field" placeholder="按车架代码搜索" style="width:80px;" name="frameCode" ;>
+
+                <span class="am-input-group-label  am-margin-left-sm">责任人：</span>
+                <select name="CoachID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1">请选择</option>
+                </select>
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="am-g am-margin-top-sm">
+        <div class="am-u-lg-6">
+            <div class="am-btn-toolbar">
+                <div class="am-btn-group am-btn-group-xs">
+                    <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                    <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="grid_container">
+    <table id="dataTable" class="am-table am-table-compact am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th type="more"></th>
+                <th dataname="BuyTime" datatype="jsondate">购置日期</th>
+                <th dataname="License">车牌号</th>
+                <th dataname="Brand">品牌</th>
+                <th dataname="Models">车型</th>
+                <th dataname="DepartmentName">所属部门</th>
+                <th dataname="CoachName">责任人</th>
+                <th dataname="RepairMonth">本月车损</th>
+                <th dataname="OilMonth">本月油耗</th>
+                <th dataname="EngineNumber" isHide="1" style="display:none;">发动机号</th>
+                <th dataname="FrameCode" isHide="1" style="display:none;">车架代码</th>
+                <th dataname="ModelsCode" isHide="1" style="display:none;">车型代码</th>
+                <th dataname="OnCardTime" isHide="1" style="display:none;" datatype="jsondate">上牌日期</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+        }
+        //批量删除
+        function batchDelete() {
+            $.Nuoya.confirm("确认删除？", function () {
+                grid.del({
+                    ajaxUrl: "/Car/Delete",
+                    callback: function (json) {
+                        grid.reload();
+                    }
+                });
+            });
+        }
+
+        $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+            $(json.CoachList).each(function () {
+                  $("#searchDomain select[name='CoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+            });
+        });
+
+        function formInit(dataitem) {
+            $.Nuoya.action("/Department/GetSelectItem", { id: dataitem ? dataitem.DepartmentID : "" }, function (json) {
+                $(json).each(function () {
+                    $("#form select[name='DepartmentID']").append("<option " + (this.Selected == true ? "selected" : "") + " value='" + this.Value + "'>" + this.Text + "</option>");
+                });
+            });
+            $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+                $(json.CoachList).each(function () {
+                    if (dataitem!=null&&dataitem.CoachID == this.ID) {
+                        $("#form select[name='CoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                    }
+                    else {
+                        $("#form select[name='CoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                    }
+                });
+            });
+            //添加表单验证
+            $.Nuoya.form("form").validate({
+                rules: {
+                    Models: {
+                        maxlength: 32
+                    },
+                    ModelsCode: {
+                        maxlength: 32
+                    },
+                    Brand: {
+                        maxlength: 32
+                    },
+                    License: {
+                        maxlength: 32
+                    },
+                    EngineNumber: {
+                        maxlength: 32
+                    },
+                    FrameCode: {
+                        maxlength: 32
+                    },
+                    DepartmentID: {
+
+                        maxlength: 32
+                    },
+                    DepartmentID: {
+                        required: true
+                    },
+                },
+                messages: {
+
+                    Models: {
+                        maxlength: "最多{0}个字符"
+                    },
+                    ModelsCode: {
+                        maxlength: "最多{0}个字符"
+                    },
+                    Brand: {
+                        maxlength: "最多{0}个字符"
+                    },
+                    License: {
+                        maxlength: "最多{0}个字符"
+                    },
+                    EngineNumber: {
+                        maxlength: "最多{0}个字符"
+                    },
+                    FrameCode: {
+                        maxlength: "最多{0}个字符"
+                    },
+                    DepartmentID: {
+                        required: "不允许为空",
+                    },
+                }
+            });
+        }
+
+        //新增
+        function add() {
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                ajaxUrl: "/HtmlTemplates/Car/Update.html",
+                title: "添加车辆",
+                width: "1000px",
+                height: "640px",
+                callback: function (e) {
+                    formInit();//表单初始化
+                },
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+                        $.Nuoya.form("form").ajaxSubmit({
+                            ajaxUrl: "/Car/Add",
+                            callback: function (data) {
+                                if (!data.ErrorDesc) {
+                                    e.hide();
+                                    grid.reload();
+                                }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+                            }
+                        });
+                    }
+                }]
+            })
+        }
+
+        var grid = $.Nuoya.grid({
+            tableId: "dataTable",
+            //表格id
+            search: {
+                domainId: "searchDomain",
+                subId: "btnSearch"
+            },
+            isHide: true,
+            ajaxUrl: "/Car/GetPageList",
+            //数据请求地址
+            events: [
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-pencil-square-o",
+                    name: "编辑",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Car/Update.html",
+                            title: "编辑车辆",
+                            width: "1000px",
+                            height: "540px",
+                            callback: function (e) {
+                                $.Nuoya.action("/Car/Find", { id: item.ID }, function (model) {
+                                    //载入数据
+                                    $.Nuoya.form("form").dataLoad({
+                                        data: model
+                                    });
+                                    formInit(model);//表单初始化
+                                });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    if ($("#form [name='CoachID']").val() == "-1") {
+                                        $("#form [name='CoachID']").val() = null;
+                                    }
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/Car/Update",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-plus",
+                    name: "责任人",
+                    //formula: function (model) {
+                    //    if (model.State = "" && model.State != "6" && model.State != "7") {
+                    //        return true;
+                    //    }
+                    //    else {
+                    //        return false;
+                    //    }
+                    //},
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Car/SelectCoach.html",
+                            title: "分配责任人",
+                            width: "600px",
+                            height: "400px",
+                            callback: function (e) {
+                                $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+                                    $(json.CoachList).each(function () {
+                                        if (item.CoachID == this.ID) {
+                                            $("#coachForm select[name='CoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                                        }
+                                        else {
+                                            $("#coachForm select[name='CoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                                        }
+                                    });
+                                });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    if ($("#coachForm [name='CoachID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择责任人");
+                                        return false;
+                                    }
+                                    $.Nuoya.form("coachForm").ajaxSubmit({
+                                        ajaxUrl: "/Car/UpdateCoach",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-danger",
+                    icon: "icon-trash-o",
+                    name: "删除",
+                    click: function (item) {
+                        $.Nuoya.confirm("确认删除？", function () {
+                            $.Nuoya.deleteAction("/Car/Delete", {
+                                ids: item.ID
+                            },
+                            function () {
+                                grid.reload();
+                            });
+                        });
+                    }
+                }
+            ]
+        });
+
+    </script>
+}

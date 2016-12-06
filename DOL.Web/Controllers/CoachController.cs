@@ -29,6 +29,22 @@ namespace DOL.Web.Controllers
             return View();
         }
 
+        public ViewResult Car()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="key"> 搜索项</param>
+        /// <param name="value">搜索项</param>
+        /// <returns></returns>
+        public ActionResult GetCarPageList(int pageIndex, int pageSize, string brandName, string model, string modelCode, string engineNumber, string frameCode, string coachId)
+        {
+            return JResult(WebService.Get_CarPageList(pageIndex, pageSize, brandName, model, modelCode, engineNumber, frameCode, Client.LoginUser.CoachID));
+        }
 
         /// <summary>
         /// 教练培训信息
@@ -75,6 +91,7 @@ namespace DOL.Web.Controllers
         {
             return View(WebService.Get_CoachSalary(searchTime, Client.LoginUser.CoachID));
         }
+        
 
         /// <summary>
         /// 新增
