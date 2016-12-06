@@ -76,6 +76,10 @@ namespace DOL.Service
                 {
                     query = query.Where(x => (x.Flag & (long)GlobalFlag.Removed) != 0);
                 }
+                if (!Client.LoginUser.IsAdmin)
+                {
+                    query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.EnteredPointID));
+                }
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -222,6 +226,10 @@ namespace DOL.Service
                     if (name.IsNotNullOrEmpty())
                     {
                         query = query.Where(x => x.Name.Contains(name));
+                    }
+                    if (!Client.LoginUser.IsAdmin)
+                    {
+                        query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.EnteredPointID));
                     }
                     if (no.IsNotNullOrEmpty())
                     {
@@ -730,7 +738,10 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.IDCard.Contains(no));
                 }
-
+                if (!Client.LoginUser.IsAdmin)
+                {
+                    query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.EnteredPointID));
+                }
                 if (trianID.IsNotNullOrEmpty() && trianID != "-1")
                 {
                     query = query.Where(x => !string.IsNullOrEmpty(x.TrianID) && x.TrianID.Equals(trianID));
@@ -900,6 +911,10 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 var query = Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                if (!Client.LoginUser.IsAdmin)
+                {
+                    query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.EnteredPointID));
+                }
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));

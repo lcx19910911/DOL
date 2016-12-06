@@ -327,7 +327,7 @@ namespace DOL.Service
                 var itemList = dic.Values;
                 if(predicate != null)
                 {
-                   itemList.Where(x=>predicate(x)).ToList().ForEach(x =>
+                   itemList.Where(x=>predicate(x)).OrderByDescending(x=>x.Sort).ToList().ForEach(x =>
                    {
                        list.Add(new SelectItem()
                        {
