@@ -42,6 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="Enum\WasteCode.cs" />
+    <Compile Include="Car.cs" />
+    <Compile Include="Waste.cs" />
+    <Compile Include="OilCard.cs" />
     <Compile Include="DataDictionary.cs" />
     <Compile Include="Department.cs" />
     <Compile Include="Dto\EnteredPointMoneyModel.cs" />
@@ -62,6 +66,7 @@
     <Compile Include="Enum\YesOrNo.cs" />
     <Compile Include="EnteredPoint.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Recharge.cs" />
     <Compile Include="ThemeSalary.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Operate.cs" />

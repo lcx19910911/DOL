@@ -42,6 +42,7 @@ namespace DOL.Service
         }
 
 
+
         /// <summary>
         /// 查找实体
         /// </summary>
@@ -106,6 +107,7 @@ namespace DOL.Service
                             x.Name = student.Name;
                             x.IDCard = student.IDCard;
                             x.StudentFlag = student.Flag;
+                            x.State = student.State;
                             //制卡驾校
                             if (!string.IsNullOrEmpty(student.MakeDriverShopID) && driverShopDic.ContainsKey(student.MakeDriverShopID))
                                 x.MakeDriverShopName = driverShopDic[student.MakeDriverShopID]?.Name;

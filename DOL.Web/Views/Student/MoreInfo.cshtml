@@ -351,7 +351,7 @@
             isHide: true,
             ajaxUrl: "/Student/GetMoreInfoPageList",
             //数据请求地址
-            pageSize: 10,
+            
             events: [
                 {
                     className: "am-text-success",
@@ -483,7 +483,7 @@
                 {
                     className: "am-text-success",
                     icon: "icon-plus",
-                    name: "新增考试",
+                    name: "考试",
                     url: "/Exam/Add",
                     formula: function (model) {
                         if (model.State != "5" && model.State != "6" && model.State != "7" && model.State != "0") {
@@ -557,7 +557,7 @@
                                         StudentID: item.ID
                                     },
                                     //数据请求地址
-                                    pageSize: 10,
+                                    
                                 });
 
                                 event.preventDefault();

@@ -42,5 +42,15 @@ namespace DOL.Model
 
         [Description("专业")]
         Major = 9,
+
+        [Description("维修点")]
+        RepairingPoint = 10,
+
+        [Description("加油点")]
+        RefuelingPoint = 11,
+
+
+        [Description("耗损项目")]
+        Thing = 12,
     }
 }

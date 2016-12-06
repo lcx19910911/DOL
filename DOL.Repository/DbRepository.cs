@@ -80,6 +80,14 @@ namespace DOL.Repository
         public DbSet<ThemeSalary> ThemeSalary { get; set; }
 
         public DbSet<Log> Log { get; set; }
+
+        public DbSet<OilCard> OilCard { get; set; }
+
+        public DbSet<Recharge> Recharge { get; set; }
+
+        public DbSet<Waste> Waste { get; set; }
+
+        public DbSet<Car> Car { get; set; }
     }
 
 }

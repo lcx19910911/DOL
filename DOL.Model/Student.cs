@@ -494,5 +494,8 @@ namespace DOL.Model
         [Display(Name = "½É·Ñ¼ÇÂ¼")]
         [NotMapped]
         public List<PayOrder> PayOrderList { get; set; }
+
+        [NotMapped]
+        public decimal DoConfirmMoney { get; set; }
     }
 }
