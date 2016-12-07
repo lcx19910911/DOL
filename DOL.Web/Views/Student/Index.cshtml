@@ -21,13 +21,26 @@
                 <input type="text" class="am-form-field" placeholder="按手机号码搜索" style="width:80px;" name="mobile" ;>
 
                 <span class="am-input-group-label   am-margin-left-sm">报名点：</span>
-                <select name="EnteredPointID" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" onchange="LoadReference(true,this)"><option value="-1">不限</option></select>
+                <select name="EnteredPointID" data-am-selected="{btnWidth: '100px',btnSize: 'sm'}" ><option value="-1">不限</option></select>
 
                 <span class="am-input-group-label   am-margin-left-sm">推荐人：</span>
-                <select name="ReferenceID" data-am-selected="{ btnWidth: '90px',btnSize: 'sm'}"><option value="-1">不限</option></select>
+                <select name="ReferenceID" data-am-selected="{ btnWidth: '100px',btnSize: 'sm'}"><option value="-1">不限</option></select>
 
                 <span class="am-input-group-label  am-margin-left-sm">制卡驾校：</span>
                 <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '90px',btnSize: 'sm'}"><option value="-1">不限</option></select>
+                <span class="am-input-group-label   am-margin-left-sm">学员卡：</span>
+                <select name="moneyIsFull" data-am-selected="{ btnWidth: '100px',btnSize: 'sm'}">
+                    <option value="-1">不限</option>
+                    <option value="0">未缴齐</option>
+                    <option value="1">缴齐</option>
+                </select>
+                <span class="am-input-group-label   am-margin-left-sm">排序：</span>
+                <select name="OrderBy" data-am-selected="{ btnWidth: '100px',btnSize: 'sm'}">
+                    <option value="0">报名时间</option>
+                    <option value="1">登记时间</option>
+                    <option value="2">制卡时间</option>
+                    <option value="3">科目一时间</option>
+                </select>
             </div>
         </div>
     </div>
@@ -43,6 +56,14 @@
                 <input type="text" class="am-form-field" placeholder="请选择日期" name="makedTimeStart" readonly style="width:120px;">
                 <span class="am-input-group-label"> - </span>
                 <input type="text" class="am-form-field" placeholder="请选择日期" name="makeTimeEnd" readonly style="width:120px;">
+
+
+                <span class="am-input-group-label   am-margin-left-sm">在校：</span>
+                <select name="isOnSchool" data-am-selected="{ btnWidth: '100px',btnSize: 'sm'}">
+                    <option value="-1">不限</option>
+                    <option value="0">不在</option>
+                    <option value="1">在校</option>
+                </select>
 
                 <span class="am-input-group-label  am-margin-left-sm">学员状态</span>
                 <select name="State" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">

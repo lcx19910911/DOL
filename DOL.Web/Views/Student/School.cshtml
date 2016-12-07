@@ -45,6 +45,13 @@
 
                 <span class="am-input-group-label am-margin-left-sm">年级：</span>
                 <input type="text" class="am-form-field" placeholder="按年级搜索" style="width:80px;" name="age" ;>
+                <span class="am-input-group-label   am-margin-left-sm">排序：</span>
+                <select name="OrderBy" data-am-selected="{ btnWidth: '100px',btnSize: 'sm'}">
+                    <option value="0">报名时间</option>
+                    <option value="1">登记时间</option>
+                    <option value="2">制卡时间</option>
+                    <option value="3">科目一时间</option>
+                </select>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -68,10 +75,10 @@
                 <th dataname="SchoolName">高校</th>
                 <th dataname="CollegeName">学院</th>
                 <th dataname="MajorName">专业</th>
-                <th dataname="SchoolAge">年纪</th>
+                <th dataname="SchoolAge">年级</th>
                 <th dataname="ReferenceName">推荐人</th>
                 <th dataname="MakeCardRemark" >制卡备注</th>
-
+                <th render="ShowState">状态</th>
                 <th type="eventlist"></th>
             </tr>
         </thead>

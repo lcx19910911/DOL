@@ -21,7 +21,9 @@
                 <span class="am-input-group-label am-margin-left-sm">市：</span>
                 <select name="CityCode" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}"  onchange="LoadEnteredPoint(true, this)" style="width:120px;"></select>
                 <span class="am-input-group-label am-margin-left-sm">门店：</span>
-                <select name="EnteredPointID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                <select name="EnteredPointID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1">请选择</option>
+                </select>
 
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" onclick="Search()" type="button">搜索</button>

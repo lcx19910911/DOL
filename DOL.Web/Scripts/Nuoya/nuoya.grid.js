@@ -154,6 +154,7 @@
                                 name: 'grid_' + column.dataname,
                                 value: columnValue
                             }).data("dataObj", item);
+                            td.append((index + 1) + ".");
                             td.append(inutType);
                         } else if (column.type == "eventlist") {
                             //创建操作项
@@ -279,7 +280,7 @@
 
             var pageSizeMenuLi = $("<li style='margin-left:10px;display:inline-block;position:relative;top:-3px;'></li>").append(pageSizeMenu);
             //lzq->以下是页面标准格式,需要的自行修改 2015-11-25 19:05
-            paginate.append(home_Page).append(previous_Page).append(pageNumber).append(next_Page).append(end_Page).append($("<li>共" + data.PageCount + "页，每页显示</li>")).append(pageSizeMenuLi);
+            paginate.append(home_Page).append(previous_Page).append(pageNumber).append(next_Page).append(end_Page).append($("<li>共" + data.PageCount + "页,本页" + data.List.length+ "条记录，每页显示</li>")).append(pageSizeMenuLi);
             $(pageSizeMenu).selected();
         }
 

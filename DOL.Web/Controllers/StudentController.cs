@@ -105,11 +105,14 @@ namespace DOL.Web.Controllers
             string mobile,
             string enteredPointId,
             string makeDriverShopId,
+            int moneyIsFull,
+            int isOnSchool,
+            int orderBy,
             StudentCode state,
             DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
             DateTime? makedTimeStart, DateTime? makeTimeEnd)
         {
-            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, state, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd));
+            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, state, moneyIsFull,isOnSchool, orderBy, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd));
         }
 
         /// <summary>
@@ -129,12 +132,13 @@ namespace DOL.Web.Controllers
             string enteredPointId,
             string makeDriverShopId,
             StudentCode state,
+            int orderBy,
             DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
             DateTime? makedTimeStart, DateTime? makeTimeEnd,
             bool isAll = false)
         {
 
-            var list = WebService.Export_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, state, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd);
+            var list = WebService.Export_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, state,orderBy, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd);
             string fileName = DateTime.Now.ToString("yyyyMMddhhmmss") + ".xls";
             string filePath = Path.Combine(Server.MapPath("~/") + @"Export\" + fileName);
        
@@ -219,9 +223,10 @@ namespace DOL.Web.Controllers
             int pageSize,
             string name,
             string no,
-            string mobile)
+            string mobile,
+            int orderBy)
         {
-            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, null, no, mobile, null, null, StudentCode.DontMakeCard, null, null, null, null, true));
+            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, null, no, mobile, null, null, StudentCode.DontMakeCard,-1,-1,orderBy, null, null, null, null, true));
         }
 
         /// <summary>
@@ -235,6 +240,7 @@ namespace DOL.Web.Controllers
         public ActionResult GetSchoolPageList(
             int pageIndex,
             int pageSize,
+            int orderBy,
             string name,
             string schoolID,
             string collegeID,
@@ -246,7 +252,7 @@ namespace DOL.Web.Controllers
             string cityCode
             )
         {
-            return JResult(WebService.Get_StudentSchoolPageList(pageIndex, pageSize, name,schoolID,collegeID,majorID,age, wantDriverShopID, makeDriverShopID, provinceCode,cityCode));
+            return JResult(WebService.Get_StudentSchoolPageList(pageIndex, pageSize,orderBy, name,schoolID,collegeID,majorID,age, wantDriverShopID, makeDriverShopID, provinceCode,cityCode));
         }
 
 
@@ -267,6 +273,7 @@ namespace DOL.Web.Controllers
             string driverShopID,
             string themeTwoCoachID,
             string themeThreeCoachID,
+            int orderBy,
             YesOrNoCode? themeOnePass,
             YesOrNoCode? themeTwoPass,
             YesOrNoCode? themeThreePass,
@@ -277,7 +284,7 @@ namespace DOL.Web.Controllers
             DateTime? themeFourTimeStart, DateTime? themeFourTimeEnd
             )
         {
-            return JResult(WebService.Get_StudentMoreInfoPageList(pageIndex, pageSize, name, no, trianID, driverShopID, themeTwoCoachID, themeThreeCoachID, themeOnePass, themeTwoPass, themeThreePass, themeFourPass,
+            return JResult(WebService.Get_StudentMoreInfoPageList(pageIndex, pageSize, name, no, trianID, driverShopID, themeTwoCoachID, themeThreeCoachID,orderBy, themeOnePass, themeTwoPass, themeThreePass, themeFourPass,
                 themeOneTimeStart, themeOneTimeEnd, themeTwoTimeStart, themeTwoTimeEnd, themeThreeTimeStart, themeThreeTimeEnd, themeFourTimeStart, themeFourTimeEnd));
         }
 

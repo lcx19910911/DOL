@@ -60,6 +60,9 @@ namespace DOL.Service
             string enteredPointId,
             string makeDriverShopId,
             StudentCode state,
+            int moneyIsFull,
+            int isOnSchool,
+            int orderBy,
             DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
             DateTime? makedTimeStart, DateTime? makeTimeEnd,
             bool isDelete = false
@@ -92,9 +95,35 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.Mobile.Contains(mobile));
                 }
-                if ((int)state != -1 && !isDelete)
+                if (isOnSchool == -1)
                 {
-                    query = query.Where(x => x.State.Equals(state));
+                    if ((int)state != -1 && !isDelete)
+                    {
+                        query = query.Where(x => x.State.Equals(state));
+                    }
+                }
+                else
+                {
+                    if (isOnSchool == 1)
+                    {
+                        if ((int)state != -1 && !isDelete)
+                        {
+                            query = query.Where(x => x.State.Equals(state));
+                        }
+                        else
+                        {
+                            query = query.Where(x => x.State != StudentCode.WantDropOut && x.State != StudentCode.HadDropOut && x.State != StudentCode.Graduate);
+                        }
+                    }
+                    else
+                    {
+                        query = query.Where(x => x.State == StudentCode.WantDropOut || x.State == StudentCode.HadDropOut || x.State == StudentCode.Graduate);
+                    }
+                }
+                if (moneyIsFull != -1)
+                {
+                    var code = moneyIsFull == 1 ? YesOrNoCode.Yes : YesOrNoCode.No;
+                    query = query.Where(x => x.MoneyIsFull== code);
                 }
                 if (referenceId.IsNotNullOrEmpty() && referenceId != "-1")
                 {
@@ -129,7 +158,24 @@ namespace DOL.Service
                     query = query.Where(x => x.MakeCardDate < makeTimeEnd);
                 }
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                if (orderBy == 0)
+                {
+                    query = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime);
+                }
+                else if (orderBy == 1)
+                {
+                    query = query.OrderByDescending(x => x.CreatedTime);
+                }
+                else if (orderBy == 2)
+                {
+                    query = query.OrderByDescending(x => x.MakeCardDate).ThenByDescending(x => x.CreatedTime);
+                }
+                else if (orderBy == 3)
+                {
+                    query = query.OrderByDescending(x => x.ThemeOneDate).ThenByDescending(x => x.CreatedTime);
+                }
+
+                var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                // var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
@@ -216,6 +262,7 @@ namespace DOL.Service
             string enteredPointId,
             string makeDriverShopId,
             StudentCode state,
+            int orderBy,
             DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
             DateTime? makedTimeStart, DateTime? makeTimeEnd,
             bool isAll = false
@@ -280,7 +327,25 @@ namespace DOL.Service
                         makeTimeEnd = makeTimeEnd.Value.AddDays(1);
                         query = query.Where(x => x.MakeCardDate < makeTimeEnd);
                     }
+                    if (orderBy == 0)
+                    {
+                        query = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime);
+                    }
+                    else if (orderBy == 1)
+                    {
+                        query = query.OrderByDescending(x => x.CreatedTime);
+                    }
+                    else if (orderBy == 2)
+                    {
+                        query = query.OrderByDescending(x => x.MakeCardDate).ThenByDescending(x => x.CreatedTime);
+                    }
+                    else if (orderBy == 3)
+                    {
+                        query = query.OrderByDescending(x => x.ThemeOneDate).ThenByDescending(x => x.CreatedTime);
+                    }
+
                 }
+
                 var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var enPointDic = Cache_Get_EnteredPoint_Dic();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
@@ -722,6 +787,7 @@ namespace DOL.Service
             string driverShopID,
             string themeTwoCoachID,
             string themeThreeCoachID,
+            int orderBy,
             YesOrNoCode? themeOnePass,
             YesOrNoCode? themeTwoPass,
             YesOrNoCode? themeThreePass,
@@ -840,9 +906,24 @@ namespace DOL.Service
                     themeFourTimeEnd = themeFourTimeEnd.Value.AddDays(1);
                     query = query.Where(x => x.ThemeFourDate < themeFourTimeEnd);
                 }
-
+                if (orderBy == 0)
+                {
+                    query = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime);
+                }
+                else if (orderBy == 1)
+                {
+                    query = query.OrderByDescending(x => x.CreatedTime);
+                }
+                else if (orderBy == 2)
+                {
+                    query = query.OrderByDescending(x => x.MakeCardDate).ThenByDescending(x => x.CreatedTime);
+                }
+                else if (orderBy == 3)
+                {
+                    query = query.OrderByDescending(x => x.ThemeOneDate).ThenByDescending(x => x.CreatedTime);
+                }
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var coachDic = Cache_Get_CoachList_Dic();
                 //var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
@@ -902,6 +983,7 @@ namespace DOL.Service
         public WebResult<PageList<Student>> Get_StudentSchoolPageList(
             int pageIndex,
             int pageSize,
+            int orderBy,
             string name,
             string schoolID,
             string collegeID,
@@ -956,9 +1038,24 @@ namespace DOL.Service
                 {
                     query = query.Where(x => !string.IsNullOrEmpty(x.CityCode) && x.CityCode.Contains(cityCode));
                 }
-
+                if (orderBy == 0)
+                {
+                    query = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime);
+                }
+                else if (orderBy == 1)
+                {
+                    query = query.OrderByDescending(x => x.CreatedTime);
+                }
+                else if (orderBy == 2)
+                {
+                    query = query.OrderByDescending(x => x.MakeCardDate).ThenByDescending(x => x.CreatedTime);
+                }
+                else if (orderBy == 3)
+                {
+                    query = query.OrderByDescending(x => x.ThemeOneDate).ThenByDescending(x => x.CreatedTime);
+                }
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.EnteredDate).ThenByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var studentIdList = list.Select(x => x.ID).ToList();
