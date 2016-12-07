@@ -94,7 +94,7 @@
 
         $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
             $(json.CoachList).each(function () {
-                $("#searchDomain select[name='CoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                $("#searchDomain select[name='CoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
             });
         });
 

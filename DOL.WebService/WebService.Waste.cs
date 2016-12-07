@@ -53,7 +53,7 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Waste>> Get_WastePageList(int pageIndex, int pageSize, WasteCode code, string oilId,string carId,string userId)
+        public WebResult<PageList<Waste>> Get_WastePageList(int pageIndex, int pageSize, WasteCode code, string oilId,string carId,string userId,string license)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -61,6 +61,11 @@ namespace DOL.Service
                 if (code != WasteCode.None)
                 {
                     query = query.Where(x => x.Code.Equals(code));
+                }
+                if(license.IsNotNullOrEmpty())
+                {
+                    var carIdList = Cache_Get_CarList().AsQueryable().Where(x => x.License.Contains(license)).Select(x => x.ID).ToList();
+                    query = query.Where(x => carIdList.Contains(x.CarID));
                 }
                 //不是管理员只能看到自己的
                 //if (!Client.LoginUser.IsAdmin)

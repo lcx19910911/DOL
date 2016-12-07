@@ -1,0 +1,81 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "油卡";
+}
+
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>耗损记录</small></div>
+</div>
+<div id="searchDomain">
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label">车牌号：</span>
+                <input type="text" class="am-form-field" placeholder="按车牌号搜索" style="width:100px;" name="license" ;>
+
+                <span class="am-input-group-label  am-margin-left-sm">责任人：</span>
+                <select name="CoachID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1">请选择</option>
+                </select>
+                <span class="am-input-group-label  am-margin-left-sm">类别：</span>
+                <select name="Code" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="0">请选择</option>
+                    <option value="1">油耗</option>
+                    <option value="2">车损</option>
+                </select>
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="grid_container">
+    <table id="dataTable" class="am-table am-table-compact am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th dataname="CreatedUserName">创办人</th>
+                <th dataname="License">车牌号</th>
+                <th render="ShowWasteCode">类别</th>
+                <th dataname="TargetName">加油点/维修点</th>
+                <th dataname="OilName">油卡号</th>
+                <th dataname="Money">费用</th>
+                <th dataname="ThingName">项目</th>
+                <th dataname="Remark">备注</th>
+                <th dataname="CreatedTime" datatype="jsondate">创建日期</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+        }
+
+        var grid = $.Nuoya.grid({
+            tableId: "dataTable",
+            //表格id
+            search: {
+                domainId: "searchDomain",
+                subId: "btnSearch"
+            },
+            ajaxUrl: "/Waste/GetPageList",
+            //数据请求地址
+            events: [
+            ]
+        });
+        $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+            $(json.CoachList).each(function () {
+                $("#searchDomain select[name='CoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+            });
+        });
+
+    </script>
+}

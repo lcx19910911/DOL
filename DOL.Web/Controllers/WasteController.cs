@@ -26,9 +26,9 @@ namespace DOL.Web.Controllers
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public JsonResult GetPageList(int pageIndex, int pageSize, WasteCode code, string oilId, string carId, string userId)
+        public JsonResult GetPageList(int pageIndex, int pageSize, WasteCode code, string oilId, string carId, string userId,string license)
         {
-            return JResult(WebService.Get_WastePageList(pageIndex, pageSize, code, oilId, carId, userId));
+            return JResult(WebService.Get_WastePageList(pageIndex, pageSize, code, oilId, carId, userId, license));
         }
 
 
