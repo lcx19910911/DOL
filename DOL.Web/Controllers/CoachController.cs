@@ -29,6 +29,11 @@ namespace DOL.Web.Controllers
             return View();
         }
 
+        public ViewResult OilCard()
+        {
+            return View();
+        }
+
         public ViewResult Car()
         {
             return View();
@@ -41,10 +46,23 @@ namespace DOL.Web.Controllers
         /// <param name="key"> 搜索项</param>
         /// <param name="value">搜索项</param>
         /// <returns></returns>
-        public ActionResult GetCarPageList(int pageIndex, int pageSize, string brandName, string model, string modelCode, string engineNumber, string frameCode, string coachId)
+        public ActionResult GetCarPageList(int pageIndex, int pageSize, string brandName, string model, string modelCode, string engineNumber, string license)
         {
-            return JResult(WebService.Get_CarPageList(pageIndex, pageSize, brandName, model, modelCode, engineNumber, frameCode, Client.LoginUser.CoachID));
+            return JResult(WebService.Get_CarPageList(pageIndex, pageSize, brandName, model, modelCode, engineNumber, license, Client.LoginUser.ID));
         }
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="key"> 搜索项</param>
+        /// <param name="value">搜索项</param>
+        /// <returns></returns>
+        public ActionResult GetOilCardPageList(int pageIndex, int pageSize, string companyName, string no)
+        {
+            return JResult(WebService.Get_OilCardPageList(pageIndex, pageSize, companyName, no,Client.LoginUser.CoachID));
+        }
+
 
         /// <summary>
         /// 教练培训信息

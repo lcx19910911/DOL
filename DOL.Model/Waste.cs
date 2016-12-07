@@ -17,15 +17,15 @@ namespace DOL.Model
     {
 
         /// <summary>
-        /// 教练员
+        /// 创建人
         /// </summary>
-        [Required(ErrorMessage = "教练员不能为空")]
+        [Required(ErrorMessage = "创建人不能为空")]
         [MaxLength(32)]
-        [Column("CoachID", TypeName = "char")]
-        public string CoachID { get; set; }
+        [Column("CreatedUserID", TypeName = "char")]
+        public string CreatedUserID { get; set; }
 
         [NotMapped]
-        public string CoachName { get; set; }
+        public string CreatedUserName { get; set; }
 
         /// <summary>
         /// 消费类别
@@ -39,7 +39,7 @@ namespace DOL.Model
         [Column("CarID", TypeName = "char")]
         public string CarID { get; set; }
         [NotMapped]
-        public string CarName { get; set; }
+        public string License { get; set; }
 
         /// <summary>
         /// 油卡id

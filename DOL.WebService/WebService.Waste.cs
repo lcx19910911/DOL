@@ -53,7 +53,7 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Waste>> Get_WastePageList(int pageIndex, int pageSize, WasteCode code, string oilId,string carId,string coachId)
+        public WebResult<PageList<Waste>> Get_WastePageList(int pageIndex, int pageSize, WasteCode code, string oilId,string carId,string userId)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -62,6 +62,11 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.Code.Equals(code));
                 }
+                //不是管理员只能看到自己的
+                //if (!Client.LoginUser.IsAdmin)
+                //{
+                //    query = query.Where(x => x.CreatedUserID.Equals(Client.LoginUser.ID));
+                //}
                 if (oilId.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.OilID.Equals(oilId));
@@ -70,25 +75,40 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.CarID.Equals(carId));
                 }
-                if (coachId.IsNotNullOrEmpty())
+                if (userId.IsNotNullOrEmpty())
                 {
-                    query = query.Where(x => x.CoachID.Equals(coachId));
+                    query = query.Where(x => x.CreatedUserID.Equals(userId));
                 }
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var userDic = Cache_Get_UserDic();
-                var coachDic = Cache_Get_CoachList_Dic();
+                var carDic = Cache_Get_CarList_Dic();
                 var thingDic = Cache_Get_DataDictionary()[GroupCode.Thing];
-
+                var refuelingDic = Cache_Get_DataDictionary()[GroupCode.RefuelingPoint];
+                var repairDic = Cache_Get_DataDictionary()[GroupCode.RepairingPoint];
+                var oilDic = Cache_Get_OilCardList_Dic();
                 list.ForEach(x =>
                 {
-                    if (!string.IsNullOrEmpty(x.CoachID) && coachDic.ContainsKey(x.CoachID))
-                        x.CoachName = coachDic[x.CoachID].Name;
+                    if (!string.IsNullOrEmpty(x.CreatedUserID) && userDic.ContainsKey(x.CreatedUserID))
+                        x.CreatedUserName = userDic[x.CreatedUserID].Name;
+                    if (!string.IsNullOrEmpty(x.CarID) && carDic.ContainsKey(x.CarID))
+                        x.License = carDic[x.CarID].License;
+                    if (x.Code == WasteCode.Oil)
+                    {
+                        if (!string.IsNullOrEmpty(x.TargetID) && refuelingDic.ContainsKey(x.TargetID))
+                            x.TargetName = refuelingDic[x.TargetID].Value;
+                        if (!string.IsNullOrEmpty(x.OilID) && oilDic.ContainsKey(x.OilID))
+                            x.OilName = oilDic[x.OilID].CardNO;
+                    }
+                    else if (x.Code == WasteCode.Repair)
+                    {
+                        if (!string.IsNullOrEmpty(x.TargetID) && repairDic.ContainsKey(x.TargetID))
+                            x.TargetName = repairDic[x.TargetID].Value;
+                    }
                     if (!string.IsNullOrEmpty(x.ThingID) && thingDic.ContainsKey(x.ThingID))
                         x.ThingName = thingDic[x.ThingID].Value;
-
-
                 });
+
 
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
@@ -104,17 +124,36 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
+                var oilModel = new OilCard();
                 model.ID = Guid.NewGuid().ToString("N");
                 model.CreatedTime=model.UpdatedTime = DateTime.Now;
+                model.CreatedUserID=model.UpdaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
                 entities.Waste.Add(model);
-                var oilModel = entities.OilCard.Find(model.OilID);
-                if(oilModel==null)
-                    return Result(false, ErrorCode.sys_param_format_error);
-                oilModel.Money += model.Money;
+                if (model.Code == WasteCode.Oil)
+                {
+                    oilModel = entities.OilCard.Find(model.OilID);
+                    if (oilModel == null)
+                        return Result(false, ErrorCode.sys_param_format_error);
+                    oilModel.Balance -= model.Money;
+                }
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_WasteList();
+                    if (model.Code == WasteCode.Oil)
+                    {
+                        var oilCardList = Cache_Get_OilCardList();
+                        var index = oilCardList.FindIndex(x => x.ID.Equals(model.OilID));
+                        if (index > -1)
+                        {
+                            oilCardList[index] = oilModel;
+                        }
+                        else
+                        {
+                            oilCardList.Add(oilModel);
+                        }
+                    }
+                    
                     list.Add(model);
                     return Result(true);
                 }
@@ -139,6 +178,5 @@ namespace DOL.Service
                 return null;
                 return Cache_Get_WasteList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
         }
-              
     }
 }

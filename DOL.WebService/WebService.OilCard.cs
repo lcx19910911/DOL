@@ -51,7 +51,7 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<OilCard>> Get_OilCardPageList(int pageIndex, int pageSize, string companyName, string no)
+        public WebResult<PageList<OilCard>> Get_OilCardPageList(int pageIndex, int pageSize, string companyName, string no,string coachId)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -63,16 +63,27 @@ namespace DOL.Service
 
                 if (no.IsNotNullOrEmpty() )
                 {
-                    query = query.Where(x => x.CardNO.Equals(no));
+                    query = query.Where(x => x.CardNO.Contains(no));
                 }
-                
+                if (coachId.IsNotNullOrEmpty())
+                {
+                    query = query.Where(x => x.CoachID.Equals(coachId));
+                }
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var coachDic = Cache_Get_CoachList_Dic();
+                var userDic = Cache_Get_UserDic();
+                var starTime = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day + 1);
+                var oilIdList = list.Select(x => x.ID).ToList();
+                var oilDic = Cache_Get_WasteList().Where(x =>x.Code==WasteCode.Oil&&oilIdList.Contains(x.OilID) && x.CreatedTime > starTime).ToList().GroupBy(x => x.OilID).ToDictionary(x => x.Key, x => x.ToList());
                 list.ForEach(x =>
                 {
                     if (!string.IsNullOrEmpty(x.CoachID) && coachDic.ContainsKey(x.CoachID))
                         x.CoachName = coachDic[x.CoachID].Name;
+                    if (!string.IsNullOrEmpty(x.CreatedUserID) && userDic.ContainsKey(x.CreatedUserID))
+                        x.CreatedUserName = userDic[x.CreatedUserID].Name;
+                    if (oilDic.ContainsKey(x.ID))
+                        x.OilMonth = oilDic[x.ID].Sum(y => y.Money);
                 });
 
                 return ResultPageList(list, pageIndex, pageSize, count);
@@ -94,7 +105,7 @@ namespace DOL.Service
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.UpdatedTime = DateTime.Now;
-                model.UpdaterID = Client.LoginUser.ID;
+                model.UpdaterID=model.CreatedUserID = Client.LoginUser.ID;
                 entities.OilCard.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
@@ -126,7 +137,7 @@ namespace DOL.Service
                     oldEntity.Company = model.Company;
                     oldEntity.CardNO = model.CardNO;
                     oldEntity.CoachID = model.CoachID;
-                    oldEntity.CreatedUserName = model.CreatedUserName;
+                    oldEntity.CreatedUserID = model.CreatedUserID;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                 }
@@ -241,6 +252,57 @@ namespace DOL.Service
                         value=x.ID
                     }).ToList();
             return ztreeNodes;
+        }
+
+
+
+        /// <summary>
+        /// 修改责任人
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> Update_OilCardCoach(string id, string coachID)
+        {
+            if (!id.IsNotNullOrEmpty() || !coachID.IsNotNullOrEmpty()
+                )
+                return Result(false, ErrorCode.sys_param_format_error);
+            using (DbRepository entities = new DbRepository())
+            {
+
+                var list = Cache_Get_OilCardList();
+                var oldEntity = entities.OilCard.Find(id);
+                if (oldEntity != null)
+                {
+
+                    oldEntity.CoachID = coachID;
+                    oldEntity.UpdatedTime = DateTime.Now;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                    string afterJSon = oldEntity.ToJson();
+                    // string info = SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
+                    // Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息,分配教练", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name), beforeJson, afterJSon, info);
+                }
+                else
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                if (entities.SaveChanges() > 0)
+                {
+                    var index = list.FindIndex(x => x.ID.Equals(id));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
         }
     }
 }

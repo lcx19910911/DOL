@@ -1,0 +1,183 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "我的油卡";
+}
+
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>我的油卡</small></div>
+</div>
+<div id="searchDomain">
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-label ">所属公司：</span>
+                <input type="text" class="am-form-field" placeholder="按所属公司搜索" style="width:80px;" name="companyName" ;>
+
+                <span class="am-input-group-label   am-margin-left-sm">卡号：</span>
+                <input type="text" class="am-form-field" placeholder="按卡号搜索" style="width:100px;" name="no" ;>
+
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="am-g am-margin-top-sm">
+        <div class="am-u-lg-6">
+            <div class="am-btn-toolbar">
+                <div class="am-btn-group am-btn-group-xs">
+                    <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+                    <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="grid_container">
+    <table id="dataTable" class="am-table am-table-compact am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th dataname="Company">所属公司</th>
+                <th dataname="Money">总额</th>
+                <th dataname="Balance">余额</th>              
+                <th dataname="CardNO">卡号</th>
+                <th dataname="CreatedUserName">办卡人</th>
+                <th dataname="CoachName">责任人</th>
+                <th dataname="OilMonth">本月消费</th>
+                <th dataname="CreatedTime" datatype="jsondate">创建日期</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+{
+    <script type="text/javascript">
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+        }
+
+
+        var grid = $.Nuoya.grid({
+            tableId: "dataTable",
+            //表格id
+            search: {
+                domainId: "searchDomain",
+                subId: "btnSearch"
+            },
+            ajaxUrl: "/Coach/GetOilCardPageList",
+            //数据请求地址
+            events: [
+                 {
+                     className: "am-text-warning",
+                     icon: "icon-plus",
+                     name: "充值",
+                     click: function (item) {
+                         $.Nuoya.ajaxDialog({
+                             closeViaDimmer: false,
+                             ajaxUrl: "/HtmlTemplates/Recharge/Update.html",
+                             title: "充值",
+                             width: "800px",
+                             height: "440px",
+                             callback: function (e) {
+                                 $("#form [name='CardNO']").val(item.CardNO);
+                             },
+                             buttons: [{
+                                 label: "保存",
+                                 callback: function (e) {
+
+                                     $.Nuoya.form("form").ajaxSubmit({
+                                         ajaxUrl: "/Recharge/Add",
+                                         params: {
+                                             OilID: item.ID
+                                         },
+                                         callback: function (data) {
+                                             if (!data.ErrorDesc) {
+                                                 e.hide();
+                                                 grid.reload();
+                                             }
+                                             else
+                                                 $.Nuoya.alert(data.ErrorDesc);
+                                         }
+                                     });
+                                 }
+                             }]
+                         })
+                     }
+                 },
+                {
+                    className: "am-text-success",
+                    icon: "icon-search",
+                    name: "充值记录",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "1000px",
+                            height: "600px",
+                            ajaxUrl: "/HtmlTemplates/Recharge/Index.html",
+                            title: "充值记录",
+                            callback: function (e) {
+
+                                var logGrid = $.Nuoya.grid({
+                                    tableId: "rechargeDataTable",
+                                    //表格id
+                                    search: {
+                                        domainId: "searchRechargeDomain",
+                                        subId: "btnRechargeSearch"
+                                    },
+                                    ajaxUrl: "/Recharge/GetPageList",
+                                    params: {
+                                        OilID: item.ID
+                                    },
+                                    //数据请求地址
+                                });
+
+                                event.preventDefault();
+                            }
+                        })
+                    }
+                }
+                ,
+                {
+                    className: "am-text-warning",
+                    icon: "icon-search",
+                    name: "消费记录",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "1000px",
+                            height: "600px",
+                            ajaxUrl: "/HtmlTemplates/Car/OilIndex.html",
+                            title: "消费记录",
+                            callback: function (e) {
+
+                                var logGrid = $.Nuoya.grid({
+                                    tableId: "wasteDataTable",
+                                    //表格id
+                                    search: {
+                                        domainId: "searchWasteDomain",
+                                        subId: "btnWasteSearch"
+                                    },
+                                    ajaxUrl: "/Waste/GetPageList",
+                                    params: {
+                                        OilID: item.ID,
+                                        code: 1
+                                    },
+                                    //数据请求地址
+                                });
+
+                                event.preventDefault();
+                            }
+                        })
+                    }
+                },
+            ]
+        });
+
+    </script>
+}

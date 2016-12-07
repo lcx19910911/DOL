@@ -563,5 +563,33 @@ namespace DOL.Service
                 return entities.SaveChanges() > 0 ? Result(true) : Result(false, ErrorCode.sys_fail);
             }
         }
+
+
+        /// <summary>
+        /// 下拉框集合
+        /// </summary>
+        /// <param name="">门店id</param>
+        /// <returns></returns>
+        public List<SelectItem> Get_UserSelectItem()
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                List<SelectItem> list = new List<SelectItem>();
+
+                var query = Cache_Get_ReferenceList().AsQueryable().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).AsNoTracking();
+                query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                {
+                    list.Add(new SelectItem()
+                    {
+                        Text = x.Name,
+                        Value = x.ID
+                    });
+                });
+
+                return list;
+
+            }
+        }
+
     }
 }

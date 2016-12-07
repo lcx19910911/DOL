@@ -157,5 +157,14 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Disable_User(ids));
         }
+
+        /// <summary>
+        /// 获取用户选择项
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetSelectItem()
+        {
+            return JResult(WebService.Get_UserSelectItem());
+        }
     }
 }

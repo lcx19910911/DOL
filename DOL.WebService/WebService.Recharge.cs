@@ -53,18 +53,30 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Recharge>> Get_RechargePageList(string id,int pageIndex, int pageSize)
+        public WebResult<PageList<Recharge>> Get_RechargePageList(int pageIndex, int pageSize, string oilId, string userId)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_RechargeList().AsQueryable().AsNoTracking().Where(x=>x.OilID.Equals(id));
+                var query = Cache_Get_RechargeList().AsQueryable().AsNoTracking();
+                if (oilId.IsNotNullOrEmpty())
+                {
+                    query = query.Where(x => x.OilID.Equals(oilId));
+                }
+                if (userId.IsNotNullOrEmpty())
+                {
+                    query = query.Where(x => x.CreatedUserID.Equals(userId));
+                }
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var userDic = Cache_Get_UserDic();
+                var oilDic = Cache_Get_OilCardList_Dic();
                 list.ForEach(x =>
                 {
                     if (!string.IsNullOrEmpty(x.CreatedUserID) && userDic.ContainsKey(x.CreatedUserID))
                         x.CreatedUserName = userDic[x.CreatedUserID].Name;
+                    if (!string.IsNullOrEmpty(x.OilID) && oilDic.ContainsKey(x.OilID))
+                        x.OilName = oilDic[x.OilID].CardNO;
+                    
                 });
 
                 return ResultPageList(list, pageIndex, pageSize, count);
@@ -82,15 +94,25 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 model.ID = Guid.NewGuid().ToString("N");
-                model.CreatedTime = DateTime.Now;
                 model.CreatedUserID = Client.LoginUser.ID;
                 entities.Recharge.Add(model);
                 var oilModel = entities.OilCard.Find(model.OilID);
                 if(oilModel==null)
                     return Result(false, ErrorCode.sys_param_format_error);
                 oilModel.Money += model.Money;
+                oilModel.Balance += model.Money;
                 if (entities.SaveChanges() > 0)
                 {
+                    var oilCardList = Cache_Get_OilCardList();
+                    var index = oilCardList.FindIndex(x => x.ID.Equals(model.OilID));
+                    if (index > -1)
+                    {
+                        oilCardList[index] = oilModel;
+                    }
+                    else
+                    {
+                        oilCardList.Add(oilModel);
+                    }
                     var list = Cache_Get_RechargeList();
                     list.Add(model);
                     return Result(true);

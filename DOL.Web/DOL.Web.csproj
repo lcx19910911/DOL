@@ -123,9 +123,13 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="HtmlTemplates\Car\AddRepair.html" />
+    <Content Include="HtmlTemplates\Car\RepairIndex.html" />
+    <Content Include="HtmlTemplates\Car\OilIndex.html" />
     <Content Include="HtmlTemplates\Car\SelectCoach.html" />
     <Content Include="HtmlTemplates\Car\AddOil.html" />
     <Content Include="HtmlTemplates\Car\Update.html" />
+    <Content Include="HtmlTemplates\Recharge\Index.html" />
+    <Content Include="HtmlTemplates\Recharge\Update.html" />
     <Content Include="HtmlTemplates\School\Update.html" />
     <Content Include="HtmlTemplates\Coach\Update.html" />
     <Content Include="HtmlTemplates\DataDictionary\Update.html" />
@@ -148,6 +152,7 @@
     <Content Include="HtmlTemplates\Student\SelectCoach.html" />
     <Content Include="HtmlTemplates\Student\SelectFile.html" />
     <Content Include="HtmlTemplates\Student\WantDrop.html" />
+    <Content Include="HtmlTemplates\OilCard\Update.html" />
     <Content Include="HtmlTemplates\ThemeSalary\Update.html" />
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
     <Content Include="HtmlTemplates\User\ExamList.html" />
@@ -248,6 +253,8 @@
     <Compile Include="Controllers\AccoutController.cs" />
     <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\OilCardController.cs" />
+    <Compile Include="Controllers\RechargeController.cs" />
+    <Compile Include="Controllers\WasteController.cs" />
     <Compile Include="Controllers\SchoolController.cs" />
     <Compile Include="Controllers\DataDictionaryController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -318,6 +325,8 @@
     <Content Include="Views\Coach\ThemeThreeStudent.cshtml" />
     <Content Include="Views\Car\Index.cshtml" />
     <Content Include="Views\Coach\Car.cshtml" />
+    <Content Include="Views\OilCard\Index.cshtml" />
+    <Content Include="Views\Coach\OilCard.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

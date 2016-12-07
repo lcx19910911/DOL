@@ -11,19 +11,13 @@
         <div class="am-u-lg-12">
             <div class="am-input-group am-input-group-sm">
                 <span class="am-input-group-label ">品牌：</span>
-                <input type="text" class="am-form-field" placeholder="按品牌搜索" style="width:80px;" name="brandName" ;>
+                <input type="text" class="am-form-field" placeholder="按品牌搜索" style="width:100px;" name="brandName" ;>
 
                 <span class="am-input-group-label   am-margin-left-sm">车型：</span>
                 <input type="text" class="am-form-field" placeholder="按车型搜索" style="width:100px;" name="model" ;>
 
-                <span class="am-input-group-label   am-margin-left-sm">车型编号：</span>
-                <input type="text" class="am-form-field" placeholder="按车型编号搜索" style="width:80px;" name="modelCode" ;>
-
-                <span class="am-input-group-label   am-margin-left-sm">车架号：</span>
-                <input type="text" class="am-form-field" placeholder="按车架号搜索" style="width:80px;" name="engineNumber" ;>
-
-                <span class="am-input-group-label   am-margin-left-sm">车架代码：</span>
-                <input type="text" class="am-form-field" placeholder="按车架代码搜索" style="width:80px;" name="frameCode" ;>
+                <span class="am-input-group-label   am-margin-left-sm">车牌号：</span>
+                <input type="text" class="am-form-field" placeholder="按车牌号搜索" style="width:100px;" name="license" ;>
 
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
@@ -39,7 +33,6 @@
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
-                <th type="more"></th>
                 <th dataname="BuyTime" datatype="jsondate">购置日期</th>
                 <th dataname="License">车牌号</th>
                 <th dataname="Brand">品牌</th>
@@ -62,7 +55,17 @@
             $("#searchDomain input").val("");
         }
 
-        function formInit(dataitem,tab) {
+        function formInit(dataitem, tab) {
+            $.Nuoya.action("/DataDictionary/GetSelectItem", { group: 12 }, function (json) {
+                $(json).each(function () {
+                    if (dataitem != null && dataitem.ThingID == this.ID) {
+                        $("#form select[name='ThingID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                    }
+                    else {
+                        $("#form select[name='ThingID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                    }
+                });
+            });
             if (tab == 1) {
 
                 //添加表单验证
@@ -107,17 +110,18 @@
                         }
                     }
                 });
-                $.Nuoya.action("/DataDictionary/GetSelectItem", { GroupCode :10}, function (json) {
+                $.Nuoya.action("/DataDictionary/GetSelectItem", { group: 10 }, function (json) {
+                    $(json).each(function () {
                         if (dataitem != null && dataitem.CoachID == this.ID) {
                             $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
                         }
                         else {
                             $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
                         }
+                    });
                 });
             }
-            else if (tab == 2)
-            {
+            else if (tab == 2) {
 
                 //添加表单验证
                 $.Nuoya.form("form").validate({
@@ -168,22 +172,26 @@
                     }
                 });
 
-                $.Nuoya.action("/DataDictionary/GetSelectItem", { GroupCode: 11 }, function (json) {
-                    if (dataitem != null && dataitem.CoachID == this.ID) {
-                        $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
-                    }
-                    else {
-                        $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
-                    }
+                $.Nuoya.action("/DataDictionary/GetSelectItem", { group: 11 }, function (json) {
+                    $(json).each(function () {
+                        if (dataitem != null && dataitem.CoachID == this.ID) {
+                            $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                    });
                 });
 
-                $.Nuoya.action("/OilCard/GetSelectItem", {  }, function (json) {
-                    if (dataitem != null && dataitem.OilID == this.ID) {
-                        $("#form select[name='OilID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
-                    }
-                    else {
-                        $("#form select[name='OilID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
-                    }
+                $.Nuoya.action("/OilCard/GetSelectItem", {}, function (json) {
+                    $(json).each(function () {
+                        if (dataitem != null && dataitem.OilID == this.ID) {
+                            $("#form select[name='OilID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='OilID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                    });
                 });
             }
         }
@@ -195,84 +203,172 @@
                 domainId: "searchDomain",
                 subId: "btnSearch"
             },
-            ajaxUrl: "/Coach/GetCardPageList",
+            ajaxUrl: "/Coach/GetCarPageList",
             //数据请求地址
             events: [
                 {
-                className: "am-text-secondary",
-                icon: "icon-pencil-square-o",
-                name: "油耗",
-                click: function (item) {
-                    $.Nuoya.ajaxDialog({
-                        closeViaDimmer: false,
-                        ajaxUrl: "/HtmlTemplates/Car/AddOil.html",
-                        title: "新增油耗",
-                        width: "1000px",
-                        height: "640px",
-                        callback: function (e) {
-                            formInit(null, 2);//表单初始化
-                            $("#form [name='License']").val(item.License);
-                        },
-                        buttons: [{
-                            label: "保存",
+                    className: "am-text-success",
+                    icon: "icon-plus",
+                    name: "油耗",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Car/AddOil.html",
+                            title: "新增油耗",
+                            width: "1000px",
+                            height: "640px",
                             callback: function (e) {
-                                
-                                $.Nuoya.form("form").ajaxSubmit({
-                                    ajaxUrl: "/Car/Update",
-                                    params: {
-                                        ID: item.ID
-                                    },
-                                    callback: function (data) {
-                                        if (!data.ErrorDesc) {
-                                            e.hide();
-                                            grid.reload();
-                                        }
-                                        else
-                                            $.Nuoya.alert(data.ErrorDesc);
+                                formInit(null, 2);//表单初始化
+                                $("#form [name='License']").val(item.License);
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    if ($("#form [name='ThingID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择项目");
+                                        return false;
                                     }
-                                });
-                            }
-                        }]
-                    })
-                }
+                                    if ($("#form [name='TargetID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择加油点");
+                                        return false;
+                                    }
+                                    if ($("#form [name='OilID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择油卡");
+                                        return false;
+                                    }
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/Waste/Add",
+                                        params: {
+                                            CarID: item.ID,
+                                            Code: 1
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
                 },
-                 {
-                     className: "am-text-secondary",
-                     icon: "icon-pencil-square-o",
-                     name: "车损",
-                     click: function (item) {
-                         $.Nuoya.ajaxDialog({
-                             closeViaDimmer: false,
-                             ajaxUrl: "/HtmlTemplates/Car/AddRepair.html",
-                             title: "新增车损",
-                             width: "1000px",
-                             height: "640px",
-                             callback: function (e) {
-                                 formInit(null, 1);//表单初始化
-                                 $("#form [name='License']").val(item.License);
-                             },
-                             buttons: [{
-                                 label: "保存",
-                                 callback: function (e) {
-                                     $.Nuoya.form("form").ajaxSubmit({
-                                         ajaxUrl: "/Car/Update",
-                                         params: {
-                                             ID: item.ID
-                                         },
-                                         callback: function (data) {
-                                             if (!data.ErrorDesc) {
-                                                 e.hide();
-                                                 grid.reload();
-                                             }
-                                             else
-                                                 $.Nuoya.alert(data.ErrorDesc);
-                                         }
-                                     });
-                                 }
-                             }]
-                         })
-                     }
-                 },
+                {
+                    className: "am-text-warning",
+                    icon: "icon-plus",
+                    name: "车损",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Car/AddRepair.html",
+                            title: "新增车损",
+                            width: "1000px",
+                            height: "640px",
+                            callback: function (e) {
+                                formInit(null, 1);//表单初始化
+                                $("#form [name='License']").val(item.License);
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    if ($("#form [name='ThingID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择项目");
+                                        return false;
+                                    }
+                                    if ($("#form [name='TargetID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择维修点");
+                                        return false;
+                                    }
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/Waste/Add",
+                                        params: {
+                                            CarID: item.ID,
+                                            Code: 2,                                          
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-warning",
+                    icon: "icon-search",
+                    name: "油耗记录",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "1000px",
+                            height: "600px",
+                            ajaxUrl: "/HtmlTemplates/Car/OilIndex.html",
+                            title: "油耗记录",
+                            callback: function (e) {
+
+                                var logGrid = $.Nuoya.grid({
+                                    tableId: "wasteDataTable",
+                                    //表格id
+                                    search: {
+                                        domainId: "searchWasteDomain",
+                                        subId: "btnWasteSearch"
+                                    },
+                                    ajaxUrl: "/Waste/GetPageList",
+                                    params: {
+                                        carID: item.ID,
+                                        Code: 1
+                                    },
+                                    //数据请求地址
+                                });
+
+                                event.preventDefault();
+                            }
+                        })
+                    }
+                },
+
+                {
+                    className: "am-text-success",
+                    icon: "icon-search",
+                    name: "车损记录",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "1000px",
+                            height: "600px",
+                            ajaxUrl: "/HtmlTemplates/Car/RepairIndex.html",
+                            title: "车损记录",
+                            callback: function (e) {
+
+                                var logGrid = $.Nuoya.grid({
+                                    tableId: "wasteDataTable",
+                                    //表格id
+                                    search: {
+                                        domainId: "searchWasteDomain",
+                                        subId: "btnWasteSearch"
+                                    },
+                                    ajaxUrl: "/Waste/GetPageList",
+                                    params: {
+                                        carID: item.ID,
+                                        code: 2
+                                    },
+                                    //数据请求地址
+                                });
+
+                                event.preventDefault();
+                            }
+                        })
+                    }
+                },
             ]
         });
 

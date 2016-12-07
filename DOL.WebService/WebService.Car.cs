@@ -49,7 +49,7 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Car>> Get_CarPageList(int pageIndex, int pageSize, string brandName,string model,string modelCode, string engineNumber, string frameCode,string coachId)
+        public WebResult<PageList<Car>> Get_CarPageList(int pageIndex, int pageSize, string brandName,string model,string modelCode, string engineNumber, string license, string coachId)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -70,9 +70,9 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.EngineNumber.Contains(engineNumber));
                 }
-                if (frameCode.IsNotNullOrEmpty())
+                if (license.IsNotNullOrEmpty())
                 {
-                    query = query.Where(x => x.FrameCode.Contains(frameCode));
+                    query = query.Where(x => x.License.Contains(license));
                 }
                 if (coachId.IsNotNullOrEmpty()&&!coachId.Equals("-1"))
                 {
@@ -83,7 +83,7 @@ namespace DOL.Service
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var carIdList = list.Select(x => x.ID).ToList();
-                var starTime = DateTime.Now.AddDays(DateTime.Now.Date.Day);
+                var starTime = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day+1);
                 var wasteList = Cache_Get_WasteList().Where(x=> carIdList.Contains(x.CarID)&&x.CreatedTime> starTime).ToList();
                 var oilDic = wasteList.Where(x => x.Code == WasteCode.Oil).GroupBy(x => x.CarID).ToDictionary(x=>x.Key,x=>x.ToList());
                 var repairDic = wasteList.Where(x => x.Code == WasteCode.Repair).GroupBy(x => x.CarID).ToDictionary(x => x.Key, x => x.ToList());

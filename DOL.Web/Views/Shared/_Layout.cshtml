@@ -507,7 +507,15 @@
             else
                 return "未知";
         }
-
+        //耗损类别
+        function ShowWasteCode(item) {
+            if (item.Code == "1") {
+                return "油耗";
+            }
+            else if (item.Code == "2") {
+                return "车损";
+            }
+        }
         //学员状态
         function ShowState(item) {
             if (item.State == "0")

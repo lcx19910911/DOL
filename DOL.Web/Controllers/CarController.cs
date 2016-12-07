@@ -90,9 +90,9 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public ActionResult Delete(string ID)
+        public ActionResult Delete(string ids)
         {
-            return JResult(WebService.Delete_Car(ID));
+            return JResult(WebService.Delete_Car(ids));
         }
 
 

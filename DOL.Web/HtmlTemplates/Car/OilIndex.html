@@ -1,0 +1,31 @@
+﻿<div id="searchWasteDomain" style="display:none;">
+    <div class="am-g">         
+        <div class="am-u-lg-9">
+            <div class="am-input-group am-input-group-sm">
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" id="btnWasteSearch" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="WasteClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="grid_container">
+    <table id="wasteDataTable" class="am-table am-table-compact am-table-hover table-main">
+        <thead>
+            <tr>
+                <th dataname="ID" type="checkbox"></th>
+                <th dataname="CreatedUserName">创办人</th>
+                <th dataname="License">车牌号</th>
+                <th render="ShowWasteCode">类别</th>
+                <th dataname="TargetName">加油点</th>
+                <th dataname="OilName">油卡号</th>
+                <th dataname="ThingName">项目</th>
+                <th dataname="Remark">备注</th>
+                <th dataname="CreatedTime" datatype="jsondate">创建日期</th>
+                <th type="eventlist"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>

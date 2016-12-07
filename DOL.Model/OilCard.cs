@@ -21,7 +21,13 @@ namespace DOL.Model
 
 
         /// <summary>
-        /// 充值金额
+        /// 余额
+        /// </summary>
+        public decimal Balance { get; set; }
+
+
+        /// <summary>
+        /// 金额
         /// </summary>
         public decimal Money { get; set; }
 
@@ -38,9 +44,12 @@ namespace DOL.Model
         /// </summary>
         [Required(ErrorMessage = "办卡人不能为空")]
         [MaxLength(32)]
-        [Column("CreatedUserName", TypeName = "varchar")]
+        [Column("CreatedUserID", TypeName = "char")]
+        public string CreatedUserID { get; set; }
+        [NotMapped]
         public string CreatedUserName { get; set; }
-
+        [NotMapped]
+        public decimal OilMonth { get; set; }
 
         /// <summary>
         /// 教练人

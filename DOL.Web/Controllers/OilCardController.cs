@@ -25,6 +25,10 @@ namespace DOL.Web.Controllers
         public JsonResult Add(OilCard entity)
         {
             ModelState.Remove("ID");
+            ModelState.Remove("UpdaterID");
+            ModelState.Remove("UpdatedTime");
+            ModelState.Remove("CreatedTime");
+            ModelState.Remove("CreatedUserID");
             if (ModelState.IsValid)
             {
                 var result = WebService.Add_OilCard(entity);
@@ -43,6 +47,10 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public JsonResult Update(OilCard entity)
         {
+            ModelState.Remove("UpdaterID");
+            ModelState.Remove("UpdatedTime");
+            ModelState.Remove("CreatedTime");
+            ModelState.Remove("CreatedUserID");
             if (ModelState.IsValid)
             {
                 var result = WebService.Update_OilCard(entity);
@@ -65,7 +73,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult GetPageList(int pageIndex, int pageSize,string companyName,string no)
         {
-            return JResult(WebService.Get_OilCardPageList(pageIndex, pageSize, companyName, no));
+            return JResult(WebService.Get_OilCardPageList(pageIndex, pageSize, companyName, no,null));
         }
 
 
@@ -84,9 +92,9 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public ActionResult Delete(string ID)
+        public ActionResult Delete(string ids)
         {
-            return JResult(WebService.Delete_OilCard(ID));
+            return JResult(WebService.Delete_OilCard(ids));
         }
 
 
@@ -98,6 +106,11 @@ namespace DOL.Web.Controllers
         public ActionResult GetSelectItem(string id)
         {
             return JResult(WebService.Get_OilCardSelectItem(id));
+        }
+
+        public ActionResult UpdateCoach(string ID, string coachID)
+        {
+            return JResult(WebService.Update_OilCardCoach(ID, coachID));
         }
     }
 }

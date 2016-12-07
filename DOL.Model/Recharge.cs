@@ -45,6 +45,12 @@ namespace DOL.Model
         public string CreatedUserName { get; set; }
 
         /// <summary>
+        /// 创建人
+        /// </summary>
+        [NotMapped]
+        public string OilName { get; set; }
+
+        /// <summary>
         /// 创建时间
         /// </summary>
         [Display(Name = "创建时间")]

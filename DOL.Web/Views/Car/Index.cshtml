@@ -19,8 +19,8 @@
                 <span class="am-input-group-label   am-margin-left-sm">车型编号：</span>
                 <input type="text" class="am-form-field" placeholder="按车型编号搜索" style="width:80px;" name="modelCode" ;>
 
-                <span class="am-input-group-label   am-margin-left-sm">车架号：</span>
-                <input type="text" class="am-form-field" placeholder="按车架号搜索" style="width:80px;" name="engineNumber" ;>
+                <span class="am-input-group-label   am-margin-left-sm">车牌号：</span>
+                <input type="text" class="am-form-field" placeholder="按车牌号搜索" style="width:100px;" name="license" ;>
 
                 <span class="am-input-group-label   am-margin-left-sm">车架代码：</span>
                 <input type="text" class="am-form-field" placeholder="按车架代码搜索" style="width:80px;" name="frameCode" ;>
@@ -94,7 +94,7 @@
 
         $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
             $(json.CoachList).each(function () {
-                  $("#searchDomain select[name='CoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                $("#searchDomain select[name='CoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
             });
         });
 
@@ -106,7 +106,7 @@
             });
             $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
                 $(json.CoachList).each(function () {
-                    if (dataitem!=null&&dataitem.CoachID == this.ID) {
+                    if (dataitem != null && dataitem.CoachID == this.ID) {
                         $("#form select[name='CoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
                     }
                     else {
@@ -170,6 +170,147 @@
             });
         }
 
+        function wasrteFormInit(dataitem, tab) {
+            $.Nuoya.action("/DataDictionary/GetSelectItem", { group: 12 }, function (json) {
+                $(json).each(function () {
+                    if (dataitem != null && dataitem.ThingID == this.ID) {
+                        $("#form select[name='ThingID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                    }
+                    else {
+                        $("#form select[name='ThingID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                    }
+                });
+            });
+            if (tab == 1) {
+
+                //添加表单验证
+                $.Nuoya.form("form").validate({
+                    rules: {
+                        CreatedTime: {
+                            required: true
+                        },
+                        ThingID: {
+                            required: true
+                        },
+                        Remark: {
+                            maxlength: 128
+                        },
+                        TargetID: {
+                            required: true
+                        },
+                        PayMoney: {
+                            required: true,
+                            min: 0,
+                            max: 99999999
+                        },
+                    },
+                    messages: {
+
+                        CreatedTime: {
+                            required: "不允许为空",
+                        },
+                        ThingID: {
+                            required: "不允许为空",
+                        },
+                        Remark: {
+                            maxlength: "最多{0}个字符"
+                        },
+                        TargetID: {
+                            required: "不允许为空",
+                        },
+                        PayMoney: {
+                            required: "请输入数字",
+                            max: "必须小于{0}",
+                            min: "必须大于{0}"
+                        }
+                    }
+                });
+                $.Nuoya.action("/DataDictionary/GetSelectItem", { group: 10 }, function (json) {
+                    $(json).each(function () {
+                        if (dataitem != null && dataitem.CoachID == this.ID) {
+                            $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                    });
+                });
+            }
+            else if (tab == 2) {
+
+                //添加表单验证
+                $.Nuoya.form("form").validate({
+                    rules: {
+                        CreatedTime: {
+                            required: true
+                        },
+                        ThingID: {
+                            required: true
+                        },
+                        Remark: {
+                            maxlength: 128
+                        },
+                        TargetID: {
+                            required: true
+                        },
+                        OilID: {
+                            required: true
+                        },
+                        PayMoney: {
+                            required: true,
+                            min: 0,
+                            max: 99999999
+                        },
+                    },
+                    messages: {
+
+                        CreatedTime: {
+                            required: "不允许为空",
+                        },
+                        ThingID: {
+                            required: "不允许为空",
+                        },
+                        Remark: {
+                            maxlength: "最多{0}个字符"
+                        },
+                        TargetID: {
+                            required: "不允许为空",
+                        },
+                        OilID: {
+                            required: "不允许为空",
+                        },
+                        PayMoney: {
+                            required: "请输入数字",
+                            max: "必须小于{0}",
+                            min: "必须大于{0}"
+                        }
+                    }
+                });
+
+                $.Nuoya.action("/DataDictionary/GetSelectItem", { group: 11 }, function (json) {
+                    $(json).each(function () {
+                        if (dataitem != null && dataitem.CoachID == this.ID) {
+                            $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                    });
+                });
+
+                $.Nuoya.action("/OilCard/GetSelectItem", {}, function (json) {
+                    $(json).each(function () {
+                        if (dataitem != null && dataitem.OilID == this.ID) {
+                            $("#form select[name='OilID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                        }
+                        else {
+                            $("#form select[name='OilID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        }
+                    });
+                });
+            }
+        }
+
         //新增
         function add() {
             $.Nuoya.ajaxDialog({
@@ -184,6 +325,9 @@
                 buttons: [{
                     label: "保存",
                     callback: function (e) {
+                        if ($("#coachForm [name='CoachID']").val() == "-1") {
+                            $("#coachForm [name='CoachID']").val("");
+                        }
                         $.Nuoya.form("form").ajaxSubmit({
                             ajaxUrl: "/Car/Add",
                             callback: function (data) {
@@ -211,6 +355,7 @@
             ajaxUrl: "/Car/GetPageList",
             //数据请求地址
             events: [
+
                 {
                     className: "am-text-secondary",
                     icon: "icon-pencil-square-o",
@@ -235,12 +380,108 @@
                                 label: "保存",
                                 callback: function (e) {
                                     if ($("#form [name='CoachID']").val() == "-1") {
-                                        $("#form [name='CoachID']").val() = null;
+                                        $("#form [name='CoachID']").val("");
                                     }
                                     $.Nuoya.form("form").ajaxSubmit({
-                                        ajaxUrl: "/Car/Update",
+                                        ajaxUrl: "/Car/UpdateCoach",
                                         params: {
                                             ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-warning",
+                    icon: "icon-plus",
+                    name: "油耗",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Car/AddOil.html",
+                            title: "新增油耗",
+                            width: "1000px",
+                            height: "640px",
+                            callback: function (e) {
+                                wasrteFormInit(null, 2);//表单初始化
+                                $("#form [name='License']").val(item.License);
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    if ($("#form [name='ThingID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择项目");
+                                        return false;
+                                    }
+                                    if ($("#form [name='TargetID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择加油点");
+                                        return false;
+                                    }
+                                    if ($("#form [name='OilID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择油卡");
+                                        return false;
+                                    }
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/Waste/Add",
+                                        params: {
+                                            CarID: item.ID,
+                                            code: 1
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-success",
+                    icon: "icon-plus",
+                    name: "车损",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Car/AddRepair.html",
+                            title: "新增车损",
+                            width: "1000px",
+                            height: "640px",
+                            callback: function (e) {
+                                wasrteFormInit(null, 1);//表单初始化
+                                $("#form [name='License']").val(item.License);
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    if ($("#form [name='ThingID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择项目");
+                                        return false;
+                                    }
+                                    if ($("#form [name='TargetID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择维修点");
+                                        return false;
+                                    }
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/Waste/Add",
+                                        params: {
+                                            CarID: item.ID,
+                                            code: 2
                                         },
                                         callback: function (data) {
                                             if (!data.ErrorDesc) {
@@ -276,13 +517,13 @@
                             width: "600px",
                             height: "400px",
                             callback: function (e) {
-                                $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
-                                    $(json.CoachList).each(function () {
-                                        if (item.CoachID == this.ID) {
-                                            $("#coachForm select[name='CoachID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                                $.Nuoya.action("/Coach/GetSelectItem", {}, function (json) {
+                                    $(json).each(function () {
+                                        if (item.CoachID == this.Value) {
+                                            $("#coachForm select[name='CoachID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
                                         }
                                         else {
-                                            $("#coachForm select[name='CoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                                            $("#coachForm select[name='CoachID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
                                         }
                                     });
                                 });
@@ -310,6 +551,73 @@
                                     });
                                 }
                             }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-success",
+                    icon: "icon-search",
+                    name: "油耗记录",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "1000px",
+                            height: "600px",
+                            ajaxUrl: "/HtmlTemplates/Car/OilIndex.html",
+                            title: "油耗记录",
+                            callback: function (e) {
+
+                                var logGrid = $.Nuoya.grid({
+                                    tableId: "wasteDataTable",
+                                    //表格id
+                                    search: {
+                                        domainId: "searchWasteDomain",
+                                        subId: "btnWasteSearch"
+                                    },
+                                    ajaxUrl: "/Waste/GetPageList",
+                                    params: {
+                                        carID: item.ID,
+                                        code: 1
+                                    },
+                                    //数据请求地址
+                                });
+
+                                event.preventDefault();
+                            }
+                        })
+                    }
+                },
+
+                {
+                    className: "am-text-warning",
+                    icon: "icon-search",
+                    name: "车损记录",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "1000px",
+                            height: "600px",
+                            ajaxUrl: "/HtmlTemplates/Car/RepairIndex.html",
+                            title: "车损记录",
+                            callback: function (e) {
+
+                                var logGrid = $.Nuoya.grid({
+                                    tableId: "wasteDataTable",
+                                    //表格id
+                                    search: {
+                                        domainId: "searchWasteDomain",
+                                        subId: "btnWasteSearch"
+                                    },
+                                    ajaxUrl: "/Waste/GetPageList",
+                                    params: {
+                                        carID: item.ID,
+                                        code: 2
+                                    },
+                                    //数据请求地址
+                                });
+
+                                event.preventDefault();
+                            }
                         })
                     }
                 },
