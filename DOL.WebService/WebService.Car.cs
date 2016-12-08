@@ -284,5 +284,42 @@ namespace DOL.Service
             }
 
         }
+
+        /// <summary>
+        /// 获取教练员学员考试信息 和工资
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public CoachReportModel Get_CarReport(string coachId, string carId, DateTime? searchTime)
+        {
+            //赋值本月
+            if (searchTime == null)
+                searchTime = DateTime.Parse(DateTime.Now.ToString("yyyy-MM"));
+
+            //本月结束时间
+            var endTime = DateTime.Parse(searchTime.Value.AddMonths(1).ToString("yyyy-MM")).AddDays(-1);// && x.Code == ThemeCode.Two
+
+            var query = Cache_Get_CarList().Where(x=>(x.Flag&(long)GlobalFlag.Removed)==0).AsQueryable();
+            if (coachId.IsNotNullOrEmpty()&& coachId.Equals("-1") && coachId.Equals("null"))
+            {
+                query = query.Where(x => x.CoachID.Equals(coachId));
+            }
+            if (carId.IsNotNullOrEmpty() && carId.Equals("-1") && carId.Equals("null"))
+            {
+                query = query.Where(x => x.ID.Equals(carId));
+            }
+
+            var list = query.ToList();
+            var cardIdList = list.Select(x => x.ID).ToList();
+            var wasteList = Cache_Get_WasteList().Where(x => cardIdList.Contains(x.CarID)).ToList();
+
+            //如果没选择教练和车辆和时间 显示总体的评价油耗记录
+            if (coachId.IsNullOrEmpty()&& carId.IsNullOrEmpty()&& !searchTime.HasValue)
+            {
+            }
+
+            return null;
+        }
     }
 }

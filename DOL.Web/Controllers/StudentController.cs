@@ -75,19 +75,30 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Update_StudentTimeCode(ID, themeTwoTimeCode, themeThreeTimeCode));
         }
-
+        public ActionResult BatchUpdateTimeCode(string ids, ThemeTimeCode themeTwoTimeCode, ThemeTimeCode themeThreeTimeCode)
+        {
+            return JResult(WebService.Update_BatchStudentTimeCode(ids, themeTwoTimeCode, themeThreeTimeCode));
+        }
 
         public ActionResult UpdateCoach(string ID, string themeTwoCoachID, string themeThreeCoachID)
         {
             return JResult(WebService.Update_StudentCoach(ID, themeTwoCoachID, themeThreeCoachID));
         }
+        public ActionResult BatchUpdateCoach(string ids, string themeTwoCoachID, string themeThreeCoachID)
+        {
+            return JResult(WebService.Update_BatchStudentCoach(ids, themeTwoCoachID, themeThreeCoachID));
+        }
+
         public ActionResult UpdateDriver(string ID, string makeDriverShopID, DateTime makeCardDate)
         {
             return JResult(WebService.Update_StudentDriver(ID, makeDriverShopID, makeCardDate));
         }
 
+        public ActionResult BatchUpdateDriver(string ids, string makeDriverShopID, DateTime makeCardDate)
+        {
+            return JResult(WebService.Update_BatchStudentDriver(ids, makeDriverShopID, makeCardDate));
+        }
 
-        
 
         /// <summary>
         /// 获取分页列表

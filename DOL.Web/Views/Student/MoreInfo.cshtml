@@ -136,6 +136,8 @@
                 <div class="am-btn-group am-btn-group-xs">
                     <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
                     <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+                    <button class="am-btn am-btn-default" onclick="batchUpdateTimeCode()" type="button"><span class="am-icon-ils"></span> 批量记录学时</button>
+                    <button class="am-btn am-btn-default" onclick="batchUpdateCoach()" type="button"><span class="am-icon-arrows"></span> 批量分配教练</button>
                 </div>
             </div>
         </div>
@@ -348,6 +350,81 @@
             })
         }
 
+        function batchUpdateCoach() {
+
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                ajaxUrl: "/HtmlTemplates/Student/SelectCoach.html",
+                title: "批量分配教练",
+                width: "600px",
+                height: "500px",
+                pageUrl: "/Student/BatchUpdateCoach",
+                callback: function (e) {
+
+                    $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
+
+                        $(json.CoachList).each(function () {
+                            $("#coachForm select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                            $("#coachForm select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                        });
+                    });
+                },
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+                        $.Nuoya.form("coachForm").ajaxSubmit({
+                            ajaxUrl: "/Student/BatchUpdateCoach",
+                            params: {
+                                ids: grid.getCheckIds().join(",")
+                            },
+                            callback: function (data) {
+                                if (!data.ErrorDesc) {
+                                    e.hide();
+                                    grid.reload();
+                                }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+                            }
+                        });
+                    }
+                }]
+            })
+
+        }
+
+        function batchUpdateTimeCode()
+        {
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                ajaxUrl: "/HtmlTemplates/Student/SelectTimeCode.html",
+                title: "批量记录学时",
+                width: "600px",
+                height: "500px",
+                pageUrl: "/Student/BatchUpdateTimeCode",
+                callback: function (e) {
+                },
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+                        $.Nuoya.form("timeForm").ajaxSubmit({
+                            ajaxUrl: "/Student/BatchUpdateTimeCode",
+                            params: {
+                                ids: grid.getCheckIds().join(",")
+                            },
+                            callback: function (data) {
+                                if (!data.ErrorDesc) {
+                                    e.hide();
+                                    grid.reload();
+                                }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+                            }
+                        });
+                    }
+                }]
+            })
+        }
+
         var grid = $.Nuoya.grid({
             tableId: "dataTable",
             //表格id
@@ -362,8 +439,8 @@
             events: [
                 {
                     className: "am-text-success",
-                    icon: "icon-plus",
-                    name: "记录学时",
+                    icon: "icon-ils",
+                    name: "学时",
                     url: "/Student/UpdateTimeCode",
                     //formula: function (model) {
                     //    if (model.State = "" && model.State != "6" && model.State != "7") {
@@ -415,16 +492,16 @@
                 {
                     className: "am-text-secondary",
                     icon: "icon-plus",
-                    name: "分配教练",
+                    name: "教练",
                     url: "/Student/UpdateCoach",
-                    //formula: function (model) {
-                    //    if (model.State = "" && model.State != "6" && model.State != "7") {
-                    //        return true;
-                    //    }
-                    //    else {
-                    //        return false;
-                    //    }
-                    //},
+                    formula: function (model) {
+                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,
@@ -488,7 +565,7 @@
                     }
                 },
                 {
-                    className: "am-text-success",
+                    className: "am-text-warning",
                     icon: "icon-plus",
                     name: "考试",
                     url: "/Exam/Add",
@@ -537,12 +614,11 @@
                             }]
                         })
                     }
-                }
-                ,
+                },
                 {
                     className: "am-text-secondary",
                     icon: "icon-search",
-                    name: "考试记录",
+                    name: "记录",
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,

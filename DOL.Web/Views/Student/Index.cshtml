@@ -21,7 +21,7 @@
                 <input type="text" class="am-form-field" placeholder="按手机号码搜索" style="width:80px;" name="mobile" ;>
 
                 <span class="am-input-group-label   am-margin-left-sm">报名点：</span>
-                <select name="EnteredPointID" data-am-selected="{btnWidth: '100px',btnSize: 'sm'}" ><option value="-1">不限</option></select>
+                <select name="EnteredPointID" data-am-selected="{btnWidth: '100px',btnSize: 'sm'}"><option value="-1">不限</option></select>
 
                 <span class="am-input-group-label   am-margin-left-sm">推荐人：</span>
                 <select name="ReferenceID" data-am-selected="{ btnWidth: '100px',btnSize: 'sm'}"><option value="-1">不限</option></select>
@@ -78,7 +78,7 @@
                     <option value="7">已退学</option>
                 </select>
                 <span class="am-input-group-btn am-margin-left-sm">
-                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>                
+                    <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
                 </span>
             </div>
@@ -93,8 +93,9 @@
             <div class="am-btn-toolbar">
                 <div class="am-btn-group am-btn-group-xs">
                     <button onclick="add()" type="button" class="am-btn am-btn-xs"><span class="am-icon-plus"></span> 新增</button>
-                    <button class="am-btn am-btn-default" onclick="ExportOutExecle()" type="button">导出</button>
-                    <button class="am-btn am-btn-default" id="ExportIntoExecle" type="button">导入</button>
+                    <button class="am-btn am-btn-default" onclick="ExportOutExecle()" type="button"><span class="am-icon-plug"></span> 导出</button>
+                    <button class="am-btn am-btn-default" id="ExportIntoExecle" type="button"><span class="am-icon-pie-chart"></span> 导入</button>
+                    <button class="am-btn am-btn-default" onclick="batchUpdateDriverShop()" type="button"><span class="am-icon-opera"></span> 批量制卡</button>
                 </div>
             </div>
         </div>
@@ -125,7 +126,7 @@
                 <th dataname="EnteredPointName" isHide="1" style="display:none;">报名门店</th>
                 <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>
                 <th dataname="MakeCardRemark" isHide="1" style="display:none;">制卡备注</th>
-          
+
                 <th type="eventlist"></th>
             </tr>
         </thead>
@@ -134,8 +135,7 @@
 @section scripts
 {
     <script type="text/javascript">
-        function ShowNeedMoney(item)
-        {
+        function ShowNeedMoney(item) {
             return item.Money - item.HadPayMoney;
         }
         function ExportOutExecle() {
@@ -294,6 +294,43 @@
             });
         }
 
+        function batchUpdateDriverShop() {
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                ajaxUrl: "/HtmlTemplates/Student/SelectDriver.html",
+                title: "批量制卡",
+                width: "600px",
+                height: "500px",
+                pageUrl: "/Student/BatchUpdateDriver",
+                callback: function (e) {
+                    $.Nuoya.action("/DriverShop/SelectItem", {}, function (json) {
+                        $(json).each(function () {
+                            $("#driverForm select[name='MakeDriverShopID']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                        });
+                    });
+                },
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+                        $.Nuoya.form("driverForm").ajaxSubmit({
+                            ajaxUrl: "/Student/BatchUpdateDriver",
+                            params: {
+                                ids: grid.getCheckIds().join(",")
+                            },
+                            callback: function (data) {
+                                if (!data.ErrorDesc) {
+                                    e.hide();
+                                    grid.reload();
+                                }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+                            }
+                        });
+                    }
+                }]
+            })
+        }
+
         //新增
         function add() {
             window.location.href = "/Student/Add";
@@ -386,7 +423,7 @@
             isHide: true,
             ajaxUrl: "/Student/GetPageList",
             //数据请求地址
-            
+
             events: [
                 {
                     className: "am-text-secondary",
@@ -427,59 +464,59 @@
                         window.location.href = "/Student/Update?ID=" + item.ID + "&readonly=1";
                     }
                 },
-                 {
-                     className: "am-text-warning",
-                     icon: "icon-opera",
-                     name: "驾校",
-                     //formula: function (model) {
-                     //    if (model.State = "" && model.State != "6" && model.State != "7") {
-                     //        return true;
-                     //    }
-                     //    else {
-                     //        return false;
-                     //    }
-                     //},
-                     click: function (item) {
-                         $.Nuoya.ajaxDialog({
-                             closeViaDimmer: false,
-                             ajaxUrl: "/HtmlTemplates/Student/SelectDriver.html",
-                             title: "制卡驾校",
-                             width: "600px",
-                             height: "500px",
-                             pageUrl: "/Student/UpdateDriver",
-                             callback: function (e) {                              
-                                 $.Nuoya.action("/DriverShop/SelectItem", {}, function (json) {
-                                     $(json).each(function () {
-                                         if (item.MakeDriverShopID == this.Value)
-                                                 $("#driverForm select[name='MakeDriverShopID']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
-                                             else
-                                                 $("#driverForm select[name='MakeDriverShopID']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
-                                     });
-                                 });
-                                 $("#driverForm [name='MakeCardDate']").val(RenderDate(item.MakeCardDate));
-                             },
-                             buttons: [{
-                                 label: "保存",
-                                 callback: function (e) {
-                                     $.Nuoya.form("driverForm").ajaxSubmit({
-                                         ajaxUrl: "/Student/UpdateDriver",
-                                         params: {
-                                             ID: item.ID
-                                         },
-                                         callback: function (data) {
-                                             if (!data.ErrorDesc) {
-                                                 e.hide();
-                                                 grid.reload();
-                                             }
-                                             else
-                                                 $.Nuoya.alert(data.ErrorDesc);
-                                         }
-                                     });
-                                 }
-                             }]
-                         })
-                     }
-                 },
+                {
+                    className: "am-text-warning",
+                    icon: "icon-opera",
+                    name: "驾校",
+                    //formula: function (model) {
+                    //    if (model.State = "" && model.State != "6" && model.State != "7") {
+                    //        return true;
+                    //    }
+                    //    else {
+                    //        return false;
+                    //    }
+                    //},
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Student/SelectDriver.html",
+                            title: "制卡驾校",
+                            width: "600px",
+                            height: "500px",
+                            pageUrl: "/Student/UpdateDriver",
+                            callback: function (e) {
+                                $.Nuoya.action("/DriverShop/SelectItem", {}, function (json) {
+                                    $(json).each(function () {
+                                        if (item.MakeDriverShopID == this.Value)
+                                            $("#driverForm select[name='MakeDriverShopID']").append("<option value='" + this.Value + "' selected='selected'>" + this.Text + "</option>");
+                                        else
+                                            $("#driverForm select[name='MakeDriverShopID']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                                    });
+                                });
+                                $("#driverForm [name='MakeCardDate']").val(RenderDate(item.MakeCardDate));
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    $.Nuoya.form("driverForm").ajaxSubmit({
+                                        ajaxUrl: "/Student/UpdateDriver",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
                 {
                     className: "am-text-success",
                     icon: "icon-plus",
@@ -507,11 +544,11 @@
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
-                                    if ($("#payForm [name='PayTypeID']").val()=="-1") {
+                                    if ($("#payForm [name='PayTypeID']").val() == "-1") {
                                         $.Nuoya.alert("请选择支付方式");
                                         return false;
                                     }
-                                    if ($("#payForm [name='AccountID']").val()=="-1") {
+                                    if ($("#payForm [name='AccountID']").val() == "-1") {
                                         $.Nuoya.alert("收款账户");
                                         return false;
                                     }
@@ -556,14 +593,13 @@
                             height: "500px",
                             pageUrl: "/Exam/Add",
                             callback: function (e) {
-                                $("#payForm [name='Code']").find('option').eq(item.NowTheme-1).attr('selected', true);
+                                $("#payForm [name='Code']").find('option').eq(item.NowTheme - 1).attr('selected', true);
                                 $("#payForm [name='Count']").val(item.ExamCount);
                             },
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
-                                    if ($("#payForm [name='Result']").val()=="-1")
-                                    {
+                                    if ($("#payForm [name='Result']").val() == "-1") {
                                         $.Nuoya.alert("请选择通过情况");
                                         return false;
                                     }
@@ -585,8 +621,7 @@
                             }]
                         })
                     }
-                }
-                ,
+                },
                 {
                     className: "am-text-secondary",
                     icon: "icon-search",
@@ -612,7 +647,7 @@
                                         StudentID: item.ID
                                     },
                                     //数据请求地址
-                                    
+
                                     events: [
                                         {
                                             className: "am-text-secondary",

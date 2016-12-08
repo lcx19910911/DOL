@@ -306,6 +306,7 @@
 
         //获取选中节点对象
         var _getCheckNote = function (fieldName) {
+            debugger
             fieldName = $.isEmptyObject(fieldName) ? "ID" : fieldName;
             return tableObj.find("tr td[fieldname='" + fieldName + "'] input:checked");
         }

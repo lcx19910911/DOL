@@ -38,31 +38,13 @@ namespace DOL.Web.Controllers
         {
             return View();
         }
-        /// <summary>
-        /// 获取分页列表
-        /// </summary>
-        /// <param name="pageIndex">页码</param>
-        /// <param name="pageSize">分页大小</param>
-        /// <param name="key"> 搜索项</param>
-        /// <param name="value">搜索项</param>
-        /// <returns></returns>
-        public ActionResult GetCarPageList(int pageIndex, int pageSize, string brandName, string model, string modelCode, string engineNumber, string license)
-        {
-            return JResult(WebService.Get_CarPageList(pageIndex, pageSize, brandName, model, modelCode, engineNumber, license, Client.LoginUser.ID));
-        }
-        /// <summary>
-        /// 获取分页列表
-        /// </summary>
-        /// <param name="pageIndex">页码</param>
-        /// <param name="pageSize">分页大小</param>
-        /// <param name="key"> 搜索项</param>
-        /// <param name="value">搜索项</param>
-        /// <returns></returns>
-        public ActionResult GetOilCardPageList(int pageIndex, int pageSize, string companyName, string no)
-        {
-            return JResult(WebService.Get_OilCardPageList(pageIndex, pageSize, companyName, no,Client.LoginUser.CoachID));
-        }
 
+        //public ViewResult Report(string coachId,string carId, DateTime? searchTime)
+        //{
+
+        //}
+
+       
 
         /// <summary>
         /// 教练培训信息
@@ -184,6 +166,30 @@ namespace DOL.Web.Controllers
             return JResult(WebService.Get_MyStudenPageList(pageIndex, pageSize, name, no, code, false));
         }
 
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="key"> 搜索项</param>
+        /// <param name="value">搜索项</param>
+        /// <returns></returns>
+        public ActionResult GetCarPageList(int pageIndex, int pageSize, string brandName, string model, string modelCode, string engineNumber, string license)
+        {
+            return JResult(WebService.Get_CarPageList(pageIndex, pageSize, brandName, model, modelCode, engineNumber, license, Client.LoginUser.ID));
+        }
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="key"> 搜索项</param>
+        /// <param name="value">搜索项</param>
+        /// <returns></returns>
+        public ActionResult GetOilCardPageList(int pageIndex, int pageSize, string companyName, string no)
+        {
+            return JResult(WebService.Get_OilCardPageList(pageIndex, pageSize, companyName, no, Client.LoginUser.CoachID));
+        }
 
         /// <summary>
         /// 获取下拉框 

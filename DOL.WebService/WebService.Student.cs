@@ -123,7 +123,7 @@ namespace DOL.Service
                 if (moneyIsFull != -1)
                 {
                     var code = moneyIsFull == 1 ? YesOrNoCode.Yes : YesOrNoCode.No;
-                    query = query.Where(x => x.MoneyIsFull== code);
+                    query = query.Where(x => x.MoneyIsFull == code);
                 }
                 if (referenceId.IsNotNullOrEmpty() && referenceId != "-1")
                 {
@@ -178,7 +178,7 @@ namespace DOL.Service
                 var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
-               // var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
+                // var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
                 var enteredPointDic = Cache_Get_EnteredPoint_Dic();
                 var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
                 //var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
@@ -186,21 +186,21 @@ namespace DOL.Service
                 //var userDic = Cache_Get_UserDic();
                 var studentIdList = list.Select(x => x.ID).ToList();
                 var payOrderList = Cache_Get_PayOrderList();
-                var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x=>x.Key);
+                var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x => x.Key);
                 list.ForEach(x =>
                 {
                     //报名地
-                   // if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
-                     //   x.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
+                    // if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
+                    //   x.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
 
                     //证书
                     if (!string.IsNullOrEmpty(x.EnteredPointID) && enteredPointDic.ContainsKey(x.EnteredPointID))
                         x.EnteredPointName = enteredPointDic[x.EnteredPointID]?.Name;
                     var parOrder = payOrderList.Where(y => y.StudentID.Equals(x.ID) && y.IsConfirm == YesOrNoCode.No).FirstOrDefault();
-                    if (parOrder!=null)
+                    if (parOrder != null)
                     {
                         x.DoConfirmMoney = parOrder.PayMoney;
-                     }
+                    }
                     //制卡地
                     //if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
                     // x.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
@@ -216,14 +216,14 @@ namespace DOL.Service
                         x.ReferenceName = referenceDic[x.ReferenceID]?.Name;
                     //支付方式
                     //if (!string.IsNullOrEmpty(x.PayMethodID) && payMethodDic.ContainsKey(x.PayMethodID))
-                       // x.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
+                    // x.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
 
                     //省
                     //if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
-                       // x.ProvinceName = areaDic[x.ProvinceCode]?.Value;
+                    // x.ProvinceName = areaDic[x.ProvinceCode]?.Value;
                     //省
-                   // if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
-                       // x.CityName = areaDic[x.CityCode]?.Value;
+                    // if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
+                    // x.CityName = areaDic[x.CityCode]?.Value;
 
                     //证书
                     if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
@@ -965,7 +965,7 @@ namespace DOL.Service
                         x.ThemeTwoCoachName = coachDic[x.ThemeTwoCoachID]?.Name;
                     //修改人
                     //if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
-                        //x.UpdaterName = userDic[x.UpdaterID]?.Name;
+                    //x.UpdaterName = userDic[x.UpdaterID]?.Name;
                 });
 
                 return ResultPageList(list, pageIndex, pageSize, count);
@@ -1197,13 +1197,13 @@ namespace DOL.Service
             {
                 referenceList = referenceList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
             }
-            
+
             var driverShopList = Cache_Get_DriverShopList().ToList();
             driverShopList = driverShopList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
             var enteredPointList = Cache_Get_EnteredPointList();
             if (!Client.LoginUser.CoachID.IsNotNullOrEmpty())
             {
-                enteredPointList= enteredPointList.Where(x =>! Client.LoginUser.IsAdmin ? (Client.LoginUser.EnteredPointIDStr.IsNotNullOrEmpty() && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
+                enteredPointList = enteredPointList.Where(x => !Client.LoginUser.IsAdmin ? (Client.LoginUser.EnteredPointIDStr.IsNotNullOrEmpty() && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
             }
             enteredPointList = enteredPointList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
             var coachList = Cache_Get_CoachList().ToList();
@@ -1234,7 +1234,7 @@ namespace DOL.Service
                 TrainList = Get_DataDictorySelectItem(GroupCode.Train),
                 PayTypeList = Get_DataDictorySelectItem(GroupCode.PayType),
                 AccountList = Get_DataDictorySelectItem(GroupCode.Account),
-                CollegeList= collegeList,
+                CollegeList = collegeList,
                 MajorList = majorList,
                 SchoolList = Get_DataDictorySelectItem(GroupCode.School),
             });
@@ -1317,7 +1317,7 @@ namespace DOL.Service
 
                     oldEntity.ThemeFourDate = model.ThemeFourDate;
                     oldEntity.ThemeFourPass = model.ThemeFourPass;
-                    
+
                     oldEntity.MakeCardDate = model.MakeCardDate;
                     //if (model.ThemeOnePass == YesOrNoCode.Yes)
                     //    oldEntity.NowTheme = ThemeCode.One;
@@ -1378,7 +1378,7 @@ namespace DOL.Service
             }
 
         }
-        
+
 
         /// <summary>
         /// 修改教练
@@ -1436,9 +1436,134 @@ namespace DOL.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public WebResult<bool> Update_StudentCoach(string id,string themeTwoCoachID, string themeThreeCoachID)
+        public WebResult<bool> Update_BatchStudentDriver(string ids, string makeDriverShopID, DateTime makeCardDate)
         {
-            if (!id.IsNotNullOrEmpty()|| !themeTwoCoachID.IsNotNullOrEmpty()
+            if (!ids.IsNotNullOrEmpty() || !makeDriverShopID.IsNotNullOrEmpty()
+                )
+                return Result(false, ErrorCode.sys_param_format_error);
+            using (DbRepository entities = new DbRepository())
+            {
+
+                var list = Cache_Get_StudentList();
+                entities.Student.Where(x => ids.Contains(x.ID)).ToList().ForEach(oldEntity =>
+                {
+                    if (oldEntity.State == StudentCode.DontMakeCard)
+                    {
+                        string beforeJson = oldEntity.ToJson();
+                        oldEntity.MakeDriverShopID = makeDriverShopID;
+                        oldEntity.MakeCardDate = makeCardDate;
+                        oldEntity.UpdatedTime = DateTime.Now;
+                        oldEntity.UpdaterID = Client.LoginUser.ID;
+                        oldEntity.State = StudentCode.ThemeOne;
+                        oldEntity.NowTheme = ThemeCode.One;
+                        string afterJSon = oldEntity.ToJson();
+                        string info = SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
+                        Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息,修改制卡院校和制卡时间", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name), beforeJson, afterJSon, info);
+                        var index = list.FindIndex(x => x.ID.Equals(oldEntity.ID));
+                        if (index > -1)
+                        {
+                            list[index] = oldEntity;
+                        }
+                        else
+                        {
+                            list.Add(oldEntity);
+                        }
+                    }
+                });
+                if (entities.SaveChanges() > 0)
+                {
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 修改教练
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> Update_BatchStudentCoach(string ids, string themeTwoCoachID, string themeThreeCoachID)
+        {
+            if (!ids.IsNotNullOrEmpty() || !themeTwoCoachID.IsNotNullOrEmpty()
+                )
+                return Result(false, ErrorCode.sys_param_format_error);
+            using (DbRepository entities = new DbRepository())
+            {
+
+                var list = Cache_Get_StudentList();
+                entities.Student.Where(x => ids.Contains(x.ID)).ToList().ForEach(oldEntity =>
+                {
+                    //在校才能改
+                    if (oldEntity.State != StudentCode.DontMakeCard && oldEntity.State != StudentCode.WantDropOut && oldEntity.State != StudentCode.Graduate && oldEntity.State != StudentCode.HadDropOut)
+                    {
+                        if ((oldEntity.ThemeTwoCoachID.IsNotNullOrEmpty()&&!oldEntity.ThemeTwoCoachID.Equals(themeTwoCoachID))|| oldEntity.ThemeTwoCoachID.IsNullOrEmpty() || oldEntity.ThemeThreeCoachID.IsNullOrEmpty() || (oldEntity.ThemeThreeCoachID.IsNotNullOrEmpty()&&!oldEntity.ThemeThreeCoachID.Equals(themeThreeCoachID)))
+                        {
+                            string beforeJson = oldEntity.ToJson();
+
+                            //修改前
+                            if (themeTwoCoachID.IsNotNullOrEmpty() && themeTwoCoachID.Equals("-1"))
+                            {
+                                oldEntity.ThemeTwoCoachID = string.Empty;
+                            }
+                            else
+                            {
+                                oldEntity.ThemeTwoCoachID = themeTwoCoachID;
+                                oldEntity.ThemeTwoConfirm = YesOrNoCode.No;
+                            }
+
+                            if (themeThreeCoachID.IsNotNullOrEmpty() && themeThreeCoachID.Equals("-1"))
+                            {
+                                oldEntity.ThemeThreeCoachID = string.Empty;
+                            }
+                            else
+                            {
+                                oldEntity.ThemeThreeCoachID = themeThreeCoachID;
+                                oldEntity.ThemeThreeConfirm = YesOrNoCode.No;
+                            }
+
+                            oldEntity.UpdatedTime = DateTime.Now;
+                            oldEntity.UpdaterID = Client.LoginUser.ID;
+                            string afterJSon = oldEntity.ToJson();
+                            string info = SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
+                            Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息,分配教练", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name), beforeJson, afterJSon, info);
+                            var index = list.FindIndex(x => x.ID.Equals(oldEntity.ID));
+                            if (index > -1)
+                            {
+                                list[index] = oldEntity;
+                            }
+                            else
+                            {
+                                list.Add(oldEntity);
+                            }
+                        }
+                    }
+                });
+
+                if (entities.SaveChanges() > 0)
+                {
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 修改教练
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> Update_StudentCoach(string id, string themeTwoCoachID, string themeThreeCoachID)
+        {
+            if (!id.IsNotNullOrEmpty() || !themeTwoCoachID.IsNotNullOrEmpty()
                 )
                 return Result(false, ErrorCode.sys_param_format_error);
             using (DbRepository entities = new DbRepository())
@@ -1523,7 +1648,7 @@ namespace DOL.Service
                 return Result(false, ErrorCode.sys_param_format_error);
             using (DbRepository entities = new DbRepository())
             {
-                
+
                 var list = Cache_Get_StudentList();
                 var oldEntity = entities.Student.Find(id);
                 if (oldEntity != null)
@@ -1569,6 +1694,61 @@ namespace DOL.Service
                     {
                         list.Add(oldEntity);
                     }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 修改学时
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> Update_BatchStudentTimeCode(string ids, ThemeTimeCode themeTwoTimeCode, ThemeTimeCode themeThreeTimeCode)
+        {
+            if (!ids.IsNotNullOrEmpty()
+                )
+                return Result(false, ErrorCode.sys_param_format_error);
+            using (DbRepository entities = new DbRepository())
+            {
+
+                var list = Cache_Get_StudentList();
+                entities.Student.Where(x => ids.Contains(x.ID)).ToList().ForEach(oldEntity =>
+                {
+                    //在校才能改
+                    if (oldEntity.State == StudentCode.ThemeOne || oldEntity.State == StudentCode.ThemeTwo)
+                    {
+                        if (oldEntity.ThemeTwoTimeCode != themeTwoTimeCode || oldEntity.ThemeThreeTimeCode != themeThreeTimeCode)
+                        {
+                            string beforeJson = oldEntity.ToJson();
+
+                            oldEntity.ThemeTwoTimeCode = themeTwoTimeCode;
+                            oldEntity.ThemeThreeTimeCode = themeThreeTimeCode;
+                            oldEntity.UpdatedTime = DateTime.Now;
+                            oldEntity.UpdaterID = Client.LoginUser.ID;
+                            string afterJSon = oldEntity.ToJson();
+                            string info = SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
+                            Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息,分配教练", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name), beforeJson, afterJSon, info);
+                            var index = list.FindIndex(x => x.ID.Equals(oldEntity.ID));
+                            if (index > -1)
+                            {
+                                list[index] = oldEntity;
+                            }
+                            else
+                            {
+                                list.Add(oldEntity);
+                            }
+                        }
+                    }
+                });
+
+                if (entities.SaveChanges() > 0)
+                {
                     return Result(true);
                 }
                 else
@@ -1656,7 +1836,7 @@ namespace DOL.Service
                 //找到实体
                 entities.Student.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
-                    if (Cache_Get_PayOrderList().Where(y => y.IsConfirm == YesOrNoCode.No&&x.Flag==0 && y.StudentID.Equals(x.ID)).Any())
+                    if (Cache_Get_PayOrderList().Where(y => y.IsConfirm == YesOrNoCode.No && x.Flag == 0 && y.StudentID.Equals(x.ID)).Any())
                     {
                         code = ErrorCode.cant_delete_unconfirm_payorder__had;
                     }
@@ -1773,8 +1953,8 @@ namespace DOL.Service
                 return null;
             using (DbRepository entities = new DbRepository())
             {
-                var model=Cache_Get_StudentList().FirstOrDefault(x => x.ID.Equals(id));
-                model.ExamCount = Cache_Get_ExamList().Where(x => x.StudentID.Equals(id)&&x.Code==model.NowTheme).Count()+1;
+                var model = Cache_Get_StudentList().FirstOrDefault(x => x.ID.Equals(id));
+                model.ExamCount = Cache_Get_ExamList().Where(x => x.StudentID.Equals(id) && x.Code == model.NowTheme).Count() + 1;
                 return model;
             }
         }
