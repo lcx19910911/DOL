@@ -1,0 +1,222 @@
+﻿@model List<DOL.Core.SelectItem>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "损耗统计";
+}
+<style>
+    .am-selected {
+        width: 130px;
+    }
+</style>
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>损耗统计</small></div>
+</div>
+<div id="searchDomain">
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <div class="am-input-group am-input-group-sm">
+
+                <span class="am-input-group-label">时间</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="searchTime" readonly style="width:100px;">
+
+                <span class="am-input-group-label am-margin-left-sm">教练：</span>
+                <select name="coachId" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" onchange="LoadCar(this)" style="width:120px;">
+                    <option value="-1">请选择</option>
+                    @foreach (var item in Model)
+                    {
+                        <option value="@(item.Value)">@(item.Text)</option>
+                    }
+                </select>
+                <span class="am-input-group-label am-margin-left-sm">车辆：</span>
+                <select name="carId" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1">请选择</option>
+                </select>
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" onclick="Search()" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="grid_container">
+    <div class="admin-content-body">
+
+
+        <div id="reportOil" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+
+        <div id="reportRepair" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/highcharts.js"></script>
+    <script src="~/Scripts/exporting.js"></script>
+    <script>
+
+        $('[name=searchTime]').datepicker({ format: 'yyyy-mm', viewMode: 'years', minViewMode: 'months' });
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+        }
+
+
+        function Search() {
+
+            var searchTime = $("[name='searchTime']").val();
+
+            var coachId = $("[name='coachId']").val();
+            var carId = $("[name='carId']").val();
+
+            $.Nuoya.action("/Waste/GetReport", { searchTime: searchTime, coachId: coachId, carId: carId }, function (data) {
+                var categories = data.x; //时间 ["2016-09-08"]
+                //var series = data.series;// {"series":[{"name":"金额","data":[10933]}
+                if(coachId==""&&carId=="")
+                {
+                    $('#reportOil').highcharts({
+                        title: {
+                            text: '平均油耗情况',
+                            x: -20 //center
+                        },
+                        subtitle: {
+                            text: '如图',
+                            x: -20
+                        },
+                        xAxis: {
+                            categories: categories
+                        },
+                        yAxis: {
+                            title: {
+                                text: '费用（元）'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: 'red'
+                            }]
+                        },
+                        tooltip: {
+                            valueSuffix: '元'
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'middle',
+                            borderWidth: 0
+                        },
+                        series: data.oilSeries
+                    });
+
+                    $('#reportRepair').highcharts({
+                        title: {
+                            text: '平均车损情况',
+                            x: -20 //center
+                        },
+                        subtitle: {
+                            text: '如图',
+                            x: -20
+                        },
+                        xAxis: {
+                            categories: categories
+                        },
+                        yAxis: {
+                            title: {
+                                text: '费用（元）'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: 'green'
+                            }]
+                        },
+                        tooltip: {
+                            valueSuffix: '元'
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'middle',
+                            borderWidth: 0
+                        },
+                        series: data.oilSeries
+                    });
+                }
+                else  
+                {
+
+                    $('#reportOil').highcharts({
+                        title: {
+                            text: '油耗情况',
+                            x: -20 //center
+                        },
+                        subtitle: {
+                            text: '如图',
+                            x: -20
+                        },
+                        xAxis: {
+                            categories: categories
+                        },
+                        yAxis: {
+                            title: {
+                                text: '费用（元）'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: 'red'
+                            }]
+                        },
+                        tooltip: {
+                            valueSuffix: '元'
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'middle',
+                            borderWidth: 0
+                        },
+                        series: data.oilSeries
+                    });
+
+                    $('#reportRepair').highcharts({
+                        title: {
+                            text: '车损情况',
+                            x: -20 //center
+                        },
+                        subtitle: {
+                            text: '如图',
+                            x: -20
+                        },
+                        xAxis: {
+                            categories: categories
+                        },
+                        yAxis: {
+                            title: {
+                                text: '费用（元）'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: 'green'
+                            }]
+                        },
+                        tooltip: {
+                            valueSuffix: '元'
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'middle',
+                            borderWidth: 0
+                        },
+                        series: data.repairSeries
+                    });
+                }
+            });
+
+        }
+        Search();
+    </script>
+}

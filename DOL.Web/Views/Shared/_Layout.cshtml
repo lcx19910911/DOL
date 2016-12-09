@@ -140,6 +140,16 @@
                 });
             }
         }
+
+        //加载搞笑
+        function LoadCar(obj) {
+            $.Nuoya.action("/Car/GetSelectItem", { coachId: $(obj).val() }, function (json) {
+                $(json).each(function () {
+                    $("#searchDomain select[name='carId']").append("<option value='" + this.Value + "'>" + this.Text + "</option>");
+                });
+            });
+        }
+
         //下载专业
         function LoadMajor(isIndex, obj) {
             if (isIndex) {

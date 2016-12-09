@@ -355,7 +355,7 @@ namespace DOL.Service
             {
                 List<SelectItem> list = new List<SelectItem>();
 
-                var query = Cache_Get_CoachList().AsQueryable().AsNoTracking();
+                var query = Cache_Get_CoachList().Where(x=>x.Flag==0).AsQueryable().AsNoTracking();
 
                 if (string.IsNullOrEmpty(driverShopId))
                 {
@@ -370,7 +370,7 @@ namespace DOL.Service
                 }
                 else
                 {
-                    query.Where(x => x.DriverShopID.Equals(driverShopId) && (x.Flag | (long)GlobalFlag.Normal) == 0).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    query.Where(x => x.DriverShopID.Equals(driverShopId)).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                             {
                                 list.Add(new SelectItem()
                                 {

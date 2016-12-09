@@ -43,7 +43,7 @@ namespace DOL.Service
             return Cache_Get_WasteList().ToDictionary(x => x.ID);
         }
 
-        
+
 
         /// <summary>
         /// 获取分页列表
@@ -53,7 +53,7 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Waste>> Get_WastePageList(int pageIndex, int pageSize, WasteCode code, string oilId,string carId,string userId,string license)
+        public WebResult<PageList<Waste>> Get_WastePageList(int pageIndex, int pageSize, WasteCode code, string oilId, string carId, string userId, string license)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -62,7 +62,7 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.Code.Equals(code));
                 }
-                if(license.IsNotNullOrEmpty())
+                if (license.IsNotNullOrEmpty())
                 {
                     var carIdList = Cache_Get_CarList().AsQueryable().Where(x => x.License.Contains(license)).Select(x => x.ID).ToList();
                     query = query.Where(x => carIdList.Contains(x.CarID));
@@ -131,8 +131,8 @@ namespace DOL.Service
             {
                 var oilModel = new OilCard();
                 model.ID = Guid.NewGuid().ToString("N");
-                model.CreatedTime=model.UpdatedTime = DateTime.Now;
-                model.CreatedUserID=model.UpdaterID = Client.LoginUser.ID;
+                model.CreatedTime = model.UpdatedTime = DateTime.Now;
+                model.CreatedUserID = model.UpdaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
                 entities.Waste.Add(model);
                 if (model.Code == WasteCode.Oil)
@@ -158,7 +158,7 @@ namespace DOL.Service
                             oilCardList.Add(oilModel);
                         }
                     }
-                    
+
                     list.Add(model);
                     return Result(true);
                 }
@@ -170,7 +170,7 @@ namespace DOL.Service
 
         }
 
-        
+
 
         /// <summary>
         /// 查找实体
@@ -181,7 +181,167 @@ namespace DOL.Service
         {
             if (!id.IsNotNullOrEmpty())
                 return null;
-                return Cache_Get_WasteList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+            return Cache_Get_WasteList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
         }
+
+
+
+        /// <summary>
+        /// 获取教练员学员考试信息 和工资
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public WebResult<ReportModel> Get_WasteReport(string coachId, string carId, DateTime? searchTime)
+        {
+            //赋值本月
+            if (searchTime == null)
+                searchTime = DateTime.Parse(DateTime.Now.ToString("yyyy-MM"));
+            //表单model
+            var model = new ReportModel();
+            model.x = new List<string>();
+            model.oilSeries = new List<Series>();
+            model.repairSeries = new List<Series>();
+
+            //本月结束时间
+            var endTime = DateTime.Parse(searchTime.Value.AddMonths(1).ToString("yyyy-MM")).AddDays(-1);// && x.Code == ThemeCode.Two
+
+            var query = Cache_Get_CarList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).AsQueryable();
+            if (coachId.IsNullOrEmpty() || coachId.Equals("-1") || coachId.Equals("null"))
+            {
+                coachId = string.Empty;
+            }
+            if (coachId.IsNotNullOrEmpty())
+            {
+                query = query.Where(x => x.CoachID.Equals(coachId));
+            }
+            if (carId.IsNullOrEmpty() || carId.Equals("-1") || carId.Equals("null"))
+            {
+                carId = string.Empty;
+            }
+            if (carId.IsNotNullOrEmpty())
+            {
+                query = query.Where(x => x.ID.Equals(carId));
+            }
+
+            var list = query.ToList();
+            var cardIdList = list.Select(x => x.ID).ToList();
+            var wasteList = Cache_Get_WasteList().Where(x => cardIdList.Contains(x.CarID) && x.CreatedTime > searchTime && x.CreatedTime < endTime).ToList();
+
+            //如果没选择教练和车辆和时间 显示教练的平均车损油耗
+            if (coachId.IsNullOrEmpty() && carId.IsNullOrEmpty())
+            {
+
+                var oilSeries = new Series();
+                var repairSeries = new Series();
+                oilSeries.data = new List<decimal>();
+                repairSeries.data = new List<decimal>();
+                oilSeries.name = "平均油耗";
+                repairSeries.name = "平均车损";
+
+                Cache_Get_CoachList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList().ForEach(item =>
+                {
+                    model.x.Add(item.Name);
+                    var carIdList = list.Where(x => x.CoachID.Equals(item.ID)).Select(x => x.ID).ToList();
+
+                    var repairWasteMoney = wasteList.Where(x => carIdList.Contains(x.CarID) && x.Code == WasteCode.Repair).Sum(x => x.Money);
+                    var oilWasteMoney = wasteList.Where(x => carIdList.Contains(x.CarID) && x.Code == WasteCode.Oil).Sum(x => x.Money);
+
+
+                    repairSeries.data.Add(repairWasteMoney);
+                    oilSeries.data.Add(oilWasteMoney);
+
+                });
+
+                model.oilSeries.Add(oilSeries);
+                model.repairSeries.Add(repairSeries);
+            }
+            //显示某个教练的车损油耗
+            else if (coachId.IsNotNullOrEmpty() && carId.IsNullOrEmpty())
+            {
+                var selectCarList = list.Where(x => x.CoachID.Equals(coachId)).ToList();
+                if (selectCarList != null && selectCarList.Count > 0)
+                {
+                    for (var i = searchTime.Value.Date.Day; i <= endTime.Date.Day; i++)
+                    {
+                        model.x.Add(i.ToString());
+                    }
+                    selectCarList.ForEach(item =>
+                    {
+
+                        var repairWasteDic = wasteList.Where(x => x.CarID.Equals(item.ID) && x.Code == WasteCode.Repair).GroupBy(x => x.CreatedTime.Date.Day).ToDictionary(x => x.Key, x => x.ToList());
+                        var oilWasteDic = wasteList.Where(x => x.CarID.Equals(item.ID) && x.Code == WasteCode.Oil).GroupBy(x => x.CreatedTime.Date.Day).ToDictionary(x => x.Key, x => x.ToList());
+
+                        var oilSeries = new Series();
+                        var repairSeries = new Series();
+                        oilSeries.data = new List<decimal>();
+                        repairSeries.data = new List<decimal>();
+                        oilSeries.name = repairSeries.name = item.License;
+                        for (var i = searchTime.Value.Date.Day; i <= endTime.Date.Day; i++)
+                        {
+                            if (repairWasteDic.ContainsKey(i))
+                            {
+                                repairSeries.data.Add(repairWasteDic[i].Sum(x => x.Money));
+                            }
+                            else
+                            {
+                                repairSeries.data.Add(0);
+                            }
+                            if (oilWasteDic.ContainsKey(i))
+                            {
+                                oilSeries.data.Add(oilWasteDic[i].Sum(x => x.Money));
+                            }
+                            else
+                            {
+                                oilSeries.data.Add(0);
+                            }
+                        }
+                        model.oilSeries.Add(oilSeries);
+                        model.repairSeries.Add(repairSeries);
+                    });
+                }
+            }
+            //显示车辆车损油耗
+            else if (carId.IsNotNullOrEmpty())
+            {
+                var selectCar = list.FirstOrDefault(x => x.ID.Equals(carId));
+                if (selectCar != null)
+                {
+                    var repairWasteDic = wasteList.Where(x => x.CarID.Equals(carId) && x.Code == WasteCode.Repair).GroupBy(x => x.CreatedTime.Date.Day).ToDictionary(x => x.Key, x => x.ToList());
+                    var oilWasteDic = wasteList.Where(x => x.CarID.Equals(carId) && x.Code == WasteCode.Oil).GroupBy(x => x.CreatedTime.Date.Day).ToDictionary(x => x.Key, x => x.ToList());
+
+                    var oilSeries = new Series();
+                    var repairSeries = new Series();
+                    oilSeries.data = new List<decimal>();
+                    repairSeries.data = new List<decimal>();
+
+                    oilSeries.name = repairSeries.name = selectCar.License;
+                    for (var i = searchTime.Value.Date.Day; i <= endTime.Date.Day; i++)
+                    {
+                        model.x.Add(i.ToString());
+                        if (repairWasteDic.ContainsKey(i))
+                        {
+                            repairSeries.data.Add(repairWasteDic[i].Sum(x => x.Money));
+                        }
+                        else
+                        {
+                            repairSeries.data.Add(0);
+                        }
+                        if (oilWasteDic.ContainsKey(i))
+                        {
+                            oilSeries.data.Add(oilWasteDic[i].Sum(x => x.Money));
+                        }
+                        else
+                        {
+                            oilSeries.data.Add(0);
+                        }
+                    }
+                    model.oilSeries.Add(oilSeries);
+                    model.repairSeries.Add(repairSeries);
+                }
+            }
+            return Result(model);
+        }
+
     }
 }

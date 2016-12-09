@@ -39,12 +39,15 @@ namespace DOL.Web.Controllers
             return View();
         }
 
-        //public ViewResult Report(string coachId,string carId, DateTime? searchTime)
-        //{
+        public ViewResult Waste()
+        {
+            return View(WebService.Get_CarSelectItem(Client.LoginUser.CoachID));
+        }
 
-        //}
-
-       
+        public JsonResult GetWaste(string carId, DateTime? searchTime)
+        {
+            return JResult(WebService.Get_WasteReport(Client.LoginUser.CoachID, carId, searchTime));
+        }
 
         /// <summary>
         /// 教练培训信息
@@ -176,7 +179,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult GetCarPageList(int pageIndex, int pageSize, string brandName, string model, string modelCode, string engineNumber, string license)
         {
-            return JResult(WebService.Get_CarPageList(pageIndex, pageSize, brandName, model, modelCode, engineNumber, license, Client.LoginUser.ID));
+            return JResult(WebService.Get_CarPageList(pageIndex, pageSize, brandName, model, modelCode, engineNumber, license, Client.LoginUser.CoachID));
         }
         /// <summary>
         /// 获取分页列表
