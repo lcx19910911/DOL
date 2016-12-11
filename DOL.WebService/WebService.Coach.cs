@@ -496,6 +496,7 @@ namespace DOL.Service
 
             model.ThemeSalaryModel = new ThemeSalaryModel();
             model.ThemeSalaryModel.List = new List<Tuple<ThemeCode,int, string, int, decimal, decimal>>();
+            model.ThemeSalaryModel.OldList = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
             model.ThemeSalaryModel.BasicSalary = coachItem.BasicSalary;
 
             //科目二是该教练的学员
@@ -582,7 +583,6 @@ namespace DOL.Service
             model.ExamModel.ThemeThreeMonthExamCount = examAllCount;
             model.ExamModel.ThemeThreeMonthPassCount = passAllCount;
             model.ExamModel.ThemeThreeMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
-
 
             decimal AllMoney = 0;
             ////科目二薪资集合
