@@ -19,6 +19,10 @@
                     <option value="1">已确认</option>
                     <option value="0">未确认</option>
                 </select>
+                <span class="am-input-group-label am-margin-left-sm">招生人：</span>
+                <select name="referenceId" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1">不限</option>
+                </select>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -74,7 +78,9 @@
 {
     <script type="text/javascript">
         function ClearFilter() {
-            $("#searchDomain input").val("");
+            $("#searchDomain input").val(""); $('#searchDomain select').each(function () {
+                $(this).find('option').eq(0).attr('selected', true);
+            })
         }
         //批量删除
         function batchDelete() {
@@ -119,7 +125,7 @@
                 });
             });
 
-        
+
         }
 
         var grid = $.Nuoya.grid({
@@ -131,7 +137,7 @@
             },
             ajaxUrl: "/PayOrder/GetPageList",
             //数据请求地址
-            
+
             events: [
                 {
                     className: "am-text-secondary",
@@ -158,7 +164,7 @@
                                         StudentID: item.StudentID
                                     },
                                     //数据请求地址
-                                    
+
                                     events: [
                                     {
                                         className: "am-text-secondary",
@@ -209,7 +215,7 @@
 
                                 });
 
-                                 event.preventDefault();
+                                event.preventDefault();
                             }
                         })
                     }
@@ -249,11 +255,11 @@
                             buttons: [{
                                 label: "确认",
                                 callback: function (e) {
-                                    if ($("#payForm [name='PayTypeID']").val()=="-1") {
+                                    if ($("#payForm [name='PayTypeID']").val() == "-1") {
                                         $.Nuoya.alert("请选择支付方式");
                                         return false;
                                     }
-                                    if ($("#payForm [name='AccountID']").val()=="-1") {
+                                    if ($("#payForm [name='AccountID']").val() == "-1") {
                                         $.Nuoya.alert("收款账户");
                                         return false;
                                     }
@@ -269,7 +275,7 @@
                                     });
                                 }
                             }]
-                        })                 
+                        })
                     }
                 },
                 {
@@ -278,7 +284,7 @@
                     name: "删除",
                     url: "/PayOrder/Delete",
                     formula: function (model) {
-                        if (model.State != "5" && model.State != "6" && model.State != "7"&&model.StudentFlag!="1") {
+                        if (model.State != "5" && model.State != "6" && model.State != "7" && model.StudentFlag != "1") {
                             return true;
                         }
                         else {
@@ -299,6 +305,12 @@
             ]
         });
 
-        LoadItemList(true, null);
+        //LoadItemList(true, null);
+
+        $.Nuoya.action("/Reference/GetSelectItem", {}, function (json) {
+            $(json).each(function () {
+                $("select[name='referenceId']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+            });
+        });
     </script>
 }

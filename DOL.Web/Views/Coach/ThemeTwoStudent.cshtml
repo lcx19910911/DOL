@@ -173,14 +173,7 @@
                     icon: "icon-plus",
                     name: "新增考试",
                     url: "/Exam/Add",
-                    formula: function (model) {
-                        if (model.State == "2" ) {
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
-                    },
+             
                     click: function (item) {
                         $.Nuoya.ajaxDialog({
                             closeViaDimmer: false,

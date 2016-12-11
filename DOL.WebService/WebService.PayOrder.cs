@@ -67,7 +67,8 @@ namespace DOL.Service
             int pageIndex,
             int pageSize,
             string no,
-            int state
+            int state,
+            string referenceId
             )
         {
             using (DbRepository entities = new DbRepository())
@@ -78,6 +79,11 @@ namespace DOL.Service
                 if (no.IsNotNullOrEmpty())
                 {
                     var selectStudentIdList = Cache_Get_StudentList().Where(x => x.IDCard.Contains(no)).Select(x => x.ID.Trim()).ToList();
+                    query = query.Where(x => selectStudentIdList.Contains(x.StudentID.Trim()));
+                }
+                if (referenceId.IsNotNullOrEmpty()&& referenceId!="-1")
+                {
+                    var selectStudentIdList = Cache_Get_StudentList().Where(x => x.ReferenceID.Equals(referenceId)).Select(x => x.ID.Trim()).ToList();
                     query = query.Where(x => selectStudentIdList.Contains(x.StudentID.Trim()));
                 }
                 if (state != -1)
