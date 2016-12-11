@@ -16,7 +16,15 @@ namespace DOL.Web.Controllers
         {
             return View();
         }
+        public ViewResult Report()
+        {
+            return View(WebService.Get_CoachSelectItem(""));
+        }
 
+        public JsonResult GetReport(string coachId, string carId, DateTime? searchTime)
+        {
+            return JResult(WebService.Get_WasteReport(coachId, carId, searchTime));
+        }
 
         /// <summary>
         /// 获取分页列表

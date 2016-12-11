@@ -166,7 +166,9 @@
     <Content Include="Images\login-sprite.png" />
     <Content Include="Scripts\amazeui.js" />
     <Content Include="Scripts\amazeui.min.js" />
+    <Content Include="Scripts\exporting.js" />
     <Content Include="Scripts\file_upload_plug-in.js" />
+    <Content Include="Scripts\highcharts.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-validation\js\additional-methods.min.js" />
     <Content Include="Scripts\jquery-validation\js\jquery.validate.js" />
@@ -328,6 +330,8 @@
     <Content Include="Views\OilCard\Index.cshtml" />
     <Content Include="Views\Coach\OilCard.cshtml" />
     <Content Include="Views\Waste\Index.cshtml" />
+    <Content Include="Views\Coach\Waste.cshtml" />
+    <Content Include="Views\Waste\Report.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

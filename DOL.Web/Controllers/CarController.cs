@@ -17,6 +17,8 @@ namespace DOL.Web.Controllers
             return View();
         }
 
+      
+
         /// <summary>
         /// 新增
         /// </summary>
@@ -59,7 +61,7 @@ namespace DOL.Web.Controllers
                 return ParamsErrorJResult(ModelState);
             }
         }
-
+ 
 
         /// <summary>
         /// 获取分页列表
@@ -99,6 +101,10 @@ namespace DOL.Web.Controllers
         public ActionResult UpdateCoach(string ID, string coachID)
         {
             return JResult(WebService.Update_CarCoach(ID, coachID));
+        }
+        public ActionResult GetSelectItem(string coachId)
+        {
+            return JResult(WebService.Get_CarSelectItem(coachId));
         }
     }
 }

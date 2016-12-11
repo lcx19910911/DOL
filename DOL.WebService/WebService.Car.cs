@@ -50,7 +50,7 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Car>> Get_CarPageList(int pageIndex, int pageSize, string brandName,string model,string modelCode, string engineNumber, string license, string coachId)
+        public WebResult<PageList<Car>> Get_CarPageList(int pageIndex, int pageSize, string brandName, string model, string modelCode, string engineNumber, string license, string coachId)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -75,7 +75,7 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.License.Contains(license));
                 }
-                if (coachId.IsNotNullOrEmpty()&&!coachId.Equals("-1"))
+                if (coachId.IsNotNullOrEmpty() && !coachId.Equals("-1"))
                 {
                     query = query.Where(x => x.CoachID.Equals(coachId));
                 }
@@ -84,9 +84,9 @@ namespace DOL.Service
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var carIdList = list.Select(x => x.ID).ToList();
-                var starTime = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day+1);
-                var wasteList = Cache_Get_WasteList().Where(x=> carIdList.Contains(x.CarID)&&x.CreatedTime> starTime).ToList();
-                var oilDic = wasteList.Where(x => x.Code == WasteCode.Oil).GroupBy(x => x.CarID).ToDictionary(x=>x.Key,x=>x.ToList());
+                var starTime = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day + 1);
+                var wasteList = Cache_Get_WasteList().Where(x => carIdList.Contains(x.CarID) && x.CreatedTime > starTime).ToList();
+                var oilDic = wasteList.Where(x => x.Code == WasteCode.Oil).GroupBy(x => x.CarID).ToDictionary(x => x.Key, x => x.ToList());
                 var repairDic = wasteList.Where(x => x.Code == WasteCode.Repair).GroupBy(x => x.CarID).ToDictionary(x => x.Key, x => x.ToList());
                 list.ForEach(x =>
                 {
@@ -95,7 +95,7 @@ namespace DOL.Service
                     if (!string.IsNullOrEmpty(x.DepartmentID) && departMentDic.ContainsKey(x.DepartmentID))
                         x.DepartmentName = departMentDic[x.DepartmentID].Name;
                     if (oilDic.ContainsKey(x.ID))
-                        x.OilMonth = oilDic[x.ID].Sum(y=>y.Money);
+                        x.OilMonth = oilDic[x.ID].Sum(y => y.Money);
                     if (repairDic.ContainsKey(x.ID))
                         x.RepairMonth = repairDic[x.ID].Sum(y => y.Money);
                 });
@@ -193,7 +193,7 @@ namespace DOL.Service
         {
             if (!id.IsNotNullOrEmpty())
                 return null;
-                return Cache_Get_CarList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+            return Cache_Get_CarList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
         }
 
         /// <summary>
@@ -258,8 +258,8 @@ namespace DOL.Service
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     string afterJSon = oldEntity.ToJson();
-                   // string info = SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
-                   // Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息,分配教练", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name), beforeJson, afterJSon, info);
+                    // string info = SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
+                    // Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息,分配教练", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name), beforeJson, afterJSon, info);
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
@@ -284,42 +284,30 @@ namespace DOL.Service
             }
 
         }
-
         /// <summary>
-        /// 获取教练员学员考试信息 和工资
+        /// 下拉框集合
         /// </summary>
-        /// <param name="time"></param>
-        /// <param name="id"></param>
+        /// <param name="">门店id</param>
         /// <returns></returns>
-        public CoachReportModel Get_CarReport(string coachId, string carId, DateTime? searchTime)
+        public List<SelectItem> Get_CarSelectItem(string coachId)
         {
-            //赋值本月
-            if (searchTime == null)
-                searchTime = DateTime.Parse(DateTime.Now.ToString("yyyy-MM"));
-
-            //本月结束时间
-            var endTime = DateTime.Parse(searchTime.Value.AddMonths(1).ToString("yyyy-MM")).AddDays(-1);// && x.Code == ThemeCode.Two
-
-            var query = Cache_Get_CarList().Where(x=>(x.Flag&(long)GlobalFlag.Removed)==0).AsQueryable();
-            if (coachId.IsNotNullOrEmpty()&& coachId.Equals("-1") && coachId.Equals("null"))
+            using (DbRepository entities = new DbRepository())
             {
-                query = query.Where(x => x.CoachID.Equals(coachId));
-            }
-            if (carId.IsNotNullOrEmpty() && carId.Equals("-1") && carId.Equals("null"))
-            {
-                query = query.Where(x => x.ID.Equals(carId));
-            }
+                List<SelectItem> list = new List<SelectItem>();
 
-            var list = query.ToList();
-            var cardIdList = list.Select(x => x.ID).ToList();
-            var wasteList = Cache_Get_WasteList().Where(x => cardIdList.Contains(x.CarID)).ToList();
-
-            //如果没选择教练和车辆和时间 显示总体的评价油耗记录
-            if (coachId.IsNullOrEmpty()&& carId.IsNullOrEmpty()&& !searchTime.HasValue)
-            {
+                if (coachId.IsNotNullOrEmpty())
+                {
+                    Cache_Get_CarList().Where(x => x.CoachID.Equals(coachId) && x.Flag == 0).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                             {
+                                 list.Add(new SelectItem()
+                                 {
+                                     Text = x.License,
+                                     Value = x.ID
+                                 });
+                             });
+                }
+                return list;
             }
-
-            return null;
         }
     }
 }
