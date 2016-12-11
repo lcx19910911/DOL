@@ -70,25 +70,25 @@
                 <select name="ThemeOnePass" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;">
                     <option value="-1">不限</option>
                     <option value="1">通过</option>
-                    <option value="2">未通过</option>
+                    <option value="0">未通过</option>
                 </select>
                 <span class="am-input-group-label am-margin-left-sm">科二通过：</span>
                 <select name="ThemeTwoPass" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;">
                     <option value="-1">不限</option>
                     <option value="1">通过</option>
-                    <option value="2">未通过</option>
+                    <option value="0">未通过</option>
                 </select>
                 <span class="am-input-group-label am-margin-left-sm">科三通过：</span>
                 <select name="ThemeThreePass" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;">
                     <option value="-1">不限</option>
                     <option value="1">通过</option>
-                    <option value="2">未通过</option>
+                    <option value="0">未通过</option>
                 </select>
                 <span class="am-input-group-label am-margin-left-sm">科四通过：</span>
                 <select name="ThemeFourPass" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;">
                     <option value="-1">不限</option>
                     <option value="1">通过</option>
-                    <option value="2">未通过</option>
+                    <option value="0">未通过</option>
                 </select>
             </div>
         </div>
@@ -119,6 +119,9 @@
                     <option value="1">完成</option>
                     <option value="2">未完成</option>
                 </select>
+
+                <span class="am-input-group-label   am-margin-left-sm">推荐人：</span>
+                <select name="ReferenceID" data-am-selected="{ btnWidth: '100px',btnSize: 'sm'}"><option value="-1">不限</option></select>
                 <span class="am-input-group-btn am-margin-left-sm">
                     <button class="am-btn am-btn-default" id="btnSearch" type="button">搜索</button>
                     <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
@@ -179,7 +182,7 @@
                 <th dataname="IDCard" isHide="1" style="display:none;">身份证</th>
                 <th dataname="Mobile" isHide="1" style="display:none;">手机</th>
                 <th dataname="ReferenceName" isHide="1" style="display:none;">推荐人</th>
-                <th dataname="EnteredDate" datatype="jsondateNo">报名日期</th>
+                <th dataname="EnteredDate" datatype="jsondateNo" isHide="1" style="display:none;">报名日期</th>
                 <th dataname="WantDriverShopName" isHide="1" style="display:none;">意向驾校</th>
                 <th dataname="MakeCardDate" datatype="jsondateNo"  isHide="1" style="display:none;">制卡日期</th>
 
@@ -649,6 +652,12 @@
                     }
                 }
             ]
+        });
+
+        $.Nuoya.action("/Reference/GetSelectItem", {}, function (json) {
+            $(json).each(function () {
+                $("select[name='ReferenceID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+            });
         });
     </script>
 }

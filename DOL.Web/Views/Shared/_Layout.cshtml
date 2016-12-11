@@ -732,8 +732,10 @@
                     }
                     return true;
                 }
-
-                return true;
+                else {
+                    $.Nuoya.alert("你输入的身份证长度错误")
+                    return false;
+                }
             }
             return false;
         }

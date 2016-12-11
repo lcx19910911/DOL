@@ -782,6 +782,7 @@ namespace DOL.Service
             int pageIndex,
             int pageSize,
             string name,
+            string referenceID,
             string no,
             string trianID,
             string driverShopID,
@@ -804,6 +805,10 @@ namespace DOL.Service
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
+                }
+                if (referenceID.IsNotNullOrEmpty() && referenceID != "-1")
+                {
+                    query = query.Where(x => x.ReferenceID.Equals(referenceID));
                 }
                 if (no.IsNotNullOrEmpty())
                 {

@@ -97,6 +97,7 @@ namespace DOL.Service
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
+                var payTypeDic = Cache_Get_DataDictionary()[GroupCode.PayType];
                 var userDic = Cache_Get_UserDic();
                 list.ForEach(x =>
                 {
@@ -133,6 +134,9 @@ namespace DOL.Service
                     //确认人
                     if (!string.IsNullOrEmpty(x.ConfirmUserID) && userDic.ContainsKey(x.ConfirmUserID))
                         x.ConfirmUserName = userDic[x.ConfirmUserID]?.Name;
+                    if (!string.IsNullOrEmpty(x.PayTypeID) && payTypeDic.ContainsKey(x.PayTypeID))
+                        x.PayTypeName = payTypeDic[x.PayTypeID]?.Value;
+                    
 
                 });
 

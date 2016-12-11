@@ -126,6 +126,7 @@ namespace DOL.Service
                     return Result(false, ErrorCode.count_had_exit);
 
                 var oldEntity = entities.ThemeSalary.Find(model.ID);
+                var newEntity = new ThemeSalary();
                 if (oldEntity != null)
                 {
                     oldEntity.UpdatedTime = DateTime.Now;
@@ -136,18 +137,16 @@ namespace DOL.Service
 
                         oldEntity.Flag = (long)GlobalFlag.Unabled;
                         oldEntity.EndTime = DateTime.Now;
-                        entities.ThemeSalary.Add(new ThemeSalary()
-                        {
-                            ID = Guid.NewGuid().ToString("N"),
-                            CreatedTime = DateTime.Now.AddMinutes(1),
-                            UpdatedTime = DateTime.Now,
-                            UpdaterID = Client.LoginUser.ID,
-                            Code = model.Code,
-                            Name = model.Name,
-                            Count = model.Count,
-                            Money = model.Money,
-                            Flag = (long)GlobalFlag.Normal
-                        });
+                         newEntity.ID = Guid.NewGuid().ToString("N");
+                        newEntity.CreatedTime = DateTime.Now.AddMinutes(1);
+                        newEntity.UpdatedTime = DateTime.Now;
+                        newEntity.UpdaterID = Client.LoginUser.ID;
+                        newEntity.Code = model.Code;
+                        newEntity.Name = model.Name;
+                        newEntity.Count = model.Count;
+                        newEntity.Money = model.Money;
+                        newEntity.Flag = (long)GlobalFlag.Normal;
+                        entities.ThemeSalary.Add(newEntity);
                     }
                 }
                 else
@@ -165,6 +164,7 @@ namespace DOL.Service
                     {
                         list.Add(oldEntity);
                     }
+                    list.Add(newEntity);
                     return Result(true);
                 }
                 else
