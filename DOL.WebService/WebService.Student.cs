@@ -789,6 +789,8 @@ namespace DOL.Service
             string themeTwoCoachID,
             string themeThreeCoachID,
             int orderBy,
+            ThemeTimeCode themeTwoTimeCode,
+            ThemeTimeCode themeThreeTimeCode,
             YesOrNoCode? themeOnePass,
             YesOrNoCode? themeTwoPass,
             YesOrNoCode? themeThreePass,
@@ -836,41 +838,48 @@ namespace DOL.Service
                     else
                         query = query.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(themeTwoCoachID));
                 }
-
-                if (themeOnePass.Equals(YesOrNoCode.Yes))
+                if ((int)themeTwoTimeCode != -1)
                 {
-                    query = query.Where(x => x.ThemeOnePass.Equals(YesOrNoCode.Yes));
+                    query = query.Where(x => x.ThemeTwoTimeCode== themeTwoTimeCode);
                 }
-                else if (themeOnePass.Equals(YesOrNoCode.No))
+                if ((int)themeThreeTimeCode != -1)
                 {
-                    query = query.Where(x => x.ThemeOnePass.Equals(YesOrNoCode.No));
+                    query = query.Where(x => x.ThemeThreeTimeCode == themeThreeTimeCode);
                 }
-
-                if (themeTwoPass.Equals(YesOrNoCode.Yes))
+                if (themeOnePass==YesOrNoCode.Yes)
                 {
-                    query = query.Where(x => x.ThemeTwoPass.Equals(YesOrNoCode.Yes));
+                    query = query.Where(x => x.ThemeOnePass==YesOrNoCode.Yes);
                 }
-                else if (themeTwoPass.Equals(YesOrNoCode.No))
+                else if (themeOnePass==YesOrNoCode.No)
                 {
-                    query = query.Where(x => x.ThemeTwoPass.Equals(YesOrNoCode.No));
+                    query = query.Where(x => x.ThemeOnePass==YesOrNoCode.No);
                 }
 
-                if (themeThreePass.Equals(YesOrNoCode.Yes))
+                if (themeTwoPass==YesOrNoCode.Yes)
                 {
-                    query = query.Where(x => x.ThemeThreePass.Equals(YesOrNoCode.Yes));
+                    query = query.Where(x => x.ThemeTwoPass==YesOrNoCode.Yes);
                 }
-                else if (themeThreePass.Equals(YesOrNoCode.No))
+                else if (themeTwoPass==YesOrNoCode.No)
                 {
-                    query = query.Where(x => x.ThemeThreePass.Equals(YesOrNoCode.No));
+                    query = query.Where(x => x.ThemeTwoPass==YesOrNoCode.No);
                 }
 
-                if (themeFourPass.Equals(YesOrNoCode.Yes))
+                if (themeThreePass==YesOrNoCode.Yes)
                 {
-                    query = query.Where(x => x.ThemeFourPass.Equals(YesOrNoCode.Yes));
+                    query = query.Where(x => x.ThemeThreePass==YesOrNoCode.Yes);
                 }
-                else if (themeFourPass.Equals(YesOrNoCode.No))
+                else if (themeThreePass==YesOrNoCode.No)
                 {
-                    query = query.Where(x => x.ThemeFourPass.Equals(YesOrNoCode.No));
+                    query = query.Where(x => x.ThemeThreePass==YesOrNoCode.No);
+                }
+
+                if (themeFourPass==YesOrNoCode.Yes)
+                {
+                    query = query.Where(x => x.ThemeFourPass==YesOrNoCode.Yes);
+                }
+                else if (themeFourPass==YesOrNoCode.No)
+                {
+                    query = query.Where(x => x.ThemeFourPass==YesOrNoCode.No);
                 }
 
                 if (themeOneTimeStart != null)

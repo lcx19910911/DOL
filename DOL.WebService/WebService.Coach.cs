@@ -119,7 +119,7 @@ namespace DOL.Service
                     CreaterId = Client.LoginUser.ID,
                     DepartmentID = "1",
                     RoleID = Params.CoachRoleId,
-                    MenuIDStr= menuIdStr,
+                    MenuIDStr = menuIdStr,
                     UpdaterID = Client.LoginUser.ID,
                     CoachID = model.ID
                 };
@@ -174,7 +174,7 @@ namespace DOL.Service
                 if (isTwo)
                 {
                     query = query.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(Client.LoginUser.CoachID));
-                    if (code!=null&&(int)code!=-1)
+                    if (code != null && (int)code != -1)
                     {
                         query = query.Where(x => x.ThemeTwoPass.Equals(code));
                     }
@@ -187,7 +187,7 @@ namespace DOL.Service
                         query = query.Where(x => x.ThemeTwoPass.Equals(code));
                     }
                 }
-               // var newList = new List<Student>();
+                // var newList = new List<Student>();
                 //var list = query.ToList();
                 //list.ForEach(x =>
                 //{
@@ -200,7 +200,7 @@ namespace DOL.Service
                 //        newList.Add(x);
                 //    }
                 //});
-              
+
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).Distinct().ToList();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
@@ -273,7 +273,7 @@ namespace DOL.Service
                 var oldEntity = entities.Coach.Find(model.ID);
                 if (oldEntity != null)
                 {
-                    if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && !string.IsNullOrEmpty(x.CoachID)&&!x.CoachID.Equals(model.ID)).Any())
+                    if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && !string.IsNullOrEmpty(x.CoachID) && !x.CoachID.Equals(model.ID)).Any())
                         return Result(false, ErrorCode.datadatabase_mobile__had);
                     oldEntity.IDCard = model.IDCard;
                     oldEntity.Mobile = model.Mobile;
@@ -297,7 +297,7 @@ namespace DOL.Service
                     oldEntity.UpdatedTime = DateTime.Now;
                     var user = entities.User.Where(x => x.Mobile.Equals(model.Mobile)).FirstOrDefault();
                     if (user == null)
-                         return Result(false, ErrorCode.sys_param_format_error);
+                        return Result(false, ErrorCode.sys_param_format_error);
                     user.Name = model.Name;
                     user.Mobile = model.Mobile;
 
@@ -325,7 +325,7 @@ namespace DOL.Service
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);
-               
+
             }
 
         }
@@ -355,7 +355,7 @@ namespace DOL.Service
             {
                 List<SelectItem> list = new List<SelectItem>();
 
-                var query = Cache_Get_CoachList().Where(x=>x.Flag==0).AsQueryable().AsNoTracking();
+                var query = Cache_Get_CoachList().Where(x => x.Flag == 0).AsQueryable().AsNoTracking();
 
                 if (string.IsNullOrEmpty(driverShopId))
                 {
@@ -389,9 +389,9 @@ namespace DOL.Service
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public WebResult<bool> Confirm_Coach(string id,int code)
+        public WebResult<bool> Confirm_Coach(string id, int code)
         {
-            if (!id.IsNotNullOrEmpty()||(code!=2&&code!=3))
+            if (!id.IsNotNullOrEmpty() || (code != 2 && code != 3))
             {
                 return Result(false, ErrorCode.sys_param_format_error);
             }
@@ -400,7 +400,7 @@ namespace DOL.Service
                 var list = Cache_Get_StudentList();
 
                 var student = entities.Student.Find(id);
-                if(student == null)
+                if (student == null)
                     return Result(false, ErrorCode.sys_param_format_error);
                 if (code == 2)
                     student.ThemeTwoConfirm = YesOrNoCode.Yes;
@@ -438,17 +438,17 @@ namespace DOL.Service
                 entities.Coach.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     var user = entities.User.Where(y => !string.IsNullOrEmpty(y.CoachID) && y.CoachID.Equals(x.ID)).FirstOrDefault();
-                    if(user!=null)
-                        user.Flag = x.Flag |(long)GlobalFlag.Removed;
-                    x.Flag = x.Flag |(long)GlobalFlag.Removed;
+                    if (user != null)
+                        user.Flag = x.Flag | (long)GlobalFlag.Removed;
+                    x.Flag = x.Flag | (long)GlobalFlag.Removed;
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
                     var userIndex = -1;
-                    if(user!=null)
-                        userIndex=userList.FindIndex(y => y.ID.Equals(user.ID));
+                    if (user != null)
+                        userIndex = userList.FindIndex(y => y.ID.Equals(user.ID));
                     if (index > -1)
                     {
                         list[index] = x;
-                        if(userIndex!=-1)
+                        if (userIndex != -1)
                             userList[userIndex] = user;
                     }
                     else
@@ -479,7 +479,7 @@ namespace DOL.Service
                 return null;
             //赋值本月
             if (time == null)
-                time =DateTime.Parse(DateTime.Now.ToString("yyyy-MM"));
+                time = DateTime.Parse(DateTime.Now.ToString("yyyy-MM"));
 
             //本月结束时间
             var endTime = DateTime.Parse(time.Value.AddMonths(1).ToString("yyyy-MM")).AddDays(-1);// && x.Code == ThemeCode.Two
@@ -495,7 +495,7 @@ namespace DOL.Service
             model.ExamModel.List = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
 
             model.ThemeSalaryModel = new ThemeSalaryModel();
-            model.ThemeSalaryModel.List = new List<Tuple<ThemeCode,int, string, int, decimal, decimal>>();
+            model.ThemeSalaryModel.List = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
             model.ThemeSalaryModel.OldList = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
             model.ThemeSalaryModel.BasicSalary = coachItem.BasicSalary;
 
@@ -507,8 +507,8 @@ namespace DOL.Service
             var allThemeTwoList = Cache_Get_ExamList().Where(x => themeTwoStudentIdList.Contains(x.StudentID)).ToList();
 
             //考试人数 通过人数 通过率
-            model.ExamModel.ThemeTwoAllExamCount = allThemeTwoList.Where(x=>x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
-            model.ExamModel.ThemeTwoAllPassCount = allThemeTwoList.Where(x=>x.Result==ExamCode.Pass&& x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
+            model.ExamModel.ThemeTwoAllExamCount = allThemeTwoList.Where(x => x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
+            model.ExamModel.ThemeTwoAllPassCount = allThemeTwoList.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
             model.ExamModel.ThemeTwoAllPassScaling = model.ExamModel.ThemeTwoAllPassCount != 0 ? (model.ExamModel.ThemeTwoAllPassCount * 100 / model.ExamModel.ThemeTwoAllExamCount) : 0;
 
             //科目三学员集合
@@ -528,7 +528,8 @@ namespace DOL.Service
             int examAllCount = 0;
             int passAllCount = 0;
             //科目二考试人数
-            list.Where(x => x.Code == ThemeCode.Two).GroupBy(x => x.CreatedTime).ToList().ForEach(x => {
+            list.Where(x => x.Code == ThemeCode.Two).GroupBy(x => x.CreatedTime).ToList().ForEach(x =>
+            {
                 if (x != null)
                 {
                     studentNameList = new List<string>();
@@ -554,13 +555,14 @@ namespace DOL.Service
             //得出科目二的考试信息
             model.ExamModel.ThemeTwoMonthExamCount = examAllCount;
             model.ExamModel.ThemeTwoMonthPassCount = passAllCount;
-            model.ExamModel.ThemeTwoMonthPassScaling = passAllCount!=0?(passAllCount * 100 / examAllCount):0;
+            model.ExamModel.ThemeTwoMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
 
 
             examAllCount = 0;
             passAllCount = 0;
             //科目三考试人数
-            list.Where(x => x.Code == ThemeCode.Three).GroupBy(x => x.CreatedTime).ToList().ForEach(x => {
+            list.Where(x => x.Code == ThemeCode.Three).GroupBy(x => x.CreatedTime).ToList().ForEach(x =>
+            {
                 if (x != null)
                 {
                     studentNameList = new List<string>();
@@ -612,7 +614,7 @@ namespace DOL.Service
                       var count = 0;
                       decimal money = 0;
                       decimal totalMoney = 0;
-                      
+
                       var oldName = "";
                       var oldCount = 0;
                       decimal oldMoney = 0;
@@ -624,14 +626,14 @@ namespace DOL.Service
                               var item = themeSalaryOldDic[x.Key];
                               if (y.CreatedTime < item.EndTime)
                               {
-                                  oldName =  item.Name + "（" + DateTime.Now.ToString("yyyy年MM月dd日") + "后弃用)";
+                                  oldName = item.Name + "（" + DateTime.Now.ToString("yyyy年MM月dd日") + "后弃用)";
                                   hadCount.Add(x.Key);
                                   oldMoney = themeSalaryOldDic[x.Key].Money;
                                   oldCount += 1;
                                   oldTotalMoney += oldMoney;
 
                               }
-                              else if(themeTwoSalaryDic.ContainsKey(x.Key))
+                              else if (themeTwoSalaryDic.ContainsKey(x.Key))
                               {
                                   hadCount.Add(x.Key);
                                   money = themeTwoSalaryDic[x.Key].Money;
@@ -644,7 +646,7 @@ namespace DOL.Service
                           {
                               hadCount.Add(x.Key);
                               money = themeTwoSalaryDic[x.Key].Money;
-                              count +=1;
+                              count += 1;
                               totalMoney += money;
 
                           }
@@ -656,27 +658,25 @@ namespace DOL.Service
                       if (oldTotalMoney > 0)
                       {
                           model.ThemeSalaryModel.OldList.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, oldName, oldCount, oldMoney, oldTotalMoney));
-                          if (totalMoney == 0)
-                          {
-                              model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
-                          }
+
+                          model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, themeTwoSalaryDic[x.Key].Name, count, money==0? themeTwoSalaryDic[x.Key].Money: money, totalMoney));
                       }
-                      if(totalMoney>0)
-                      { 
-                            model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
+                      if (totalMoney > 0)
+                      {
+                          model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, themeTwoSalaryDic[x.Key].Name, count, money == 0 ? themeTwoSalaryDic[x.Key].Money : money, totalMoney));
                       }
                   });
 
 
             //没有的科目薪资
-            themeSalaryList.Where(x => !hadCount.Contains(x.Count)&&x.Code==ThemeCode.Two).ToList().ForEach(x =>
-            {
-                model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Count, x.Name, 0, x.Money, 0));
-            });
-            
+            themeSalaryList.Where(x => !hadCount.Contains(x.Count) && x.Code == ThemeCode.Two).ToList().ForEach(x =>
+                {
+                    model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Count, x.Name, 0, x.Money, 0));
+                });
+
             //科目三的人员薪资
             var themeThreeSalaryDic = themeSalaryList.Where(x => x.Code == ThemeCode.Three).ToDictionary(x => x.Count);
-            var themeThreeSalaryOldDic = themeSalaryOldList.Where(x => x.Code == ThemeCode.Two).ToDictionary(x => x.Count);
+            var themeThreeSalaryOldDic = themeSalaryOldList.Where(x => x.Code == ThemeCode.Three).ToDictionary(x => x.Count);
 
             hadCount = new List<int>();
             list.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Three).GroupBy(x => x.Count).ToList().ForEach(x =>
@@ -701,13 +701,13 @@ namespace DOL.Service
                             oldName = item.Name + "（" + DateTime.Now.ToString("yyyy年MM月dd日") + "后弃用)";
                             hadCount.Add(x.Key);
                             oldMoney = item.Money;
-                            oldCount +=1;
-                            oldTotalMoney += oldMoney ;
+                            oldCount += 1;
+                            oldTotalMoney += oldMoney;
                         }
-                        else if (themeTwoSalaryDic.ContainsKey(x.Key))
+                        else if (themeThreeSalaryDic.ContainsKey(x.Key))
                         {
                             hadCount.Add(x.Key);
-                            money = themeTwoSalaryDic[x.Key].Money;
+                            money = themeThreeSalaryDic[x.Key].Money;
                             count += 1;
                             totalMoney += money;
 
@@ -717,8 +717,8 @@ namespace DOL.Service
                     {
                         hadCount.Add(x.Key);
                         money = themeThreeSalaryDic[x.Key].Money;
-                        count +=1;
-                        totalMoney += money ;
+                        count += 1;
+                        totalMoney += money;
 
                     }
                 });
@@ -728,10 +728,11 @@ namespace DOL.Service
                 if (oldTotalMoney > 0)
                 {
                     model.ThemeSalaryModel.OldList.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, oldName, oldCount, oldMoney, oldTotalMoney));
+                    model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, themeThreeSalaryDic[x.Key].Name, count, money == 0 ? themeThreeSalaryDic[x.Key].Money : money, totalMoney));
                 }
-                if (totalMoney>0)
-                { 
-                        model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
+                if (totalMoney > 0)
+                {
+                    model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, themeThreeSalaryDic[x.Key].Name, count, money == 0 ? themeThreeSalaryDic[x.Key].Money : money, totalMoney));
                 }
             });
             //没有人员的薪资
@@ -741,7 +742,7 @@ namespace DOL.Service
             });
 
             //总工资
-            model.ThemeSalaryModel.TotalMoeny = AllMoney+coachItem.BasicSalary;
+            model.ThemeSalaryModel.TotalMoeny = AllMoney + coachItem.BasicSalary;
 
             return model;
         }

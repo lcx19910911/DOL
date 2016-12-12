@@ -19,26 +19,52 @@ namespace DOL.Web.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// 科二学员
+        /// </summary>
+        /// <returns></returns>
         public ViewResult ThemeTwoStudent()
         {
             return View();
         }
+        /// <summary>
+        /// 科三学员
+        /// </summary>
+        /// <returns></returns>
         public ViewResult ThemeThreeStudent()
         {
             return View();
         }
 
+        /// <summary>
+        /// 油卡
+        /// </summary>
+        /// <returns></returns>
         public ViewResult OilCard()
         {
             return View();
         }
+        /// <summary>
+        /// 教练工资（管理员）
+        /// </summary>
+        /// <returns></returns>
+        public ViewResult Info(DateTime? searchTime,string coachID)
+        {
+            return View(WebService.Get_CoachSalary(searchTime, coachID));
+        }
 
+        /// <summary>
+        /// 我的车辆
+        /// </summary>
+        /// <returns></returns>
         public ViewResult Car()
         {
             return View();
         }
-
+        /// <summary>
+        /// 我的耗损
+        /// </summary>
+        /// <returns></returns>
         public ViewResult Waste()
         {
             return View(WebService.Get_CarSelectItem(Client.LoginUser.CoachID));

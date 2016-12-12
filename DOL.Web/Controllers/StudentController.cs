@@ -286,6 +286,8 @@ namespace DOL.Web.Controllers
             string themeTwoCoachID,
             string themeThreeCoachID,
             int orderBy,
+            ThemeTimeCode themeTwoTimeCode,
+            ThemeTimeCode themeThreeTimeCode,
             YesOrNoCode? themeOnePass,
             YesOrNoCode? themeTwoPass,
             YesOrNoCode? themeThreePass,
@@ -296,7 +298,7 @@ namespace DOL.Web.Controllers
             DateTime? themeFourTimeStart, DateTime? themeFourTimeEnd
             )
         {
-            return JResult(WebService.Get_StudentMoreInfoPageList(pageIndex, pageSize, name,referenceID, no, trianID, driverShopID, themeTwoCoachID, themeThreeCoachID,orderBy, themeOnePass, themeTwoPass, themeThreePass, themeFourPass,
+            return JResult(WebService.Get_StudentMoreInfoPageList(pageIndex, pageSize, name,referenceID, no, trianID, driverShopID, themeTwoCoachID, themeThreeCoachID,orderBy, themeTwoTimeCode,themeThreeTimeCode, themeOnePass, themeTwoPass, themeThreePass, themeFourPass,
                 themeOneTimeStart, themeOneTimeEnd, themeTwoTimeStart, themeTwoTimeEnd, themeThreeTimeStart, themeThreeTimeEnd, themeFourTimeStart, themeFourTimeEnd));
         }
 

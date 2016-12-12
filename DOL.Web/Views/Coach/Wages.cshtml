@@ -7,10 +7,11 @@
         themeTwoSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
         themeThreeSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x=>x.Item2).ToList();
     }
-    ViewBag.Title = "我的工资";
+    ViewBag.Title = "教练工资";
+
         }
 <div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>我的工资</small></div>
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>教练工资</small></div>
 </div>
 <div id="searchDomain">
 
@@ -116,7 +117,107 @@
             </table>
         </div>
     </div>
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <div class="am-g am-margin-top-lg ">
+                <div class="am-u-sm-12 am-u-sm-centered am-text-center">
+                    <p>@(Model.CoachName)教练@(Model.StartTime.ToString("MM月dd日"))到@(Model.EndTime.ToString("MM月dd日"))考试情况</p>
+                </div>
 
+            </div>
+            <table class="am-table am-table-compact am-table-hover table-main am-table-bordered">
+                <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>科目二</th>
+                        <th>考试人数</th>
+                        <th>通过数</th>
+                        <th>通过率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in examThemeTwoList)
+                    {
+                        <tr>
+                            <td>@(item.Item2.ToString("MM月dd日"))</td>
+                            <td>@item.Item3</td>
+                            <td>@item.Item4</td>
+                            <td>@item.Item5</td>
+                            <td>@(item.Item6)%</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>合计</td>
+                        <td></td>
+                        <td>@Model.ExamModel.ThemeTwoMonthExamCount</td>
+                        <td>@Model.ExamModel.ThemeTwoMonthPassCount</td>
+                        <td>@(Model.ExamModel.ThemeTwoMonthPassScaling)%</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>总考试人数</td>
+                        <td>总通过数</td>
+                        <td>综合通过率</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>@Model.ExamModel.ThemeTwoAllExamCount</td>
+                        <td>@Model.ExamModel.ThemeTwoAllPassCount</td>
+                        <td>@(Model.ExamModel.ThemeTwoAllPassScaling)%</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+            <table class="am-table am-table-compact am-table-hover table-main am-margin-top-lg am-table-bordered">
+                <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>科目三</th>
+                        <th>考试人数</th>
+                        <th>通过数</th>
+                        <th>通过率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in examThemeThreeList)
+                    {
+                        <tr>
+                            <td>@(item.Item2.ToString("MM月dd日"))</td>
+                            <td>@item.Item3</td>
+                            <td>@item.Item4</td>
+                            <td>@item.Item5</td>
+                            <td>@(item.Item6)%</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>合计</td>
+                        <td></td>
+                        <td>@Model.ExamModel.ThemeThreeMonthExamCount</td>
+                        <td>@Model.ExamModel.ThemeThreeMonthPassCount</td>
+                        <td>@(Model.ExamModel.ThemeThreeMonthPassScaling)%</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>总考试人数</td>
+                        <td>总通过数</td>
+                        <td>综合通过率</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>@Model.ExamModel.ThemeThreeAllExamCount</td>
+                        <td>@Model.ExamModel.ThemeThreeAllPassCount</td>
+                        <td>@(Model.ExamModel.ThemeThreeAllPassScaling)%</td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
 </div>
 @section scripts
 {
@@ -128,7 +229,7 @@
             $("#searchDomain input").val("");
         }
         function Search() {
-            window.location.href = "/Coach/Wages?searchTime=" + $("[name='searchTime']").val();
+            window.location.href = "/Coach/Info?searchTime=" + $("[name='searchTime']").val();
         }
 
     </script>
