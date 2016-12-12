@@ -822,17 +822,19 @@ namespace DOL.Service
                 {
                     query = query.Where(x => !string.IsNullOrEmpty(x.TrianID) && x.TrianID.Equals(trianID));
                 }
-                if (themeTwoCoachID.IsNotNullOrEmpty() && themeTwoCoachID != "-1")
-                {
-                    query = query.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(themeTwoCoachID));
-                }
                 if (themeThreeCoachID.IsNotNullOrEmpty() && themeThreeCoachID != "-1")
                 {
-                    query = query.Where(x => !string.IsNullOrEmpty(x.ThemeThreeCoachID) && x.ThemeThreeCoachID.Equals(themeThreeCoachID));
+                    if (themeThreeCoachID.Equals("0"))
+                        query = query.Where(x => string.IsNullOrEmpty(x.ThemeThreeCoachID));
+                    else
+                        query = query.Where(x => !string.IsNullOrEmpty(x.ThemeThreeCoachID) && x.ThemeThreeCoachID.Equals(themeThreeCoachID));
                 }
                 if (themeTwoCoachID.IsNotNullOrEmpty() && themeTwoCoachID != "-1")
                 {
-                    query = query.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(themeTwoCoachID));
+                    if(themeTwoCoachID.Equals("0"))
+                        query = query.Where(x => string.IsNullOrEmpty(x.ThemeTwoCoachID));
+                    else
+                        query = query.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID) && x.ThemeTwoCoachID.Equals(themeTwoCoachID));
                 }
 
                 if (themeOnePass.Equals(YesOrNoCode.Yes))

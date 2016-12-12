@@ -67,8 +67,10 @@ namespace DOL.Service
             int pageIndex,
             int pageSize,
             string no,
+            string name,
             int state,
-            string referenceId
+            string referenceId,
+            string typeId
             )
         {
             using (DbRepository entities = new DbRepository())
@@ -76,23 +78,35 @@ namespace DOL.Service
                 var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.IsDrop == YesOrNoCode.No);
                 var studentList = Cache_Get_StudentList().Select(x => x.ID).ToList();
                 query = query.Where(x => studentList.Contains(x.StudentID.Trim()));
+                var studentQuery = Cache_Get_StudentList().AsQueryable();
                 if (no.IsNotNullOrEmpty())
                 {
-                    var selectStudentIdList = Cache_Get_StudentList().Where(x => x.IDCard.Contains(no)).Select(x => x.ID.Trim()).ToList();
-                    query = query.Where(x => selectStudentIdList.Contains(x.StudentID.Trim()));
+                    studentQuery = studentQuery.Where(x => x.IDCard.Contains(no));
                 }
                 if (referenceId.IsNotNullOrEmpty()&& referenceId!="-1")
                 {
-                    var selectStudentIdList = Cache_Get_StudentList().Where(x => x.ReferenceID.Equals(referenceId)).Select(x => x.ID.Trim()).ToList();
-                    query = query.Where(x => selectStudentIdList.Contains(x.StudentID.Trim()));
+                    studentQuery = studentQuery.Where(x => x.ReferenceID.Equals(referenceId));
+                }
+                if (name.IsNotNullOrEmpty())
+                {
+                    studentQuery = studentQuery.Where(x => x.Name.Contains(name));
+                }
+                if (no.IsNotNullOrEmpty()|| (referenceId.IsNotNullOrEmpty() && referenceId != "-1")|| name.IsNotNullOrEmpty())
+                {
+                    var studentIDList=studentQuery.Select(x => x.ID.Trim()).ToList();
+                    query = query.Where(x => studentIDList.Contains(x.StudentID.Trim()));
                 }
                 if (state != -1)
                 {
                     query = query.Where(x => (int)x.IsConfirm == state);
                 }
+                if (typeId.IsNotNullOrEmpty() && typeId != "-1")
+                {
+                    query = query.Where(x => x.PayTypeID.Equals(typeId));
+                }
 
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.ConfirmDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var studentDic = Cache_Get_StudentList_Dic();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();

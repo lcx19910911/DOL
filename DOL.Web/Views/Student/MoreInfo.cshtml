@@ -101,11 +101,13 @@
                 <span class="am-input-group-label">科二教练：</span>
                 <select name="ThemeTwoCoachID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;">
                     <option value="-1">不限</option>
+                    <option value="0">无</option>
                 </select>
 
                 <span class="am-input-group-label am-margin-left-sm">科三教练：</span>
                 <select name="ThemeThreeCoachID" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;">
                     <option value="-1">不限</option>
+                    <option value="0">无</option>
                 </select>
                 <span class="am-input-group-label  am-margin-left-sm">科二学时：</span>
                 <select name="ThemeTwoTimeCode" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:auto;">
@@ -155,6 +157,7 @@
                 <th dataname="ID" type="checkbox"></th>
                 <th type="more"></th>
                 <th dataname="Name">姓名</th>
+                <th dataname="ReferenceName">推荐人</th>
                 <th dataname="CertificateName">车型</th>
                 <th dataname="MakeDriverShopName">制卡驾校</th>
                 @*<th dataname="IDCard">身份证</th>

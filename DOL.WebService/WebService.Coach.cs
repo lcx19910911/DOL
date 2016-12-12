@@ -624,12 +624,19 @@ namespace DOL.Service
                               var item = themeSalaryOldDic[x.Key];
                               if (y.CreatedTime < item.EndTime)
                               {
-                                  oldName = item.Name + "（" + DateTime.Now.ToString("yyyy年MM月dd日") + "后弃用)";
+                                  oldName =  item.Name + "（" + DateTime.Now.ToString("yyyy年MM月dd日") + "后弃用)";
                                   hadCount.Add(x.Key);
-                                  oldMoney = item.Money;
-                                  oldCount = x.Count();
-                                  oldTotalMoney = money * count;
-                                  AllMoney += totalMoney;
+                                  oldMoney = themeSalaryOldDic[x.Key].Money;
+                                  oldCount += 1;
+                                  oldTotalMoney += oldMoney;
+
+                              }
+                              else if(themeTwoSalaryDic.ContainsKey(x.Key))
+                              {
+                                  hadCount.Add(x.Key);
+                                  money = themeTwoSalaryDic[x.Key].Money;
+                                  count += 1;
+                                  totalMoney += money;
 
                               }
                           }
@@ -637,19 +644,25 @@ namespace DOL.Service
                           {
                               hadCount.Add(x.Key);
                               money = themeTwoSalaryDic[x.Key].Money;
-                              count = x.Count();
-                              totalMoney = money * count;
-                              AllMoney += totalMoney;
-                              
+                              count +=1;
+                              totalMoney += money;
+
                           }
                       });
-                      if (themeSalaryOldDic.Count > 0)
+
+
+                      AllMoney += totalMoney;
+                      AllMoney += oldTotalMoney;
+                      if (oldTotalMoney > 0)
                       {
                           model.ThemeSalaryModel.OldList.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, oldName, oldCount, oldMoney, oldTotalMoney));
+                          if (totalMoney == 0)
+                          {
+                              model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
+                          }
                       }
-                      else
-                      {
-                          if(themeTwoSalaryDic.ContainsKey(x.Key))
+                      if(totalMoney>0)
+                      { 
                             model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
                       }
                   });
@@ -688,9 +701,15 @@ namespace DOL.Service
                             oldName = item.Name + "（" + DateTime.Now.ToString("yyyy年MM月dd日") + "后弃用)";
                             hadCount.Add(x.Key);
                             oldMoney = item.Money;
-                            oldCount = x.Count();
-                            oldTotalMoney = money * count;
-                            AllMoney += totalMoney;
+                            oldCount +=1;
+                            oldTotalMoney += oldMoney ;
+                        }
+                        else if (themeTwoSalaryDic.ContainsKey(x.Key))
+                        {
+                            hadCount.Add(x.Key);
+                            money = themeTwoSalaryDic[x.Key].Money;
+                            count += 1;
+                            totalMoney += money;
 
                         }
                     }
@@ -698,20 +717,20 @@ namespace DOL.Service
                     {
                         hadCount.Add(x.Key);
                         money = themeThreeSalaryDic[x.Key].Money;
-                        count = x.Count();
-                        totalMoney = money * count;
-                        AllMoney += totalMoney;
+                        count +=1;
+                        totalMoney += money ;
 
                     }
                 });
 
-                if (themeThreeSalaryOldDic.Count > 0)
+                AllMoney += oldTotalMoney;
+                AllMoney += totalMoney;
+                if (oldTotalMoney > 0)
                 {
                     model.ThemeSalaryModel.OldList.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, oldName, oldCount, oldMoney, oldTotalMoney));
                 }
-                else
-                {
-                    if (themeTwoSalaryDic.ContainsKey(x.Key)) 
+                if (totalMoney>0)
+                { 
                         model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, themeTwoSalaryDic[x.Key].Name, count, money, totalMoney));
                 }
             });

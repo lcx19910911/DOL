@@ -11,7 +11,9 @@
     <div class="am-g">
         <div class="am-u-lg-7 am-u-end">
             <div class="am-input-group am-input-group-sm">
-                <span class="am-input-group-label">身份证：</span>
+                <span class="am-input-group-label">姓名：</span>
+                <input type="text" class="am-form-field" placeholder="按姓名搜索" style="width:100px;" name="name" ;>
+                <span class="am-input-group-label am-margin-left-sm">身份证：</span>
                 <input type="text" class="am-form-field" placeholder="按身份证搜索" style="width:100px;" name="no" ;>
                 <span class="am-input-group-label am-margin-left-sm">状态：</span>
                 <select name="state" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" style="width:120px;">
@@ -21,6 +23,10 @@
                 </select>
                 <span class="am-input-group-label am-margin-left-sm">招生人：</span>
                 <select name="referenceId" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1">不限</option>
+                </select>
+                <span class="am-input-group-label am-margin-left-sm">支付方式：</span>
+                <select name="typeId" data-am-selected="{btnWidth: '90px',btnSize: 'sm'}" style="width:120px;">
                     <option value="-1">不限</option>
                 </select>
                 <span class="am-input-group-btn am-margin-left-sm">
@@ -314,6 +320,11 @@
         $.Nuoya.action("/Reference/GetSelectItem", {}, function (json) {
             $(json).each(function () {
                 $("select[name='referenceId']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+            });
+        });
+        $.Nuoya.action("/DataDictionary/GetSelectItem", { group:3}, function (json) {
+            $(json).each(function () {
+                $("select[name='typeId']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
             });
         });
     </script>

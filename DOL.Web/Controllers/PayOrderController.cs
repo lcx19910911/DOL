@@ -34,11 +34,13 @@ namespace DOL.Web.Controllers
         public ActionResult GetPageList(int pageIndex,
             int pageSize,
             string no,
+            string name,
             int state,
-            string referenceId
+            string referenceId,
+            string typeId
             )
         {
-            return JResult(WebService.Get_PayOrderPageList(pageIndex, pageSize, no, state, referenceId));
+            return JResult(WebService.Get_PayOrderPageList(pageIndex, pageSize, no, name,state, referenceId, typeId));
         }
 
         /// <summary>

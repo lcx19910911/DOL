@@ -67,7 +67,7 @@
                         </tr>
                         if (Model.ThemeSalaryModel.OldList != null && Model.ThemeSalaryModel.OldList.Count > 0)
                         {
-                            var oldItem = Model.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1)).FirstOrDefault();
+                            var oldItem = Model.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1)&&x.Item2.Equals(item.Item2)).FirstOrDefault();
                             if (oldItem != null)
                             {
                             <tr>
@@ -90,9 +90,10 @@
                             <td>@item.Item4</td>
                             <td>@item.Item5</td>
                             <td>@item.Item6</td>
-                        </tr> if (Model.ThemeSalaryModel.OldList != null && Model.ThemeSalaryModel.OldList.Count > 0)
+                        </tr> 
+                        if (Model.ThemeSalaryModel.OldList != null && Model.ThemeSalaryModel.OldList.Count > 0)
                         {
-                            var oldItem = Model.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1)).FirstOrDefault();
+                            var oldItem = Model.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1) && x.Item2.Equals(item.Item2)).FirstOrDefault();
                             if (oldItem != null)
                             {
                             <tr>

@@ -26,7 +26,7 @@ namespace DOL.Service
             {
                 using (var db = new DbRepository())
                 {
-                    List<Exam> list = db.Exam.OrderByDescending(x => x.CreatedTime).ThenBy(x => x.ID).ToList();
+                    List<Exam> list = db.Exam.OrderBy(x => x.Code).ThenBy(x => x.Count).ToList();
                     return list;
                 }
             });
@@ -78,7 +78,7 @@ namespace DOL.Service
                     query = query.Where(x => studentIdList.Contains(x.StudentID));
                 }
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.Code).ThenBy(x=>x.Count).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
