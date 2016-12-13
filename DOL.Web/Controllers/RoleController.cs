@@ -97,7 +97,7 @@ namespace DOL.Web.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        public ActionResult UpdateOperate(string ID, long OperateFlag)
+        public ActionResult UpdateOperate(string ID, long OperateFlag=0)
         {
             return JResult(WebService.Update_RoleOperate(ID, OperateFlag));
         }
