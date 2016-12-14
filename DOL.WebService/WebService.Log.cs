@@ -13,34 +13,6 @@ namespace DOL.Service
 {
     public partial class WebService
     {
-        string logKey = CacheHelper.RenderKey(Params.Cache_Prefix_Key, "Log");
-
-        /// <summary>
-        /// 全局缓存
-        /// </summary>
-        /// <returns></returns>
-        private List<Log> Cache_Get_LogList()
-        {
-
-            return CacheHelper.Get<List<Log>>(logKey, () =>
-            {
-                using (var db = new DbRepository())
-                {
-                    List<Log> list = db.Log.OrderByDescending(x => x.CreatedTime).ThenBy(x => x.ID).ToList();
-                    return list;
-                }
-            });
-        }
-
-        /// <summary>
-        /// 全局缓存 dic
-        /// </summary>
-        /// <returns></returns>
-        private Dictionary<string, Log> Cache_Get_LogList_Dic()
-        {
-            return Cache_Get_LogList().ToDictionary(x => x.ID);
-        }
-
 
         /// <summary>
         /// 查找实体
@@ -51,7 +23,10 @@ namespace DOL.Service
         {
             if (!id.IsNotNullOrEmpty())
                 return null;
-            return Cache_Get_LogList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+            using (DbRepository entities = new DbRepository())
+            {
+                return entities.Log.Find(id);
+            }
         }
 
       /// <summary>
@@ -78,12 +53,8 @@ namespace DOL.Service
                 model.StudentID = studentId;
                 model.UpdateInfo = info;
                 entities.Log.Add(model);
-                           
-                if (entities.SaveChanges() > 0)
-                {
-                    var list = Cache_Get_LogList();
-                    list.Add(model);
-                }
+
+                entities.SaveChanges();
             }
 
         }
@@ -97,7 +68,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_LogList().AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId)).OrderByDescending(x => x.CreatedTime);
+                var query = entities.Log.AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId)).OrderByDescending(x => x.CreatedTime);
                 var count = query.Count();
                 var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 return ResultPageList(list, pageIndex, pageSize, count);
