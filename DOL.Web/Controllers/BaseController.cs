@@ -216,7 +216,7 @@ namespace DOL.Web.Controllers
         {
             get
             {
-                return _loginUser != null ? _loginUser : new LoginUser(CookieHelper.GetCurrentUser());
+                return _loginUser != null ? _loginUser : new LoginUser(CryptoHelper.AES_Decrypt(Client.Session[Params.UserCookieName].ToString(), Params.SecretKey).DeserializeJson<User>());
             }
         }
     }

@@ -137,5 +137,10 @@ namespace DOL.Model
         /// </summary>
         [Column("MenuIDStr", TypeName = "text")]
         public string MenuIDStr { get; set; }
+
+        /// <summary>
+        /// 是否是门店管理员
+        /// </summary>
+        public YesOrNoCode IsStoreAdmin { get; set; } = YesOrNoCode.No;
     }
 }

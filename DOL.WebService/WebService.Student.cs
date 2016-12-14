@@ -81,7 +81,12 @@ namespace DOL.Service
                 }
                 if (!Client.LoginUser.IsAdmin)
                 {
+                    
                     query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.EnteredPointID));
+                    if (Client.LoginUser.IsStoreAdmin==YesOrNoCode.No)
+                    {
+                        query = query.Where(x => x.CreaterID.Equals(Client.LoginUser.ID));
+                    }
                 }
                 if (name.IsNotNullOrEmpty())
                 {
@@ -185,7 +190,7 @@ namespace DOL.Service
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
                 //var userDic = Cache_Get_UserDic();
                 var studentIdList = list.Select(x => x.ID).ToList();
-                var payOrderList = Cache_Get_PayOrderList();
+                var payOrderList = Cache_Get_PayOrderList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
                 var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x => x.Key);
                 list.ForEach(x =>
                 {
@@ -818,7 +823,12 @@ namespace DOL.Service
                 }
                 if (!Client.LoginUser.IsAdmin)
                 {
+
                     query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.EnteredPointID));
+                    if (Client.LoginUser.IsStoreAdmin == YesOrNoCode.No)
+                    {
+                        query = query.Where(x => x.CreaterID.Equals(Client.LoginUser.ID));
+                    }
                 }
                 if (trianID.IsNotNullOrEmpty() && trianID != "-1")
                 {
@@ -1016,7 +1026,12 @@ namespace DOL.Service
                 var query = Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
                 if (!Client.LoginUser.IsAdmin)
                 {
+
                     query = query.Where(x => Client.LoginUser.EnteredPointIDStr.Contains(x.EnteredPointID));
+                    if (Client.LoginUser.IsStoreAdmin == YesOrNoCode.No)
+                    {
+                        query = query.Where(x => x.CreaterID.Equals(Client.LoginUser.ID));
+                    }
                 }
                 if (name.IsNotNullOrEmpty())
                 {
@@ -1146,6 +1161,10 @@ namespace DOL.Service
                         return Result(false, ErrorCode.sys_param_format_error);
                     model.MakeCardCityCode = makecardShop.CityCode;
                 }
+                if(model.Money==0)
+                {
+                    model.MoneyIsFull = YesOrNoCode.Yes;
+                }
                 if (model.MakeDriverShopID == "-1")
                     model.MakeDriverShopID = string.Empty;
                 if (!string.IsNullOrEmpty(model.MakeDriverShopID) && model.MakeCardDate.HasValue)
@@ -1171,7 +1190,7 @@ namespace DOL.Service
                 }
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
-                model.UpdaterID = Client.LoginUser.ID;
+                model.UpdaterID=model.CreaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
                 model.MoneyIsFull = YesOrNoCode.No;
                 //if (model.ThemeOnePass == YesOrNoCode.Yes)

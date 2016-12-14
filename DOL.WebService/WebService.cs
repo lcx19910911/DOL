@@ -1,8 +1,10 @@
 ﻿
 using DOL.Core;
 using DOL.Model;
+using DOL.Repository;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +13,24 @@ namespace DOL.Service
 {
     public partial class WebService
     {
+        /// <summary>
+        /// 全局缓存
+        /// </summary>
+        /// <returns></returns>
+        public static List<TEntity> GetList<TEntity>() where TEntity : BaseEntity
+        {
+            string key = CacheHelper.RenderKey(Params.Cache_Prefix_Key, typeof(TEntity).Name);
+
+            return CacheHelper.Get<List<TEntity>>(key, () =>
+            {
+                using (var db = new DbRepository())
+                {
+                    DbSet<TEntity> dbSet = db.Set<TEntity>();
+
+                    return dbSet.ToList();
+                }
+            });
+        }
 
         private WebClient Client = null;
 

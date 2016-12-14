@@ -65,6 +65,7 @@
                 <th dataname="DepartmentName">部门</th>
                 <th dataname="Account">账号</th>
                 <th dataname="Mobile">手机号</th>
+                <th render="ShowIsStoreAdmin">是否门店管理员</th>
                 <th dataname="State">状态</th>           
                 <th dataname="CreatedTime" datatype="jsondate">创建时间</th>
                 <th type="eventlist"></th>
@@ -81,6 +82,12 @@
         $('[name=endTimeEnd]').datepicker({ format: 'yyyy-mm-dd' });
         function ClearFilter() {
             $("#searchDomain input").val("");
+        }
+        function ShowIsStoreAdmin(item) {
+            if (item.IsStoreAdmin == 1)
+                return "是";
+            else
+                return "否";
         }
         //批量删除
         function batchDelete() {
@@ -176,6 +183,7 @@
                 title: "添加用户",
                 callback: function (e) {
                     formInit();//表单初始化
+                    LoadYesOrNoSelectItem($("#form select[name='IsStoreAdmin']"), 0);
                 },
                 buttons: [{
                     label: "保存",
@@ -223,6 +231,7 @@
                             callback: function (e) {
                                 $.Nuoya.action("/User/Find", { id: item.ID }, function (model) {
                                     formInit(model);//表单初始化
+                                    LoadYesOrNoSelectItem($("#form select[name='IsStoreAdmin']"), model.IsStoreAdmin);
                                     //载入数据
                                     $.Nuoya.form("form").dataLoad({
                                         data: model

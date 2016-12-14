@@ -28,12 +28,70 @@ namespace DOL.Repository
 
 
         }
+        /// <summary>
+        /// 全局缓存
+        /// </summary>
+        /// <returns></returns>
+        public static List<TEntity> GetList<TEntity>() where TEntity : BaseEntity
+        {
+            string key = CacheHelper.RenderKey(Params.Cache_Prefix_Key, typeof(TEntity).Name);
+
+            return CacheHelper.Get<List<TEntity>>(key, () =>
+            {
+                using (var db = new DbRepository())
+                {
+                    DbSet<TEntity> dbSet = db.Set<TEntity>();
+
+                    return dbSet.ToList();
+                }
+            });
+        }
+
+        /// <summary>
+        /// 初始化对象
+        /// </summary>
+        /// <param name="entry">entry对象</param>
+        private void InitObject(DbEntityEntry entry)
+        {
+            if (entry.Entity is BaseEntity)
+            {
+                var entity = entry.Entity as BaseEntity;
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        //初始化这些值，如果这些值为null时，自动赋值
+                        if (entity.CreatedTime == new DateTime())
+                            entity.CreatedTime = DateTime.Now;
+                        if (entity.UpdatedTime == new DateTime())
+                            entity.UpdatedTime = DateTime.Now;
+                        if (entity.ID.IsNullOrEmpty())
+                            entity.ID = Guid.NewGuid().ToString("N");
+                        var dd = GetList<BaseEntity>();
+                        break;
+                    case EntityState.Modified:
+                        entity.UpdatedTime = DateTime.Now;
+                        break;
+                }
+            }
+        }
 
         public override int SaveChanges()
         {
             try
             {
+                var entries = from e in this.ChangeTracker.Entries()
+                              where e.State != EntityState.Unchanged
+                              select e;   //过滤所有修改了的实体，包括：增加 / 修改 / 删除
+
+
+                //foreach (var entry in entries)
+                //{
+
+                //   InitObject(entry);
+                //}
+
                 return base.SaveChanges();
+
             }
             catch (Exception ex)
             {

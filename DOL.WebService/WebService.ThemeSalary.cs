@@ -90,14 +90,12 @@ namespace DOL.Service
             using (DbRepository entities = new DbRepository())
             {
                 model.ID = Guid.NewGuid().ToString("N");
-                entities.ThemeSalary.Add(model);
                 if (Cache_Get_ThemeSalaryList().Where(x => x.Code == model.Code && x.Count == model.Count&&!x.EndTime.HasValue).Any())
                     return Result(false, ErrorCode.count_had_exit);
-
                 model.CreatedTime = DateTime.Now;
                 model.UpdatedTime = DateTime.Now;
                 model.UpdaterID = Client.LoginUser.ID;
-
+                entities.ThemeSalary.Add(model);
                 if (entities.SaveChanges() > 0)
                 {
                     var list = Cache_Get_ThemeSalaryList();
@@ -137,7 +135,7 @@ namespace DOL.Service
 
                         oldEntity.Flag = (long)GlobalFlag.Unabled;
                         oldEntity.EndTime = DateTime.Now;
-                         newEntity.ID = Guid.NewGuid().ToString("N");
+                        newEntity.ID = Guid.NewGuid().ToString("N");
                         newEntity.CreatedTime = DateTime.Now.AddMinutes(1);
                         newEntity.UpdatedTime = DateTime.Now;
                         newEntity.UpdaterID = Client.LoginUser.ID;

@@ -34,7 +34,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult Quit()
         {
-            CookieHelper.ClearCookie();
+            Client.Session[Params.UserCookieName] = null;
             return View("Login");
         }
 

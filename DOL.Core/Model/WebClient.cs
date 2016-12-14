@@ -42,7 +42,7 @@ namespace DOL.Core
         {
             get
             {
-                return _loginUser != null ? _loginUser :CookieHelper.GetCurrentUser();
+                return _loginUser != null ? _loginUser : CryptoHelper.AES_Decrypt(Session[Params.UserCookieName].ToString(), Params.SecretKey).DeserializeJson<User>();
             }
         }
         private string _postData = null;

@@ -92,7 +92,7 @@ namespace DOL.Service
                     {
                         if(user.OperateFlag.HasValue)
                         user.OperateList = Get_UserOperateList(user.OperateFlag.Value);
-                        CookieHelper.CreateCookie(user);
+                        Client.Session[Params.UserCookieName] = CryptoHelper.AES_Encrypt(user.ToJson(), Params.SecretKey);
                         return Result(true);
                     }
                 }
@@ -134,7 +134,7 @@ namespace DOL.Service
                         return Result(false, ErrorCode.user_password_nottrue);
                     newPassword = CryptoHelper.MD5_Encrypt(newPassword);
                     user.Password = newPassword;
-                    CookieHelper.CreateCookie(user);
+                    Client.Session[Params.UserCookieName] = CryptoHelper.AES_Encrypt(user.ToJson(), Params.SecretKey);
                     if (db.SaveChanges() > 0)
                     {
                         var list = Cache_Get_UserList();
@@ -269,7 +269,7 @@ namespace DOL.Service
             {
                 if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && !x.ID.Equals(model.ID) && x.Flag == (long)GlobalFlag.Normal).Any())
                     return Result(false, ErrorCode.datadatabase_mobile__had);
-                var oldEntity = Cache_Get_UserList().AsQueryable().AsNoTracking().FirstOrDefault(x=>x.ID.Equals(model.ID) && x.Flag == (long)GlobalFlag.Normal);
+                var oldEntity = entities.User.Find(model.ID);
                 if (oldEntity != null)
                 {
                     var role = Cache_Get_RoleList().Where(x => x.ID.Equals(model.RoleID)).FirstOrDefault();
@@ -281,6 +281,7 @@ namespace DOL.Service
                     oldEntity.Remark = model.Remark;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                     oldEntity.UpdatedTime = DateTime.Now;
+                    oldEntity.IsStoreAdmin = model.IsStoreAdmin;
                     string menuIdStr = string.Empty;
                     if (Cache_Get_RoleList_Dic().ContainsKey(model.RoleID))
                     {

@@ -497,5 +497,12 @@ namespace DOL.Model
 
         [NotMapped]
         public decimal DoConfirmMoney { get; set; }
+
+
+        [Required]
+        [Display(Name = "´´½¨Õßid")]
+        [Column("CreaterID", TypeName = "char"), MaxLength(32)]
+        public string CreaterID { get; set; }
+
     }
 }

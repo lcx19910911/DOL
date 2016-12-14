@@ -8,8 +8,8 @@
     string CoachID = Request["CoachID"];
     if (Model.CoachReportModel != null && Model.CoachReportModel.ExamModel!=null && Model.CoachReportModel.ExamModel.List != null && Model.CoachReportModel.ExamModel.List.Count > 0)
     {
-        examThemeTwoList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).ToList();
-        examThemeThreeList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).ToList();
+        examThemeTwoList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x=>x.Item2).ToList();
+        examThemeThreeList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
         themeTwoSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
         themeThreeSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
     }
@@ -80,7 +80,7 @@
                     <tr>
                         <th>日期</th>
                         <th>科目二</th>
-                        <th>考试人数</th>
+                        <th>考试次数</th>
                         <th>通过数</th>
                         <th>通过率</th>
                     </tr>
@@ -97,6 +97,13 @@
                         </tr>
                         }
                     <tr>
+                        <td></td>
+                        <td></td>
+                        <td>本月考试次数</td>
+                        <td>本月通过次数</td>
+                        <td>本月通过率</td>
+                    </tr>
+                    <tr>
                         <td>合计</td>
                         <td></td>
                         <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthExamCount)</td>
@@ -106,15 +113,29 @@
                     <tr>
                         <td></td>
                         <td></td>
+                        <td>本月考试人数</td>
+                        <td>本月通过人数</td>
+                        <td>本月通过率</td>
+                    </tr>
+                    <tr>
+                        <td>合计</td>
+                        <td></td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPeopleExamCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPeoplePassScaling)%</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
                         <td>总考试人数</td>
                         <td>总通过数</td>
                         <td>综合通过率</td>
                     </tr>
                     <tr>
-                        <td></td>
+                        <td>合计</td>
                         <td></td>
                         <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoAllExamCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoAllPassCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
                         <td>@(Model?.CoachReportModel.ExamModel?.ThemeTwoAllPassScaling)%</td>
                     </tr>
                 </tbody>
@@ -126,7 +147,7 @@
                     <tr>
                         <th>日期</th>
                         <th>科目三</th>
-                        <th>考试人数</th>
+                        <th>考试次数</th>
                         <th>通过数</th>
                         <th>通过率</th>
                     </tr>
@@ -143,6 +164,13 @@
                         </tr>
                         }
                     <tr>
+                        <td></td>
+                        <td></td>
+                        <td>本月考试次数</td>
+                        <td>本月通过次数</td>
+                        <td>本月通过率</td>
+                    </tr>
+                    <tr>
                         <td>合计</td>
                         <td></td>
                         <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthExamCount)</td>
@@ -152,12 +180,26 @@
                     <tr>
                         <td></td>
                         <td></td>
+                        <td>本月考试人数</td>
+                        <td>本月通过人数</td>
+                        <td>本月通过率</td>
+                    </tr>
+                    <tr>
+                        <td>合计</td>
+                        <td></td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPeopleExamCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassCount)</td>
+                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPeoplePassScaling)%</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
                         <td>总考试人数</td>
                         <td>总通过数</td>
                         <td>综合通过率</td>
                     </tr>
                     <tr>
-                        <td></td>
+                        <td>合计</td>
                         <td></td>
                         <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllExamCount)</td>
                         <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllPassCount)</td>
@@ -242,6 +284,7 @@
             window.location.href = "/Coach/Train?searchTime=" + $("[name='searchTime']").val() + "&DriverShopID=" + $("[name='DriverShopID']").val() + "&CoachID=" + $("[name='CoachID']").val();
         }
 
+        var coachId = '@(Request["CoachID"])';
 
         //根据市加载报名点
         function LoadCoach(obj) {
@@ -250,7 +293,10 @@
             if (driverShopId != "") {
                 $.Nuoya.action("/Coach/GetSelectItem", { driverShopId: driverShopId }, function (json) {
                     $(json).each(function () {
-                        $("select[name='CoachID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        if (coachId != "" && coachId == this.Value)
+                        { $("select[name='CoachID']").append("<option  value='" + this.Value + "' selected='selected'>" + this.Text + "</option>"); }
+                        else
+                        { $("select[name='CoachID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>"); }
                     });
                 });
             }

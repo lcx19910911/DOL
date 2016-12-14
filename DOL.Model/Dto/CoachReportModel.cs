@@ -19,16 +19,30 @@ namespace DOL.Model
         //                   时间   学员名  考试人数 通过人数 通过率
         public List<Tuple<ThemeCode,DateTime, string, int, int, int>> List { get; set; }
         /// <summary>
-        /// 当月
+        /// 当月（次数）
         /// </summary>
         public int ThemeTwoMonthExamCount { get; set; }
-
+        /// <summary>
+        /// 当月通过（次数）
+        /// </summary>
         public int ThemeTwoMonthPassCount { get; set; }
 
         /// <summary>
-        /// 通过比例
+        /// 通过比例（次数）
         /// </summary>
         public int ThemeTwoMonthPassScaling { get; set; }
+
+        /// <summary>
+        /// 当月（人数）
+        /// </summary>
+        public int ThemeTwoMonthPeopleExamCount { get; set; }
+        
+
+        /// <summary>
+        /// 通过比例（人数）
+        /// </summary>
+        public int ThemeTwoMonthPeoplePassScaling { get; set; }
+
 
 
         public int ThemeTwoAllExamCount { get; set; }
@@ -42,6 +56,10 @@ namespace DOL.Model
 
 
 
+
+
+
+
         public int ThemeThreeMonthExamCount { get; set; }
 
         public int ThemeThreeMonthPassCount { get; set; }
@@ -50,6 +68,17 @@ namespace DOL.Model
         /// 通过比例
         /// </summary>
         public int ThemeThreeMonthPassScaling { get; set; }
+
+
+        /// <summary>
+        /// 当月（人数）
+        /// </summary>
+        public int ThemeThreeMonthPeopleExamCount { get; set; }
+        
+        /// <summary>
+        /// 通过比例（人数）
+        /// </summary>
+        public int ThemeThreeMonthPeoplePassScaling { get; set; }
 
 
         public int ThemeThreeAllExamCount { get; set; }
