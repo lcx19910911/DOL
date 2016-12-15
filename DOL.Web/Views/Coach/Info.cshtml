@@ -4,12 +4,12 @@
     var themeThreeSalary = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
     var examThemeTwoList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
     var examThemeThreeList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
-    if (Model != null && Model.ExamModel != null && Model.ThemeSalaryModel.List != null && Model.ThemeSalaryModel.List.Count > 0)
+    if (Model != null && Model.isShowList == false && Model.ExamModel != null && Model.ThemeSalaryModel.List != null && Model.ThemeSalaryModel.List.Count > 0)
     {
         themeTwoSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
         themeThreeSalary = Model.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
     }
-    if (Model != null && Model.ExamModel != null && Model.ExamModel.List != null && Model.ExamModel.List.Count > 0)
+    if (Model != null && Model.isShowList == false && Model.ExamModel != null && Model.ExamModel.List != null && Model.ExamModel.List.Count > 0)
     {
         examThemeTwoList = Model.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).ToList();
         examThemeThreeList = Model.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).ToList();
@@ -40,10 +40,11 @@
     </div>
 </div>
 
-<div class="grid_container">@if (Model != null)
-{
-    <div class="am-g">
-       
+<div class="grid_container">
+    @if (Model != null && Model.isShowList == false)
+    {
+        <div class="am-g">
+
             <div class="am-u-lg-12">
                 <div class="am-g am-margin-top-lg ">
                     <div class="am-u-sm-12 am-u-sm-centered am-text-center">
@@ -72,6 +73,7 @@
                         </tr>
                         @foreach (var item in themeTwoSalary)
                         {
+   
                             <tr>
                                 <td>@item.Item3</td>
                                 <td>@item.Item4</td>
@@ -128,152 +130,128 @@
 
                 </table>
             </div>
-       
-    </div>
-    @*<div  class="am-g">
-        <div class="am-u-lg-12">
-            <div class="am-g am-margin-top-lg ">
-                <div class="am-u-sm-12 am-u-sm-centered am-text-center">
-                    <p>@(Model.CoachName)教练@(Model.StartTime.ToString("MM月dd日"))到@(Model.EndTime.ToString("MM月dd日"))考试情况</p>
-                </div>
 
-            </div>
-            <table class="am-table am-table-compact am-table-hover table-main am-table-bordered">
-                <thead>
-                    <tr>
-                        <th>日期</th>
-                        <th>科目二</th>
-                        <th>考试次数</th>
-                        <th>通过数</th>
-                        <th>通过率</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in examThemeTwoList)
-                    {
-                        <tr>
-                            <td>@(item.Item2.ToString("MM月dd日"))</td>
-                            <td>@item.Item3</td>
-                            <td>@item.Item4</td>
-                            <td>@item.Item5</td>
-                            <td>@(item.Item6)%</td>
-                        </tr>
-                    }
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>本月考试次数</td>
-                        <td>本月通过次数</td>
-                        <td>本月通过率</td>
-                    </tr>
-                    <tr>
-                        <td>合计</td>
-                        <td></td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthExamCount)</td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthPassCount)</td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthPassScaling)%</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>本月考试人数</td>
-                        <td>本月通过人数</td>
-                        <td>本月通过率</td>
-                    </tr>
-                    <tr>
-                        <td>合计</td>
-                        <td></td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthPeopleExamCount)</td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthPassCount)</td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthPeoplePassScaling)%</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>总考试人数</td>
-                        <td>总通过数</td>
-                        <td>综合通过率</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>@(Model.ExamModel?.ThemeTwoAllExamCount)</td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthPassCount)</td>
-                        <td>@(Model.ExamModel?.ThemeTwoAllPassScaling)%</td>
-                    </tr>
-                </tbody>
-
-            </table>
-
-            <table class="am-table am-table-compact am-table-hover table-main am-margin-top-lg am-table-bordered">
-                <thead>
-                    <tr>
-                        <th>日期</th>
-                        <th>科目三</th>
-                        <th>考试次数</th>
-                        <th>通过数</th>
-                        <th>通过率</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in examThemeThreeList)
-                    {
-                        <tr>
-                            <td>@(item.Item2.ToString("MM月dd日"))</td>
-                            <td>@item.Item3</td>
-                            <td>@item.Item4</td>
-                            <td>@item.Item5</td>
-                            <td>@(item.Item6)%</td>
-                        </tr>
-                    }
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>本月考试次数</td>
-                        <td>本月通过次数</td>
-                        <td>本月通过率</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>@(Model.ExamModel?.ThemeThreeMonthExamCount)</td>
-                        <td>@(Model.ExamModel?.ThemeThreeMonthPassCount)</td>
-                        <td>@(Model.ExamModel?.ThemeThreeMonthPassScaling)%</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>本月考试人数</td>
-                        <td>本月通过人数</td>
-                        <td>本月通过率</td>
-                    </tr>
-                    <tr>
-                        <td>合计</td>
-                        <td></td>
-                        <td>@(Model.ExamModel?.ThemeThreeMonthPeopleExamCount)</td>
-                        <td>@(Model.ExamModel?.ThemeThreeMonthPassCount)</td>
-                        <td>@(Model.ExamModel?.ThemeThreeMonthPeoplePassScaling)%</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>总考试人数</td>
-                        <td>总通过数</td>
-                        <td>综合通过率</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>@(Model.ExamModel?.ThemeThreeAllExamCount)</td>
-                        <td>@(Model.ExamModel?.ThemeThreeAllPassCount)</td>
-                        <td>@(Model.ExamModel?.ThemeThreeAllPassScaling)%</td>
-                    </tr>
-                </tbody>
-
-            </table>
         </div>
-    </div>*@
-}
+    }
+    else if (Model != null && Model.isShowList == true)
+    {
+        <div class="am-g">
+
+            <div class="am-u-lg-12">
+                <div class="am-g am-margin-top-lg ">
+                    <div class="am-u-sm-12 am-u-sm-centered am-text-center">
+                        <p>教练@(Model.CoachList.StartTime.ToString("MM月dd日"))到@(Model.CoachList.EndTime.ToString("MM月dd日"))工资统计</p>
+                    </div>
+
+                </div>
+                <table class="am-table am-table-compact am-table-hover table-main am-table-bordered am-text-sm">
+                    <thead>
+                        @{
+                            var themeTwoMaxCount = Model.CoachList.SalaryList.Where(x => x.Code == ThemeCode.Two).Max(x => x.Count);
+                            var themeThreeMaxCount = Model.CoachList.SalaryList.Where(x => x.Code == ThemeCode.Three).Max(x => x.Count);
+                            var themeTwoThCount = Model.CoachList.SalaryList.Where(x => x.Code == ThemeCode.Two).Count() + Model.CoachList.OldSalaryList.Where(x => x.Code == ThemeCode.Two).Count();
+                            var themeThreeThCount = Model.CoachList.SalaryList.Where(x => x.Code == ThemeCode.Three).Count() + Model.CoachList.OldSalaryList.Where(x => x.Code == ThemeCode.Three).Count();
+                        }
+                        <tr><th>科目</th><th colspan="@(themeTwoThCount*2+1)" class="am-text-center">科二</th><th colspan="@(themeThreeThCount*2+1)" class="am-text-center">科三</th><th colspan="2"></th></tr>
+                        <tr>
+                            <th>教练员</th>
+                         
+                            @foreach (var item in Model.CoachList.SalaryList)
+                            {
+                                var className = "am-text-success";
+                                if (item.Code == ThemeCode.Three)
+                                {
+                                    className = "am-text-warning";
+                                }
+                                <th class="@(className)">
+                                    @item.Name (@item.Money)
+                                </th>
+                                <th>
+                                    小计
+                                </th>
+                                var olditem = Model.CoachList.OldSalaryList.Where(x => x.Code == item.Code && x.Count == item.Count).FirstOrDefault();
+                                if (olditem != null)
+                                {
+                                    <th class="@(className)">
+                                        @(olditem.Name + "(" + olditem.EndTime.Value.ToString("yyyy-MM-dd") + ")")
+                                    </th>
+                                    <th>
+                                        小计
+                                    </th>
+                                }
+                                if ((item.Code == ThemeCode.Two && themeTwoMaxCount == item.Count) || (item.Code == ThemeCode.Three && themeThreeMaxCount == item.Count))
+                                {
+                                    <th>
+                                        统计
+                                    </th>
+                                }
+                            }
+                            <th>底薪</th>
+                            <th>总计</th>
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.CoachList.AllDic)
+                        {
+                            <tr>
+                                <td>@item.Value.CoachName</td>
+
+                                @foreach (var salary in Model.CoachList.SalaryList)
+                                {
+                                    var className = "am-text-success";
+                                    if (salary.Code == ThemeCode.Three)
+                                    {
+                                        className = "am-text-warning";
+                                    }
+                                    <td class="@(className)">
+                                        @{
+                                            var obj = item.Value.List.FirstOrDefault(x => x.Item1 == salary.Code && x.Item2 == salary.Count);
+                                        }
+                                        @(obj?.Item4)
+                                    </td>
+                                    <td>
+                                        @(obj?.Item6)
+                                    </td>
+                                            var olditem = Model.CoachList.OldSalaryList.Where(x => x.Code == salary.Code && x.Count == salary.Count).FirstOrDefault();
+                                            if (olditem != null)
+                                            {
+                                                <td class="@(className)">
+                                                    @{
+                                                        var oldObj = item.Value.OldList.FirstOrDefault(x => x.Item1 == salary.Code && x.Item2 == salary.Count);
+                                                    }
+                                                    @(oldObj?.Item4)
+                                                </td>
+                                                <td>
+                                                    @(oldObj?.Item6)
+                                                </td>
+                                              }
+
+                                              if (salary.Code == ThemeCode.Two && themeTwoMaxCount == salary.Count)
+                                              {
+                                                   <td>
+                                                       @item.Value.ThemeTwoMoney
+                                                   </td>
+                                              }
+                                              if (salary.Code == ThemeCode.Three && themeThreeMaxCount == salary.Count)
+                                              {
+                                               <td >
+                                                      @item.Value.ThemeThreeMoney
+                                                </td>
+                                               }
+                                          }
+                                <td>@item.Value.BasicSalary</td>
+                                <td>@item.Value.TotalMoeny</td>
+                            </tr>
+                            }
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+                                                        }
 </div>
 @section scripts
 {
@@ -285,8 +263,7 @@
             $("#searchDomain input").val("");
         }
         var coachID = '@Request["CoachID"]';
-        if (coachID == "null")
-        {
+        if (coachID == "null") {
             coachID = "";
         }
         $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {

@@ -6,7 +6,12 @@ using System.Web;
 namespace DOL.Model
 {
     public class CoachReportModel
-    {         
+    {
+        public bool isShowList { get; set; } = false;
+
+        public CoachListReportModel CoachList { get; set; }
+
+
         public string CoachName { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
