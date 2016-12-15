@@ -60,6 +60,7 @@
                 <th dataname="Brand">品牌</th>
                 <th dataname="Models">车型</th>
                 <th dataname="DepartmentName">所属部门</th>
+                <th dataname="DriverShopName">所属驾校</th>  
                 <th dataname="CoachName">责任人</th>
                 <th dataname="RepairMonth">本月车损</th>
                 <th dataname="OilMonth">本月油耗</th>
@@ -113,7 +114,16 @@
                         $("#form select[name='CoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
                     }
                 });
+                $(json.DriverShopList).each(function () {
+
+                    if (dataitem != null && dataitem.DriverShopID == this.ID) {
+                        $("#form select[name='DriverShopID']").append("<option  value='" + this.ID + "' selected='selected' >" + this.Name + "</option>");
+                    } else {
+                        $("#form select[name='DriverShopID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                    }
+                });
             });
+
             //添加表单验证
             $.Nuoya.form("form").validate({
                 rules: {
@@ -325,8 +335,11 @@
                 buttons: [{
                     label: "保存",
                     callback: function (e) {
-                        if ($("#coachForm [name='CoachID']").val() == "-1") {
-                            $("#coachForm [name='CoachID']").val("");
+                        if ($("#form [name='CoachID']").val() == "-1") {
+                            $("#form [name='CoachID']").val("");
+                        }
+                        if ($("#form [name='DriverShopID']").val() == "-1") {
+                            $("#form [name='DriverShopID']").val("");
                         }
                         $.Nuoya.form("form").ajaxSubmit({
                             ajaxUrl: "/Car/Add",
@@ -382,8 +395,11 @@
                                     if ($("#form [name='CoachID']").val() == "-1") {
                                         $("#form [name='CoachID']").val("");
                                     }
+                                    if ($("#form [name='DriverShopID']").val() == "-1") {
+                                        $("#form [name='DriverShopID']").val("");
+                                    }
                                     $.Nuoya.form("form").ajaxSubmit({
-                                        ajaxUrl: "/Car/UpdateCoach",
+                                        ajaxUrl: "/Car/Update",
                                         params: {
                                             ID: item.ID
                                         },

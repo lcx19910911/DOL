@@ -83,6 +83,8 @@ namespace DOL.Service
                 var departMentDic = Cache_Get_DepartmentList_Dic();
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+
+                var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var carIdList = list.Select(x => x.ID).ToList();
                 var starTime = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day + 1);
                 var wasteList = Cache_Get_WasteList().Where(x => carIdList.Contains(x.CarID) && x.CreatedTime > starTime).ToList();
@@ -98,6 +100,9 @@ namespace DOL.Service
                         x.OilMonth = oilDic[x.ID].Sum(y => y.Money);
                     if (repairDic.ContainsKey(x.ID))
                         x.RepairMonth = repairDic[x.ID].Sum(y => y.Money);
+                    //证书
+                    if (!string.IsNullOrEmpty(x.DriverShopID) && driverShopDic.ContainsKey(x.DriverShopID))
+                        x.DriverShopName = driverShopDic[x.DriverShopID]?.Name;
                 });
 
                 return ResultPageList(list, pageIndex, pageSize, count);
@@ -158,6 +163,7 @@ namespace DOL.Service
                     oldEntity.License = model.License;
                     oldEntity.OnCardTime = model.OnCardTime;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
+                    oldEntity.DriverShopID = model.DriverShopID;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);

@@ -100,5 +100,17 @@ namespace DOL.Model
 
         [NotMapped]
         public decimal OilMonth { get; set; }
+
+        /// <summary>
+        /// 所属驾校
+        /// </summary>
+        [Column("DriverShopID", TypeName = "char"), MaxLength(32)]
+        public string DriverShopID { get; set; }
+
+        /// <summary>
+        /// 所属驾校
+        /// </summary>
+        [NotMapped]
+        public string DriverShopName { get; set; }
     }
 }
