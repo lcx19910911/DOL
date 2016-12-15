@@ -339,6 +339,7 @@ namespace DOL.Web.Controllers
             ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
+            ModelState.Remove("CreaterID");
             if (ModelState.IsValid)
             {
                 return JResult(WebService.Update_Student(model));
@@ -382,6 +383,8 @@ namespace DOL.Web.Controllers
             ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
+            ModelState.Remove("CreaterID");
+            
             if (ModelState.IsValid)
             {
                 return JResult(WebService.Add_Student(model));
