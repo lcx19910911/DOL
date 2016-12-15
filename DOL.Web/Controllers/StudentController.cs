@@ -84,6 +84,12 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Update_StudentCoach(ID, themeTwoCoachID, themeThreeCoachID));
         }
+        public ActionResult UpdateCreater(string ID, string createrID)
+        {
+            return JResult(WebService.Update_StudentCreater(ID,createrID));
+        }
+
+        
         public ActionResult BatchUpdateCoach(string ids, string themeTwoCoachID, string themeThreeCoachID)
         {
             return JResult(WebService.Update_BatchStudentCoach(ids, themeTwoCoachID, themeThreeCoachID));

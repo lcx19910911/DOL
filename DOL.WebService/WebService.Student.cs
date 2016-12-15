@@ -188,7 +188,7 @@ namespace DOL.Service
                 var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
                 //var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
                 var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
-                //var userDic = Cache_Get_UserDic();
+                var userDic = Cache_Get_UserDic();
                 var studentIdList = list.Select(x => x.ID).ToList();
                 var payOrderList = Cache_Get_PayOrderList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
                 var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x => x.Key);
@@ -235,8 +235,8 @@ namespace DOL.Service
                         x.CertificateName = cerDic[x.CertificateID]?.Value;
 
                     //修改人
-                    //if (!string.IsNullOrEmpty(x.UpdaterID) && userDic.ContainsKey(x.UpdaterID))
-                    // x.UpdaterName = userDic[x.UpdaterID]?.Name;
+                    if (!string.IsNullOrEmpty(x.CreaterID) && userDic.ContainsKey(x.CreaterID))
+                        x.CreaterName = userDic[x.CreaterID]?.Name;
 
                     if (examDic.ContainsKey(x.ID))
                         x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
@@ -1591,6 +1591,46 @@ namespace DOL.Service
 
         }
 
+        public WebResult<bool> Update_StudentCreater(string ID, string createrID)
+        {
+            if (!ID.IsNotNullOrEmpty() || !createrID.IsNotNullOrEmpty() || createrID=="-1"
+              )
+                return Result(false, ErrorCode.sys_param_format_error);
+            using (DbRepository entities = new DbRepository())
+            {
+
+                var list = Cache_Get_StudentList();
+                var oldEntity = entities.Student.Find(ID);
+                if (oldEntity != null)
+                {
+                    string oldCreaterName = oldEntity.CreaterID;
+                    oldEntity.CreaterID = createrID;
+                    oldEntity.UpdatedTime = DateTime.Now;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                    Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息,修改创建者", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name), oldCreaterName, createrID, "");
+                }
+                else
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                if (entities.SaveChanges() > 0)
+                {
+                    var index = list.FindIndex(x => x.ID.Equals(ID));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+        }
         /// <summary>
         /// 修改教练
         /// </summary>

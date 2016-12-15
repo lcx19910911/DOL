@@ -577,7 +577,7 @@ namespace DOL.Service
             {
                 List<SelectItem> list = new List<SelectItem>();
 
-                var query = Cache_Get_ReferenceList().AsQueryable().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).AsNoTracking();
+                var query = Cache_Get_UserList().AsQueryable().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).AsNoTracking();
                 query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                 {
                     list.Add(new SelectItem()

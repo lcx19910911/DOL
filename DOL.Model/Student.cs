@@ -504,5 +504,12 @@ namespace DOL.Model
         [Column("CreaterID", TypeName = "char"), MaxLength(32)]
         public string CreaterID { get; set; }
 
+        /// <summary>
+        /// ¥¥Ω®»À
+        /// </summary>
+        [NotMapped]
+        public string CreaterName { get; set; }
+
+
     }
 }

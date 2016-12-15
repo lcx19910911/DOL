@@ -147,6 +147,7 @@
     <Content Include="HtmlTemplates\Role\Update.html" />
     <Content Include="HtmlTemplates\Student\Log.html" />
     <Content Include="HtmlTemplates\Student\LogDetials.html" />
+    <Content Include="HtmlTemplates\Student\SelectCreater.html" />
     <Content Include="HtmlTemplates\Student\SelectDriver.html" />
     <Content Include="HtmlTemplates\Student\SelectTimeCode.html" />
     <Content Include="HtmlTemplates\Student\SelectCoach.html" />

@@ -124,7 +124,8 @@
                 <th dataname="Mobile" isHide="1" style="display:none;">制卡手机</th>
                 <th dataname="ConactMobile" isHide="1" style="display:none;">联系手机</th>
                 <th dataname="EnteredPointName" isHide="1" style="display:none;">报名门店</th>
-                <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>
+                <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>               
+                <th dataname="CreaterName" isHide="1" style="display:none;">创建者</th>
                 <th dataname="MakeCardRemark" isHide="1" style="display:none;">制卡备注</th>
 
                 <th type="eventlist"></th>
@@ -722,6 +723,57 @@
                                     $.Nuoya.form("form").ajaxSubmit({
                                         ajaxUrl: "/Student/WantDrop", params: {
                                             StudentID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
+                {
+                    className: "am-text-secondary",
+                    icon: "icon-users",
+                    name: "创建者",
+                    url: "/Student/UpdateCreater",
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            ajaxUrl: "/HtmlTemplates/Student/SelectCreater.html",
+                            title: "创建者",
+                            width: "600px",
+                            height: "500px",
+                            pageUrl: "/Student/UpdateCreater",
+                            callback: function (e) {
+                                $.Nuoya.action("/User/GetSelectItem", {}, function (json) {
+                                    $(json).each(function () {
+                                        if (item.CreaterID != "" && item.CreaterID == this.Value) {
+                                            $("#form select[name='CreaterID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                                        }
+                                        else {
+                                            $("#form select[name='CreaterID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                                        }
+                                    });
+                                });
+                            },
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+                                    if ($("#form [name='CreaterID']").val() == "-1") {
+                                        $.Nuoya.alert("请选择创建者");
+                                        return false;
+                                    }
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/Student/UpdateCreater",
+                                        params: {
+                                            ID: item.ID
                                         },
                                         callback: function (data) {
                                             if (!data.ErrorDesc) {
