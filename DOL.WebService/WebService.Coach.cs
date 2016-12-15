@@ -475,7 +475,7 @@ namespace DOL.Service
         /// <returns></returns>
         public CoachReportModel Get_CoachSalary(DateTime? time, string id)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id)||id=="-1")
                 return Get_CoachSalary(time);
             //赋值本月
             if (time == null)
