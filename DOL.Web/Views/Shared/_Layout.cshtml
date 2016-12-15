@@ -733,7 +733,6 @@
                     return true;
                 }
                 else {
-                    $.Nuoya.alert("你输入的身份证长度错误")
                     return false;
                 }
             }
@@ -743,6 +742,7 @@
         function ValidStudent() {
 
             if (!isCardID($("[name='IDCard']"), $('[name=\'GenderCode\']'))) {
+                $.Nuoya.alert("你输入的身份证长度错误")
                 return false;
             }
 

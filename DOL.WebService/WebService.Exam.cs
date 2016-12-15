@@ -264,10 +264,10 @@ namespace DOL.Service
                         entities.Exam.Remove(x);
                         var index = list.FindIndex(y => y.ID.Equals(x.ID));
                         var studentIndex = studentList.FindIndex(y => y.ID.Equals(x.StudentID));
-                        if (index > -1)
+                        if (index > -1&& studentIndex>-1)
                         {
                             list.RemoveAt(index);
-                            studentList[index] = student;
+                            studentList[studentIndex] = student;
                         }
                     }
                 });
