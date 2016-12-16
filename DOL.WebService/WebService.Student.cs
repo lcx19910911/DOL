@@ -1339,19 +1339,19 @@ namespace DOL.Service
                     oldEntity.ThemeTwoTimeCode = model.ThemeTwoTimeCode;
                     oldEntity.ThemeThreeTimeCode = model.ThemeThreeTimeCode;
 
-                    oldEntity.ThemeOneDate = model.ThemeOneDate;
-                    oldEntity.ThemeTwoPass = model.ThemeOnePass;
+                    //oldEntity.ThemeOneDate = model.ThemeOneDate;
+                    //oldEntity.ThemeTwoPass = model.ThemeOnePass;
 
-                    oldEntity.ThemeTwoDate = model.ThemeTwoDate;
-                    oldEntity.ThemeTwoCoachID = model.ThemeTwoCoachID;
-                    oldEntity.ThemeTwoPass = model.ThemeTwoPass;
+                    //oldEntity.ThemeTwoDate = model.ThemeTwoDate;
+                    //oldEntity.ThemeTwoCoachID = model.ThemeTwoCoachID;
+                    //oldEntity.ThemeTwoPass = model.ThemeTwoPass;
 
-                    oldEntity.ThemeThreeDate = model.ThemeThreeDate;
-                    oldEntity.ThemeThreeCoachID = model.ThemeThreeCoachID;
-                    oldEntity.ThemeThreePass = model.ThemeThreePass;
+                    //oldEntity.ThemeThreeDate = model.ThemeThreeDate;
+                    //oldEntity.ThemeThreeCoachID = model.ThemeThreeCoachID;
+                    //oldEntity.ThemeThreePass = model.ThemeThreePass;
 
-                    oldEntity.ThemeFourDate = model.ThemeFourDate;
-                    oldEntity.ThemeFourPass = model.ThemeFourPass;
+                    //oldEntity.ThemeFourDate = model.ThemeFourDate;
+                    //oldEntity.ThemeFourPass = model.ThemeFourPass;
 
                     oldEntity.MakeCardDate = model.MakeCardDate;
                     //if (model.ThemeOnePass == YesOrNoCode.Yes)
