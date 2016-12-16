@@ -68,12 +68,12 @@
         //获取Json的日期
         function RenderDate(data) {
             var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
-            return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDate();
+            return da.getFullYear() + "-" + (da.getMonth()+1) + "-" + da.getDate();
         }
         //获取Json的时间
         function RenderTime(data) {
             var da = eval('new ' + data.replace('/', '', 'g').replace('/', '', 'g'));
-            return da.getFullYear() + "-" + da.getMonth() + "-" + da.getDate() + " " + da.getHours() + ":" + da.getSeconds() + ":" + da.getMinutes();
+            return da.getFullYear() + "-" + (da.getMonth()+1) + "-" + da.getDate() + " " + da.getHours() + ":" + da.getSeconds() + ":" + da.getMinutes();
         }
         //关闭/展示菜单
         function unState() {
