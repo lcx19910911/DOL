@@ -78,11 +78,11 @@
 
             $.Nuoya.action("/Coach/GetSelectItem", {}, function (json) {
                 $(json).each(function () {
-                    if (item.CoachID == this.Value) {
-                        $("#coachForm select[name='CoachID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
+                    if (dataitem!=null&&dataitem.CoachID == this.Value) {
+                        $("#form select[name='CoachID']").append("<option  value='" + this.Value + "' selected='selected' >" + this.Text + "</option>");
                     }
                     else {
-                        $("#coachForm select[name='CoachID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
+                        $("#form select[name='CoachID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
                     }
                 });
             });

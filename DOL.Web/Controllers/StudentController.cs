@@ -340,6 +340,10 @@ namespace DOL.Web.Controllers
             ModelState.Remove("UpdatedTime");
             ModelState.Remove("CreatedTime");
             ModelState.Remove("CreaterID");
+            ModelState.Remove("ThemeOneDate");
+            ModelState.Remove("ThemeTwoDate");
+            ModelState.Remove("ThemeThreeDate");
+            ModelState.Remove("ThemeFourDate");
             if (ModelState.IsValid)
             {
                 return JResult(WebService.Update_Student(model));
