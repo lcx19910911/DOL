@@ -1338,7 +1338,10 @@ namespace DOL.Service
                     oldEntity.CertificateID = model.CertificateID;
                     oldEntity.ThemeTwoTimeCode = model.ThemeTwoTimeCode;
                     oldEntity.ThemeThreeTimeCode = model.ThemeThreeTimeCode;
-
+                    if (oldEntity.Money <= oldEntity.HadPayMoney)
+                    {
+                        oldEntity.MoneyIsFull = YesOrNoCode.Yes;
+                    }
                     //oldEntity.ThemeOneDate = model.ThemeOneDate;
                     //oldEntity.ThemeTwoPass = model.ThemeOnePass;
 
