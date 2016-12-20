@@ -141,7 +141,7 @@ namespace DOL.Service
                 }
                 if (makeDriverShopId.IsNotNullOrEmpty() && makeDriverShopId != "-1")
                 {
-                    query = query.Where(x => x.MakeDriverShopID.Equals(makeDriverShopId));
+                    query = query.Where(x =>!string.IsNullOrEmpty(x.MakeDriverShopID) && x.MakeDriverShopID.Equals(makeDriverShopId));
                 }
                 if (enteredTimeStart != null)
                 {
