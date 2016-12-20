@@ -693,7 +693,7 @@ namespace DOL.Service
 
                           model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, themeTwoSalaryDic[x.Key].Name, count, money == 0 ? themeTwoSalaryDic[x.Key].Money : money, totalMoney));
                       }
-                      if (totalMoney > 0)
+                      else if (totalMoney > 0)
                       {
                           model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Two, x.Key, themeTwoSalaryDic[x.Key].Name, count, money == 0 ? themeTwoSalaryDic[x.Key].Money : money, totalMoney));
                       }
@@ -765,7 +765,7 @@ namespace DOL.Service
                     model.ThemeSalaryModel.OldList.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, oldName, oldCount, oldMoney, oldTotalMoney));
                     model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, themeThreeSalaryDic[x.Key].Name, count, money == 0 ? themeThreeSalaryDic[x.Key].Money : money, totalMoney));
                 }
-                if (totalMoney > 0)
+                else if(totalMoney > 0)
                 {
                     model.ThemeSalaryModel.List.Add(new Tuple<ThemeCode, int, string, int, decimal, decimal>(ThemeCode.Three, x.Key, themeThreeSalaryDic[x.Key].Name, count, money == 0 ? themeThreeSalaryDic[x.Key].Money : money, totalMoney));
                 }
