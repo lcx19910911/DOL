@@ -69,7 +69,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_ExamList().AsQueryable().AsNoTracking();
+                var query = entities.Exam.AsQueryable().AsNoTracking();
 
 
                 if (no.IsNotNullOrEmpty())
@@ -297,7 +297,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_ExamList().AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId)).OrderBy(x => x.Code);
+                var query = entities.Exam.AsQueryable().AsNoTracking().Where(x => x.StudentID.Equals(studentId)).OrderBy(x => x.Code);
                 var count = query.Count();
                 var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var coachDic = Cache_Get_CoachList_Dic();

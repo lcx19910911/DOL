@@ -70,12 +70,13 @@ namespace DOL.Service
             string name,
             int state,
             string referenceId,
-            string typeId
+            string typeId,
+            string makeDriverShopID
             )
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.IsDrop == YesOrNoCode.No);
+                var query = entities.PayOrder.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.IsDrop == YesOrNoCode.No);
                 var studentList = Cache_Get_StudentList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).Select(x => x.ID).ToList();
                 query = query.Where(x => studentList.Contains(x.StudentID.Trim()));
                 var studentQuery = Cache_Get_StudentList().AsQueryable();
@@ -91,7 +92,11 @@ namespace DOL.Service
                 {
                     studentQuery = studentQuery.Where(x => x.Name.Contains(name));
                 }
-                if (no.IsNotNullOrEmpty()|| (referenceId.IsNotNullOrEmpty() && referenceId != "-1")|| name.IsNotNullOrEmpty())
+                if (makeDriverShopID.IsNotNullOrEmpty() && makeDriverShopID != "-1")
+                {
+                    studentQuery = studentQuery.Where(x =>!string.IsNullOrEmpty(x.MakeDriverShopID)&&x.MakeDriverShopID.Equals(makeDriverShopID));
+                }
+                if (no.IsNotNullOrEmpty()|| (referenceId.IsNotNullOrEmpty() && referenceId != "-1")|| name.IsNotNullOrEmpty() || (makeDriverShopID.IsNotNullOrEmpty() && makeDriverShopID != "-1"))
                 {
                     var studentIDList=studentQuery.Select(x => x.ID.Trim()).ToList();
                     query = query.Where(x => studentIDList.Contains(x.StudentID.Trim()));
@@ -174,7 +179,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_PayOrderList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.IsDrop == YesOrNoCode.Yes);
+                var query = entities.PayOrder.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.IsDrop == YesOrNoCode.Yes);
 
 
                     

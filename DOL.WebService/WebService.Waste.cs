@@ -57,7 +57,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_WasteList().AsQueryable().AsNoTracking();
+                var query = entities.Waste.AsQueryable().AsNoTracking();
                 if (code != WasteCode.None)
                 {
                     query = query.Where(x => x.Code.Equals(code));
@@ -181,7 +181,10 @@ namespace DOL.Service
         {
             if (!id.IsNotNullOrEmpty())
                 return null;
-            return Cache_Get_WasteList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+            using (DbRepository entities = new DbRepository())
+            {
+                return entities.Waste.AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+            }
         }
 
 

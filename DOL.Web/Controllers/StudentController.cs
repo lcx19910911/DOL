@@ -155,7 +155,7 @@ namespace DOL.Web.Controllers
             bool isAll = false)
         {
 
-            var list = WebService.Export_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, state,orderBy, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd);
+            var list = WebService.Export_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, state,orderBy, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd,isAll);
             string fileName = DateTime.Now.ToString("yyyyMMddhhmmss") + ".xls";
             string filePath = Path.Combine(Server.MapPath("~/") + @"Export\" + fileName);
        

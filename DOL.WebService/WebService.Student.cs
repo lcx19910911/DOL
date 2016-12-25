@@ -70,7 +70,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_StudentList().AsQueryable().AsNoTracking();
+                var query = entities.Student.AsQueryable().AsNoTracking();
                 if (!isDelete)
                 {
                     query = query.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
@@ -275,7 +275,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_StudentList().AsQueryable().AsNoTracking();
+                var query = entities.Student.AsQueryable().AsNoTracking();
                 if (!isAll)
                 {
 
@@ -348,10 +348,10 @@ namespace DOL.Service
                     {
                         query = query.OrderByDescending(x => x.ThemeOneDate).ThenByDescending(x => x.CreatedTime);
                     }
-
+                    query = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize);
                 }
 
-                var list = query.OrderByDescending(x => x.EnteredDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.ToList();
                 var enPointDic = Cache_Get_EnteredPoint_Dic();
                 var referenceDic = Cache_Get_ReferenceList_Dic();
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
@@ -808,7 +808,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                var query = entities.Student.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -1023,7 +1023,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_StudentList().AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                var query = entities.Student.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
                 if (!Client.LoginUser.IsAdmin)
                 {
 

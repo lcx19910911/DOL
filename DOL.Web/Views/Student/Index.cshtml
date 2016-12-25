@@ -93,7 +93,8 @@
             <div class="am-btn-toolbar">
                 <div class="am-btn-group am-btn-group-xs">
                     <button onclick="add()" type="button" class="am-btn am-btn-xs"><span class="am-icon-plus"></span> 新增</button>
-                    <button class="am-btn am-btn-default" onclick="ExportOutExecle()" type="button"><span class="am-icon-plug"></span> 导出</button>
+                    <button class="am-btn am-btn-default" onclick="ExportOutExecle(false)" type="button"><span class="am-icon-plug"></span> 导出当前</button>
+                    <button class="am-btn am-btn-default" onclick="ExportOutExecle(true)" type="button"><span class="am-icon-plug"></span> 导出所有</button>
                     <button class="am-btn am-btn-default" id="ExportIntoExecle" type="button"><span class="am-icon-pie-chart"></span> 导入</button>
                     <button class="am-btn am-btn-default" onclick="batchUpdateDriverShop()" type="button"><span class="am-icon-opera"></span> 批量制卡</button>
                 </div>
@@ -139,9 +140,9 @@
         function ShowNeedMoney(item) {
             return item.Money - item.HadPayMoney;
         }
-        function ExportOutExecle() {
+        function ExportOutExecle(obj) {
             var data = grid.getParams();
-            var url = "/Student/ExportPageList?tt=1" + urlEncode(data);
+            var url = "/Student/ExportPageList?tt=1" + urlEncode(data)+"&isAll="+obj;
             window.open(url);
         }
         function UploadFile() {

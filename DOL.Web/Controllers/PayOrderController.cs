@@ -37,10 +37,11 @@ namespace DOL.Web.Controllers
             string name,
             int state,
             string referenceId,
-            string typeId
+            string typeId,
+            string makeDriverShopID
             )
         {
-            return JResult(WebService.Get_PayOrderPageList(pageIndex, pageSize, no, name,state, referenceId, typeId));
+            return JResult(WebService.Get_PayOrderPageList(pageIndex, pageSize, no, name,state, referenceId, typeId,makeDriverShopID));
         }
 
         /// <summary>
