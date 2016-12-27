@@ -11,6 +11,7 @@ namespace DOL.Model
         public DateTime EndTime { get; set; }
 
         public Dictionary<string, ThemeSalaryItemModel> AllDic { get; set; }
+        public Dictionary<string, ThemeTrainItemModel> AllTrainDic { get; set; }
 
         public List<ThemeSalary> SalaryList { get; set; }
         public List<ThemeSalary> OldSalaryList { get; set; }
@@ -32,6 +33,84 @@ namespace DOL.Model
         public decimal ThemeThreeMoney { get; set; }
 
         public decimal TotalMoeny { get; set; }
+
+    }
+
+    public class ThemeTrainItemModel
+    {
+        public string CoachName { get; set; }
+
+        /// <summary>
+        /// 当月（次数）
+        /// </summary>
+        public int ThemeTwoMonthExamCount { get; set; }
+        /// <summary>
+        /// 当月通过（次数）
+        /// </summary>
+        public int ThemeTwoMonthPassCount { get; set; }
+
+        /// <summary>
+        /// 通过比例（次数）
+        /// </summary>
+        public int ThemeTwoMonthPassScaling { get; set; }
+
+        /// <summary>
+        /// 当月（人数）
+        /// </summary>
+        public int ThemeTwoMonthPeopleExamCount { get; set; }
+
+
+        /// <summary>
+        /// 通过比例（人数）
+        /// </summary>
+        public int ThemeTwoMonthPeoplePassScaling { get; set; }
+
+
+
+        public int ThemeTwoAllExamCount { get; set; }
+
+        public int ThemeTwoAllPassCount { get; set; }
+
+        /// <summary>
+        /// 通过比例
+        /// </summary>
+        public int ThemeTwoAllPassScaling { get; set; }
+
+
+
+
+
+
+
+        public int ThemeThreeMonthExamCount { get; set; }
+
+        public int ThemeThreeMonthPassCount { get; set; }
+
+        /// <summary>
+        /// 通过比例
+        /// </summary>
+        public int ThemeThreeMonthPassScaling { get; set; }
+
+
+        /// <summary>
+        /// 当月（人数）
+        /// </summary>
+        public int ThemeThreeMonthPeopleExamCount { get; set; }
+
+        /// <summary>
+        /// 通过比例（人数）
+        /// </summary>
+        public int ThemeThreeMonthPeoplePassScaling { get; set; }
+
+
+        public int ThemeThreeAllExamCount { get; set; }
+
+        public int ThemeThreeAllPassCount { get; set; }
+
+        /// <summary>
+        /// 通过比例
+        /// </summary>
+        public int ThemeThreeAllPassScaling { get; set; }
 
     }
 }

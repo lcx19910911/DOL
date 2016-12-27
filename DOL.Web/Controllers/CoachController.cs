@@ -48,7 +48,7 @@ namespace DOL.Web.Controllers
         /// 教练工资（管理员）
         /// </summary>
         /// <returns></returns>
-        public ViewResult Info(DateTime? searchTime,string coachID)
+        public ViewResult Info(DateTime? searchTime, string coachID)
         {
             return View(WebService.Get_CoachSalary(searchTime, coachID));
         }
@@ -82,26 +82,16 @@ namespace DOL.Web.Controllers
         /// <param name="driverShopId"></param>
         /// <param name="coachId"></param>
         /// <returns></returns>
-        public ViewResult Train(DateTime? searchTime, string driverShopId, string coachId)
+        public ViewResult Train(DateTime? searchTime, string coachId)
         {
             CoacheInfoModel model = new CoacheInfoModel();
 
-            model.DriverShopList = WebService.Get_DriverShopSelectItem("");
 
-            if (model.DriverShopList != null && model.DriverShopList.Count > 0)
+
+            model.CoachList = WebService.Get_CoachSelectItem(null);
+            if (model.CoachList != null && model.CoachList.Count > 0)
             {
-                driverShopId = string.IsNullOrEmpty(driverShopId) ? model.DriverShopList[0].Value : driverShopId;
-                model.CoachList = WebService.Get_CoachSelectItem(model.DriverShopList[0].Value);
-                if (model.CoachList != null && model.CoachList.Count > 0)
-                {
-                    coachId = string.IsNullOrEmpty(coachId) ? model.CoachList[0].Value : coachId;
-                    model.CoachReportModel = WebService.Get_CoachSalary(searchTime, coachId);
-                }
-                else
-                {
-                    model.CoachList = new List<Core.SelectItem>();
-                    model.CoachReportModel = new CoachReportModel();
-                }
+                model.CoachReportModel = WebService.Get_CoachSalary(searchTime, coachId);
             }
             else
             {
@@ -120,7 +110,7 @@ namespace DOL.Web.Controllers
         {
             return View(WebService.Get_CoachSalary(searchTime, Client.LoginUser.CoachID));
         }
-        
+
 
         /// <summary>
         /// 新增
@@ -132,7 +122,7 @@ namespace DOL.Web.Controllers
             ModelState.Remove("ID");
             ModelState.Remove("UpdaterID");
             ModelState.Remove("UpdatedTime");
-            ModelState.Remove("CreatedTime");       
+            ModelState.Remove("CreatedTime");
             if (ModelState.IsValid)
             {
                 var result = WebService.Add_Coach(entity);
@@ -165,12 +155,12 @@ namespace DOL.Web.Controllers
             }
         }
 
-        
+
         /// <summary>
         /// 获取分页列表
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetPageList(int pageIndex, int pageSize, string name,  string no)
+        public ActionResult GetPageList(int pageIndex, int pageSize, string name, string no)
         {
             return JResult(WebService.Get_CoachPageList(pageIndex, pageSize, name, no));
         }
@@ -190,7 +180,7 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <returns></returns>
         public ActionResult GetThemeThreePageList(int pageIndex, int pageSize, string name, string no,
-            YesOrNoCode? code )
+            YesOrNoCode? code)
         {
             return JResult(WebService.Get_MyStudenPageList(pageIndex, pageSize, name, no, code, false));
         }
@@ -238,12 +228,12 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Find_Coach(id));
         }
-        public ActionResult Confirm(string id,int code)
+        public ActionResult Confirm(string id, int code)
         {
             return JResult(WebService.Confirm_Coach(id, code));
         }
-        
-        
+
+
 
         /// <summary>
         /// 删除
@@ -261,7 +251,7 @@ namespace DOL.Web.Controllers
         /// <returns></returns>
         public ActionResult GetSalary(DateTime? time, string id)
         {
-            return JResult(WebService.Get_CoachSalary(time,id));
+            return JResult(WebService.Get_CoachSalary(time, id));
         }
 
         /// <summary>
@@ -272,6 +262,6 @@ namespace DOL.Web.Controllers
         {
             return JResult(WebService.Get_CoachSelectItem(driverShopId));
         }
-        
+
     }
 }

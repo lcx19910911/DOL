@@ -569,13 +569,27 @@ namespace DOL.Service
 
             if (studentNameArry != null)
             {
-                model.ExamModel.ThemeTwoMonthPeopleExamCount = studentNameArry.Count;
+                model.ExamModel.ThemeTwoMonthPeopleExamCount = studentNameArry.Distinct().Count();
             }
             //得出科目二的考试信息
             model.ExamModel.ThemeTwoMonthExamCount = examAllCount;
             model.ExamModel.ThemeTwoMonthPassCount = passAllCount;
-            model.ExamModel.ThemeTwoMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
-            model.ExamModel.ThemeTwoMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / model.ExamModel.ThemeTwoMonthPeopleExamCount) : 0;
+            if (examAllCount == 0)
+            {
+                model.ExamModel.ThemeTwoMonthPassScaling = 0;
+            }
+            else
+            {
+                model.ExamModel.ThemeTwoMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
+            }
+            if (model.ExamModel.ThemeTwoMonthPeopleExamCount == 0)
+            {
+                model.ExamModel.ThemeTwoMonthPeoplePassScaling = 0;
+            }
+            else
+            {
+                model.ExamModel.ThemeTwoMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / model.ExamModel.ThemeTwoMonthPeopleExamCount) : 0;
+            }
 
 
             #endregion
@@ -613,13 +627,28 @@ namespace DOL.Service
             });
             if (studentNameArry != null)
             {
-                model.ExamModel.ThemeThreeMonthPeopleExamCount = studentNameArry.Count;
+                model.ExamModel.ThemeThreeMonthPeopleExamCount = studentNameArry.Distinct().Count();
             }
             //科目三的考试信息
             model.ExamModel.ThemeThreeMonthExamCount = examAllCount;
             model.ExamModel.ThemeThreeMonthPassCount = passAllCount;
-            model.ExamModel.ThemeThreeMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
-            model.ExamModel.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / model.ExamModel.ThemeThreeMonthPeopleExamCount) : 0;
+            if (examAllCount == 0)
+            {
+                model.ExamModel.ThemeThreeMonthPassScaling = 0;
+            }
+            else
+            {
+                model.ExamModel.ThemeThreeMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
+            }
+            if (model.ExamModel.ThemeThreeMonthPeopleExamCount == 0)
+            {
+                model.ExamModel.ThemeThreeMonthPeoplePassScaling = 0;
+            }
+            else
+            {
+                model.ExamModel.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / model.ExamModel.ThemeTwoMonthPeopleExamCount) : 0;
+            }
+
 
             #endregion
 
@@ -809,7 +838,7 @@ namespace DOL.Service
             var studentList = Cache_Get_StudentList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
             var themeTwoStudentList = studentList.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID)).ToList();
             var themeThreeStudentList = studentList.Where(x => !string.IsNullOrEmpty(x.ThemeThreeCoachID)).ToList();
-            var examList = Cache_Get_ExamList().Where(x => x.CreatedTime >= time && x.CreatedTime <= endTime).ToList();
+            var examList = Cache_Get_ExamList().ToList();
 
             //搜索时间内的科目薪资
             var themeSalaryList = Cache_Get_ThemeSalaryList().Where(x => !x.EndTime.HasValue).OrderBy(x=>x.Code).ThenBy(x=>x.Count).ToList();
@@ -828,6 +857,7 @@ namespace DOL.Service
 
             List<int> hadCount = new List<int>();
             model.AllDic = new Dictionary<string, ThemeSalaryItemModel>();
+            model.AllTrainDic = new Dictionary<string, ThemeTrainItemModel>();
             foreach (var coachItem in coachList)
             {
 
@@ -847,8 +877,8 @@ namespace DOL.Service
                 var selectThemeThreeStudentIDList = selectThemeThreeStudentList.Select(x => x.ID).ToList();
 
                 //考试记录集合  科目二 科目三
-                var examThemeTwolist = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID)).ToList();
-                var examThemeThreelist = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID)).ToList();
+                var examThemeTwolist = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID)&&x.Code==ThemeCode.Two && x.CreatedTime >= time && x.CreatedTime <= endTime).ToList();
+                var examThemeThreelist = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three && x.CreatedTime >= time && x.CreatedTime <= endTime).ToList();
 
                 //科目二薪资
                 //有的次数集合
@@ -856,7 +886,7 @@ namespace DOL.Service
                 decimal AllMoney = 0;
                 decimal themeMoney = 0;
                 //该教练有的科目二薪资
-                examThemeTwolist.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Two).GroupBy(x => x.Count).ToList().ForEach(x =>
+                examThemeTwolist.Where(x => x.Result == ExamCode.Pass).GroupBy(x => x.Count).ToList().ForEach(x =>
                   {
                       var count = 0;
                       decimal money = 0;
@@ -924,7 +954,7 @@ namespace DOL.Service
                 });
                 //科目三薪资
                 hadCount = new List<int>();
-                examThemeThreelist.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Three).GroupBy(x => x.Count).ToList().ForEach(x =>
+                examThemeThreelist.Where(x => x.Result == ExamCode.Pass).GroupBy(x => x.Count).ToList().ForEach(x =>
                 {
 
 
@@ -990,10 +1020,147 @@ namespace DOL.Service
                 });
                 itemModel.TotalMoeny = itemModel.ThemeTwoMoney + itemModel.ThemeThreeMoney + coachItem.BasicSalary;
                 model.AllDic.Add(coachItem.ID, itemModel);
+
+                #region 考试统计
+
+                var trainItem = new ThemeTrainItemModel();
+                trainItem.CoachName = coachItem.Name;
+                #region 总的通过率
+                //科目二学员集合
+
+
+                //考试人数 通过人数 通过率
+                trainItem.ThemeTwoAllExamCount = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Two).Select(x => x.StudentID).Count();
+                trainItem.ThemeTwoAllPassCount = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Two&&x.Code == ThemeCode.Two).Select(x => x.StudentID).Count();
+                trainItem.ThemeTwoAllPassScaling = trainItem.ThemeTwoAllPassCount != 0 ? (trainItem.ThemeTwoAllPassCount * 100 / trainItem.ThemeTwoAllExamCount) : 0;
+
+
+                //考试人数 通过人数 通过率
+                trainItem.ThemeThreeAllExamCount = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three).Select(x => x.StudentID).Count();
+                trainItem.ThemeThreeAllPassCount = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three).Select(x => x.StudentID).Count();
+                trainItem.ThemeThreeAllPassScaling = trainItem.ThemeThreeAllPassCount != 0 ? (trainItem.ThemeThreeAllPassCount * 100 / trainItem.ThemeThreeAllExamCount) : 0;
+
+                #endregion
+
+                //考试学员姓名集合
+                List<string> studentNameList = new List<string>();
+                List<string> studentNameArry = new List<string>();
+
+                #region 科目二考试记录
+
+                //考试次数 通过次数
+                int examAllCount = 0;
+                int passAllCount = 0;
+
+
+                //科目二考试人数
+                examThemeTwolist.OrderBy(x => x.CreatedTime).GroupBy(x => x.CreatedTime.Date).ToList().ForEach(x =>
+                {
+                    if (x != null)
+                    {
+                        studentNameList = new List<string>();
+                        //考试人数
+                        int examCount = x.Count();
+                        examAllCount += examCount;
+                        //通过人数
+                        int passCount = x.Where(y => y.Result == ExamCode.Pass).Count();
+                        passAllCount += passCount;
+                        //考试的学员id集合
+                        var idList = x.Select(y => y.StudentID).ToList();
+                        //学员姓名
+                        themeTwoStudentList.Where(y => idList.Contains(y.ID)).ToList().ForEach(y =>
+                        {
+                            studentNameList.Add(y.Name);
+                            studentNameArry.Add(y.Name);
+                        });
+
+                    }
+                });
+
+                if (studentNameArry != null)
+                {
+                    trainItem.ThemeTwoMonthPeopleExamCount = studentNameArry.Distinct().Count();
+                }
+                //得出科目二的考试信息
+                trainItem.ThemeTwoMonthExamCount = examAllCount;
+                trainItem.ThemeTwoMonthPassCount = passAllCount;
+                if (examAllCount == 0)
+                {
+                    trainItem.ThemeTwoMonthPassScaling = 0;
+                }
+                else
+                {
+                    trainItem.ThemeTwoMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
+                }
+                if (trainItem.ThemeTwoMonthPeopleExamCount == 0)
+                {
+                    trainItem.ThemeTwoMonthPeoplePassScaling = 0;
+                }
+                else
+                {
+                    trainItem.ThemeTwoMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / trainItem.ThemeTwoMonthPeopleExamCount) : 0;
+                }
+
+                #endregion
+
+                examAllCount = 0;
+                passAllCount = 0;
+                studentNameArry = new List<string>();
+
+                #region 科目三考试记录
+
+                //考试记录集合
+                //科目三考试人数
+                examThemeThreelist.OrderBy(x => x.CreatedTime).GroupBy(x => x.CreatedTime.Date).ToList().ForEach(x =>
+                {
+                    if (x != null)
+                    {
+                        studentNameList = new List<string>();
+                        int examCount = x.Count();
+                        examAllCount += examCount;
+                        int passCount = x.Where(y => y.Result == ExamCode.Pass).Count();
+                        passAllCount += passCount;
+                        var idList = x.Select(y => y.StudentID).ToList();
+
+                        themeThreeStudentList.Where(y => idList.Contains(y.ID)).ToList().ForEach(y =>
+                        {
+                            studentNameList.Add(y.Name);
+                            studentNameArry.Add(y.Name);
+                        });
+                    }
+                });
+                if (studentNameArry != null)
+                {
+                    trainItem.ThemeThreeMonthPeopleExamCount = studentNameArry.Distinct().Count();
+                }
+                //科目三的考试信息
+                trainItem.ThemeThreeMonthExamCount = examAllCount;
+                trainItem.ThemeThreeMonthPassCount = passAllCount;
+                if (examAllCount == 0)
+                {
+                    trainItem.ThemeThreeMonthPassScaling = 0;
+                }
+                else
+                {
+                    trainItem.ThemeThreeMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
+                }
+                if (trainItem.ThemeThreeMonthPeopleExamCount == 0)
+                {
+                    trainItem.ThemeThreeMonthPeoplePassScaling = 0;
+                }
+                else
+                {
+                    trainItem.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / trainItem.ThemeThreeMonthPeopleExamCount) : 0;
+                }
+                #endregion
+                model.AllTrainDic.Add(coachItem.ID, trainItem);
+
+                #endregion
             }
             returnModel.CoachList = model;
             return returnModel;
         }
+
 
 
         public Coach Get_CoachByName(string name)

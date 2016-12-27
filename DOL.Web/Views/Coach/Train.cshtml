@@ -6,12 +6,10 @@
     var themeThreeSalary = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
     string DriverShopID = Request["DriverShopID"];
     string CoachID = Request["CoachID"];
-    if (Model.CoachReportModel != null && Model.CoachReportModel.ExamModel!=null && Model.CoachReportModel.ExamModel.List != null && Model.CoachReportModel.ExamModel.List.Count > 0)
+    if (Model.CoachReportModel != null && Model.CoachReportModel.ExamModel != null && Model.CoachReportModel.ExamModel.List != null && Model.CoachReportModel.ExamModel.List.Count > 0)
     {
-        examThemeTwoList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x=>x.Item2).ToList();
+        examThemeTwoList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
         examThemeThreeList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
-        themeTwoSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
-        themeThreeSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
     }
     ViewBag.Title = "教学查询";
 }
@@ -24,31 +22,18 @@
         <div class="am-u-lg-8">
             <div class="am-input-group am-input-group-sm">
 
-                <span class="am-input-group-label">驾校</span>
-                <select name="DriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;" onchange="LoadCoach(this)">
-                    @foreach (var item in Model.DriverShopList)
-                    {
-                        if (item.Value.Equals(DriverShopID))
-                        {
-                            <option value="@(item.Value)" selected>@item.Text</option>
-                        }
-                        else
-                        {
-                            <option value="@(item.Value)">@item.Text</option>
-                        }
-                    }
-                </select>
                 <span class="am-input-group-label  am-margin-left-sm">教练</span>
                 <select name="CoachID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1" selected>请选择</option>
                     @foreach (var item in Model.CoachList)
                     {
                         if (item.Value.Equals(CoachID))
                         {
-                            <option value="@(item.Value)" selected>@item.Text</option>
+                    <option value="@(item.Value)" selected>@item.Text</option>
                         }
                         else
                         {
-                            <option value="@(item.Value)">@item.Text</option>
+                    <option value="@(item.Value)">@item.Text</option>
                         }
                     }
                 </select>
@@ -65,211 +50,287 @@
 </div>
 
 <div class="grid_container">
-    <div class="am-g">
-        @if (Model.CoachReportModel != null)
-        {
-        <div class="am-u-lg-7">
-            <div class="am-g am-margin-top-lg ">
-                <div class="am-u-sm-12 am-u-sm-centered am-text-center">
-                    <p>@(Model.CoachReportModel.CoachName)教练@(Model.CoachReportModel.StartTime.ToString("MM月dd日"))到@(Model.CoachReportModel.EndTime.ToString("MM月dd日"))考试情况</p>
+    @if (Model != null && Model.CoachReportModel != null && Model.CoachReportModel.isShowList == false)
+    {
+        <div class="am-g">
+            @if (Model.CoachReportModel != null)
+            {
+                <div class="am-u-lg-7">
+                    <div class="am-g am-margin-top-lg ">
+                        <div class="am-u-sm-12 am-u-sm-centered am-text-center">
+                            <p>@(Model.CoachReportModel.CoachName)教练@(Model.CoachReportModel.StartTime.ToString("MM月dd日"))到@(Model.CoachReportModel.EndTime.ToString("MM月dd日"))考试情况</p>
+                        </div>
+
+                    </div>
+                    <table class="am-table am-table-compact am-table-hover table-main am-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>科目二</th>
+                                <th>考试次数</th>
+                                <th>通过数</th>
+                                <th>通过率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in examThemeTwoList)
+                    {
+                    <tr>
+                        <td>@(item.Item2.ToString("MM月dd日"))</td>
+                        <td>@item.Item3</td>
+                        <td>@item.Item4</td>
+                        <td>@item.Item5</td>
+                        <td>@(item.Item6)%</td>
+                    </tr>
+                    }
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>本月考试次数</td>
+                                <td>本月通过次数</td>
+                                <td>本月通过率</td>
+                            </tr>
+                            <tr>
+                                <td>合计</td>
+                                <td></td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthExamCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassScaling)%</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>本月考试人数</td>
+                                <td>本月通过人数</td>
+                                <td>本月通过率</td>
+                            </tr>
+                            <tr>
+                                <td>合计</td>
+                                <td></td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPeopleExamCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPeoplePassScaling)%</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>总考试人数</td>
+                                <td>总通过数</td>
+                                <td>综合通过率</td>
+                            </tr>
+                            <tr>
+                                <td>合计</td>
+                                <td></td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoAllExamCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
+                                <td>@(Model?.CoachReportModel.ExamModel?.ThemeTwoAllPassScaling)%</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                    <table class="am-table am-table-compact am-table-hover table-main am-margin-top-lg am-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>科目三</th>
+                                <th>考试次数</th>
+                                <th>通过数</th>
+                                <th>通过率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in examThemeThreeList)
+                    {
+                                <tr>
+                                    <td>@(item.Item2.ToString("MM月dd日"))</td>
+                                    <td>@item.Item3</td>
+                                    <td>@item.Item4</td>
+                                    <td>@item.Item5</td>
+                                    <td>@(item.Item6)%</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>本月考试次数</td>
+                                <td>本月通过次数</td>
+                                <td>本月通过率</td>
+                            </tr>
+                            <tr>
+                                <td>合计</td>
+                                <td></td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthExamCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassScaling)%</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>本月考试人数</td>
+                                <td>本月通过人数</td>
+                                <td>本月通过率</td>
+                            </tr>
+                            <tr>
+                                <td>合计</td>
+                                <td></td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPeopleExamCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPeoplePassScaling)%</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>总考试人数</td>
+                                <td>总通过数</td>
+                                <td>综合通过率</td>
+                            </tr>
+                            <tr>
+                                <td>合计</td>
+                                <td></td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllExamCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllPassCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllPassScaling)%</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
                 </div>
+                <div class="am-u-lg-5">
+                    <div class="am-g am-margin-top-lg ">
+                        <div class="am-u-sm-12 am-u-sm-centered am-text-center">
+                            <p>@(Model.CoachReportModel.CoachName)教练@(Model.CoachReportModel.StartTime.ToString("MM月dd日"))到@(Model.CoachReportModel.EndTime.ToString("MM月dd日"))工资表</p>
+                        </div>
 
-            </div>
-            <table class="am-table am-table-compact am-table-hover table-main am-table-bordered">
-                <thead>
-                    <tr>
-                        <th>日期</th>
-                        <th>科目二</th>
-                        <th>考试次数</th>
-                        <th>通过数</th>
-                        <th>通过率</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in examThemeTwoList)
-                        {
-                        <tr>
-                            <td>@(item.Item2.ToString("MM月dd日"))</td>
-                            <td>@item.Item3</td>
-                            <td>@item.Item4</td>
-                            <td>@item.Item5</td>
-                            <td>@(item.Item6)%</td>
-                        </tr>
-                        }
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>本月考试次数</td>
-                        <td>本月通过次数</td>
-                        <td>本月通过率</td>
-                    </tr>
-                    <tr>
-                        <td>合计</td>
-                        <td></td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthExamCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassScaling)%</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>本月考试人数</td>
-                        <td>本月通过人数</td>
-                        <td>本月通过率</td>
-                    </tr>
-                    <tr>
-                        <td>合计</td>
-                        <td></td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPeopleExamCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPeoplePassScaling)%</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>总考试人数</td>
-                        <td>总通过数</td>
-                        <td>综合通过率</td>
-                    </tr>
-                    <tr>
-                        <td>合计</td>
-                        <td></td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoAllExamCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
-                        <td>@(Model?.CoachReportModel.ExamModel?.ThemeTwoAllPassScaling)%</td>
-                    </tr>
-                </tbody>
+                    </div>
+                    <table class="am-table am-table-compact am-table-hover table-main am-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>薪资级别</th>
+                                <th>计数</th>
+                                <th>金额</th>
+                                <th>小计</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>底薪</td>
+                                <td>1</td>
+                                <td>@(Model.CoachReportModel.ThemeSalaryModel?.BasicSalary)</td>
+                                <td>@(Model.CoachReportModel.ThemeSalaryModel?.BasicSalary)</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="am-text-center">科目二</td>
+                            </tr>
+                            @foreach (var item in themeTwoSalary)
+                    {
+                                <tr>
+                                    <td>@item.Item3</td>
+                                    <td>@item.Item4</td>
+                                    <td>@item.Item5</td>
+                                    <td>@item.Item6</td>
+                                </tr>
+                            }
+                            <tr><td colspan="4"></td></tr>
+                            <tr>
+                                <td colspan="4" class="am-text-center">科目三</td>
+                            </tr>
+                            @foreach (var item in themeThreeSalary)
+                    {
+                                <tr>
+                                    <td>@item.Item3</td>
+                                    <td>@item.Item4</td>
+                                    <td>@item.Item5</td>
+                                    <td>@item.Item6</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>总计</td>
+                                <td>@(Model.CoachReportModel.ThemeSalaryModel?.TotalMoeny)</td>
+                            </tr>
+                        </tbody>
 
-            </table>
-
-            <table class="am-table am-table-compact am-table-hover table-main am-margin-top-lg am-table-bordered">
-                <thead>
-                    <tr>
-                        <th>日期</th>
-                        <th>科目三</th>
-                        <th>考试次数</th>
-                        <th>通过数</th>
-                        <th>通过率</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in examThemeThreeList)
-                        {
-                        <tr>
-                            <td>@(item.Item2.ToString("MM月dd日"))</td>
-                            <td>@item.Item3</td>
-                            <td>@item.Item4</td>
-                            <td>@item.Item5</td>
-                            <td>@(item.Item6)%</td>
-                        </tr>
-                        }
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>本月考试次数</td>
-                        <td>本月通过次数</td>
-                        <td>本月通过率</td>
-                    </tr>
-                    <tr>
-                        <td>合计</td>
-                        <td></td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthExamCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassScaling)%</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>本月考试人数</td>
-                        <td>本月通过人数</td>
-                        <td>本月通过率</td>
-                    </tr>
-                    <tr>
-                        <td>合计</td>
-                        <td></td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPeopleExamCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPeoplePassScaling)%</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>总考试人数</td>
-                        <td>总通过数</td>
-                        <td>综合通过率</td>
-                    </tr>
-                    <tr>
-                        <td>合计</td>
-                        <td></td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllExamCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllPassCount)</td>
-                        <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllPassScaling)%</td>
-                    </tr>
-                </tbody>
-
-            </table>
-        </div>
-        <div class="am-u-lg-5">
-            <div class="am-g am-margin-top-lg ">
-                <div class="am-u-sm-12 am-u-sm-centered am-text-center">
-                    <p>@(Model.CoachReportModel.CoachName)教练@(Model.CoachReportModel.StartTime.ToString("MM月dd日"))到@(Model.CoachReportModel.EndTime.ToString("MM月dd日"))工资表</p>
+                    </table>
                 </div>
-
-            </div>
-            <table class="am-table am-table-compact am-table-hover table-main am-table-bordered">
-                <thead>
-                    <tr>
-                        <th>薪资级别</th>
-                        <th>计数</th>
-                        <th>金额</th>
-                        <th>小计</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>底薪</td>
-                        <td>1</td>
-                        <td>@(Model.CoachReportModel.ThemeSalaryModel?.BasicSalary)</td>
-                        <td>@(Model.CoachReportModel.ThemeSalaryModel?.BasicSalary)</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4" class="am-text-center">科目二</td>
-                    </tr>
-                    @foreach (var item in themeTwoSalary)
-                        {
-                        <tr>
-                            <td>@item.Item3</td>
-                            <td>@item.Item4</td>
-                            <td>@item.Item5</td>
-                            <td>@item.Item6</td>
-                        </tr>
-                        }
-                    <tr><td colspan="4"></td></tr>
-                    <tr>
-                        <td colspan="4" class="am-text-center">科目三</td>
-                    </tr>
-                    @foreach (var item in themeThreeSalary)
-                        {
-                        <tr>
-                            <td>@item.Item3</td>
-                            <td>@item.Item4</td>
-                            <td>@item.Item5</td>
-                            <td>@item.Item6</td>
-                        </tr>
-                        }
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>总计</td>
-                        <td>@(Model.CoachReportModel.ThemeSalaryModel?.TotalMoeny)</td>
-                    </tr>
-                </tbody>
-
-            </table>
+            }
         </div>
-        }
-    </div>
+    }
+    else if (Model != null && Model.CoachReportModel != null && Model.CoachReportModel.isShowList == true)
+    {
+        <div class="am-g">
 
+            <div class="am-u-lg-12">
+                <div class="am-g am-margin-top-lg ">
+                    <div class="am-u-sm-12 am-u-sm-centered am-text-center">
+                        <p>教练@(Model.CoachReportModel.StartTime.ToString("MM月dd日"))到@(Model.CoachReportModel.EndTime.ToString("MM月dd日"))考试情况</p>
+                    </div>
+
+                </div>
+                <table class="am-table am-table-compact am-table-hover table-main am-table-bordered am-text-sm">
+                    <thead>
+                        <tr><th>科目</th><th colspan="9" class="am-text-center">科二</th><th colspan="9" class="am-text-center">科三</th></tr>
+                        <tr>
+                            <th>教练员</th>
+
+                            <th>考试次数</th>
+                            <th>通过次数</th>
+                            <th>通过率</th>
+                            <th>考试人数</th>
+                            <th>通过人数</th>
+                            <th>通过率</th>
+                            <td>总考试人次</td>
+                            <td>总通过人次</td>
+                            <td>综合通过率</td>
+
+                            <th>教练员</th>
+                            <th>考试次数</th>
+                            <th>通过次数</th>
+                            <th>通过率</th>
+                            <th>考试人数</th>
+                            <th>通过人数</th>
+                            <th>通过率</th>
+                            <td>总考试人次</td>
+                            <td>总通过人次</td>
+                            <td>综合通过率</td>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.CoachReportModel.CoachList.AllTrainDic)
+                        {
+                            <tr><td>@item.Value.CoachName</td>
+
+                                <td>@(item.Value?.ThemeTwoMonthExamCount)</td>
+                                <td>@(item.Value?.ThemeTwoMonthPassCount)</td>
+                                <td>@(item.Value?.ThemeTwoMonthPassScaling)%</td>
+                                <td>@(item.Value?.ThemeTwoMonthPeopleExamCount)</td>
+                                <td>@(item.Value?.ThemeTwoMonthPassCount)</td>
+                                <td>@(item.Value?.ThemeTwoMonthPeoplePassScaling)%</td>
+                                <td>@(item.Value?.ThemeTwoAllExamCount)</td>
+                                <td>@(item.Value?.ThemeTwoAllPassCount)</td>
+                                <td>@(item.Value?.ThemeTwoAllPassScaling)%</td>
+                                <td>@item.Value.CoachName</td>
+                                <td>@(item.Value?.ThemeThreeMonthExamCount)</td>
+                                <td>@(item.Value?.ThemeThreeMonthPassCount)</td>
+                                <td>@(item.Value?.ThemeThreeMonthPassScaling)%</td>
+                                <td>@(item.Value?.ThemeThreeMonthPeopleExamCount)</td>
+                                <td>@(item.Value?.ThemeThreeMonthPassCount)</td>
+                                <td>@(item.Value?.ThemeThreeMonthPeoplePassScaling)%</td>
+                                <td>@(item.Value?.ThemeThreeAllExamCount)</td>
+                                <td>@(item.Value?.ThemeThreeAllPassCount)</td>
+                                <td>@(item.Value?.ThemeThreeAllPassScaling)%</td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    }
 </div>
 @section scripts
 {
@@ -281,25 +342,8 @@
             $("#searchDomain input").val("");
         }
         function Search() {
-            window.location.href = "/Coach/Train?searchTime=" + $("[name='searchTime']").val() + "&DriverShopID=" + $("[name='DriverShopID']").val() + "&CoachID=" + $("[name='CoachID']").val();
+            window.location.href = "/Coach/Train?searchTime=" + $("[name='searchTime']").val() + "&CoachID=" + $("[name='CoachID']").val();
         }
 
-        var coachId = '@(Request["CoachID"])';
-
-        //根据市加载报名点
-        function LoadCoach(obj) {
-            $("select[name='CoachID']").empty();
-            var driverShopId = $(obj).val();
-            if (driverShopId != "") {
-                $.Nuoya.action("/Coach/GetSelectItem", { driverShopId: driverShopId }, function (json) {
-                    $(json).each(function () {
-                        if (coachId != "" && coachId == this.Value)
-                        { $("select[name='CoachID']").append("<option  value='" + this.Value + "' selected='selected'>" + this.Text + "</option>"); }
-                        else
-                        { $("select[name='CoachID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>"); }
-                    });
-                });
-            }
-        }
     </script>
 }
