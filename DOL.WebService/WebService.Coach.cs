@@ -510,9 +510,10 @@ namespace DOL.Service
             var allThemeTwoList = Cache_Get_ExamList().Where(x => themeTwoStudentIdList.Contains(x.StudentID)).ToList();
 
             //考试人数 通过人数 通过率
-            model.ExamModel.ThemeTwoAllExamCount = allThemeTwoList.Where(x => x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
+            model.ExamModel.ThemeTwoAllPeopleExamCount = allThemeTwoList.Where(x => x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
+            model.ExamModel.ThemeTwoAllExamCount = allThemeTwoList.Where(x => x.Code == ThemeCode.Two).Select(x => x.StudentID).Count();
             model.ExamModel.ThemeTwoAllPassCount = allThemeTwoList.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
-            model.ExamModel.ThemeTwoAllPassScaling = model.ExamModel.ThemeTwoAllPassCount != 0 ? (model.ExamModel.ThemeTwoAllPassCount * 100 / model.ExamModel.ThemeTwoAllExamCount) : 0;
+            model.ExamModel.ThemeTwoAllPassScaling = model.ExamModel.ThemeTwoAllPassCount != 0 ? (model.ExamModel.ThemeTwoAllPassCount * 100 / model.ExamModel.ThemeTwoAllPeopleExamCount) : 0;
 
             //科目三学员集合
             var themeThreeStudentList = studentList.Where(x => !string.IsNullOrEmpty(x.ThemeThreeCoachID) && x.ThemeThreeCoachID.Equals(id)).ToList();
@@ -520,9 +521,10 @@ namespace DOL.Service
             var allThemeThreeList = Cache_Get_ExamList().Where(x => themeThreeStudentIdList.Contains(x.StudentID)).ToList();
 
             //考试人数 通过人数 通过率
-            model.ExamModel.ThemeThreeAllExamCount = allThemeThreeList.Where(x => x.Code == ThemeCode.Three).Select(x => x.StudentID).Distinct().Count();
+            model.ExamModel.ThemeThreeAllPeopleExamCount = allThemeThreeList.Where(x => x.Code == ThemeCode.Three).Select(x => x.StudentID).Distinct().Count();
+            model.ExamModel.ThemeThreeAllExamCount = allThemeThreeList.Where(x => x.Code == ThemeCode.Three).Select(x => x.StudentID).Count();
             model.ExamModel.ThemeThreeAllPassCount = allThemeThreeList.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Three).Select(x => x.StudentID).Distinct().Count();
-            model.ExamModel.ThemeThreeAllPassScaling = model.ExamModel.ThemeThreeAllPassCount != 0 ? (model.ExamModel.ThemeThreeAllPassCount * 100 / model.ExamModel.ThemeThreeAllExamCount) : 0;
+            model.ExamModel.ThemeThreeAllPassScaling = model.ExamModel.ThemeThreeAllPassCount != 0 ? (model.ExamModel.ThemeThreeAllPassCount * 100 / model.ExamModel.ThemeThreeAllPeopleExamCount) : 0;
 
             #endregion
 
@@ -544,25 +546,36 @@ namespace DOL.Service
               {
                   if (x != null)
                   {
-                      studentNameList = new List<string>();
+                     studentNameList = new List<string>();
                     //考试人数
                     int examCount = x.Count();
                       examAllCount += examCount;
                     //通过人数
                     int passCount = x.Where(y => y.Result == ExamCode.Pass).Count();
                       passAllCount += passCount;
-                    //考试的学员id集合
-                    var idList = x.Select(y => y.StudentID).ToList();
-                    //学员姓名
-                    themeTwoStudentList.Where(y => idList.Contains(y.ID)).ToList().ForEach(y =>
+                      //考试的学员id集合
+                      var idList = x.Select(y => y.StudentID).ToList();
+                      var passIdList = x.Where(y => y.Result == ExamCode.Pass).Select(y => y.StudentID).ToList();
+                      var failedList = new List<string>();
+                      //学员姓名
+                      themeTwoStudentList.Where(y => idList.Contains(y.ID)).ToList().ForEach(y =>
                       {
-                          studentNameList.Add(y.Name);
+                          if (passIdList.Contains(y.ID))
+                          {
+                              studentNameList.Add(y.Name);
+                          }
+                          else
+                          {
+                              failedList.Add(y.Name);
+                          }
                           studentNameArry.Add(y.Name);
                       });
                       if (studentNameList != null)
                       {
-                        //添加到集合
-                        model.ExamModel.List.Add(new Tuple<ThemeCode, DateTime, string, int, int, int>(ThemeCode.Two, x.Key, string.Join(",", studentNameList), examCount, passCount, passCount != 0 ? (passCount * 100 / examCount) : 0));
+                          var nameStr =string.Format("<p class=\"am-text-success\">{0}</p><p class=\"am-text-danger\">{1}</p>", string.Join(",", studentNameList), string.Join(",", failedList));
+
+                          //添加到集合
+                          model.ExamModel.List.Add(new Tuple<ThemeCode, DateTime, string, int, int, int>(ThemeCode.Two, x.Key, nameStr, examCount, passCount, passCount != 0 ? (passCount * 100 / examCount) : 0));
                       }
                   }
               });
@@ -613,15 +626,24 @@ namespace DOL.Service
                     int passCount = x.Where(y => y.Result == ExamCode.Pass).Count();
                     passAllCount += passCount;
                     var idList = x.Select(y => y.StudentID).ToList();
-
+                    var passIdList = x.Where(y => y.Result == ExamCode.Pass).Select(y => y.StudentID).ToList();
+                    var failedList = new List<string>();
                     themeThreeStudentList.Where(y => idList.Contains(y.ID)).ToList().ForEach(y =>
                     {
-                        studentNameList.Add(y.Name);
+                        if (passIdList.Contains(y.ID))
+                        {
+                            studentNameList.Add(y.Name);
+                        }
+                        else
+                        {
+                            failedList.Add(y.Name);
+                        }
                         studentNameArry.Add(y.Name);
                     });
                     if (studentNameList != null)
                     {
-                        model.ExamModel.List.Add(new Tuple<ThemeCode, DateTime, string, int, int, int>(ThemeCode.Three, x.Key, string.Join(",", studentNameList), examCount, passCount, passCount != 0 ? (passCount * 100 / examCount) : 0));
+                        var nameStr = string.Format("<p class=\"am-text-success\">{0}</p><p class=\"am-text-danger\">{1}</p>", string.Join(",", studentNameList), string.Join(",", failedList));
+                        model.ExamModel.List.Add(new Tuple<ThemeCode, DateTime, string, int, int, int>(ThemeCode.Three, x.Key, nameStr, examCount, passCount, passCount != 0 ? (passCount * 100 / examCount) : 0));
                     }
                 }
             });
@@ -646,7 +668,7 @@ namespace DOL.Service
             }
             else
             {
-                model.ExamModel.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / model.ExamModel.ThemeTwoMonthPeopleExamCount) : 0;
+                model.ExamModel.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / model.ExamModel.ThemeThreeMonthPeopleExamCount) : 0;
             }
 
 
@@ -687,7 +709,7 @@ namespace DOL.Service
                               var item = themeSalaryOldDic[x.Key];
                               if (y.CreatedTime < item.EndTime)
                               {
-                                  oldName = item.Name + "（" + DateTime.Now.ToString("yyyy年MM月dd日") + "后弃用)";
+                                  oldName = item.Name + "（" + item.EndTime.Value.ToString("yyyy年MM月dd日") + "后弃用)";
                                   hadCount.Add(x.Key);
                                   oldMoney = themeSalaryOldDic[x.Key].Money;
                                   oldCount += 1;
@@ -762,7 +784,7 @@ namespace DOL.Service
                         var item = themeThreeSalaryOldDic[x.Key];
                         if (y.CreatedTime < item.EndTime)
                         {
-                            oldName = item.Name + "（" + DateTime.Now.ToString("yyyy年MM月dd日") + "后弃用)";
+                            oldName = item.Name + "（" + item.EndTime.Value.ToString("yyyy年MM月dd日") + "后弃用)";
                             hadCount.Add(x.Key);
                             oldMoney = item.Money;
                             oldCount += 1;
@@ -903,7 +925,7 @@ namespace DOL.Service
                               var item = themeSalaryOldDic[x.Key];
                               if (y.CreatedTime < item.EndTime)
                               {
-                                  oldName = item.Name + "（" + DateTime.Now.ToString("yyyy年MM月dd日") + "后弃用)";
+                                  oldName = item.Name + "（" + item.EndTime.Value.ToString("yyyy年MM月dd日") + "后弃用)";
                                   hadCount.Add(x.Key);
                                   oldMoney = themeSalaryOldDic[x.Key].Money;
                                   oldCount += 1;
@@ -973,7 +995,7 @@ namespace DOL.Service
                             var item = themeThreeSalaryOldDic[x.Key];
                             if (y.CreatedTime < item.EndTime)
                             {
-                                oldName = item.Name + "（" + DateTime.Now.ToString("yyyy年MM月dd日") + "后弃用)";
+                                oldName = item.Name + "（" + item.EndTime.Value.ToString("yyyy年MM月dd日") + "后弃用)";
                                 hadCount.Add(x.Key);
                                 oldMoney = item.Money;
                                 oldCount += 1;
@@ -1030,15 +1052,17 @@ namespace DOL.Service
 
 
                 //考试人数 通过人数 通过率
+                trainItem.ThemeTwoAllPeopleExamCount = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
                 trainItem.ThemeTwoAllExamCount = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Two).Select(x => x.StudentID).Count();
-                trainItem.ThemeTwoAllPassCount = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Two&&x.Code == ThemeCode.Two).Select(x => x.StudentID).Count();
-                trainItem.ThemeTwoAllPassScaling = trainItem.ThemeTwoAllPassCount != 0 ? (trainItem.ThemeTwoAllPassCount * 100 / trainItem.ThemeTwoAllExamCount) : 0;
+                trainItem.ThemeTwoAllPassCount = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Two && x.Result == ExamCode.Pass).Select(x => x.StudentID).Count();
+                trainItem.ThemeTwoAllPassScaling = trainItem.ThemeTwoAllPassCount != 0 ? (trainItem.ThemeTwoAllPassCount * 100 / trainItem.ThemeTwoAllPeopleExamCount) : 0;
 
 
                 //考试人数 通过人数 通过率
+                trainItem.ThemeThreeAllPeopleExamCount = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three).Select(x => x.StudentID).Distinct().Count();
                 trainItem.ThemeThreeAllExamCount = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three).Select(x => x.StudentID).Count();
-                trainItem.ThemeThreeAllPassCount = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three).Select(x => x.StudentID).Count();
-                trainItem.ThemeThreeAllPassScaling = trainItem.ThemeThreeAllPassCount != 0 ? (trainItem.ThemeThreeAllPassCount * 100 / trainItem.ThemeThreeAllExamCount) : 0;
+                trainItem.ThemeThreeAllPassCount = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three&&x.Result==ExamCode.Pass).Select(x => x.StudentID).Count();
+                trainItem.ThemeThreeAllPassScaling = trainItem.ThemeThreeAllPassCount != 0 ? (trainItem.ThemeThreeAllPassCount * 100 / trainItem.ThemeThreeAllPeopleExamCount) : 0;
 
                 #endregion
 

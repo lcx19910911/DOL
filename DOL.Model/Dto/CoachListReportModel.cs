@@ -66,7 +66,8 @@ namespace DOL.Model
         public int ThemeTwoMonthPeoplePassScaling { get; set; }
 
 
-
+       
+        public int ThemeTwoAllPeopleExamCount { get; set; }
         public int ThemeTwoAllExamCount { get; set; }
 
         public int ThemeTwoAllPassCount { get; set; }
@@ -103,6 +104,7 @@ namespace DOL.Model
         public int ThemeThreeMonthPeoplePassScaling { get; set; }
 
 
+        public int ThemeThreeAllPeopleExamCount { get; set; }
         public int ThemeThreeAllExamCount { get; set; }
 
         public int ThemeThreeAllPassCount { get; set; }

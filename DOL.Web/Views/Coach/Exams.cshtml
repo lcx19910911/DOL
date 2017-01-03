@@ -54,7 +54,7 @@
                     {
                         <tr>
                             <td>@(item.Item2.ToString("MM月dd日"))</td>
-                            <td>@item.Item3</td>
+                            <td style="margin:0 0 1rem 0;line-height:0px;">@Html.Raw(item.Item3)</td>
                             <td>@item.Item4</td>
                             <td>@item.Item5</td>
                             <td>@(item.Item6)%</td>
@@ -62,44 +62,30 @@
                     }
                     <tr>
                         <td></td>
-                        <td></td>
-                        <td>本月考试次数</td>
-                        <td>本月通过次数</td>
-                        <td>本月通过率</td>
-                    </tr>
-                    <tr>
-                        <td>合计</td>
-                        <td></td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthExamCount)</td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthPassCount)</td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthPassScaling)%</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
                         <td>本月考试人数</td>
+                        <td>本月考试人次</td>
                         <td>本月通过人数</td>
                         <td>本月通过率</td>
                     </tr>
                     <tr>
                         <td>合计</td>
-                        <td></td>
                         <td>@(Model.ExamModel?.ThemeTwoMonthPeopleExamCount)</td>
+                        <td>@(Model.ExamModel?.ThemeTwoMonthExamCount)</td>
                         <td>@(Model.ExamModel?.ThemeTwoMonthPassCount)</td>
                         <td>@(Model.ExamModel?.ThemeTwoMonthPeoplePassScaling)%</td>
                     </tr>
                     <tr>
                         <td></td>
-                        <td></td>
                         <td>总考试人数</td>
+                        <td>总考试人次</td>
                         <td>总通过数</td>
                         <td>综合通过率</td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
+                        <td>合计</td>
+                        <td>@(Model.ExamModel?.ThemeTwoAllPeopleExamCount)</td>
                         <td>@(Model.ExamModel?.ThemeTwoAllExamCount)</td>
-                        <td>@(Model.ExamModel?.ThemeTwoMonthPassCount)</td>
+                        <td>@(Model.ExamModel?.ThemeTwoAllPassCount)</td>
                         <td>@(Model.ExamModel?.ThemeTwoAllPassScaling)%</td>
                     </tr>
                 </tbody>
@@ -121,7 +107,7 @@
                     {
                         <tr>
                             <td>@(item.Item2.ToString("MM月dd日"))</td>
-                            <td>@item.Item3</td>
+                            <td style="margin:0 0 1rem 0;line-height:0px;">@Html.Raw(item.Item3)</td>
                             <td>@item.Item4</td>
                             <td>@item.Item5</td>
                             <td>@(item.Item6)%</td>
@@ -129,42 +115,28 @@
                     }
                     <tr>
                         <td></td>
-                        <td></td>
-                        <td>本月考试次数</td>
-                        <td>本月通过次数</td>
-                        <td>本月通过率</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>@(Model.ExamModel?.ThemeThreeMonthExamCount)</td>
-                        <td>@(Model.ExamModel?.ThemeThreeMonthPassCount)</td>
-                        <td>@(Model.ExamModel?.ThemeThreeMonthPassScaling)%</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
                         <td>本月考试人数</td>
+                        <td>本月考试人次</td>
                         <td>本月通过人数</td>
                         <td>本月通过率</td>
                     </tr>
                     <tr>
                         <td>合计</td>
-                        <td></td>
                         <td>@(Model.ExamModel?.ThemeThreeMonthPeopleExamCount)</td>
+                        <td>@(Model.ExamModel?.ThemeThreeMonthExamCount)</td>
                         <td>@(Model.ExamModel?.ThemeThreeMonthPassCount)</td>
                         <td>@(Model.ExamModel?.ThemeThreeMonthPeoplePassScaling)%</td>
                     </tr>
                     <tr>
                         <td></td>
-                        <td></td>
                         <td>总考试人数</td>
+                        <td>总考试人次</td>
                         <td>总通过数</td>
                         <td>综合通过率</td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
+                        <td>合计</td>
+                        <td>@(Model.ExamModel?.ThemeThreeAllPeopleExamCount)</td>
                         <td>@(Model.ExamModel?.ThemeThreeAllExamCount)</td>
                         <td>@(Model.ExamModel?.ThemeThreeAllPassCount)</td>
                         <td>@(Model.ExamModel?.ThemeThreeAllPassScaling)%</td>

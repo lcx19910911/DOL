@@ -77,7 +77,7 @@
                     {
                     <tr>
                         <td>@(item.Item2.ToString("MM月dd日"))</td>
-                        <td>@item.Item3</td>
+                        <td style="margin:0 0 1rem 0;line-height:0px;">@Html.Raw(item.Item3)</td>
                         <td>@item.Item4</td>
                         <td>@item.Item5</td>
                         <td>@(item.Item6)%</td>
@@ -85,19 +85,19 @@
                     }
                             <tr>
                                 <td></td>
-                                <td></td>
-                                <td>本月考试次数</td>
-                                <td>本月通过次数</td>
+                                <td>本月考试人数</td>
+                                <td>本月考试人次</td>
+                                <td>本月通过人数</td>
                                 <td>本月通过率</td>
                             </tr>
                             <tr>
                                 <td>合计</td>
-                                <td></td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPeopleExamCount)</td>
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthExamCount)</td>
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
-                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassScaling)%</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPeoplePassScaling)%</td>
                             </tr>
-                            <tr>
+                            @*<tr>
                                 <td></td>
                                 <td></td>
                                 <td>本月考试人数</td>
@@ -110,26 +110,26 @@
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPeopleExamCount)</td>
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPeoplePassScaling)%</td>
-                            </tr>
+                            </tr>*@
                             <tr>
                                 <td></td>
-                                <td></td>
                                 <td>总考试人数</td>
+                                <td>总考试人次</td>
                                 <td>总通过数</td>
                                 <td>综合通过率</td>
                             </tr>
                             <tr>
                                 <td>合计</td>
-                                <td></td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoAllPeopleExamCount)</td>
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoAllExamCount)</td>
-                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoMonthPassCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeTwoAllPassCount)</td>
                                 <td>@(Model?.CoachReportModel.ExamModel?.ThemeTwoAllPassScaling)%</td>
                             </tr>
                         </tbody>
 
                     </table>
 
-                    <table class="am-table am-table-compact am-table-hover table-main am-margin-top-lg am-table-bordered">
+                    <table class="am-table am-table-compact am-table-hover table-main am-margin-top-lg am-table-bordered" style="line-height:0px;">
                         <thead>
                             <tr>
                                 <th>日期</th>
@@ -144,7 +144,7 @@
                     {
                                 <tr>
                                     <td>@(item.Item2.ToString("MM月dd日"))</td>
-                                    <td>@item.Item3</td>
+                                    <td style="margin:0 0 1rem 0;line-height:0px;">@Html.Raw(item.Item3)</td>
                                     <td>@item.Item4</td>
                                     <td>@item.Item5</td>
                                     <td>@(item.Item6)%</td>
@@ -152,45 +152,31 @@
                             }
                             <tr>
                                 <td></td>
-                                <td></td>
-                                <td>本月考试次数</td>
-                                <td>本月通过次数</td>
-                                <td>本月通过率</td>
-                            </tr>
-                            <tr>
-                                <td>合计</td>
-                                <td></td>
-                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthExamCount)</td>
-                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassCount)</td>
-                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassScaling)%</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
                                 <td>本月考试人数</td>
+                                <td>本月考试人次</td>
                                 <td>本月通过人数</td>
                                 <td>本月通过率</td>
                             </tr>
                             <tr>
                                 <td>合计</td>
-                                <td></td>
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPeopleExamCount)</td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthExamCount)</td>
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPassCount)</td>
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeMonthPeoplePassScaling)%</td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td></td>
                                 <td>总考试人数</td>
+                                <td>总考试人次</td>
                                 <td>总通过数</td>
                                 <td>综合通过率</td>
                             </tr>
                             <tr>
                                 <td>合计</td>
-                                <td></td>
+                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllPeopleExamCount)</td>
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllExamCount)</td>
                                 <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllPassCount)</td>
-                                <td>@(Model.CoachReportModel.ExamModel?.ThemeThreeAllPassScaling)%</td>
+                                <td>@(Model?.CoachReportModel.ExamModel?.ThemeThreeAllPassScaling)%</td>
                             </tr>
                         </tbody>
 
@@ -309,7 +295,7 @@
                                 <td>@(item.Value?.ThemeTwoMonthPeopleExamCount)</td>
                                 <td>@(item.Value?.ThemeTwoMonthPassCount)</td>
                                 <td>@(item.Value?.ThemeTwoMonthPeoplePassScaling)%</td>
-                                <td>@(item.Value?.ThemeTwoAllExamCount)</td>
+                                <td>@(item.Value?.ThemeTwoAllPeopleExamCount)</td>
                                 <td>@(item.Value?.ThemeTwoAllPassCount)</td>
                                 <td>@(item.Value?.ThemeTwoAllPassScaling)%</td>
                                 <td>@item.Value.CoachName</td>
@@ -319,7 +305,7 @@
                                 <td>@(item.Value?.ThemeThreeMonthPeopleExamCount)</td>
                                 <td>@(item.Value?.ThemeThreeMonthPassCount)</td>
                                 <td>@(item.Value?.ThemeThreeMonthPeoplePassScaling)%</td>
-                                <td>@(item.Value?.ThemeThreeAllExamCount)</td>
+                                <td>@(item.Value?.ThemeThreeAllPeopleExamCount)</td>
                                 <td>@(item.Value?.ThemeThreeAllPassCount)</td>
                                 <td>@(item.Value?.ThemeThreeAllPassScaling)%</td>
                             </tr>
