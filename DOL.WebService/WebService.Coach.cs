@@ -513,7 +513,7 @@ namespace DOL.Service
             model.ExamModel.ThemeTwoAllPeopleExamCount = allThemeTwoList.Where(x => x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
             model.ExamModel.ThemeTwoAllExamCount = allThemeTwoList.Where(x => x.Code == ThemeCode.Two).Select(x => x.StudentID).Count();
             model.ExamModel.ThemeTwoAllPassCount = allThemeTwoList.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
-            model.ExamModel.ThemeTwoAllPassScaling = model.ExamModel.ThemeTwoAllPassCount != 0 ? (model.ExamModel.ThemeTwoAllPassCount * 100 / model.ExamModel.ThemeTwoAllPeopleExamCount) : 0;
+            model.ExamModel.ThemeTwoAllPassScaling = model.ExamModel.ThemeTwoAllPassCount != 0 ? (Math.Round((double)model.ExamModel.ThemeTwoAllPassCount * 100 / (double)model.ExamModel.ThemeTwoAllExamCount, 1)) : 0;
 
             //科目三学员集合
             var themeThreeStudentList = studentList.Where(x => !string.IsNullOrEmpty(x.ThemeThreeCoachID) && x.ThemeThreeCoachID.Equals(id)).ToList();
@@ -524,7 +524,7 @@ namespace DOL.Service
             model.ExamModel.ThemeThreeAllPeopleExamCount = allThemeThreeList.Where(x => x.Code == ThemeCode.Three).Select(x => x.StudentID).Distinct().Count();
             model.ExamModel.ThemeThreeAllExamCount = allThemeThreeList.Where(x => x.Code == ThemeCode.Three).Select(x => x.StudentID).Count();
             model.ExamModel.ThemeThreeAllPassCount = allThemeThreeList.Where(x => x.Result == ExamCode.Pass && x.Code == ThemeCode.Three).Select(x => x.StudentID).Distinct().Count();
-            model.ExamModel.ThemeThreeAllPassScaling = model.ExamModel.ThemeThreeAllPassCount != 0 ? (model.ExamModel.ThemeThreeAllPassCount * 100 / model.ExamModel.ThemeThreeAllPeopleExamCount) : 0;
+            model.ExamModel.ThemeThreeAllPassScaling = model.ExamModel.ThemeThreeAllPassCount != 0 ? (Math.Round((double)model.ExamModel.ThemeThreeAllPassCount * 100 / (double)model.ExamModel.ThemeThreeAllExamCount,1)) : 0;
 
             #endregion
 
@@ -590,19 +590,28 @@ namespace DOL.Service
             if (examAllCount == 0)
             {
                 model.ExamModel.ThemeTwoMonthPassScaling = 0;
+                if (model.ExamModel.ThemeTwoMonthPeopleExamCount == 0)
+                {
+                    model.ExamModel.ThemeTwoMonthPeoplePassScaling = 0;
+                }
+                else
+                {
+                    model.ExamModel.ThemeTwoMonthPeoplePassScaling = passAllCount != 0 ? (Math.Round((double)passAllCount * 100 / (double)examAllCount, 1)) : 0;
+                }
             }
             else
             {
-                model.ExamModel.ThemeTwoMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
+                model.ExamModel.ThemeTwoMonthPassScaling = passAllCount != 0 ? (Math.Round((double)passAllCount * 100 / (double)examAllCount,1)) : 0;
+                if (model.ExamModel.ThemeTwoMonthPeopleExamCount == 0)
+                {
+                    model.ExamModel.ThemeTwoMonthPeoplePassScaling = 0;
+                }
+                else
+                {
+                    model.ExamModel.ThemeTwoMonthPeoplePassScaling = passAllCount != 0 ? (Math.Round((double)passAllCount * 100 / (double)examAllCount, 1)) : 0;
+                }
             }
-            if (model.ExamModel.ThemeTwoMonthPeopleExamCount == 0)
-            {
-                model.ExamModel.ThemeTwoMonthPeoplePassScaling = 0;
-            }
-            else
-            {
-                model.ExamModel.ThemeTwoMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / model.ExamModel.ThemeTwoMonthPeopleExamCount) : 0;
-            }
+           
 
 
             #endregion
@@ -657,19 +666,28 @@ namespace DOL.Service
             if (examAllCount == 0)
             {
                 model.ExamModel.ThemeThreeMonthPassScaling = 0;
+                if (model.ExamModel.ThemeThreeMonthPeopleExamCount == 0)
+                {
+                    model.ExamModel.ThemeThreeMonthPeoplePassScaling = 0;
+                }
+                else
+                {
+                    model.ExamModel.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (Math.Round((double)passAllCount * 100 / (double)examAllCount, 1)) : 0;
+                }
             }
             else
             {
                 model.ExamModel.ThemeThreeMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
+                if (model.ExamModel.ThemeThreeMonthPeopleExamCount == 0)
+                {
+                    model.ExamModel.ThemeThreeMonthPeoplePassScaling = 0;
+                }
+                else
+                {
+                    model.ExamModel.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (Math.Round((double)passAllCount * 100 / (double)examAllCount, 1)) : 0;
+                }
             }
-            if (model.ExamModel.ThemeThreeMonthPeopleExamCount == 0)
-            {
-                model.ExamModel.ThemeThreeMonthPeoplePassScaling = 0;
-            }
-            else
-            {
-                model.ExamModel.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / model.ExamModel.ThemeThreeMonthPeopleExamCount) : 0;
-            }
+            
 
 
             #endregion
@@ -1055,15 +1073,19 @@ namespace DOL.Service
                 trainItem.ThemeTwoAllPeopleExamCount = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Two).Select(x => x.StudentID).Distinct().Count();
                 trainItem.ThemeTwoAllExamCount = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Two).Select(x => x.StudentID).Count();
                 trainItem.ThemeTwoAllPassCount = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Two && x.Result == ExamCode.Pass).Select(x => x.StudentID).Count();
-                trainItem.ThemeTwoAllPassScaling = trainItem.ThemeTwoAllPassCount != 0 ? (trainItem.ThemeTwoAllPassCount * 100 / trainItem.ThemeTwoAllPeopleExamCount) : 0;
+                trainItem.ThemeTwoAllPeoplePassCount = examList.Where(x => selectThemeTwoStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Two && x.Result == ExamCode.Pass).Select(x => x.StudentID).Distinct().Count();
+                trainItem.ThemeTwoAllPassScaling = trainItem.ThemeTwoAllPassCount != 0 ? (Math.Round((double)trainItem.ThemeTwoAllPassCount * 100 / (double)trainItem.ThemeTwoAllExamCount, 1)) : 0;
+                trainItem.ThemeTwoAllPeoplePassScaling = trainItem.ThemeTwoAllPeoplePassCount != 0 ? (Math.Round((double)trainItem.ThemeTwoAllPeoplePassCount * 100 / (double)trainItem.ThemeTwoAllPeoplePassCount, 1)) : 0;
 
 
                 //考试人数 通过人数 通过率
                 trainItem.ThemeThreeAllPeopleExamCount = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three).Select(x => x.StudentID).Distinct().Count();
                 trainItem.ThemeThreeAllExamCount = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three).Select(x => x.StudentID).Count();
                 trainItem.ThemeThreeAllPassCount = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three&&x.Result==ExamCode.Pass).Select(x => x.StudentID).Count();
-                trainItem.ThemeThreeAllPassScaling = trainItem.ThemeThreeAllPassCount != 0 ? (trainItem.ThemeThreeAllPassCount * 100 / trainItem.ThemeThreeAllPeopleExamCount) : 0;
-
+                trainItem.ThemeThreeAllPeoplePassCount = examList.Where(x => selectThemeThreeStudentIDList.Contains(x.StudentID) && x.Code == ThemeCode.Three && x.Result == ExamCode.Pass).Select(x => x.StudentID).Distinct().Count();
+                trainItem.ThemeThreeAllPassScaling = trainItem.ThemeThreeAllPassCount != 0 ? (Math.Round((double)trainItem.ThemeThreeAllPassCount * 100 / (double)trainItem.ThemeThreeAllExamCount, 1)) : 0;
+                trainItem.ThemeThreeAllPeoplePassScaling = trainItem.ThemeThreeAllPeoplePassCount != 0 ? (Math.Round((double)trainItem.ThemeThreeAllPeoplePassCount * 100 / (double)trainItem.ThemeThreeAllPeopleExamCount, 1)) : 0;
+   
                 #endregion
 
                 //考试学员姓名集合
@@ -1111,19 +1133,28 @@ namespace DOL.Service
                 if (examAllCount == 0)
                 {
                     trainItem.ThemeTwoMonthPassScaling = 0;
+                    if (trainItem.ThemeTwoMonthPeopleExamCount == 0)
+                    {
+                        trainItem.ThemeTwoMonthPeoplePassScaling = 0;
+                    }
+                    else
+                    {
+                        trainItem.ThemeTwoMonthPeoplePassScaling = passAllCount != 0 ? (Math.Round((double)passAllCount * 100 / (double)trainItem.ThemeTwoMonthPeopleExamCount, 1)) : 0;
+                    }
                 }
                 else
                 {
-                    trainItem.ThemeTwoMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
+                    trainItem.ThemeTwoMonthPassScaling = passAllCount != 0 ? (Math.Round((double)passAllCount * 100 / (double)examAllCount,1)) : 0;
+                    if (trainItem.ThemeTwoMonthPeopleExamCount == 0)
+                    {
+                        trainItem.ThemeTwoMonthPeoplePassScaling = 0;
+                    }
+                    else
+                    {
+                        trainItem.ThemeTwoMonthPeoplePassScaling = passAllCount != 0 ? (Math.Round((double)passAllCount * 100 / (double)trainItem.ThemeTwoMonthPeopleExamCount, 1)) : 0;
+                    }
                 }
-                if (trainItem.ThemeTwoMonthPeopleExamCount == 0)
-                {
-                    trainItem.ThemeTwoMonthPeoplePassScaling = 0;
-                }
-                else
-                {
-                    trainItem.ThemeTwoMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / trainItem.ThemeTwoMonthPeopleExamCount) : 0;
-                }
+               
 
                 #endregion
 
@@ -1163,19 +1194,28 @@ namespace DOL.Service
                 if (examAllCount == 0)
                 {
                     trainItem.ThemeThreeMonthPassScaling = 0;
+                    if (trainItem.ThemeThreeMonthPeopleExamCount == 0)
+                    {
+                        trainItem.ThemeThreeMonthPeoplePassScaling = 0;
+                    }
+                    else
+                    {
+                        trainItem.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (Math.Round((double)passAllCount * 100 / (double)trainItem.ThemeThreeMonthPeopleExamCount, 1)) : 0;
+                    }
                 }
                 else
                 {
                     trainItem.ThemeThreeMonthPassScaling = passAllCount != 0 ? (passAllCount * 100 / examAllCount) : 0;
+                    if (trainItem.ThemeThreeMonthPeopleExamCount == 0)
+                    {
+                        trainItem.ThemeThreeMonthPeoplePassScaling = 0;
+                    }
+                    else
+                    {
+                        trainItem.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (Math.Round((double)passAllCount * 100 / (double)trainItem.ThemeThreeMonthPeopleExamCount, 1)) : 0;
+                    }
                 }
-                if (trainItem.ThemeThreeMonthPeopleExamCount == 0)
-                {
-                    trainItem.ThemeThreeMonthPeoplePassScaling = 0;
-                }
-                else
-                {
-                    trainItem.ThemeThreeMonthPeoplePassScaling = passAllCount != 0 ? (passAllCount * 100 / trainItem.ThemeThreeMonthPeopleExamCount) : 0;
-                }
+                
                 #endregion
                 model.AllTrainDic.Add(coachItem.ID, trainItem);
 

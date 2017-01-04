@@ -74,7 +74,7 @@
                         </thead>
                         <tbody>
                             @foreach (var item in examThemeTwoList)
-                    {
+                            {
                     <tr>
                         <td>@(item.Item2.ToString("MM月dd日"))</td>
                         <td style="margin:0 0 1rem 0;line-height:0px;">@Html.Raw(item.Item3)</td>
@@ -82,7 +82,7 @@
                         <td>@item.Item5</td>
                         <td>@(item.Item6)%</td>
                     </tr>
-                    }
+                            }
                             <tr>
                                 <td></td>
                                 <td>本月考试人数</td>
@@ -141,7 +141,7 @@
                         </thead>
                         <tbody>
                             @foreach (var item in examThemeThreeList)
-                    {
+                            {
                                 <tr>
                                     <td>@(item.Item2.ToString("MM月dd日"))</td>
                                     <td style="margin:0 0 1rem 0;line-height:0px;">@Html.Raw(item.Item3)</td>
@@ -209,7 +209,7 @@
                                 <td colspan="4" class="am-text-center">科目二</td>
                             </tr>
                             @foreach (var item in themeTwoSalary)
-                    {
+                            {
                                 <tr>
                                     <td>@item.Item3</td>
                                     <td>@item.Item4</td>
@@ -222,7 +222,7 @@
                                 <td colspan="4" class="am-text-center">科目三</td>
                             </tr>
                             @foreach (var item in themeThreeSalary)
-                    {
+                            {
                                 <tr>
                                     <td>@item.Item3</td>
                                     <td>@item.Item4</td>
@@ -256,60 +256,119 @@
                 </div>
                 <table class="am-table am-table-compact am-table-hover table-main am-table-bordered am-text-sm">
                     <thead>
-                        <tr><th>科目</th><th colspan="9" class="am-text-center">科二</th><th colspan="9" class="am-text-center">科三</th></tr>
+                        <tr><th>科目</th><th colspan="11" class="am-text-center">科二</th><th colspan="11" class="am-text-center">科三</th></tr>
                         <tr>
                             <th>教练员</th>
 
-                            <th>考试次数</th>
-                            <th>通过次数</th>
-                            <th>通过率</th>
-                            <th>考试人数</th>
-                            <th>通过人数</th>
-                            <th>通过率</th>
-                            <td>总考试人次</td>
-                            <td>总通过人次</td>
-                            <td>综合通过率</td>
 
-                            <th>教练员</th>
-                            <th>考试次数</th>
-                            <th>通过次数</th>
-                            <th>通过率</th>
-                            <th>考试人数</th>
+                            @*<th>考试次数</th>
+    <th>通过次数</th>
+    <th>通过率</th>
+    <th>考试人数</th>*@
                             <th>通过人数</th>
-                            <th>通过率</th>
+                            <th>考试次数</th>
+                            <th>人数通过率</th>
+                            <th>考试人数</th>
+                            <th>仁慈通过率</th>
                             <td>总考试人次</td>
                             <td>总通过人次</td>
-                            <td>综合通过率</td>
+                            <td>总人次通过率</td>
+                            <td>总考试人数</td>
+                            <td>总通过人数</td>
+                            <td>总人数通过率</td>
+                            <th>教练员</th>
+
+                            <th>通过人数</th>
+                            <th>考试次数</th>
+                            <th>人数通过率</th>
+                            <th>考试人数</th>
+                            <th>仁慈通过率</th>
+                            <td>总考试人次</td>
+                            <td>总通过人次</td>
+                            <td>总人次通过率</td>
+                            <td>总考试人数</td>
+                            <td>总通过人数</td>
+                            <td>总人数通过率</td>
                         </tr>
 
                     </thead>
                     <tbody>
-
+                        @{ 
+                            var two_1 = 0; var two_2 = 0; var two_3 = 0; var two_4 = 0; var two_5 = 0; var two_6 = 0; var two_7 = 0;
+                            var three_1 = 0; var three_2 = 0; var three_3 = 0; var three_4 = 0; var three_5 = 0; var three_6 = 0; var three_7 = 0;
+                        }
                         @foreach (var item in Model.CoachReportModel.CoachList.AllTrainDic)
                         {
+                            two_1 += item.Value.ThemeTwoMonthPassCount;
+                            two_2 += item.Value.ThemeTwoMonthExamCount;
+                            two_3 += item.Value.ThemeTwoMonthPeopleExamCount;
+                            two_4 += item.Value.ThemeTwoAllExamCount;
+                            two_5 += item.Value.ThemeTwoAllPassCount;
+                            two_6 += item.Value.ThemeTwoAllPeopleExamCount;
+                            two_7 += item.Value.ThemeTwoAllPeoplePassCount;
+
+                            three_1 += item.Value.ThemeThreeMonthPassCount;
+                            three_2 += item.Value.ThemeThreeMonthExamCount;
+                            three_3 += item.Value.ThemeThreeMonthPeopleExamCount;
+                            three_4 += item.Value.ThemeThreeAllExamCount;
+                            three_5 += item.Value.ThemeThreeAllPassCount;
+                            three_6 += item.Value.ThemeThreeAllPeopleExamCount;
+                            three_7 += item.Value.ThemeThreeAllPeoplePassCount;
                             <tr><td>@item.Value.CoachName</td>
 
-                                <td>@(item.Value?.ThemeTwoMonthExamCount)</td>
                                 <td>@(item.Value?.ThemeTwoMonthPassCount)</td>
+                                <td>@(item.Value?.ThemeTwoMonthExamCount)</td>
                                 <td>@(item.Value?.ThemeTwoMonthPassScaling)%</td>
                                 <td>@(item.Value?.ThemeTwoMonthPeopleExamCount)</td>
-                                <td>@(item.Value?.ThemeTwoMonthPassCount)</td>
                                 <td>@(item.Value?.ThemeTwoMonthPeoplePassScaling)%</td>
-                                <td>@(item.Value?.ThemeTwoAllPeopleExamCount)</td>
+                                <td>@(item.Value?.ThemeTwoAllExamCount)</td>
                                 <td>@(item.Value?.ThemeTwoAllPassCount)</td>
                                 <td>@(item.Value?.ThemeTwoAllPassScaling)%</td>
+                                <td>@(item.Value?.ThemeTwoAllPeopleExamCount)</td>
+                                <td>@(item.Value?.ThemeTwoAllPeoplePassCount)</td>
+                                <td>@(item.Value?.ThemeTwoAllPeoplePassScaling)%</td>
                                 <td>@item.Value.CoachName</td>
-                                <td>@(item.Value?.ThemeThreeMonthExamCount)</td>
                                 <td>@(item.Value?.ThemeThreeMonthPassCount)</td>
+                                <td>@(item.Value?.ThemeThreeMonthExamCount)</td>
                                 <td>@(item.Value?.ThemeThreeMonthPassScaling)%</td>
                                 <td>@(item.Value?.ThemeThreeMonthPeopleExamCount)</td>
-                                <td>@(item.Value?.ThemeThreeMonthPassCount)</td>
                                 <td>@(item.Value?.ThemeThreeMonthPeoplePassScaling)%</td>
-                                <td>@(item.Value?.ThemeThreeAllPeopleExamCount)</td>
+                                <td>@(item.Value?.ThemeThreeAllExamCount)</td>
                                 <td>@(item.Value?.ThemeThreeAllPassCount)</td>
                                 <td>@(item.Value?.ThemeThreeAllPassScaling)%</td>
+                                <td>@(item.Value?.ThemeThreeAllPeopleExamCount)</td>
+                                <td>@(item.Value?.ThemeThreeAllPeoplePassCount)</td>
+                                <td>@(item.Value?.ThemeThreeAllPeoplePassScaling)%</td>
                             </tr>
                         }
+                        <tr>
+                            <td>合计</td>
+                            <td>@(two_1)</td>
+                            <td>@(two_2)</td>
+                            <td>@(two_2 != 0 ? (Math.Round((double)two_1 * 100 / (double)two_2, 1)) : 0)%</td>
+                            <td>@(two_3)</td>
+                            <td>@(two_3 != 0 ? (Math.Round((double)two_1 * 100 / (double)two_3, 1)) : 0)%</td>
+                            <td>@(two_4)</td>
+                            <td>@(two_5)</td>
+                            <td>@(two_4 != 0 ? (Math.Round((double)two_5 * 100 / (double)two_4, 1)) : 0)%</td>
+                            <td>@(two_6)</td>
+                            <td>@(two_7)</td>
+                            <td>@(two_6 != 0 ? (Math.Round((double)two_7 * 100 / (double)two_6, 1)) : 0)%</td>
+
+
+                            <td>合计</td>
+                            <td>@(three_1)</td>
+                            <td>@(three_2)</td>
+                            <td>@(three_2 != 0 ? (Math.Round((double)three_1 * 100 / (double)three_2, 1)) : 0)%</td>
+                            <td>@(three_3)</td>
+                            <td>@(three_3 != 0 ? (Math.Round((double)three_1 * 100 / (double)three_3, 1)) : 0)%</td>
+                            <td>@(three_4)</td>
+                            <td>@(three_5)</td>
+                            <td>@(three_4 != 0 ? (Math.Round((double)three_5 * 100 / (double)three_4, 1)) : 0)%</td>
+                            <td>@(three_6)</td>
+                            <td>@(three_7)</td>
+                            <td>@(three_6 != 0 ? (Math.Round((double)three_7 * 100 / (double)three_6, 1)) : 0)%</td>
+                        </tr>
                     </tbody>
 
                 </table>

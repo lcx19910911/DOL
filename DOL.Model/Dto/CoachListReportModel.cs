@@ -52,7 +52,7 @@ namespace DOL.Model
         /// <summary>
         /// 通过比例（次数）
         /// </summary>
-        public int ThemeTwoMonthPassScaling { get; set; }
+        public double ThemeTwoMonthPassScaling { get; set; }
 
         /// <summary>
         /// 当月（人数）
@@ -63,7 +63,7 @@ namespace DOL.Model
         /// <summary>
         /// 通过比例（人数）
         /// </summary>
-        public int ThemeTwoMonthPeoplePassScaling { get; set; }
+        public double ThemeTwoMonthPeoplePassScaling { get; set; }
 
 
        
@@ -71,13 +71,17 @@ namespace DOL.Model
         public int ThemeTwoAllExamCount { get; set; }
 
         public int ThemeTwoAllPassCount { get; set; }
+        public int ThemeTwoAllPeoplePassCount { get; set; }
 
         /// <summary>
         /// 通过比例
         /// </summary>
-        public int ThemeTwoAllPassScaling { get; set; }
+        public double ThemeTwoAllPassScaling { get; set; }
 
-
+        /// <summary>
+        /// 通过比例
+        /// </summary>
+        public double ThemeTwoAllPeoplePassScaling { get; set; }
 
 
 
@@ -90,7 +94,7 @@ namespace DOL.Model
         /// <summary>
         /// 通过比例
         /// </summary>
-        public int ThemeThreeMonthPassScaling { get; set; }
+        public double ThemeThreeMonthPassScaling { get; set; }
 
 
         /// <summary>
@@ -101,7 +105,7 @@ namespace DOL.Model
         /// <summary>
         /// 通过比例（人数）
         /// </summary>
-        public int ThemeThreeMonthPeoplePassScaling { get; set; }
+        public double ThemeThreeMonthPeoplePassScaling { get; set; }
 
 
         public int ThemeThreeAllPeopleExamCount { get; set; }
@@ -109,10 +113,17 @@ namespace DOL.Model
 
         public int ThemeThreeAllPassCount { get; set; }
 
+        public int ThemeThreeAllPeoplePassCount { get; set; }
+        
+
         /// <summary>
         /// 通过比例
         /// </summary>
-        public int ThemeThreeAllPassScaling { get; set; }
+        public double ThemeThreeAllPassScaling { get; set; }
+        /// <summary>
+        /// 通过比例
+        /// </summary>
+        public double ThemeThreeAllPeoplePassScaling { get; set; }
 
     }
 }
