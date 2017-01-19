@@ -104,7 +104,7 @@ namespace DOL.Service
                 {
                     if ((int)state != -1 && !isDelete)
                     {
-                        query = query.Where(x => x.State.Equals(state));
+                        query = query.Where(x => x.State==state);
                     }
                 }
                 else
@@ -113,7 +113,7 @@ namespace DOL.Service
                     {
                         if ((int)state != -1 && !isDelete)
                         {
-                            query = query.Where(x => x.State.Equals(state));
+                            query = query.Where(x => x.State == state);
                         }
                         else
                         {
