@@ -161,7 +161,7 @@
                             td.append(_convertEvent(item));
                         } else if (column.type == "more") {
 
-                            var more = $("<span class=\"am-icon-plus-square\">展示</span>");
+                            var more = $("<span class=\"am-icon-plus-square\">展开</span>");
                             more.bind("click", function () {
                                 var obj = $(this).parents("tr").next();
                                 var isOpen = $(obj).attr("data-show");
