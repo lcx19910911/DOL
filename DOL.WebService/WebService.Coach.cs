@@ -873,7 +873,7 @@ namespace DOL.Service
             CoachListReportModel model = new CoachListReportModel();
             model.StartTime= returnModel.StartTime = time.Value;
             model.EndTime = endTime;
-
+            returnModel.EndTime = endTime;
 
             var studentList = Cache_Get_StudentList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
             var themeTwoStudentList = studentList.Where(x => !string.IsNullOrEmpty(x.ThemeTwoCoachID)).ToList();
