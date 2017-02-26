@@ -19,7 +19,7 @@ namespace DOL.Service
         /// 缓存
         /// </summary>
         /// <returns></returns>
-        private List<Reference> Cache_Get_ReferenceList()
+        public List<Reference> Cache_Get_ReferenceList()
         {
 
             return CacheHelper.Get<List<Reference>>(referenceKey, () =>
@@ -36,7 +36,7 @@ namespace DOL.Service
         /// 缓存 dic
         /// </summary>
         /// <returns></returns>
-        private Dictionary<string,Reference> Cache_Get_ReferenceList_Dic()
+        public Dictionary<string,Reference> Cache_Get_ReferenceList_Dic()
         {
             return Cache_Get_ReferenceList().ToDictionary(x => x.ID);
         }

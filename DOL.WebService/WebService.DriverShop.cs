@@ -18,7 +18,7 @@ namespace DOL.Service
         /// 缓存
         /// </summary>
         /// <returns></returns>
-        private List<DriverShop> Cache_Get_DriverShopList()
+        public List<DriverShop> Cache_Get_DriverShopList()
         {
 
             return CacheHelper.Get<List<DriverShop>>(driverShopKey, () =>

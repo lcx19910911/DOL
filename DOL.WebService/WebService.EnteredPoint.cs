@@ -18,7 +18,7 @@ namespace DOL.Service
         /// 缓存
         /// </summary>
         /// <returns></returns>
-        private List<EnteredPoint> Cache_Get_EnteredPointList()
+        public List<EnteredPoint> Cache_Get_EnteredPointList()
         {
 
             return CacheHelper.Get<List<EnteredPoint>>(enteredPointKey, () =>

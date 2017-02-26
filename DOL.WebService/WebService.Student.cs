@@ -20,7 +20,7 @@ namespace DOL.Service
         /// 站内通知全局缓存
         /// </summary>
         /// <returns></returns>
-        private List<Student> Cache_Get_StudentList()
+        public List<Student> Cache_Get_StudentList()
         {
 
             return CacheHelper.Get<List<Student>>(studentKey, () =>
@@ -1440,6 +1440,8 @@ namespace DOL.Service
                     oldEntity.MakeCardDate = makeCardDate;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
+                    oldEntity.State = StudentCode.ThemeOne;
+                    oldEntity.NowTheme = ThemeCode.One;
                     string afterJSon = oldEntity.ToJson();
                     string info = SearchModifyHelper.CompareProperty<Student, Student>(Cache_Get_StudentList_Dic()[oldEntity.ID], oldEntity);
                     Add_Log(LogCode.UpdateStudent, oldEntity.ID, string.Format("{0}在{1}编辑{2}的信息,修改制卡院校和制卡时间", Client.LoginUser.Name, DateTime.Now.ToString(), oldEntity.Name), beforeJson, afterJSon, info);

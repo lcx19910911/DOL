@@ -23,6 +23,11 @@ namespace DOL.Web.Controllers
         public void LoadCache()
         {
             WebService.Cache_Get_CoachList();
+            WebService.Cache_Get_StudentList();
+            WebService.Cache_Get_DataDictionary();
+            WebService.Cache_Get_ReferenceList();
+            WebService.Cache_Get_DriverShopList();
+            WebService.Cache_Get_EnteredPointList();
         }
     }
 }
