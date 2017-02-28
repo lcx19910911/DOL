@@ -11,6 +11,11 @@
         examThemeTwoList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
         examThemeThreeList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
     }
+    if (Model != null && Model.CoachReportModel.isShowList == false && Model.CoachReportModel.ExamModel != null && Model.CoachReportModel.ThemeSalaryModel.List != null && Model.CoachReportModel.ThemeSalaryModel.List.Count > 0)
+    {
+        themeTwoSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
+        themeThreeSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
+    }
     ViewBag.Title = "教学查询";
 }
 <div class="am-cf am-padding">
@@ -202,20 +207,34 @@
                             <tr>
                                 <td>底薪</td>
                                 <td>1</td>
-                                <td>@(Model.CoachReportModel.ThemeSalaryModel?.BasicSalary)</td>
-                                <td>@(Model.CoachReportModel.ThemeSalaryModel?.BasicSalary)</td>
+                                <td>@Model.CoachReportModel.ThemeSalaryModel.BasicSalary</td>
+                                <td>@Model.CoachReportModel.ThemeSalaryModel.BasicSalary</td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="am-text-center">科目二</td>
                             </tr>
                             @foreach (var item in themeTwoSalary)
                             {
+
                                 <tr>
                                     <td>@item.Item3</td>
                                     <td>@item.Item4</td>
                                     <td>@item.Item5</td>
                                     <td>@item.Item6</td>
                                 </tr>
+                                if (Model.CoachReportModel.ThemeSalaryModel.OldList != null && Model.CoachReportModel.ThemeSalaryModel.OldList.Count > 0)
+                                {
+                                    var oldItem = Model.CoachReportModel.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1) && x.Item2.Equals(item.Item2)).FirstOrDefault();
+                                    if (oldItem != null)
+                                    {
+                                        <tr>
+                                            <td>@oldItem.Item3</td>
+                                            <td>@oldItem.Item4</td>
+                                            <td>@oldItem.Item5</td>
+                                            <td>@oldItem.Item6</td>
+                                        </tr>
+                                    }
+                                }
                             }
                             <tr><td colspan="4"></td></tr>
                             <tr>
@@ -229,15 +248,27 @@
                                     <td>@item.Item5</td>
                                     <td>@item.Item6</td>
                                 </tr>
+                                if (Model.CoachReportModel.ThemeSalaryModel.OldList != null && Model.CoachReportModel.ThemeSalaryModel.OldList.Count > 0)
+                                {
+                                    var oldItem = Model.CoachReportModel.ThemeSalaryModel.OldList.Where(x => x.Item1.Equals(item.Item1) && x.Item2.Equals(item.Item2)).FirstOrDefault();
+                                    if (oldItem != null)
+                                    {
+                                        <tr>
+                                            <td>@oldItem.Item3</td>
+                                            <td>@oldItem.Item4</td>
+                                            <td>@oldItem.Item5</td>
+                                            <td>@oldItem.Item6</td>
+                                        </tr>
+                                    }
+                                }
                             }
                             <tr>
                                 <td></td>
                                 <td></td>
                                 <td>总计</td>
-                                <td>@(Model.CoachReportModel.ThemeSalaryModel?.TotalMoeny)</td>
+                                <td>@Model.CoachReportModel.ThemeSalaryModel.TotalMoeny</td>
                             </tr>
                         </tbody>
-
                     </table>
                 </div>
             }
