@@ -118,7 +118,7 @@ namespace DOL.Service
                     {
                         return Result(false, ErrorCode.theme_one_time_error);
                     }
-                    student.ThemeOneDate =model.CreatedTime;
+                    student.ThemeOneDate = DateTime.Now;
                     if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeOnePass = YesOrNoCode.Yes;
@@ -139,13 +139,20 @@ namespace DOL.Service
                     }
 
 
-                    student.ThemeTwoDate = model.CreatedTime;
+                    student.ThemeTwoDate = DateTime.Now;
                     if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeTwoPass = YesOrNoCode.Yes;
-                        student.NowTheme = ThemeCode.Three;
-                        student.ThemeTwoTimeCode = ThemeTimeCode.Complete;
-                        student.State = StudentCode.ThemeThree;
+                        if (student.ThemeThreePass == YesOrNoCode.Yes)
+                        {
+                            student.NowTheme = ThemeCode.Four;
+                            student.State = StudentCode.ThemeFour;
+                        }
+                        else
+                        {
+                            student.NowTheme = ThemeCode.Three;
+                            student.State = StudentCode.ThemeThree;
+                        }
                     }
                 }
                 else if (model.Code == ThemeCode.Three)
@@ -159,19 +166,25 @@ namespace DOL.Service
                         return Result(false, ErrorCode.themethree_timecode_not_complete);
                     }
 
-                    student.ThemeThreeDate = model.CreatedTime;
+                    student.ThemeThreeDate = DateTime.Now;
                     if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeThreePass = YesOrNoCode.Yes;
-                        student.NowTheme = ThemeCode.Four;
-                        student.State = StudentCode.ThemeFour;
-
-                        student.ThemeThreeTimeCode = ThemeTimeCode.Complete;
+                        if (student.ThemeTwoPass == YesOrNoCode.No)
+                        {
+                            student.NowTheme = ThemeCode.Two;
+                            student.State = StudentCode.ThemeTwo;
+                        }
+                        else
+                        {
+                            student.NowTheme = ThemeCode.Four;
+                            student.State = StudentCode.ThemeFour;
+                        }
                     }
                 }
                 else if (model.Code == ThemeCode.Four)
                 {
-                    student.ThemeFourDate = model.CreatedTime;
+                    student.ThemeFourDate = DateTime.Now;
                     if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeFourPass = YesOrNoCode.Yes;
