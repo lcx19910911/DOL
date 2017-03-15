@@ -592,8 +592,27 @@
                             height: "500px",
                             pageUrl: "/Exam/Add",
                             callback: function (e) {
-                                $("#payForm [name='Code']").find('option').eq(item.NowTheme-1).attr('selected', true);
                                 $("#payForm [name='Count']").val(item.ExamCount);
+                                if (item.NowTheme == 2 || item.NowTheme == 3) {
+                                    if ((item.NowTheme == 2 && item.ThemeThreePass == 1) || (item.NowTheme == 3 && item.ThemeTwoPass == 1)) {
+                                        $("#payForm [name='Code']").find('option').eq(item.NowTheme - 1).attr('selected', true);
+                                    }
+                                    else {
+                                        $("#payForm [name='Code']").find('option').eq(3).remove();
+                                        $("#payForm [name='Code']").attr("disabled", false).find('option').eq(0).remove();
+                                        $("#payForm [name='Code']").on("change", function () {
+                                            if ($(this).val() == item.NowTheme) {
+                                                $("#payForm [name='Count']").val(item.ExamCount);
+                                            }
+                                            else {
+                                                $("#payForm [name='Count']").val(item.OtherExamCount);
+                                            }
+                                        })
+                                    }
+                                }
+                                else {
+                                    $("#payForm [name='Code']").find('option').eq(item.NowTheme - 1).attr('selected', true);
+                                }
                             },
                             buttons: [{
                                 label: "保存",

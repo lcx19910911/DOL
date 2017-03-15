@@ -487,6 +487,11 @@ namespace DOL.Model
         [NotMapped]
         public int ExamCount { get; set; }
 
+        /// <summary>
+        /// 考试次数
+        /// </summary>
+        [NotMapped]
+        public int OtherExamCount { get; set; }
 
         /// <summary>
         /// 缴费记录

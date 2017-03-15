@@ -242,6 +242,12 @@ namespace DOL.Service
                         x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
                     else
                         x.ExamCount = 1;
+
+                    if (x.NowTheme == ThemeCode.Two || x.NowTheme == ThemeCode.Three)
+                    {
+                        var otherNowTheme = x.NowTheme == ThemeCode.Two ? ThemeCode.Three : ThemeCode.Two;
+                        x.OtherExamCount = examDic[x.ID].Where(y =>y.Code == otherNowTheme).Count() + 1;
+                    }
                 });
 
                 return ResultPageList(list, pageIndex, pageSize, count);
@@ -973,6 +979,12 @@ namespace DOL.Service
                     else
                         x.ExamCount = 1;
 
+                    if (x.NowTheme == ThemeCode.Two || x.NowTheme == ThemeCode.Three)
+                    {
+                        var otherNowTheme = x.NowTheme == ThemeCode.Two ? ThemeCode.Three : ThemeCode.Two;
+                        x.OtherExamCount = examDic[x.ID].Where(y => y.Code == otherNowTheme).Count() + 1;
+                    }
+
                     //培训方式
                     //if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
                     //x.TrianName = trianDic[x.TrianID]?.Value;
@@ -1118,6 +1130,11 @@ namespace DOL.Service
                         x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
                     else
                         x.ExamCount = 1;
+                    if (x.NowTheme == ThemeCode.Two || x.NowTheme == ThemeCode.Three)
+                    {
+                        var otherNowTheme = x.NowTheme == ThemeCode.Two ? ThemeCode.Three : ThemeCode.Two;
+                        x.OtherExamCount = examDic[x.ID].Where(y => y.Code == otherNowTheme).Count() + 1;
+                    }
                     //高校
                     if (!string.IsNullOrEmpty(x.SchoolID) && schoolDic.ContainsKey(x.SchoolID))
                         x.SchoolName = schoolDic[x.SchoolID]?.Value;
@@ -2035,6 +2052,11 @@ namespace DOL.Service
             {
                 var model = Cache_Get_StudentList().FirstOrDefault(x => x.ID.Equals(id));
                 model.ExamCount = Cache_Get_ExamList().Where(x => x.StudentID.Equals(id) && x.Code == model.NowTheme).Count() + 1;
+                if (model.NowTheme == ThemeCode.Two || model.NowTheme == ThemeCode.Three)
+                {
+                    var otherNowTheme = model.NowTheme == ThemeCode.Two ? ThemeCode.Three : ThemeCode.Two;
+                    model.OtherExamCount= Cache_Get_ExamList().Where(x => x.StudentID.Equals(id) && x.Code == otherNowTheme).Count() + 1;
+                }
                 return model;
             }
         }
