@@ -52,7 +52,12 @@ namespace DOL.Service
         {
             if (!id.IsNotNullOrEmpty())
                 return null;
-            return Cache_Get_PayOrderList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+            var obj=Cache_Get_PayOrderList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+            if (obj != null)
+            {
+                obj.Remark = Cache_Get_StudentList_Dic()[obj.StudentID].Remark;
+            }
+            return obj;
         }
 
 
