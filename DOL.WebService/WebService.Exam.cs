@@ -118,9 +118,9 @@ namespace DOL.Service
                     {
                         return Result(false, ErrorCode.theme_one_time_error);
                     }
-                    student.ThemeOneDate = DateTime.Now;
                     if (model.Result == ExamCode.Pass)
                     {
+                        student.ThemeOneDate = model.CreatedTime;
                         student.ThemeOnePass = YesOrNoCode.Yes;
                         student.NowTheme = ThemeCode.Two;
                         student.State = StudentCode.ThemeTwo;
@@ -139,10 +139,10 @@ namespace DOL.Service
                     }
 
 
-                    student.ThemeTwoDate = DateTime.Now;
                     if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeTwoPass = YesOrNoCode.Yes;
+                        student.ThemeTwoDate = model.CreatedTime;
                         if (student.ThemeThreePass == YesOrNoCode.Yes)
                         {
                             student.NowTheme = ThemeCode.Four;
@@ -165,10 +165,10 @@ namespace DOL.Service
                     {
                         return Result(false, ErrorCode.themethree_timecode_not_complete);
                     }
-
-                    student.ThemeThreeDate = DateTime.Now;
+                    
                     if (model.Result == ExamCode.Pass)
                     {
+                        student.ThemeThreeDate = model.CreatedTime;
                         student.ThemeThreePass = YesOrNoCode.Yes;
                         if (student.ThemeTwoPass == YesOrNoCode.No)
                         {
@@ -184,9 +184,9 @@ namespace DOL.Service
                 }
                 else if (model.Code == ThemeCode.Four)
                 {
-                    student.ThemeFourDate = DateTime.Now;
                     if (model.Result == ExamCode.Pass)
                     {
+                        student.ThemeFourDate = model.CreatedTime;
                         student.ThemeFourPass = YesOrNoCode.Yes;
                         student.NowTheme = ThemeCode.Four;
                         student.State = StudentCode.Graduate;
