@@ -114,13 +114,13 @@ namespace DOL.Service
 
                 if (model.Code == ThemeCode.One)
                 {
+                    student.ThemeOneDate = model.CreatedTime;
                     if (model.CreatedTime < student.MakeCardDate)
                     {
                         return Result(false, ErrorCode.theme_one_time_error);
                     }
                     if (model.Result == ExamCode.Pass)
                     {
-                        student.ThemeOneDate = model.CreatedTime;
                         student.ThemeOnePass = YesOrNoCode.Yes;
                         student.NowTheme = ThemeCode.Two;
                         student.State = StudentCode.ThemeTwo;
@@ -138,11 +138,11 @@ namespace DOL.Service
                         return Result(false, ErrorCode.themetwo_timecode_not_complete);
                     }
 
+                    student.ThemeTwoDate = model.CreatedTime;
 
                     if (model.Result == ExamCode.Pass)
                     {
                         student.ThemeTwoPass = YesOrNoCode.Yes;
-                        student.ThemeTwoDate = model.CreatedTime;
                         if (student.ThemeThreePass == YesOrNoCode.Yes)
                         {
                             student.NowTheme = ThemeCode.Four;
@@ -165,10 +165,10 @@ namespace DOL.Service
                     {
                         return Result(false, ErrorCode.themethree_timecode_not_complete);
                     }
-                    
+
+                    student.ThemeThreeDate = model.CreatedTime;
                     if (model.Result == ExamCode.Pass)
                     {
-                        student.ThemeThreeDate = model.CreatedTime;
                         student.ThemeThreePass = YesOrNoCode.Yes;
                         if (student.ThemeTwoPass == YesOrNoCode.No)
                         {
@@ -184,9 +184,9 @@ namespace DOL.Service
                 }
                 else if (model.Code == ThemeCode.Four)
                 {
+                    student.ThemeFourDate = model.CreatedTime;
                     if (model.Result == ExamCode.Pass)
                     {
-                        student.ThemeFourDate = model.CreatedTime;
                         student.ThemeFourPass = YesOrNoCode.Yes;
                         student.NowTheme = ThemeCode.Four;
                         student.State = StudentCode.Graduate;
