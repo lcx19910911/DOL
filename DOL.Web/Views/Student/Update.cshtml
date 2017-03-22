@@ -184,7 +184,7 @@
                             <select name="From" data-am-selected="{btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
                                 <option value="0">未知</option>
                                 <option value="1">学校</option>
-                                <option value="2">Society</option>
+                                <option value="2">社会</option>
                             </select>
                         </div>
                     </div>
@@ -360,7 +360,8 @@
                             学时是否完成：
                         </div>
                         <div class="am-u-md-1  am-u-end">
-                                <select name="ThemeTwoTimeCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                                <select name="ThemeTwoTimeCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                                </select>
                         </div>
                     </div>
 
@@ -404,7 +405,8 @@
                             学时是否完成：
                         </div>
                         <div class="am-u-md-1  am-u-end">
-                            <select name="ThemeThreeTimeCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;"></select>
+                            <select name="ThemeThreeTimeCode" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                            </select>
                         </div>
                     </div>
 
@@ -846,20 +848,11 @@
 
             LoadProvince(false, model);
 
-            $("#form select[name='GenderCode']").find('option').eq(parseInt(model.GenderCode)).attr('selected', true);
-
+            //$("#form select[name='GenderCode']").find('option').eq(parseInt(model.GenderCode)).attr('selected', true);
             $("#form select[name='From']").find('option').eq(parseInt(model.From)).attr('selected', true);
             //是否增驾
             //LoadYesOrNoSelectItem($("#form select[name='IsAddCertificate']"), model.IsAddCertificate);
 
-            //是否科目一通过
-            LoadYesOrNoSelectItem($("#form select[name='ThemeOnePass']"), model.ThemeOnePass);
-            //是否科目二通过
-            LoadYesOrNoSelectItem($("#form select[name='ThemeTwoPass']"), model.ThemeTwoPass);
-            //是否科目三通过
-            LoadYesOrNoSelectItem($("#form select[name='ThemeThreePass']"), model.ThemeThreePass);
-            //是否科目四通过
-            LoadYesOrNoSelectItem($("#form select[name='ThemeFourPass']"), model.ThemeFourPass);
             //科目二学时是否完成
             LoadThemeTimeCodeSelectItem($("#form select[name='ThemeTwoTimeCode']"), model.ThemeTwoTimeCode);
             //科目三学时是否完成
@@ -890,6 +883,7 @@
             else {
                 $("#schoolDiv").show();
             }
+            mobileArea($('[name="Mobile"]'));
             LoadItemList(false, model, function () {
 
                 setTimeout(function () {
@@ -916,7 +910,6 @@
                     $("#loadingDiv").hide();
                 }, 1000)
             });
-
         });
     }
     init();

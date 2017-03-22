@@ -28,24 +28,6 @@ namespace DOL.Repository
 
 
         }
-        /// <summary>
-        /// 全局缓存
-        /// </summary>
-        /// <returns></returns>
-        public static List<TEntity> GetList<TEntity>() where TEntity : BaseEntity
-        {
-            string key = CacheHelper.RenderKey(Params.Cache_Prefix_Key, typeof(TEntity).Name);
-
-            return CacheHelper.Get<List<TEntity>>(key, () =>
-            {
-                using (var db = new DbRepository())
-                {
-                    DbSet<TEntity> dbSet = db.Set<TEntity>();
-
-                    return dbSet.ToList();
-                }
-            });
-        }
 
         /// <summary>
         /// 初始化对象
@@ -66,7 +48,6 @@ namespace DOL.Repository
                             entity.UpdatedTime = DateTime.Now;
                         if (entity.ID.IsNullOrEmpty())
                             entity.ID = Guid.NewGuid().ToString("N");
-                        var dd = GetList<BaseEntity>();
                         break;
                     case EntityState.Modified:
                         entity.UpdatedTime = DateTime.Now;
@@ -89,8 +70,10 @@ namespace DOL.Repository
 
                 //   InitObject(entry);
                 //}
-
-                return base.SaveChanges();
+                if (entries.Count() == 0)
+                    return 1;
+                else
+                    return base.SaveChanges();
 
             }
             catch (Exception ex)
