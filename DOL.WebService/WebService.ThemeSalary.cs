@@ -136,7 +136,6 @@ namespace DOL.Service
                     //如修改金额和次数 把以前数据隐藏 新增数据
                     if (oldEntity.Money != model.Money || oldEntity.Count != model.Count)
                     {
-
                         oldEntity.Flag = (long)GlobalFlag.Unabled;
                         oldEntity.EndTime = DateTime.Now;
                         newEntity.ID = Guid.NewGuid().ToString("N");

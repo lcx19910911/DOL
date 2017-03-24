@@ -40,13 +40,13 @@ namespace DOL.Service
         private string Cache_Get_UserMenu()
         {
 
-                var user = Cache_Get_UserList().Where(x=>x.ID.Equals(Client.LoginUser.ID)).FirstOrDefault();
-                if (user != null)
-                {
-                    return user.MenuIDStr.IsNotNullOrEmpty()?user.MenuIDStr:"";
-                }
-                else
-                    return "";
+            var user = Cache_Get_UserList().Where(x => x.ID.Equals(Client.LoginUser.ID)).FirstOrDefault();
+            if (user != null)
+            {
+                return user.MenuIDStr.IsNotNullOrEmpty() ? user.MenuIDStr : "";
+            }
+            else
+                return "";
 
         }
 
@@ -90,8 +90,8 @@ namespace DOL.Service
 
                     else
                     {
-                        if(user.OperateFlag.HasValue)
-                        user.OperateList = Get_UserOperateList(user.OperateFlag.Value);
+                        if (user.OperateFlag.HasValue)
+                            user.OperateList = Get_UserOperateList(user.OperateFlag.Value);
                         Client.Session[Params.UserCookieName] = CryptoHelper.AES_Encrypt(user.ToJson(), Params.SecretKey);
                         return Result(true);
                     }
@@ -170,11 +170,11 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<User>> Get_UserPageList(int pageIndex, int pageSize, string name,string mobile, DateTime? startTimeStart, DateTime? endTimeEnd)
+        public WebResult<PageList<User>> Get_UserPageList(int pageIndex, int pageSize, string name, string mobile, DateTime? startTimeStart, DateTime? endTimeEnd)
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = Cache_Get_UserList().AsQueryable().AsNoTracking().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && !x.ID.Equals(this.Client.LoginUser.ID)&&x.ID!= "2dad7156a2b644c98cea08e52ab1ddb1");
+                var query = Cache_Get_UserList().AsQueryable().AsNoTracking().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && !x.ID.Equals(this.Client.LoginUser.ID) && x.ID != "2dad7156a2b644c98cea08e52ab1ddb1");
 
                 if (name.IsNotNullOrEmpty())
                 {
@@ -193,7 +193,7 @@ namespace DOL.Service
                     endTimeEnd = endTimeEnd.Value.AddDays(1);
                     query = query.Where(x => x.CreatedTime < endTimeEnd);
                 }
-                
+
                 var count = query.Count();
                 var departDic = Cache_Get_DepartmentList_Dic();
                 var roleDic = Cache_Get_RoleList_Dic();
@@ -222,12 +222,12 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile)&&x.Flag==(long)GlobalFlag.Normal).Any())
+                if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Mobile.Equals(model.Mobile) && x.Flag == (long)GlobalFlag.Normal).Any())
                     return Result(false, ErrorCode.datadatabase_mobile__had);
                 if (Cache_Get_UserList().AsQueryable().AsNoTracking().Where(x => x.Account.Equals(model.Account) && x.Flag == (long)GlobalFlag.Normal).Any())
                     return Result(false, ErrorCode.user_name_already_exist);
                 var role = Cache_Get_RoleList().Where(x => x.ID.Equals(model.RoleID)).FirstOrDefault();
-                if(role==null)
+                if (role == null)
                     return Result(false, ErrorCode.datadatabase_primarykey_not_found);
                 model.OperateFlag = role.OperateFlag;
                 model.Password = CryptoHelper.MD5_Encrypt(model.ConfirmPassword);
@@ -433,7 +433,7 @@ namespace DOL.Service
 
         }
 
-        
+
 
         /// <summary>
         /// 删除分类

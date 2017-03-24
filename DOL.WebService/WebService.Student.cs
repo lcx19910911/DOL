@@ -1867,65 +1867,7 @@ namespace DOL.Service
 
         }
 
-        //private string GetTextHT(string JsonStr)
-        //{
-        //    Dictionary<string, string> hs = new Dictionary<string, string>();
-        //    JsonStr.Replace(@"'Name'","姓名");
-        //    JsonStr.Replace(@"'IDCard'", "身份证");
-        //    JsonStr.Replace(@"'GenderCode'", "性别");
-        //    JsonStr.Replace(@"'Name'", "姓名");
-        //    JsonStr.Replace(@"'Name'", "姓名");
-        //    JsonStr.Replace(@"'Name'", "姓名");
-        //    JsonStr.Replace(@"'Name'", "姓名");
-        //    JsonStr.Replace(@"'Name'", "姓名");
-        //    JsonStr.Replace(@"'Name'", "姓名");
-        //    JsonStr.Replace(@"'Name'", "姓名");
-        //    JsonStr.Replace(@"'Name'", "姓名");
-        //    JsonStr.Replace(@"'Name'", "姓名");
-        //    JsonStr.Replace(@"'Name'", "姓名");
-        //    hs["IDCard"] = "身份证";
-        //    hs["GenderCode"] = "性别";
-        //    hs["ProvinceCode"] = "省份";
-        //    hs["CityCode"] = "市";
-        //    hs["Address"] = "地址";
-        //    hs["Mobile"] = "手机号";
-        //    hs["CertificateID"] = "证书";
-        //    hs["EnteredPointID"] = "报名点";
-        //    hs["ReferenceID"] = "推荐人";
-        //    hs["WantDriverShopID"] = "意向驾校";
-        //    hs["TrianID"] = "培训班别";
-        //    hs["Money"] = "费用";
-        //    hs["HadPayMoney"] = "已交费用";
-        //    hs["MoneyIsFull"] = "是否缴清";
-        //    hs["PayMethodID"] = "缴费方式";
-        //    hs["Remark"] = "备注";
-        //    hs["EnteredDate"] = "报名时间";
-        //    hs["EnteredProvinceCode"] = "报名省份";
-        //    hs["EnteredCityCode"] = "报名市";
-
-        //    hs["MakeDriverShopID"] = "制卡驾校";
-        //    hs["MakeCardDate"] = "制卡日期";
-        //    hs["MakeCardCityCOde"] = "制卡地";
-        //    hs["MakeCardRemark"] = "制卡备注";
-        //    hs["ThemeOneDate"] = "科一时间";
-        //    hs["ThemeOnePass"] = "科一是否通过";
-        //    hs["ThemeTwoDate"] = "科二时间";
-        //    hs["ThemeTwoPass"] = "科二是否通过";
-        //    hs["ThemeTwoTimeCode"] = "科二学时状态";
-        //    hs["ThemeTwoCoachID"] = "科二教练";
-        //    hs["ThemeThreeDate"] = "科三时间";
-        //    hs["ThemeThreePass"] = "科三是否通过";
-        //    hs["ThemeThreeTimeCode"] = "科三学时状态";
-        //    hs["ThemeThreeCoachID"] = "科三教练";
-        //    hs["ThemeFourDate"] = "科四时间";
-        //    hs["ThemeFourPass"] = "科四是否通过";
-        //    hs["State"] = "学员状态";
-        //    hs["NowTheme"] = "当前科目";
-        //    hs["DropOutDate"] = "退学时间";
-
-        //    hs.GetValue<string,string>()
-
-        //}
+       
         /// <summary>
         /// 删除分类
         /// </summary>
