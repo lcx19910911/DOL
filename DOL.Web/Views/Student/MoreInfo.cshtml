@@ -157,6 +157,7 @@
                 <th dataname="ID" type="checkbox"></th>
                 <th type="more"></th>
                 <th dataname="Name">姓名</th>
+                <th render="NeedMoneyFuc">余款</th>
                 <th dataname="ReferenceName">推荐人</th>
                 <th dataname="CertificateName">车型</th>
                 <th dataname="MakeDriverShopName">制卡驾校</th>
@@ -198,7 +199,10 @@
 @section scripts
 {
     <script type="text/javascript">
-
+        function NeedMoneyFuc(item)
+        {
+            return item.Money - item.HadPayMoney;
+        }
         function ShowThemeTwoTimeCode(item) {
             if (item.ThemeTwoTimeCode == 1) {
                 return "完成";

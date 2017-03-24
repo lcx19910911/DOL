@@ -181,79 +181,90 @@ namespace DOL.Service
                 }
 
                 var list = query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-                var referenceDic = Cache_Get_ReferenceList_Dic();
-                var driverShopDic = Cache_Get_DriverShopList_Dic();
-                // var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
-                var enteredPointDic = Cache_Get_EnteredPoint_Dic();
-                var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
-                //var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
-                var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
-                var userDic = Cache_Get_UserDic();
-                var studentIdList = list.Select(x => x.ID).ToList();
-                var payOrderList = Cache_Get_PayOrderList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
-                var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x => x.Key);
-                list.ForEach(x =>
-                {
-                    //报名地
-                    // if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
-                    //   x.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
+               
 
-                    //证书
-                    if (!string.IsNullOrEmpty(x.EnteredPointID) && enteredPointDic.ContainsKey(x.EnteredPointID))
-                        x.EnteredPointName = enteredPointDic[x.EnteredPointID]?.Name;
-                    var parOrder = payOrderList.Where(y => y.StudentID.Equals(x.ID) && y.IsConfirm == YesOrNoCode.No).FirstOrDefault();
-                    if (parOrder != null)
-                    {
-                        x.DoConfirmMoney = parOrder.PayMoney;
-                    }
-                    //制卡地
-                    //if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
-                    // x.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
-                    //培训方式
-                    if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
-                        x.TrianName = trianDic[x.TrianID]?.Value;
-                    //制卡驾校
-                    if (!string.IsNullOrEmpty(x.MakeDriverShopID) && driverShopDic.ContainsKey(x.MakeDriverShopID))
-                        x.MakeDriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
-
-                    //推荐人
-                    if (!string.IsNullOrEmpty(x.ReferenceID) && referenceDic.ContainsKey(x.ReferenceID))
-                        x.ReferenceName = referenceDic[x.ReferenceID]?.Name;
-                    //支付方式
-                    //if (!string.IsNullOrEmpty(x.PayMethodID) && payMethodDic.ContainsKey(x.PayMethodID))
-                    // x.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
-
-                    //省
-                    //if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
-                    // x.ProvinceName = areaDic[x.ProvinceCode]?.Value;
-                    //省
-                    // if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
-                    // x.CityName = areaDic[x.CityCode]?.Value;
-
-                    //证书
-                    if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
-                        x.CertificateName = cerDic[x.CertificateID]?.Value;
-
-                    //修改人
-                    if (!string.IsNullOrEmpty(x.CreaterID) && userDic.ContainsKey(x.CreaterID))
-                        x.CreaterName = userDic[x.CreaterID]?.Name;
-
-                    if (examDic.ContainsKey(x.ID))
-                        x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
-                    else
-                        x.ExamCount = 1;
-
-                    if (x.NowTheme == ThemeCode.Two || x.NowTheme == ThemeCode.Three)
-                    {
-                        var otherNowTheme = x.NowTheme == ThemeCode.Two ? ThemeCode.Three : ThemeCode.Two;
-                        x.OtherExamCount = examDic[x.ID].Where(y =>y.Code == otherNowTheme).Count() + 1;
-                    }
-                });
-
-                return ResultPageList(list, pageIndex, pageSize, count);
+                return ResultPageList(GetReturnList(list,entities), pageIndex, pageSize, count);
             }
         }
 
+        public List<Student> GetReturnList(List<Student> list, DbRepository entities)
+        {
+            var referenceDic = Cache_Get_ReferenceList_Dic();
+            var driverShopDic = Cache_Get_DriverShopList_Dic();
+            // var areaDic = Cache_Get_DataDictionary()[GroupCode.Area];
+            var enteredPointDic = Cache_Get_EnteredPoint_Dic();
+            var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
+            //var payMethodDic = Cache_Get_DataDictionary()[GroupCode.PayMethod];
+            var trianDic = Cache_Get_DataDictionary()[GroupCode.Train];
+            var userDic = Cache_Get_UserDic();
+            var coachDic = Cache_Get_CoachList_Dic();
+            var studentIdList = list.Select(x => x.ID).ToList();
+            var payOrderList = Cache_Get_PayOrderList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+            var examDic = Cache_Get_ExamList().Where(x => studentIdList.Contains(x.StudentID)).GroupBy(x => x.StudentID).ToDictionary(x => x.Key);
+            list.ForEach(x =>
+            {
+                //报名地
+                // if (!string.IsNullOrEmpty(x.EnteredCityCode) && areaDic.ContainsKey(x.EnteredCityCode))
+                //   x.EnteredCityName = areaDic[x.EnteredCityCode]?.Value;
+
+                //证书
+                if (!string.IsNullOrEmpty(x.EnteredPointID) && enteredPointDic.ContainsKey(x.EnteredPointID))
+                    x.EnteredPointName = enteredPointDic[x.EnteredPointID]?.Name;
+                var parOrder = payOrderList.Where(y => y.StudentID.Equals(x.ID) && y.IsConfirm == YesOrNoCode.No).FirstOrDefault();
+                if (parOrder != null)
+                {
+                    x.DoConfirmMoney = parOrder.PayMoney;
+                }
+                //制卡地
+                //if (!string.IsNullOrEmpty(x.MakeCardCityCode) && areaDic.ContainsKey(x.MakeCardCityCode))
+                // x.MakeCardCityName = areaDic[x.MakeCardCityCode]?.Value;
+                //培训方式
+                if (!string.IsNullOrEmpty(x.TrianID) && trianDic.ContainsKey(x.TrianID))
+                    x.TrianName = trianDic[x.TrianID]?.Value;
+                //制卡驾校
+                if (!string.IsNullOrEmpty(x.MakeDriverShopID) && driverShopDic.ContainsKey(x.MakeDriverShopID))
+                    x.MakeDriverShopName = driverShopDic[x.MakeDriverShopID]?.Name;
+
+                //推荐人
+                if (!string.IsNullOrEmpty(x.ReferenceID) && referenceDic.ContainsKey(x.ReferenceID))
+                    x.ReferenceName = referenceDic[x.ReferenceID]?.Name;
+
+                //科二教练
+                if (!string.IsNullOrEmpty(x.ThemeTwoCoachID) && coachDic.ContainsKey(x.ThemeTwoCoachID))
+                    x.ThemeTwoCoachName = coachDic[x.ThemeTwoCoachID]?.Name;
+
+                //支付方式
+                //if (!string.IsNullOrEmpty(x.PayMethodID) && payMethodDic.ContainsKey(x.PayMethodID))
+                // x.PayMethodName = payMethodDic[x.PayMethodID]?.Value;
+
+                //省
+                //if (!string.IsNullOrEmpty(x.ProvinceCode) && areaDic.ContainsKey(x.ProvinceCode))
+                // x.ProvinceName = areaDic[x.ProvinceCode]?.Value;
+                //省
+                // if (!string.IsNullOrEmpty(x.CityCode) && areaDic.ContainsKey(x.CityCode))
+                // x.CityName = areaDic[x.CityCode]?.Value;
+
+                //证书
+                if (!string.IsNullOrEmpty(x.CertificateID) && cerDic.ContainsKey(x.CertificateID))
+                    x.CertificateName = cerDic[x.CertificateID]?.Value;
+
+                //修改人
+                if (!string.IsNullOrEmpty(x.CreaterID) && userDic.ContainsKey(x.CreaterID))
+                    x.CreaterName = userDic[x.CreaterID]?.Name;
+
+                if (examDic.ContainsKey(x.ID))
+                    x.ExamCount = examDic[x.ID].Where(y => y.Code == x.NowTheme).Count() + 1;
+                else
+                    x.ExamCount = 1;
+
+                if (x.NowTheme == ThemeCode.Two || x.NowTheme == ThemeCode.Three)
+                {
+                    var otherNowTheme = x.NowTheme == ThemeCode.Two ? ThemeCode.Three : ThemeCode.Two;
+                    x.OtherExamCount = examDic[x.ID].Where(y => y.Code == otherNowTheme).Count() + 1;
+                }
+            });
+            return list;
+        }
 
         /// <summary>
         ///导出 获取分页列表
