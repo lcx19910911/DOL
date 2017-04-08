@@ -1220,7 +1220,10 @@ namespace DOL.Service
                 model.UpdatedTime = DateTime.Now;
                 model.UpdaterID=model.CreaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
-                model.MoneyIsFull = YesOrNoCode.No;
+                if(model.Money!=0)
+                    model.MoneyIsFull = YesOrNoCode.No;
+                else
+                    model.MoneyIsFull = YesOrNoCode.Yes;
                 //if (model.ThemeOnePass == YesOrNoCode.Yes)
                 //{
                 //    model.NowTheme = ThemeCode.One;
