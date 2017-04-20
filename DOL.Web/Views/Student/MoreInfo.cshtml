@@ -90,6 +90,10 @@
                     <option value="1">通过</option>
                     <option value="0">未通过</option>
                 </select>
+
+
+                <span class="am-input-group-label  am-margin-left-sm">制卡驾校：</span>
+                <select name="driverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"><option value="-1">不限</option></select>
             </div>
         </div>
     </div>
@@ -268,6 +272,9 @@
                     $("select[name='ThemeThreeCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
                     $("select[name='ThemeTwoCoachID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
                 });
+                $(json.DriverShopList).each(function () {
+                    $("#searchDomain select[name='driverShopID']").append("<option value='" + this.ID + "'>" + this.Name + "</option>");
+                    });
             });
         }
         Inti()

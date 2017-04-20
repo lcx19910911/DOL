@@ -834,6 +834,11 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.ReferenceID.Equals(referenceID));
                 }
+
+                if (driverShopID.IsNotNullOrEmpty() && driverShopID != "-1")
+                {
+                    query = query.Where(x => x.MakeDriverShopID.Equals(driverShopID));
+                }
                 if (no.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.IDCard.Contains(no));
