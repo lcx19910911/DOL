@@ -101,7 +101,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (Cache_Get_OilCardList().Where(x => x.Company == model.Company).Any())
+                if (Cache_Get_OilCardList().Where(x => x.Company == model.Company&&(x.Flag&(long)GlobalFlag.Removed)!=0).Any())
                     return Result(false, ErrorCode.datadatabase_name_had);
                 model.ID = Guid.NewGuid().ToString("N");
                 model.CreatedTime = DateTime.Now;
@@ -133,7 +133,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (Cache_Get_OilCardList().Where(x => x.Company == model.Company&&!model.ID.Equals(x.ID)).Any())
+                if (Cache_Get_OilCardList().Where(x => x.Company == model.Company && (x.Flag & (long)GlobalFlag.Removed) != 0 && !model.ID.Equals(x.ID)).Any())
                     return Result(false, ErrorCode.datadatabase_name_had);
                 var oldEntity = entities.OilCard.Find(model.ID);
                 if (oldEntity != null)
@@ -200,6 +200,7 @@ namespace DOL.Service
                 entities.OilCard.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
                 {
                     x.Flag = x.Flag | (long)GlobalFlag.Removed;
+
                     var index = list.FindIndex(y => y.ID.Equals(x.ID));
                     if (index > -1)
                     {
@@ -208,6 +209,22 @@ namespace DOL.Service
                     else
                     {
                         list.Add(x);
+                    }
+                });
+
+                var wastList = Cache_Get_WasteList();
+                entities.Waste.Where(x => ids.Contains(x.TargetID)&&x.Code==WasteCode.Oil).ToList().ForEach(x =>
+                {
+                    x.Flag = x.Flag | (long)GlobalFlag.Removed;
+
+                    var index = wastList.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        wastList[index] = x;
+                    }
+                    else
+                    {
+                        wastList.Add(x);
                     }
                 });
                 if (entities.SaveChanges() > 0)
@@ -236,7 +253,7 @@ namespace DOL.Service
                 list.Add(new SelectItem()
                 {
                     Selected = x.ID.Equals(id),
-                    Text = x.Company,
+                    Text = x.CardNO,
                     Value = x.ID
                 });
             });
