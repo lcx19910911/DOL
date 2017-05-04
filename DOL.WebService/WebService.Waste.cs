@@ -60,7 +60,7 @@ namespace DOL.Service
                 var query = entities.Waste.AsQueryable().AsNoTracking();
                 if (code != WasteCode.None)
                 {
-                    query = query.Where(x => x.Code.Equals(code));
+                    query = query.Where(x => x.Code==code);
                 }
                 if (license.IsNotNullOrEmpty())
                 {

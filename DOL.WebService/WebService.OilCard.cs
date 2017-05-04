@@ -101,7 +101,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (Cache_Get_OilCardList().Where(x => x.Company == model.Company&&(x.Flag&(long)GlobalFlag.Removed)!=0).Any())
+                if (Cache_Get_OilCardList().Where(x => x.CardNO == model.CardNO && (x.Flag&(long)GlobalFlag.Removed)!=0).Any())
                     return Result(false, ErrorCode.datadatabase_name_had);
                 model.ID = Guid.NewGuid().ToString("N");
                 model.CreatedTime = DateTime.Now;
@@ -133,7 +133,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (Cache_Get_OilCardList().Where(x => x.Company == model.Company && (x.Flag & (long)GlobalFlag.Removed) != 0 && !model.ID.Equals(x.ID)).Any())
+                if (Cache_Get_OilCardList().Where(x => x.CardNO == model.CardNO && (x.Flag & (long)GlobalFlag.Removed) != 0 && !model.ID.Equals(x.ID)).Any())
                     return Result(false, ErrorCode.datadatabase_name_had);
                 var oldEntity = entities.OilCard.Find(model.ID);
                 if (oldEntity != null)
