@@ -101,7 +101,12 @@ namespace DOL.Model
         [Description("制卡时间必须大于报名时间.")]
         make_card_time_error = 67,
 
-        
+
+        /// <summary>
+        /// 卡号已存在
+        /// </summary>
+        [Description("卡号已存在.")]
+        datadatabase_no_had = 68,
         #endregion
 
         #region 业务逻辑

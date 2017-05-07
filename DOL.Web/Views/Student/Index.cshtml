@@ -57,6 +57,8 @@
                 <span class="am-input-group-label"> - </span>
                 <input type="text" class="am-form-field" placeholder="请选择日期" name="makeTimeEnd" readonly style="width:120px;">
 
+                <span class="am-input-group-label  am-margin-left-sm">意向驾校：</span>
+                <select name="WantDriverShopID" data-am-selected="{ btnWidth: '90px',btnSize: 'sm'}"><option value="-1">不限</option></select>
 
                 <span class="am-input-group-label   am-margin-left-sm">在校：</span>
                 <select name="isOnSchool" data-am-selected="{ btnWidth: '100px',btnSize: 'sm'}">
@@ -526,7 +528,7 @@
                     name: "缴费",
                     url: "/PayOrder/Add",
                     formula: function (model) {
-                        if (model.State != "5" && model.State != "6" && model.State != "7") {
+                        if (model.State != "5" && model.State != "6" && model.State != "7" && model.Money > model.HadPayMoney) {
                             return true;
                         }
                         else {
@@ -547,6 +549,11 @@
                             buttons: [{
                                 label: "保存",
                                 callback: function (e) {
+                                    var payMoney = $("#payForm [name='PayMoney']").val();
+                                    if (parseFloat(item.Money - item.HadPayMoney) < parseFloat(payMoney)) {
+                                        $.Nuoya.alert("缴费金额超过未交费金额" + (item.Money - item.HadPayMoney));
+                                        return false;
+                                    }
                                     if ($("#payForm [name='PayTypeID']").val() == "-1") {
                                         $.Nuoya.alert("请选择支付方式");
                                         return false;

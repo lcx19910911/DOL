@@ -59,6 +59,7 @@ namespace DOL.Service
             string mobile,
             string enteredPointId,
             string makeDriverShopId,
+            string wantDriverShopId,
             StudentCode state,
             int moneyIsFull,
             int isOnSchool,
@@ -142,6 +143,10 @@ namespace DOL.Service
                 if (makeDriverShopId.IsNotNullOrEmpty() && makeDriverShopId != "-1")
                 {
                     query = query.Where(x =>!string.IsNullOrEmpty(x.MakeDriverShopID) && x.MakeDriverShopID.Equals(makeDriverShopId));
+                }
+                if (wantDriverShopId.IsNotNullOrEmpty() && wantDriverShopId != "-1")
+                {
+                    query = query.Where(x => !string.IsNullOrEmpty(x.WantDriverShopID) && x.WantDriverShopID.Equals(wantDriverShopId));
                 }
                 if (enteredTimeStart != null)
                 {

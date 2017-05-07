@@ -122,6 +122,7 @@ namespace DOL.Web.Controllers
             string mobile,
             string enteredPointId,
             string makeDriverShopId,
+            string wantDriverShopId,
             int moneyIsFull,
             int isOnSchool,
             int orderBy,
@@ -129,7 +130,7 @@ namespace DOL.Web.Controllers
             DateTime? enteredTimeStart, DateTime? enteredTimeEnd,
             DateTime? makedTimeStart, DateTime? makeTimeEnd)
         {
-            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, state, moneyIsFull,isOnSchool, orderBy, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd));
+            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, referenceId, no, mobile, enteredPointId, makeDriverShopId, wantDriverShopId, state, moneyIsFull,isOnSchool, orderBy, enteredTimeStart, enteredTimeEnd, makedTimeStart, makeTimeEnd));
         }
 
         /// <summary>
@@ -243,7 +244,7 @@ namespace DOL.Web.Controllers
             string mobile,
             int orderBy)
         {
-            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, null, no, mobile, null, null, StudentCode.DontMakeCard,-1,-1,orderBy, null, null, null, null, true));
+            return JResult(WebService.Get_StudentPageList(pageIndex, pageSize, name, null, no, mobile, null, null,null, StudentCode.DontMakeCard,-1,-1,orderBy, null, null, null, null, true));
         }
 
         /// <summary>

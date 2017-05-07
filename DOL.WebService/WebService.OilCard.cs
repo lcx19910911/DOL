@@ -101,8 +101,8 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (Cache_Get_OilCardList().Where(x => x.CardNO == model.CardNO && (x.Flag&(long)GlobalFlag.Removed)!=0).Any())
-                    return Result(false, ErrorCode.datadatabase_name_had);
+                if (Cache_Get_OilCardList().Where(x => x.CardNO == model.CardNO && (x.Flag&(long)GlobalFlag.Removed)==0).Any())
+                    return Result(false, ErrorCode.datadatabase_no_had);
                 model.ID = Guid.NewGuid().ToString("N");
                 model.CreatedTime = DateTime.Now;
                 model.Flag = (long)GlobalFlag.Normal;
@@ -133,15 +133,14 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                if (Cache_Get_OilCardList().Where(x => x.CardNO == model.CardNO && (x.Flag & (long)GlobalFlag.Removed) != 0 && !model.ID.Equals(x.ID)).Any())
-                    return Result(false, ErrorCode.datadatabase_name_had);
+                if (Cache_Get_OilCardList().Where(x => x.CardNO == model.CardNO && (x.Flag & (long)GlobalFlag.Removed) == 0 && !model.ID.Equals(x.ID)).Any())
+                    return Result(false, ErrorCode.datadatabase_no_had);
                 var oldEntity = entities.OilCard.Find(model.ID);
                 if (oldEntity != null)
                 {
                     oldEntity.Company = model.Company;
                     oldEntity.CardNO = model.CardNO;
                     oldEntity.CoachID = model.CoachID;
-                    oldEntity.CreatedUserID = model.CreatedUserID;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.UpdaterID = Client.LoginUser.ID;
                 }

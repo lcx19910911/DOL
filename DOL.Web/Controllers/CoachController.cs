@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using DOL.Core;
 
 namespace DOL.Web.Controllers
 {
@@ -87,16 +88,24 @@ namespace DOL.Web.Controllers
             CoacheInfoModel model = new CoacheInfoModel();
 
 
-
-            model.CoachList = WebService.Get_CoachSelectItem(null);
-            if (model.CoachList != null && model.CoachList.Count > 0)
+            if (Client.LoginUser.CoachID.IsNotNullOrEmpty())
             {
+                coachId = Client.LoginUser.CoachID;
+                model.CoachList = null;
                 model.CoachReportModel = WebService.Get_CoachSalary(searchTime, coachId);
             }
             else
             {
-                model.CoachList = new List<Core.SelectItem>();
-                model.CoachReportModel = new CoachReportModel();
+                model.CoachList = WebService.Get_CoachSelectItem(null);
+                if (model.CoachList != null && model.CoachList.Count > 0)
+                {
+                    model.CoachReportModel = WebService.Get_CoachSalary(searchTime, coachId);
+                }
+                else
+                {
+                    model.CoachList = new List<Core.SelectItem>();
+                    model.CoachReportModel = new CoachReportModel();
+                }
             }
             return View(model);
         }

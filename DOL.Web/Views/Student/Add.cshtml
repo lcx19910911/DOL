@@ -121,7 +121,7 @@
                             报名时间<strong class="am-text-danger am-text-sm">*</strong>：
                         </div>
                         <div class="am-u-md-1">
-                            <input type="text" name="EnteredDate" class="am-input-sm" style="width:120px;" placeholder="请选择报名时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                            <input type="text" name="EnteredDate" class="am-input-sm" style="width:120px;" placeholder="请选择报名时间" readonly onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss', autoPickDate:true, maxDate: '%y-%M-%d 00:00:00' })" datatype="jsondate" />
                         </div>
                         <div class="am-u-md-2 am-text-right">
                             意向驾校<strong class="am-text-danger am-text-sm">*</strong>：
@@ -146,7 +146,7 @@
                             制卡时间：
                         </div>
                         <div class="am-u-md-1">
-                            <input type="text" name="MakeCardDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" datatype="jsondate" />
+                            <input type="text" name="MakeCardDate" class="am-input-sm" style="width:120px;" placeholder="请选择时间" readonly onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss', autoPickDate:true, maxDate: '%y-%M-%d 00:00:00' })" datatype="jsondate" />
                         </div>
 
                         <div class="am-u-md-2 am-text-right">
@@ -416,6 +416,11 @@
             buttons: [{
                 label: "保存",
                 callback: function (e) {
+                    var payMoney = $("#payForm [name='PayMoney']").val();
+                    if (parseFloat(money) < parseFloat(payMoney)) {
+                        $.Nuoya.alert("缴费金额超过学费总价" + money);
+                        return false;
+                    }
                     if ($("#payForm [name='PayTypeID']").val()=="-1") {
                         $.Nuoya.alert("请选择支付方式");
                         return false;
