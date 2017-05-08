@@ -95,7 +95,7 @@ namespace DOL.Service
             {
                 model.ID = Guid.NewGuid().ToString("N");
 
-                if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.Result == ExamCode.Pass && x.StudentID.Equals(model.StudentID)).Any())
+                if (Cache_Get_ExamList().Where(x =>x.Code == model.Code && x.Result == ExamCode.Pass && x.StudentID.Equals(model.StudentID)).Any())
                     return Result(false, ErrorCode.theme_had_pass);
                 if (Cache_Get_ExamList().Where(x => x.Code == model.Code && x.Count == model.Count && x.StudentID.Equals(model.StudentID)).Any())
                     return Result(false, ErrorCode.count_had_exit);
@@ -240,6 +240,7 @@ namespace DOL.Service
                     }
                     if (student != null)
                     {
+                        //判断是否是考试通过的记录
                         if (x.Result == ExamCode.Pass)
                         {
                             if (x.Code == ThemeCode.One)
@@ -272,6 +273,51 @@ namespace DOL.Service
                                 student.State = StudentCode.ThemeFour;
                                 student.NowTheme = ThemeCode.Four;
                             }
+                        }
+                        else
+                        {
+                            //查找上一个同科目的考试记录
+                            var prevExam = list.Find(y => y.Code == x.Code && x.StudentID == y.StudentID);
+                            //没有清空时间
+                            if (prevExam == null)
+                            {
+                                if (x.Code == ThemeCode.One)
+                                {
+                                    student.ThemeOneDate = null;
+                                }
+                                else if (x.Code == ThemeCode.Two)
+                                {
+                                    student.ThemeTwoDate = null;
+                                }
+                                else if (x.Code == ThemeCode.Three)
+                                {
+                                    student.ThemeThreeDate = null;
+                                }
+                                else if (x.Code == ThemeCode.Four)
+                                {
+                                    student.ThemeFourDate = null;
+                                }
+                            }
+                            else
+                            {
+                                //有上次考试记录的 时间改为考试记录
+                                if (x.Code == ThemeCode.One)
+                                {
+                                    student.ThemeOneDate = prevExam.CreatedTime;
+                                }
+                                else if (x.Code == ThemeCode.Two)
+                                {
+                                    student.ThemeTwoDate = prevExam.CreatedTime;
+                                }
+                                else if (x.Code == ThemeCode.Three)
+                                {
+                                    student.ThemeThreeDate = prevExam.CreatedTime;
+                                }
+                                else if (x.Code == ThemeCode.Four)
+                                {
+                                    student.ThemeFourDate = prevExam.CreatedTime;
+                                }
+                            }                        
                         }
                         Add_Log(LogCode.DeleteExam, student.ID, string.Format("{0}在{1}删除了学员{2}的考试（{3}）考试时间{4}", Client.LoginUser.Name, DateTime.Now.ToString(), student.Name, x.ID, x.CreatedTime), "", "", "");
                         entities.Exam.Remove(x);
