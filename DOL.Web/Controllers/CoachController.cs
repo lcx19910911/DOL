@@ -110,6 +110,31 @@ namespace DOL.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// 教练培训信息
+        /// </summary>
+        /// <param name="searchTime"></param>
+        /// <param name="driverShopId"></param>
+        /// <param name="coachId"></param>
+        /// <returns></returns>
+        public ViewResult MyCash(DateTime? searchTime)
+        {
+            CoacheInfoModel model = new CoacheInfoModel();
+
+
+            if (Client.LoginUser.CoachID.IsNotNullOrEmpty())
+            {
+                model.CoachList = null;
+                model.CoachReportModel = WebService.Get_CoachSalary(searchTime, Client.LoginUser.CoachID);
+            }
+            else
+            {
+                return View("/Home/Index");
+            }
+            return View(model);
+        }
+        
+
         public ViewResult Exams(DateTime? searchTime)
         {
             return View(WebService.Get_CoachSalary(searchTime, Client.LoginUser.CoachID));

@@ -52,6 +52,15 @@ namespace DOL.Web.Controllers
         }
 
 
-        
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public ActionResult Delete(string ids)
+        {
+            return JResult(WebService.Delete_Waste(ids));
+        }
+
     }
 }

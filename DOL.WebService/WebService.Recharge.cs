@@ -125,7 +125,61 @@ namespace DOL.Service
 
         }
 
-        
+
+        /// <summary>
+        /// 删除分类
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public WebResult<bool> Delete_Recharge(string ids)
+        {
+            if (!ids.IsNotNullOrEmpty())
+            {
+                return Result(false, ErrorCode.sys_param_format_error);
+            }
+            using (DbRepository entities = new DbRepository())
+            {
+                var list = Cache_Get_RechargeList();
+
+                var oilCardList = Cache_Get_OilCardList();
+                //找到实体
+                entities.Recharge.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
+                {
+                    entities.Recharge.Remove(x);
+
+                    var oildCard = entities.OilCard.Find(x.OilID);
+                    if (oildCard != null)
+                    {
+                        oildCard.Money -= x.Money;
+                        oildCard.Balance -= x.Money;
+                        var oilCardIndex = oilCardList.FindIndex(y => y.ID.Equals(x.OilID));
+                        if (oilCardIndex > -1)
+                        {
+                            oilCardList[oilCardIndex] = oildCard;
+                        }
+                        else
+                        {
+                            oilCardList.Add(oildCard);
+                        }
+                    }
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list.RemoveAt(index);
+                    }
+                });
+                if (entities.SaveChanges() > 0)
+                {
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+        }
+
+
 
         /// <summary>
         /// 查找实体
