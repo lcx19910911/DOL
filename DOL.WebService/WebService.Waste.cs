@@ -140,6 +140,10 @@ namespace DOL.Service
                     oilModel = entities.OilCard.Find(model.OilID);
                     if (oilModel == null)
                         return Result(false, ErrorCode.sys_param_format_error);
+                    if (oilModel.Balance < model.Money)
+                    {
+                        return Result(false, ErrorCode.card__no_had_money);
+                    }
                     oilModel.Balance -= model.Money;
                 }
                 if (entities.SaveChanges() > 0)

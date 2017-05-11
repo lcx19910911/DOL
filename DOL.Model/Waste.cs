@@ -86,5 +86,10 @@ namespace DOL.Model
         [MaxLength(128)]
         [Column("Remark", TypeName = "varchar")]
         public string Remark { get; set; }
+
+        /// <summary>
+        /// 记录时间
+        /// </summary>
+        public DateTime AddDate { get; set; }
     }
 }
