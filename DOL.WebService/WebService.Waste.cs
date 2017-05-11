@@ -131,7 +131,7 @@ namespace DOL.Service
             {
                 var oilModel = new OilCard();
                 model.ID = Guid.NewGuid().ToString("N");
-                model.UpdatedTime = DateTime.Now;
+                model.UpdatedTime=model.CreatedTime = DateTime.Now;
                 model.CreatedUserID = model.UpdaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
                 entities.Waste.Add(model);
@@ -287,7 +287,7 @@ namespace DOL.Service
 
             var list = query.ToList();
             var cardIdList = list.Select(x => x.ID).ToList();
-            var wasteList = Cache_Get_WasteList().Where(x => cardIdList.Contains(x.CarID) && x.CreatedTime > searchTime && x.CreatedTime < endTime).ToList();
+            var wasteList = Cache_Get_WasteList().Where(x => cardIdList.Contains(x.CarID) && x.CreatedTime > searchTime && x.CreatedTime < endTime && (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
 
             //如果没选择教练和车辆和时间 显示教练的平均车损油耗
             if (coachId.IsNullOrEmpty() && carId.IsNullOrEmpty())

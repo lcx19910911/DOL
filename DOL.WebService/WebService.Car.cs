@@ -87,7 +87,7 @@ namespace DOL.Service
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var carIdList = list.Select(x => x.ID).ToList();
                 var starTime = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day + 1);
-                var wasteList = Cache_Get_WasteList().Where(x => carIdList.Contains(x.CarID) && x.CreatedTime > starTime).ToList();
+                var wasteList = Cache_Get_WasteList().Where(x => carIdList.Contains(x.CarID) && x.CreatedTime > starTime&&(x.Flag&(long)GlobalFlag.Removed)==0).ToList();
                 var oilDic = wasteList.Where(x => x.Code == WasteCode.Oil).GroupBy(x => x.CarID).ToDictionary(x => x.Key, x => x.ToList());
                 var repairDic = wasteList.Where(x => x.Code == WasteCode.Repair).GroupBy(x => x.CarID).ToDictionary(x => x.Key, x => x.ToList());
                 list.ForEach(x =>

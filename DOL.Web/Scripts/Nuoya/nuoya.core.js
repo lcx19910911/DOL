@@ -263,7 +263,6 @@
                 format = format != null ? format : "yyyy-M-d hh:mm:ss";
                 var date = new Date(parseInt(jsondate.replace("/Date(", "").replace(")/", ""), 10));
                 var value = date.format(format);
-                value = value.split(' ')[0].trim();
                 return value;
             } else {
                 return "";

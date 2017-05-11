@@ -75,7 +75,7 @@ namespace DOL.Service
                 var userDic = Cache_Get_UserDic();
                 var starTime = DateTime.Now.Date.AddDays(-DateTime.Now.Date.Day + 1);
                 var oilIdList = list.Select(x => x.ID).ToList();
-                var oilDic = Cache_Get_WasteList().Where(x =>x.Code==WasteCode.Oil&&oilIdList.Contains(x.OilID) && x.CreatedTime > starTime).ToList().GroupBy(x => x.OilID).ToDictionary(x => x.Key, x => x.ToList());
+                var oilDic = Cache_Get_WasteList().Where(x =>x.Code==WasteCode.Oil&&oilIdList.Contains(x.OilID) && x.CreatedTime > starTime && (x.Flag & (long)GlobalFlag.Removed) == 0).ToList().GroupBy(x => x.OilID).ToDictionary(x => x.Key, x => x.ToList());
                 list.ForEach(x =>
                 {
                     if (!string.IsNullOrEmpty(x.CoachID) && coachDic.ContainsKey(x.CoachID))
@@ -212,7 +212,7 @@ namespace DOL.Service
                 });
 
                 var wastList = Cache_Get_WasteList();
-                entities.Waste.Where(x => ids.Contains(x.TargetID)&&x.Code==WasteCode.Oil).ToList().ForEach(x =>
+                entities.Waste.Where(x => ids.Contains(x.TargetID)&&x.Code==WasteCode.Oil && (x.Flag & (long)GlobalFlag.Removed) == 0).ToList().ForEach(x =>
                 {
                     x.Flag = x.Flag | (long)GlobalFlag.Removed;
 
