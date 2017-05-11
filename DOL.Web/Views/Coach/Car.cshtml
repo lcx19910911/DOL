@@ -328,6 +328,23 @@
                                         carID: item.ID,
                                         Code: 1
                                     },
+                                    events: [
+                                    {
+                                        className: "am-text-danger",
+                                        icon: "icon-trash-o",
+                                        name: "删除",
+                                        click: function (obj) {
+                                            $.Nuoya.confirm("确认删除？", function () {
+                                                $.Nuoya.deleteAction("/Waste/Delete", {
+                                                    ids: obj.ID
+                                                },
+                                                function () {
+                                                    logGrid.reload();
+                                                });
+                                            });
+                                        }
+                                    }
+                                    ]
                                     //数据请求地址
                                 });
 
@@ -362,6 +379,23 @@
                                         carID: item.ID,
                                         code: 2
                                     },
+                                    events: [
+                                    {
+                                        className: "am-text-danger",
+                                        icon: "icon-trash-o",
+                                        name: "删除",
+                                        click: function (obj) {
+                                            $.Nuoya.confirm("确认删除？", function () {
+                                                $.Nuoya.deleteAction("/Waste/Delete", {
+                                                    ids: obj.ID
+                                                },
+                                                function () {
+                                                    logGrid.reload();
+                                                });
+                                            });
+                                        }
+                                    }
+                                    ]
                                     //数据请求地址
                                 });
 

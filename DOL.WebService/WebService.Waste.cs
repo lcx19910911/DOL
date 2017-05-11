@@ -131,7 +131,7 @@ namespace DOL.Service
             {
                 var oilModel = new OilCard();
                 model.ID = Guid.NewGuid().ToString("N");
-                model.CreatedTime = model.UpdatedTime = DateTime.Now;
+                model.UpdatedTime = DateTime.Now;
                 model.CreatedUserID = model.UpdaterID = Client.LoginUser.ID;
                 model.Flag = (long)GlobalFlag.Normal;
                 entities.Waste.Add(model);
@@ -174,6 +174,60 @@ namespace DOL.Service
 
         }
 
+
+        /// <summary>
+        /// 删除分类
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public WebResult<bool> Delete_Waste(string ids)
+        {
+            if (!ids.IsNotNullOrEmpty())
+            {
+                return Result(false, ErrorCode.sys_param_format_error);
+            }
+            using (DbRepository entities = new DbRepository())
+            {
+                var list = Cache_Get_WasteList();
+
+                var oilCardList = Cache_Get_OilCardList();
+                //找到实体
+                entities.Waste.Where(x => ids.Contains(x.ID)).ToList().ForEach(x =>
+                {
+                    entities.Waste.Remove(x);
+                    if (x.Code == WasteCode.Oil)
+                    {
+                        var oildCard = entities.OilCard.Find(x.OilID);
+                        if (oildCard != null)
+                        {
+                            oildCard.Balance += x.Money;
+                            var oilCardIndex = oilCardList.FindIndex(y => y.ID.Equals(x.OilID));
+                            if (oilCardIndex > -1)
+                            {
+                                oilCardList[oilCardIndex] = oildCard;
+                            }
+                            else
+                            {
+                                oilCardList.Add(oildCard);
+                            }
+                        }
+                    }
+                    var index = list.FindIndex(y => y.ID.Equals(x.ID));
+                    if (index > -1)
+                    {
+                        list.RemoveAt(index);
+                    }
+                });
+                if (entities.SaveChanges() > 0)
+                {
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+        }
 
 
         /// <summary>

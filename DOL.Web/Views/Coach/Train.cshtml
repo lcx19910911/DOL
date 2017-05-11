@@ -11,7 +11,7 @@
         examThemeTwoList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
         examThemeThreeList = Model.CoachReportModel.ExamModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
     }
-    if (Model != null && Model.CoachReportModel.isShowList == false && Model.CoachReportModel.ExamModel != null && Model.CoachReportModel.ThemeSalaryModel.List != null && Model.CoachReportModel.ThemeSalaryModel.List.Count > 0)
+    if (Model != null && Model.CoachReportModel!=null && Model.CoachReportModel.isShowList == false && Model.CoachReportModel.ExamModel != null && Model.CoachReportModel.ThemeSalaryModel.List != null && Model.CoachReportModel.ThemeSalaryModel.List.Count > 0)
     {
         themeTwoSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Two)).OrderBy(x => x.Item2).ToList();
         themeThreeSalary = Model.CoachReportModel.ThemeSalaryModel.List.Where(x => x.Item1.Equals(ThemeCode.Three)).OrderBy(x => x.Item2).ToList();
