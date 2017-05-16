@@ -107,6 +107,13 @@ namespace DOL.Model
         /// </summary>
         [Description("卡号已存在.")]
         datadatabase_no_had = 68,
+
+
+        /// <summary>
+        /// 余额不足
+        /// </summary>
+        [Description("余额不足.")]
+        card__no_had_money = 69,
         #endregion
 
         #region 业务逻辑
