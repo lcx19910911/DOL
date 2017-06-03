@@ -647,10 +647,8 @@
                 $.Nuoya.action("/Student/Find", { id: "@(Request["ID"])" }, function (model) {
                     $("#payForm [name='Count']").val(model.ExamCount);
                     if (model.NowTheme == 2 || model.NowTheme == 3) {
-                        if ((model.NowTheme == 2 && model.ThemeThreePass == 1) || (model.NowTheme == 3 && model.ThemeTwoPass == 1)) {
                             $("#payForm [name='Code']").find('option').eq(model.NowTheme - 1).attr('selected', true);
-                        }
-                        else {
+
                             $("#payForm [name='Code']").find('option').eq(3).remove();
                             $("#payForm [name='Code']").attr("disabled", false).find('option').eq(0).remove();
                             $("#payForm [name='Code']").on("change", function () {
@@ -661,7 +659,6 @@
                                     $("#payForm [name='Count']").val(model.OtherExamCount);
                                 }
                             })
-                        }
                     }
                     else {
                         $("#payForm [name='Code']").find('option').eq(model.NowTheme - 1).attr('selected', true);
