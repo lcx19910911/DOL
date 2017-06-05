@@ -1949,7 +1949,7 @@ namespace DOL.Service
                 var list = Cache_Get_PayOrderList();
 
 
-                if (list.Where(x => x.StudentID.Equals(model.StudentID) && x.IsConfirm == YesOrNoCode.No && x.IsDrop == YesOrNoCode.No).Any())
+                if (list.Where(x => x.StudentID.Equals(model.StudentID) && x.IsConfirm == YesOrNoCode.No && x.IsDrop == YesOrNoCode.No&&x.Flag==0).Any())
                 {
                     return Result(false, ErrorCode.cant_drop_unconfirm_payorder__had);
                 }
@@ -1983,6 +1983,7 @@ namespace DOL.Service
                     PayTime = DateTime.Now
 
                 };
+                student.DropOutPayOrderId = payOrder.ID;
                 entities.PayOrder.Add(payOrder);
                 if (entities.SaveChanges() > 0)
                 {
