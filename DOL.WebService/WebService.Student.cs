@@ -71,7 +71,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.Student.AsQueryable().AsNoTracking();
+                var query = entities.Student.AsQueryable().Where(x=>x.State!=StudentCode.HadDropOut).AsNoTracking();
                 if (!isDelete)
                 {
                     query = query.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
@@ -297,7 +297,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.Student.AsQueryable().AsNoTracking();
+                var query = entities.Student.AsQueryable().Where(x => x.State != StudentCode.HadDropOut).AsNoTracking();
                 if (!isAll)
                 {
 
@@ -830,7 +830,8 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.Student.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+  
+                var query = entities.Student.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0&&x.State != StudentCode.HadDropOut);
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -1056,7 +1057,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.Student.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                var query = entities.Student.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0&&x.State != StudentCode.HadDropOut);
                 if (!Client.LoginUser.IsAdmin)
                 {
 
