@@ -151,6 +151,17 @@
             })
         }
 
+        function AddCar()
+        {
+            if (money <= 0)
+            {
+                return false;
+            }
+            var html = $('#oils').html();
+            $("#oils").append(html);
+            event.preventDefault();
+        }
+        var money = 0;
         var grid = $.Nuoya.grid({
             tableId: "dataTable",
             //表格id
@@ -204,6 +215,97 @@
                         })
                     }
                 },
+                  {
+                      className: "am-text-warning",
+                      icon: "icon-plus",
+                      name: "批量记录",
+                      click: function (item) {
+                          $.Nuoya.ajaxDialog({
+                              closeViaDimmer: false,
+                              ajaxUrl: "/HtmlTemplates/OilCard/AddOil.html",
+                              title: "批量记录",
+                              width: "1400px",
+                              height: "740px",
+                              callback: function (e) {
+                                  $("#form #cardName").html("卡号："+item.CardNO);
+                                  $.Nuoya.action("/Waste/GetOilSelectItem", {}, function (json) {
+                                      $(json.Item1).each(function () {
+                                          $("#form select[name='TargetID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                                      });
+                                      $(json.Item2).each(function () {
+                                          $("#form select[name='CarID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                                      });
+                                  });
+                                  $(document).on("change", "#form [name='Money']", function () {
+
+                                       money = item.Money;
+                                      $("#form [name='Money']").each(function (index, obj) {
+                                          var balance = $(obj).parents(".oilDiv").find("[name='Balance']");
+                                          money = money - parseFloat($(obj).val());
+                                          balance.val(money);
+                                      })
+                                  })
+                              },
+                              buttons: [{
+                                  label: "保存",
+                                  callback: function (e) {
+                                      var model = new Array();
+                                      var msg="";
+                                      $(".oilDiv").each(function () {
+                                          var AddDate = $(this).find("[name='AddDate']").val();
+                                          if (AddDate == "")
+                                          {
+                                              msg = "请选择加油时间";
+                                          }
+                                          var CarID = $(this).find("[name='CarID']").val();
+                                          if (CarID == ""||CarID=="-1") {
+                                              msg = "请选择车辆";
+                                          }
+                                          var TargetID = $(this).find("[name='TargetID']").val();
+                                          if (TargetID == "" || TargetID == "-1") {
+                                              msg = "请选择加油点";
+                                          }
+                                          var Money = $(this).find("[name='Money']").val();
+                                          if (Money == "") {
+                                              msg = "请选择加油点";
+                                          }
+                                          var Remark = $(this).find("[name='Remark']").val();
+                                          model.push({
+                                              Code: 1,
+                                              CarID: CarID,
+                                              Money: Money,
+                                              ThingID: "df84ff2a25ff462aac24543976e56d62",
+                                              TargetID: TargetID,
+                                              AddDate: AddDate,
+                                              Remark: Remark
+                                          })
+                                      })
+                                      if (msg != "")
+                                      {
+                                          $.Nuoya.alert(msg);
+                                          return false;
+                                      }
+  
+                                      $.Nuoya.form("form").ajaxSubmit({
+                                          ajaxUrl: "/Waste/AddBachOil",
+                                          params: {
+                                              model: model,
+                                              oilId: item.ID
+                                          },
+                                          callback: function (data) {
+                                              if (!data.ErrorDesc) {
+                                                  e.hide();
+                                                  grid.reload();
+                                              }
+                                              else
+                                                  $.Nuoya.alert(data.ErrorDesc);
+                                          }
+                                      });
+                                  }
+                              }]
+                          })
+                      }
+                  },
                 {
                      className: "am-text-warning",
                      icon: "icon-plus",

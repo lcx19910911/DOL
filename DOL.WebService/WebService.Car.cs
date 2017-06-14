@@ -312,6 +312,17 @@ namespace DOL.Service
                                  });
                              });
                 }
+                else
+                {
+                    Cache_Get_CarList().Where(x => x.Flag == 0).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    {
+                        list.Add(new SelectItem()
+                        {
+                            Text = x.License,
+                            Value = x.ID
+                        });
+                    });
+                }
                 return list;
             }
         }

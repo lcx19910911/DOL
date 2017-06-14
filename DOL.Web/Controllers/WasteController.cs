@@ -64,6 +64,19 @@ namespace DOL.Web.Controllers
         }
 
         /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public JsonResult AddBachOil(List<Waste> model,string oilId)
+        {
+                var result = WebService.Add_BatachOildWaste(model, oilId);
+                return JResult(result);
+
+        }
+
+
+        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="ids"></param>
@@ -73,5 +86,16 @@ namespace DOL.Web.Controllers
             return JResult(WebService.Delete_Waste(ids));
         }
 
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public ActionResult GetOilSelectItem()
+        {
+            return JResult(WebService.GetOilSelectItem());
+        }
+
+        
     }
 }

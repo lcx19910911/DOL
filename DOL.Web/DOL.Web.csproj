@@ -138,6 +138,7 @@
     <Content Include="HtmlTemplates\Exam\Index.html" />
     <Content Include="HtmlTemplates\Exam\Update.html" />
     <Content Include="HtmlTemplates\Menu\Update.html" />
+    <Content Include="HtmlTemplates\OIlCard\AddOil.html" />
     <Content Include="HtmlTemplates\OIlCard\Update.html" />
     <Content Include="HtmlTemplates\Operate\Update.html" />
     <Content Include="HtmlTemplates\PayOrder\Confirm.html" />
