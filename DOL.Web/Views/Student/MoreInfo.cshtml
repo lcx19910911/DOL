@@ -172,17 +172,17 @@
                 <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>*@
                 @*<th dataname="MakeDriverShopName">制卡驾校</th>
                 <th dataname="TrianName">培训方式</th>*@
-                <th dataname="ThemeOneDate" datatype="jsondateNo">科一时间</th>
+                <th dataname="ThemeOneDate" datatype="jsondate">科一时间</th>
                 <th render="ShowThemeOnePass">通过</th>
                 <th dataname="ThemeTwoCoachName">科二教练</th>
-                <th dataname="ThemeTwoDate" datatype="jsondateNo">科二时间</th>
+                <th dataname="ThemeTwoDate" datatype="jsondate">科二时间</th>
                 <th render="ShowThemeTwoTimeCode" >科二学时</th>
                 <th render="ShowThemeTwoPass">通过</th>
                 <th dataname="ThemeThreeCoachName">科三教练</th>
-                <th dataname="ThemeThreeDate" datatype="jsondateNo">科三时间</th>
+                <th dataname="ThemeThreeDate" datatype="jsondate">科三时间</th>
                 <th render="ShowThemeThreeTimeCode">科三学时</th>
                 <th render="ShowThemeThreePass">通过</th>
-                <th dataname="ThemeFourDate" datatype="jsondateNo">科四时间</th>
+                <th dataname="ThemeFourDate" datatype="jsondate">科四时间</th>
                 <th render="ShowThemeFourPass">通过</th>
                 <th render="ShowState">状态</th>
 
@@ -190,9 +190,9 @@
                 <th dataname="IDCard" isHide="1" style="display:none;">身份证</th>
                 <th dataname="Mobile" isHide="1" style="display:none;">手机</th>
                 <th dataname="ReferenceName" isHide="1" style="display:none;">推荐人</th>
-                <th dataname="EnteredDate" datatype="jsondateNo" isHide="1" style="display:none;">报名日期</th>
+                <th dataname="EnteredDate" datatype="jsondate" isHide="1" style="display:none;">报名日期</th>
                 <th dataname="WantDriverShopName" isHide="1" style="display:none;">意向驾校</th>
-                <th dataname="MakeCardDate" datatype="jsondateNo"  isHide="1" style="display:none;">制卡日期</th>
+                <th dataname="MakeCardDate" datatype="jsondate"  isHide="1" style="display:none;">制卡日期</th>
 
                 <th type="eventlist"></th>
             </tr>
@@ -605,10 +605,7 @@
                             callback: function (e) {
                                 $("#payForm [name='Count']").val(item.ExamCount);
                                 if (item.NowTheme == 2 || item.NowTheme == 3) {
-                                    if ((item.NowTheme == 2 && item.ThemeThreePass == 1) || (item.NowTheme == 3 && item.ThemeTwoPass == 1)) {
                                         $("#payForm [name='Code']").find('option').eq(item.NowTheme - 1).attr('selected', true);
-                                    }
-                                    else {
                                         $("#payForm [name='Code']").find('option').eq(3).remove();
                                         $("#payForm [name='Code']").attr("disabled", false).find('option').eq(0).remove();
                                         $("#payForm [name='Code']").on("change", function () {
@@ -619,7 +616,6 @@
                                                 $("#payForm [name='Count']").val(item.OtherExamCount);
                                             }
                                         })
-                                    }
                                 }
                                 else {
                                     $("#payForm [name='Code']").find('option').eq(item.NowTheme - 1).attr('selected', true);

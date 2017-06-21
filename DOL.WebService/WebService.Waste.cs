@@ -85,7 +85,7 @@ namespace DOL.Service
                     query = query.Where(x => x.CreatedUserID.Equals(userId));
                 }
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.AddDate).ThenBy(x=>x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var userDic = Cache_Get_UserDic();
                 var carDic = Cache_Get_CarList_Dic();
                 var thingDic = Cache_Get_DataDictionary()[GroupCode.Thing];
@@ -175,6 +175,71 @@ namespace DOL.Service
         }
 
 
+
+        /// <summary>
+        /// 增加
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> Add_BatachOildWaste(List<Waste> model,string oilId)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                if (model == null || model.Count == 0||oilId.IsNullOrEmpty())
+                {
+                    return Result(false, ErrorCode.sys_param_format_error);
+                }
+                var oilModel = entities.OilCard.Find(oilId);
+                if (oilModel == null)
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                bool noHadMoney = false;
+                var wasteList = new List<Waste>();
+                model.ForEach(x =>
+                {
+
+                    if (oilModel.Balance < x.Money)
+                    {
+                        noHadMoney = true;
+                    }
+                    oilModel.Balance -= x.Money;
+                    x.ID = Guid.NewGuid().ToString("N");
+                    x.OilID = oilId;
+                    x.UpdatedTime = x.CreatedTime = DateTime.Now;
+                    x.CreatedUserID = x.UpdaterID = Client.LoginUser.ID;
+                    x.Flag = (long)GlobalFlag.Normal;
+                    wasteList.Add(x);
+                    entities.Waste.Add(x);
+                });
+                if (noHadMoney)
+                {
+                    return Result(false, ErrorCode.card__no_had_money);
+                }
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_WasteList();
+
+                    var oilCardList = Cache_Get_OilCardList();
+                    var index = oilCardList.FindIndex(x => x.ID.Equals(oilId));
+                    if (index > -1)
+                    {
+                        oilCardList[index] = oilModel;
+                    }
+                    else
+                    {
+                        oilCardList.Add(oilModel);
+                    }
+                    list.AddRange(wasteList);
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+
         /// <summary>
         /// 删除分类
         /// </summary>
@@ -227,6 +292,17 @@ namespace DOL.Service
                     return Result(false, ErrorCode.sys_fail);
                 }
             }
+        }
+
+        /// <summary>
+        /// 获取油卡参数
+        /// </summary>
+        /// <returns></returns>
+        public Tuple<List<SelectItem>, List<SelectItem>> GetOilSelectItem()
+        {
+            var refuelingPointList = Get_DataDictorySelectItem(GroupCode.RefuelingPoint);
+            var carList = Get_CarSelectItem("");
+            return new Tuple<List<SelectItem>, List<SelectItem>>(refuelingPointList, carList);
         }
 
 

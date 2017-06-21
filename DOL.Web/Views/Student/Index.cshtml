@@ -122,14 +122,14 @@
                 <th render="ShowNeedMoney">未缴</th>
                 <th dataname="Name">姓名</th>
                 <th dataname="ThemeTwoCoachName">教练</th>
-                <th dataname="ThemeOneDate" datatype="jsondateNo">科一时间</th>
+                <th dataname="ThemeOneDate" datatype="jsondate">科一时间</th>
                 <th dataname="CreaterName">创建者</th>
                 <th render="ShowState">状态</th>
                 <th dataname="IDCard" isHide="1" style="display:none;">身份证</th>
                 <th dataname="Mobile" isHide="1" style="display:none;">制卡手机</th>
                 <th dataname="ConactMobile" isHide="1" style="display:none;">联系手机</th>
                 <th dataname="EnteredPointName" isHide="1" style="display:none;">报名门店</th>
-                <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>     
+                <th dataname="TrianName" isHide="1" style="display:none;">培训方式</th>
                 <th dataname="MakeCardRemark" isHide="1" style="display:none;">制卡备注</th>
 
                 <th type="eventlist"></th>
@@ -145,7 +145,7 @@
         }
         function ExportOutExecle(obj) {
             var data = grid.getParams();
-            var url = "/Student/ExportPageList?tt=1" + urlEncode(data)+"&isAll="+obj;
+            var url = "/Student/ExportPageList?tt=1" + urlEncode(data) + "&isAll=" + obj;
             window.open(url);
         }
         function UploadFile() {
@@ -605,10 +605,8 @@
                             callback: function (e) {
                                 $("#payForm [name='Count']").val(item.ExamCount);
                                 if (item.NowTheme == 2 || item.NowTheme == 3) {
-                                    if ((item.NowTheme == 2 && item.ThemeThreePass == 1) || (item.NowTheme == 3 && item.ThemeTwoPass == 1)) {
-                                        $("#payForm [name='Code']").find('option').eq(item.NowTheme - 1).attr('selected', true);
-                                    }
-                                    else {
+                                    $("#payForm [name='Code']").find('option').eq(item.NowTheme - 1).attr('selected', true);
+
                                     $("#payForm [name='Code']").find('option').eq(3).remove();
                                     $("#payForm [name='Code']").attr("disabled", false).find('option').eq(0).remove();
                                     $("#payForm [name='Code']").on("change", function () {
@@ -619,7 +617,6 @@
                                             $("#payForm [name='Count']").val(item.OtherExamCount);
                                         }
                                     })
-                                    }
                                 }
                                 else {
                                     $("#payForm [name='Code']").find('option').eq(item.NowTheme - 1).attr('selected', true);

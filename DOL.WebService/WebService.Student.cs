@@ -71,7 +71,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.Student.AsQueryable().AsNoTracking();
+                var query = entities.Student.AsQueryable().Where(x=>x.State!=StudentCode.HadDropOut).AsNoTracking();
                 if (!isDelete)
                 {
                     query = query.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
@@ -297,7 +297,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.Student.AsQueryable().AsNoTracking();
+                var query = entities.Student.AsQueryable().Where(x => x.State != StudentCode.HadDropOut).AsNoTracking();
                 if (!isAll)
                 {
 
@@ -830,7 +830,8 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.Student.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+  
+                var query = entities.Student.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0&&x.State != StudentCode.HadDropOut);
                 if (name.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.Name.Contains(name));
@@ -1056,7 +1057,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.Student.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+                var query = entities.Student.AsQueryable().AsNoTracking().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0&&x.State != StudentCode.HadDropOut);
                 if (!Client.LoginUser.IsAdmin)
                 {
 
@@ -1948,7 +1949,7 @@ namespace DOL.Service
                 var list = Cache_Get_PayOrderList();
 
 
-                if (list.Where(x => x.StudentID.Equals(model.StudentID) && x.IsConfirm == YesOrNoCode.No && x.IsDrop == YesOrNoCode.No).Any())
+                if (list.Where(x => x.StudentID.Equals(model.StudentID) && x.IsConfirm == YesOrNoCode.No && x.IsDrop == YesOrNoCode.No&&x.Flag==0).Any())
                 {
                     return Result(false, ErrorCode.cant_drop_unconfirm_payorder__had);
                 }
@@ -1982,6 +1983,7 @@ namespace DOL.Service
                     PayTime = DateTime.Now
 
                 };
+                student.DropOutPayOrderId = payOrder.ID;
                 entities.PayOrder.Add(payOrder);
                 if (entities.SaveChanges() > 0)
                 {
