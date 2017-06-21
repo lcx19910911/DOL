@@ -621,7 +621,10 @@
                 $.Nuoya.action("/base/GetMobileArea", { mobile: mobile }, function (json) {
                     if (json != null) {
                         var obj = eval('(' + json + ')');
-                        $("#form [name='MobileArea']").val(obj.data.city);
+                        var allName = obj.result.att;
+                        var ary = allName.split(',');
+
+                        $("#form [name='MobileArea']").val(ary[ary.length-1]);
                     }
                     else {
                         $.Nuoya.alert("识别手机归属地失败")

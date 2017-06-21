@@ -40,8 +40,8 @@ namespace DOL.Web.Controllers
         {
             try
             {
-                var result = WebHelper.GetPage("http://sj.apidata.cn/?mobile=" + mobile,"","get","", Encoding.UTF8);
-                return JResult(result);
+                var result = WebHelper.GetPage("http://api.k780.com:88/?app=phone.get&phone="+mobile+"&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json","","get","", Encoding.UTF8);
+                return JResult(result.Replace("__GetZoneResult_ = ", ""));
             }
             catch
             {
