@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "退学管理";
+    var loginUser = CryptoHelper.AES_Decrypt(Session[Params.UserCookieName].ToString(), Params.SecretKey).DeserializeJson<User>();
 }
 
 <div class="am-cf am-padding">
@@ -40,9 +41,13 @@
                 <th dataname="CertificateName">车型</th>
                 <th dataname="EnteredPointName">报名点</th>
                 <th dataname="ReferenceName">推荐人</th>
-                <th dataname="Money">全款金额</th>
-                <th dataname="HadPayMoney">已缴</th>
-                <th dataname="WantDropMoney">退款金额</th>
+                @if (loginUser != null && !loginUser.IsNotShowMoney)
+                {
+
+                    <th dataname="Money">全款金额</th>
+                    <th dataname="HadPayMoney">已缴</th>
+                    <th dataname="WantDropMoney">退款金额</th>
+                }
                 <th dataname="WantDropDate" datatype="jsondate">申请日期</th>
                 <th render="ShowState">学员状态</th>
                 <th dataname="CreaterName">登记人</th>

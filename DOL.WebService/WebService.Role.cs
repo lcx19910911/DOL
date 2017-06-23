@@ -60,6 +60,10 @@ namespace DOL.Service
 
                 var count = query.Count();
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                list.ForEach(x =>
+                {
+                    x.IsNotShowMoneyStr = x.IsNotShowMoney ? "显示" : "不显示";
+                });
                 return ResultPageList(list, pageIndex, pageSize, count);
             }
         }
@@ -168,6 +172,7 @@ namespace DOL.Service
                     oldEntity.Remark = model.Remark;
                     oldEntity.UpdatedTime = DateTime.Now;
                     oldEntity.Name = model.Name;
+                    oldEntity.IsNotShowMoney = model.IsNotShowMoney;
                 }
                 else
                     return Result(false, ErrorCode.sys_param_format_error);

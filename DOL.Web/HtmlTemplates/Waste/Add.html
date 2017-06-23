@@ -1,0 +1,58 @@
+﻿<div class="admin-content">
+    <form id="form" class="am-form am-form-horizontal">
+        <div class="admin-content-body">
+
+            <div class="am-g am-margin-top am-panel am-panel-default">
+                <div class="am-u-md-12">
+                    <div class="am-g am-margin-top">
+                        <div class="am-u-md-2 am-text-center">日期</div>
+                        <div class="am-u-md-2 am-text-center">车牌号</div>
+                        <div class="am-u-md-2 am-text-center">项目</div>
+                        <div class="am-u-md-2 am-text-center">维修点</div>
+                        <div class="am-u-md-1 am-text-center">金额</div>
+                        <div class="am-u-md-2 am-text-center ">备注</div>
+                        <div class="am-u-md-1 am-text-center am-u-end">操作</div>
+                    </div>
+                </div>
+                <div id="repiarDiv">
+                    <div class="am-u-md-12 repairItem">
+                        <div class="am-g am-margin-top  am-margin-bottom-lg">
+                            <div class="am-u-md-2 am-text-center">
+                                <input type="text" name="AddDate" style="width:200px;float:left;" readonly onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', autoPickDate: true, maxDate: '%y-%M-%d 00:00:00' })" datatype="jsondate">
+                            </div>
+                            <div class="am-u-md-2 am-text-center">
+                                <select name="CarID">
+                                    <option value="-1">请选择</option>
+                                </select>
+                            </div>
+                            <div class="am-u-md-2 am-text-center">
+                                <select name="ThingID">
+                                    <option value="-1">请选择</option>
+                                </select>
+                            </div>
+                            <div class="am-u-md-2 am-text-center">
+                                <select name="TargetID">
+                                    <option value="-1">请选择</option>
+                                </select>
+                            </div>                          
+                            <div class="am-u-md-1 am-text-center">
+                                <input type="number" name="Money" class="am-input-sm" maxlength="32">
+                            </div>
+                            <div class="am-u-md-2">
+                                <input type="text" name="Remark" class="am-input-sm" maxlength="32">
+                            </div>
+                            <div class="am-u-md-1 am-text-center am-u-end">
+                                <button class="am-btn am-btn-danger am-btn-xs" onclick="javascripts: $(this).parent().parent().remove()">删除</button>
+                            </div>
+                        </div>
+                    </div>            
+                </div>
+                <hr />
+            </div>
+
+            <div class="am-g am-margin-top-lg">
+                <button class="am-btn am-btn-primary am-btn-xs" onclick="AddRepair()">新增</button>
+            </div>
+        </div>
+    </form>
+</div>

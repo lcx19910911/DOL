@@ -142,5 +142,13 @@ namespace DOL.Model
         /// 是否是门店管理员
         /// </summary>
         public YesOrNoCode IsStoreAdmin { get; set; } = YesOrNoCode.No;
+
+
+
+        /// <summary>
+        /// 是否展示金额
+        /// </summary>
+        [NotMapped]
+        public bool IsNotShowMoney { get; set; }
     }
 }

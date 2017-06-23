@@ -42,6 +42,7 @@
                 <div class="am-btn-group am-btn-group-xs">
                     <button onclick="add()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
                     <button onclick="batchDelete()" type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+                    <button onclick="addWaste()" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增车损</button>
                 </div>
             </div>
         </div>
@@ -178,6 +179,94 @@
                     },
                 }
             });
+        }
+
+        function AddRepair() {
+            var html = $('#repiarDiv').html();
+            $("#repiarDiv").append(html);
+            event.preventDefault();
+        }
+
+        function addWaste()
+        {
+            $.Nuoya.ajaxDialog({
+                closeViaDimmer: false,
+                ajaxUrl: "/HtmlTemplates/Waste/Add.html",
+                title: "批量记录",
+                width: "1400px",
+                height: "740px",
+                callback: function (e) {
+                    $.Nuoya.action("/Waste/GetRepairSelectItem", {}, function (json) {
+                        $(json.Item1).each(function () {
+                            $("#form select[name='CarID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        });
+                        $(json.Item2).each(function () {
+                            $("#form select[name='ThingID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        });
+                        $(json.Item3).each(function () {
+                            $("#form select[name='TargetID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
+                        });
+                    });
+                },
+                buttons: [{
+                    label: "保存",
+                    callback: function (e) {
+                        var model = new Array();
+                        var msg = "";
+                        $(".repairItem").each(function () {
+                            var AddDate = $(this).find("[name='AddDate']").val();
+                            if (AddDate == "") {
+                                msg = "请选择维修时间";
+                            }
+                            var CarID = $(this).find("[name='CarID']").val();
+                            if (CarID == "" || CarID == "-1") {
+                                msg = "请选择车辆";
+                            }
+                            var ThingID = $(this).find("[name='ThingID']").val();
+                            if (ThingID == "" || ThingID == "-1") {
+                                msg = "请选择项目";
+                            }
+                            var TargetID = $(this).find("[name='TargetID']").val();
+                            if (TargetID == "" || TargetID == "-1") {
+                                msg = "请选择维修点";
+                            }
+                            var Money = $(this).find("[name='Money']").val();
+                            if (Money == "") {
+                                msg = "请填写金额";
+                            }
+                            var Remark = $(this).find("[name='Remark']").val();
+                            model.push({
+                                Code: 1,
+                                CarID: CarID,
+                                Money: Money,
+                                ThingID: ThingID,
+                                TargetID: TargetID,
+                                AddDate: AddDate,
+                                Remark: Remark
+                            })
+                        })
+                        if (msg != "") {
+                            $.Nuoya.alert(msg);
+                            return false;
+                        }
+
+                        $.Nuoya.form("form").ajaxSubmit({
+                            ajaxUrl: "/Waste/AddBachRepair",
+                            params: {
+                                model: model
+                            },
+                            callback: function (data) {
+                                if (!data.ErrorDesc) {
+                                    e.hide();
+                                    grid.reload();
+                                }
+                                else
+                                    $.Nuoya.alert(data.ErrorDesc);
+                            }
+                        });
+                    }
+                }]
+            })
         }
 
         function wasrteFormInit(dataitem, tab) {

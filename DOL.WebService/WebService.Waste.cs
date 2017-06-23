@@ -240,6 +240,51 @@ namespace DOL.Service
 
         }
 
+
+        /// <summary>
+        /// 增加
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> Add_BatachRepair(List<Waste> model)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                if (model == null || model.Count == 0)
+                {
+                    return Result(false, ErrorCode.sys_param_format_error);
+                }
+
+                bool noHadMoney = false;
+                var wasteList = new List<Waste>();
+                model.ForEach(x =>
+                {
+                    x.ID = Guid.NewGuid().ToString("N");
+                    x.Code = WasteCode.Repair;
+                    x.UpdatedTime = x.CreatedTime = DateTime.Now;
+                    x.CreatedUserID = x.UpdaterID = Client.LoginUser.ID;
+                    x.Flag = (long)GlobalFlag.Normal;
+                    wasteList.Add(x);
+                    entities.Waste.Add(x);
+                });
+                if (noHadMoney)
+                {
+                    return Result(false, ErrorCode.card__no_had_money);
+                }
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_WasteList();
+                    list.AddRange(wasteList);
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+
         /// <summary>
         /// 删除分类
         /// </summary>
@@ -305,6 +350,18 @@ namespace DOL.Service
             return new Tuple<List<SelectItem>, List<SelectItem>>(refuelingPointList, carList);
         }
 
+
+        /// <summary>
+        /// 获取维修点参数
+        /// </summary>
+        /// <returns></returns>
+        public Tuple<List<SelectItem>, List<SelectItem>, List<SelectItem>> GetRepairSelectItem()
+        {
+            var carList = Get_CarSelectItem("");
+            var thingList = Get_DataDictorySelectItem(GroupCode.Thing);
+            var repairingPointList = Get_DataDictorySelectItem(GroupCode.RepairingPoint);
+            return new Tuple<List<SelectItem>, List<SelectItem>, List<SelectItem>>(carList, thingList, repairingPointList);
+        }
 
         /// <summary>
         /// 查找实体

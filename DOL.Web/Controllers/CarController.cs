@@ -71,9 +71,9 @@ namespace DOL.Web.Controllers
         /// <param name="key"> 搜索项</param>
         /// <param name="value">搜索项</param>
         /// <returns></returns>
-        public ActionResult GetPageList(int pageIndex, int pageSize, string brandName, string model, string modelCode, string engineNumber, string frameCode, string coachId)
+        public ActionResult GetPageList(int pageIndex, int pageSize, string brandName, string model, string modelCode, string engineNumber, string license, string coachId)
         {
-            return JResult(WebService.Get_CarPageList(pageIndex, pageSize, brandName, model, modelCode, engineNumber, frameCode, coachId));
+            return JResult(WebService.Get_CarPageList(pageIndex, pageSize, brandName, model, modelCode, engineNumber, license, coachId));
         }
 
 

@@ -96,6 +96,28 @@ namespace DOL.Web.Controllers
             return JResult(WebService.GetOilSelectItem());
         }
 
-        
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public ActionResult GetRepairSelectItem()
+        {
+            return JResult(WebService.GetRepairSelectItem());
+        }
+
+        /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public JsonResult AddBachRepair(List<Waste> model)
+        {
+            var result = WebService.Add_BatachRepair(model);
+            return JResult(result);
+
+        }
+
     }
 }

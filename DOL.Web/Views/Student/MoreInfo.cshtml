@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "培训信息";
+    var loginUser = CryptoHelper.AES_Decrypt(Session[Params.UserCookieName].ToString(), Params.SecretKey).DeserializeJson<User>();
 }
 
 <div class="am-cf am-padding">
@@ -161,7 +162,10 @@
                 <th dataname="ID" type="checkbox"></th>
                 <th type="more"></th>
                 <th dataname="Name">姓名</th>
+                @if (loginUser != null && !loginUser.IsNotShowMoney)
+                {
                 <th render="NeedMoneyFuc">余款</th>
+                }
                 <th dataname="ReferenceName">推荐人</th>
                 <th dataname="CertificateName">车型</th>
                 <th dataname="MakeDriverShopName">制卡驾校</th>

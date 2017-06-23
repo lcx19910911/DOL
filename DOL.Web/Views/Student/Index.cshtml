@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "学员查询";
+    var loginUser = CryptoHelper.AES_Decrypt(Session[Params.UserCookieName].ToString(), Params.SecretKey).DeserializeJson<User>();
 }
 
 <div class="am-cf am-padding">
@@ -116,10 +117,13 @@
                 <th dataname="MakeDriverShopName">制卡驾校</th>
                 <th dataname="CertificateName">车型</th>
                 <th dataname="ReferenceName">推荐人</th>
-                <th dataname="Money">总价</th>
-                <th dataname="HadPayMoney">已缴</th>
-                <th dataname="DoConfirmMoney">在缴</th>
-                <th render="ShowNeedMoney">未缴</th>
+                @if (loginUser != null&&!loginUser.IsNotShowMoney)
+                {
+                    <th dataname="Money">总价</th>
+                    <th dataname="HadPayMoney">已缴</th>
+                    <th dataname="DoConfirmMoney">在缴</th>
+                    <th render="ShowNeedMoney">未缴</th>
+                }
                 <th dataname="Name">姓名</th>
                 <th dataname="ThemeTwoCoachName">教练</th>
                 <th dataname="ThemeOneDate" datatype="jsondate">科一时间</th>

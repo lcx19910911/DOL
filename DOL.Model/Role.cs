@@ -38,5 +38,13 @@ namespace DOL.Model
         [MaxLength(128)]
         [Column("Remark", TypeName = "varchar")]
         public string Remark { get; set; }
+
+        /// <summary>
+        /// 是否展示金额
+        /// </summary>
+        public bool IsNotShowMoney { get; set; }
+
+        [NotMapped]
+        public string IsNotShowMoneyStr { get; set; }
     }
 }

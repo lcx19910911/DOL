@@ -92,6 +92,12 @@ namespace DOL.Service
                     {
                         if (user.OperateFlag.HasValue)
                             user.OperateList = Get_UserOperateList(user.OperateFlag.Value);
+                        var role = db.Role.Find(user.RoleID);
+                        if (role==null)
+                        {
+                            return Result(false, ErrorCode.sys_param_format_error);
+                        }
+                        user.IsNotShowMoney = role.IsNotShowMoney;
                         Client.Session[Params.UserCookieName] = CryptoHelper.AES_Encrypt(user.ToJson(), Params.SecretKey);
                         return Result(true);
                     }
