@@ -62,7 +62,7 @@ namespace DOL.Service
                 var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 list.ForEach(x =>
                 {
-                    x.IsNotShowMoneyStr = x.IsNotShowMoney ? "显示" : "不显示";
+                    x.IsNotShowMoneyStr = x.IsNotShowMoney==YesOrNoCode.No ? "显示" : "不显示";
                 });
                 return ResultPageList(list, pageIndex, pageSize, count);
             }

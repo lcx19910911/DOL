@@ -42,7 +42,7 @@ namespace DOL.Model
         /// <summary>
         /// 是否展示金额
         /// </summary>
-        public bool IsNotShowMoney { get; set; }
+        public YesOrNoCode IsNotShowMoney { get; set; }
 
         [NotMapped]
         public string IsNotShowMoneyStr { get; set; }

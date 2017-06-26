@@ -161,7 +161,7 @@
                 }
             });
 
-            $.Nuoya.action("/Role/GetSelectItem", { id: dataitem ? dataitem.RoleId : "" }, function (json) {
+            $.Nuoya.action("/Role/GetSelectItem", { id: dataitem ? dataitem.RoleID : "" }, function (json) {
                 $(json).each(function () {
                     $("select[name='RoleId']").append("<option " + (this.Selected == true ? "selected" : "") + " value='" + this.Value + "'>" + this.Text + "</option>");
                 });
