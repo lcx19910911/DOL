@@ -227,7 +227,7 @@
                               height: "740px",
                               callback: function (e) {
                                   $("#form #cardName").html("卡号：" + item.CardNO);
-                                  money = item.Money;
+                                  money = item.Balance;
                                   $.Nuoya.action("/Waste/GetOilSelectItem", {}, function (json) {
                                       $(json.Item1).each(function () {
                                           $("#form select[name='TargetID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
@@ -237,7 +237,7 @@
                                       });
                                   });
                                   $(document).on("change", "#form [name='Money']", function () {
-                                      money = item.Money;
+                                      money = item.Balance;
                                       $("#form [name='Money']").each(function (index, obj) {
                                           var balance = $(obj).parents(".oilDiv").find("[name='Balance']");
                                           money = money - parseFloat($(obj).val());
