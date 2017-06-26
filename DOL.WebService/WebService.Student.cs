@@ -2007,6 +2007,31 @@ namespace DOL.Service
             }
         }
 
+
+        /// <summary>
+        /// 获取教练员学员考试信息 和工资
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Dictionary<string,Dictionary<StudentCode,int>> Get_StudenState(DateTime? startTime, DateTime? endTime, string id)
+        {
+
+            //科目二是该教练的学员
+            var query = Cache_Get_StudentList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
+            if (startTime != null)
+            {
+                query = query.Where(x => x.CreatedTime > startTime);
+            }
+            if (endTime != null)
+            {
+                query = query.Where(x => x.CreatedTime < endTime);
+            }
+            var studentList = query.ToList();
+            var dic = new Dictionary<string, Dictionary<StudentCode, int>>();
+            return dic;
+        }
+
         /// <summary>
         /// 查找实体
         /// </summary>

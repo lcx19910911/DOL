@@ -157,8 +157,8 @@
             {
                 return false;
             }
-            var html = $('#oils').html();
-            $("#oils").append(html);
+            var html = $('#oils .oilDiv:first').html();
+            $("#oils").append('<div class="am-u-md-12 oilDiv">'+html+'</div>');
             event.preventDefault();
         }
         var money = 0;
@@ -171,8 +171,7 @@
             },
             ajaxUrl: "/OilCard/GetPageList",
             //数据请求地址
-            events: [
-                
+            events: [               
                 {
                     className: "am-text-secondary",
                     icon: "icon-pencil-square-o",
@@ -227,7 +226,8 @@
                               width: "1400px",
                               height: "740px",
                               callback: function (e) {
-                                  $("#form #cardName").html("卡号："+item.CardNO);
+                                  $("#form #cardName").html("卡号：" + item.CardNO);
+                                  money = item.Money;
                                   $.Nuoya.action("/Waste/GetOilSelectItem", {}, function (json) {
                                       $(json.Item1).each(function () {
                                           $("#form select[name='TargetID']").append("<option  value='" + this.Value + "'>" + this.Text + "</option>");
@@ -237,8 +237,7 @@
                                       });
                                   });
                                   $(document).on("change", "#form [name='Money']", function () {
-
-                                       money = item.Money;
+                                      money = item.Money;
                                       $("#form [name='Money']").each(function (index, obj) {
                                           var balance = $(obj).parents(".oilDiv").find("[name='Balance']");
                                           money = money - parseFloat($(obj).val());

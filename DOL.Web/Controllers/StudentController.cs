@@ -416,5 +416,15 @@ namespace DOL.Web.Controllers
             return JResult(WebService.Find_Log(ID));
         }
 
+
+        /// <summary>
+        /// 教练工资（管理员）
+        /// </summary>
+        /// <returns></returns>
+        //public ViewResult State(DateTime? startTime, DateTime? endTime, string coachID)
+        //{
+        //    return View(WebService.Get_CoachSalary(searchTime, coachID));
+        //}
+
     }
 }

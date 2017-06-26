@@ -182,8 +182,8 @@
         }
 
         function AddRepair() {
-            var html = $('#repiarDiv').html();
-            $("#repiarDiv").append(html);
+            var html = $('#repiarDiv .repairItem:first').html();
+            $("#repiarDiv").append('<div class="am-u-md-12 repairItem">'+html+'</div>');
             event.preventDefault();
         }
 

@@ -52,5 +52,10 @@ namespace DOL.Model
 
         [Description("耗损项目")]
         Thing = 12,
+
+
+
+        [Description("支出项目")]
+        ExpendThing = 13,
     }
 }

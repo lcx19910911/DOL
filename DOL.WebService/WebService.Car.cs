@@ -82,7 +82,7 @@ namespace DOL.Service
                 var coachDic = Cache_Get_CoachList_Dic();
                 var departMentDic = Cache_Get_DepartmentList_Dic();
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.License).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
 
                 var driverShopDic = Cache_Get_DriverShopList_Dic();
                 var carIdList = list.Select(x => x.ID).ToList();
@@ -323,7 +323,7 @@ namespace DOL.Service
                         });
                     });
                 }
-                return list;
+                return list.OrderBy(x => x.Text.Substring(2)).ToList() ;
             }
         }
     }

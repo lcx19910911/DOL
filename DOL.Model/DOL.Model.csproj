@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Dto\CoachListReportModel.cs" />
+    <Compile Include="Dto\StudentStateModel.cs" />
     <Compile Include="Enum\WasteCode.cs" />
     <Compile Include="Car.cs" />
     <Compile Include="Waste.cs" />
