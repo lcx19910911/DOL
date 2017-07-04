@@ -35,7 +35,7 @@ namespace DOL.Core
         /// <summary>
         /// 登陆cookie
         /// </summary>
-        public static readonly string UserCookieName = "dol_user";
+        public static readonly string UserCookieName = ConfigurationManager.AppSettings["UserCookieName"];
 
         /// <summary>
         /// cookie 过期时间

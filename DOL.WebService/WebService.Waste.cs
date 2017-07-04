@@ -53,7 +53,7 @@ namespace DOL.Service
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public WebResult<PageList<Waste>> Get_WastePageList(int pageIndex, int pageSize, WasteCode code, string oilId, string carId, string userId, string license)
+        public WebResult<PageList<Waste>> Get_WastePageList(int pageIndex, int pageSize, WasteCode code,string thingId, string oilId, string carId, string userId, string license)
         {
             using (DbRepository entities = new DbRepository())
             {
@@ -75,6 +75,10 @@ namespace DOL.Service
                 if (oilId.IsNotNullOrEmpty())
                 {
                     query = query.Where(x => x.OilID.Equals(oilId));
+                }
+                if (thingId.IsNotNullOrEmpty())
+                {
+                    query = query.Where(x => x.ThingID.Equals(thingId));
                 }
                 if (carId.IsNotNullOrEmpty())
                 {

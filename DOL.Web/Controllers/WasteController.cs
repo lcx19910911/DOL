@@ -34,9 +34,9 @@ namespace DOL.Web.Controllers
         /// <param name="name">名称 - 搜索项</param>
         /// <param name="no">编号 - 搜索项</param>
         /// <returns></returns>
-        public JsonResult GetPageList(int pageIndex, int pageSize, WasteCode code, string oilId, string carId, string userId,string license)
+        public JsonResult GetPageList(int pageIndex, int pageSize, WasteCode code,string thingId, string oilId, string carId, string userId,string license)
         {
-            return JResult(WebService.Get_WastePageList(pageIndex, pageSize, code, oilId, carId, userId, license));
+            return JResult(WebService.Get_WastePageList(pageIndex, pageSize, code, thingId, oilId, carId, userId, license));
         }
 
 
@@ -68,10 +68,10 @@ namespace DOL.Web.Controllers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public JsonResult AddBachOil(List<Waste> model,string oilId)
+        public JsonResult AddBachOil(List<Waste> model, string oilId)
         {
-                var result = WebService.Add_BatachOildWaste(model, oilId);
-                return JResult(result);
+            var result = WebService.Add_BatachOildWaste(model, oilId);
+            return JResult(result);
 
         }
 
@@ -119,5 +119,16 @@ namespace DOL.Web.Controllers
 
         }
 
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public ActionResult GetItemSelectItem()
+        {
+            return JResult(WebService.Get_DataDictorySelectItem(GroupCode.Thing));
+        }
+        
     }
 }

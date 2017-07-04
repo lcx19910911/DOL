@@ -17,6 +17,11 @@
                 <select name="CoachID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
                     <option value="-1">请选择</option>
                 </select>
+
+                <span class="am-input-group-label  am-margin-left-sm">项目：</span>
+                <select name="ThingID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
+                    <option value="-1">请选择</option>
+                </select>
                 <span class="am-input-group-label  am-margin-left-sm">类别：</span>
                 <select name="Code" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
                     <option value="0">请选择</option>
@@ -78,5 +83,12 @@
             });
         });
 
+        $.Nuoya.action("/Waste/GetItemSelectItem", {}, function (json) {
+            $(json).each(function () {
+                $("#searchDomain select[name='ThingID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+            });
+        });
+
+        
     </script>
 }

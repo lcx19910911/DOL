@@ -107,7 +107,7 @@ namespace DOL.Service
         {
             using (DbRepository entities = new DbRepository())
             {
-                var query = entities.DataDictionary.AsNoTracking().Where(x => x.GroupCode == group);
+                var query = entities.DataDictionary.AsNoTracking().Where(x => x.GroupCode == group&&x.ID!= "df84ff2a25ff462aac24543976e56d62");
 
                 if (key.IsNotNullOrEmpty())
                 {
@@ -324,7 +324,7 @@ namespace DOL.Service
             if (dataDic.Keys.Contains(group))
             {
                 var dic = dataDic[group];
-                var itemList = dic.Values;
+                var itemList = dic.Values.Where(x=> isShowOil?(1==1):x.ID!= "df84ff2a25ff462aac24543976e56d62");
                 if(predicate != null)
                 {
                    itemList.Where(x=>predicate(x)).OrderByDescending(x=>x.Sort).ToList().ForEach(x =>

@@ -197,9 +197,9 @@
                 }
             }
 
-            if (options.btnExit) {
-                buttons.push({ "label": "取消", "className": "am-btn-danger", "attrs": "data-am-modal-close", "callback": function (e) { e.hide(); } });
-            }
+            //if (options.btnExit) {
+            //    buttons.push({ "label": "取消", "className": "am-btn-danger", "attrs": "data-am-modal-close", "callback": function (e) { e.hide(); } });
+            //}
 
             if (buttons != null) {
                 var footer = $(dialogTemplates.footer);
