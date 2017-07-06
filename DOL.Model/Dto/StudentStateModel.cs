@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DOL.Model.Dto
+namespace DOL.Model
 {
-    public class StudentStateModel
+    public enum SteteReportEnum
     {
-        public Dictionary<string, Dictionary<StudentCode, int>> dsd { get; set; }
+        School=1,
+        Coach=2,
+        EnteredPoint=3,
+        Reference=4
     }
 }

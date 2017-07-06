@@ -2014,7 +2014,7 @@ namespace DOL.Service
         /// <param name="time"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Dictionary<string,Dictionary<StudentCode,int>> Get_StudenState(DateTime? startTime, DateTime? endTime, string id)
+        public Dictionary<string,Dictionary<StudentCode, int>> Get_StudenState(DateTime? startTime, DateTime? endTime, SteteReportEnum? state)
         {
 
             //科目二是该教练的学员
@@ -2028,8 +2028,85 @@ namespace DOL.Service
                 query = query.Where(x => x.CreatedTime < endTime);
             }
             var studentList = query.ToList();
-            var dic = new Dictionary<string, Dictionary<StudentCode, int>>();
-            return dic;
+            var dic =new  Dictionary<SteteReportEnum, Dictionary<string, Dictionary<StudentCode, int>>>();
+
+            if (state == null)
+            {
+                state = SteteReportEnum.School;
+            }
+            #region 驾校
+            int i = 1;
+            if (state == SteteReportEnum.School)
+            {
+                var schoolDic = new Dictionary<string, Dictionary<StudentCode, int>>();
+                var schoolList = Cache_Get_DriverShopList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+                if (schoolList != null && schoolList.Count > 0)
+                {
+                    schoolList.ForEach(x =>
+                    {
+                        schoolDic.Add(i+"."+x.Name, studentList.Where(y=> !string.IsNullOrEmpty(y.MakeDriverShopID) && y.MakeDriverShopID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count()));
+                        i++;
+                    });
+                }
+            dic.Add(SteteReportEnum.School, schoolDic);
+            }
+            #endregion
+
+            #region 教练员
+            i = 1;
+            if (state == SteteReportEnum.Coach)
+            {
+                var coachDic = new Dictionary<string, Dictionary<StudentCode, int>>();
+                var coachList = Cache_Get_CoachList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+                if (coachList != null && coachList.Count > 0)
+                {
+                    coachList.ForEach(x =>
+                    {
+                        coachDic.Add(i + "." + x.Name, studentList.Where(y => (!string.IsNullOrEmpty(y.ThemeTwoCoachID) && y.ThemeTwoCoachID == x.ID) || (!string.IsNullOrEmpty(y.ThemeThreeCoachID) && y.ThemeThreeCoachID == x.ID)).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count()));
+                        i++;
+                    });
+                }
+                dic.Add(SteteReportEnum.Coach, coachDic);
+            }
+            #endregion
+
+            #region 报名点
+            i = 1;
+            if (state == SteteReportEnum.EnteredPoint)
+            {
+                var enPointDic = new Dictionary<string, Dictionary<StudentCode, int>>();
+                var enpointList = Cache_Get_EnteredPointList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+                if (enpointList != null && enpointList.Count > 0)
+                {
+                    enpointList.ForEach(x =>
+                    {
+                        enPointDic.Add(i + "." + x.Name, studentList.Where(y => y.EnteredPointID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count()));
+                        i++;
+                    });
+                }
+                dic.Add(SteteReportEnum.EnteredPoint, enPointDic);
+            }
+            #endregion
+
+            #region 推荐人 
+            i = 1;
+            if (state == SteteReportEnum.Reference)
+            {
+                var referenceDic = new Dictionary<string, Dictionary<StudentCode, int>>();
+                var referenceList = Cache_Get_ReferenceList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+                if (referenceList != null && referenceList.Count > 0)
+                {
+                    referenceList.ForEach(x =>
+                    {
+                        referenceDic.Add(i + "." + x.Name, studentList.Where(y =>!string.IsNullOrEmpty(y.ReferenceID)&&y.ReferenceID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count()));
+                        i++;
+                    });
+                }
+                dic.Add(SteteReportEnum.Reference, referenceDic);
+            }
+            #endregion
+
+            return dic[state.Value];
         }
 
         /// <summary>

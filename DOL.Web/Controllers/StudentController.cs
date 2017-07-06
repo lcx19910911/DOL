@@ -421,10 +421,10 @@ namespace DOL.Web.Controllers
         /// 教练工资（管理员）
         /// </summary>
         /// <returns></returns>
-        //public ViewResult State(DateTime? startTime, DateTime? endTime, string coachID)
-        //{
-        //    return View(WebService.Get_CoachSalary(searchTime, coachID));
-        //}
+        public ViewResult State(DateTime? startTime, DateTime? endTime, SteteReportEnum? state)
+        {
+            return View(WebService.Get_StudenState(startTime, endTime, state));
+        }
 
     }
 }

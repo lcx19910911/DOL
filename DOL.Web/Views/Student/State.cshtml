@@ -1,0 +1,176 @@
+﻿@model Dictionary<string, Dictionary<StudentCode, int>>
+@{
+    ViewBag.Title = "在库统计";
+    var stateStr = "";
+    var searchState = Request["state"];
+    switch (searchState)
+    {
+        case "1":
+            stateStr = "驾校";
+            break;
+        case "2":
+            stateStr = "教练";
+            break;
+        case "3":
+            stateStr = "报名点";
+            break;
+        case "4":
+            stateStr = "推荐人";
+            break;
+        case null:
+            stateStr = "驾校";
+            searchState = "1";
+            break;
+    }
+}
+<div class="am-cf am-padding">
+    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>在库统计</small></div>
+</div>
+<div id="searchDomain">
+
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <div class="am-input-group am-input-group-sm">
+
+                <span class="am-input-group-label">报名时间</span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="startTime" value="@Request["startTime"]" readonly style="width:120px;">
+                <span class="am-input-group-label"> - </span>
+                <input type="text" class="am-form-field" placeholder="请选择日期" name="endTime" value="@Request["endTime"]" readonly style="width:120px;">
+                <span class="am-input-group-label   am-margin-left-sm">组别：</span>
+                <select name="state" data-am-selected="{ btnWidth: '100px',btnSize: 'sm'}">
+                    <option value="1">驾校</option>
+                    <option value="2" >教练</option>
+                    <option value="3" >报名点</option>
+                    <option value="4" >推荐人</option>
+                </select>
+                <span class="am-input-group-btn am-margin-left-sm">
+                    <button class="am-btn am-btn-default" onclick="Search()" type="button">搜索</button>
+                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid_container">
+    <div class="am-g">
+        <div class="am-u-lg-12">
+            <div class="am-g am-margin-top-lg ">
+                <div class="am-u-sm-12 am-u-sm-centered am-text-center">
+                    <p>在库统计</p>
+                </div>
+
+            </div>
+            <table class="am-table am-table-compact am-table-hover table-main am-table-bordered">
+                <thead>
+                    <tr>
+                        <th>组别</th>
+                        <th>责任人</th>
+                        <th>未制卡</th>
+                        <th>科目一</th>
+                        <th>科目二</th>
+                        <th>科目三</th>
+                        <th>科目四</th>
+                        @*<th>科二学时满</th>
+                        <th>科三学时满</th>*@
+                        <th>在校</th>
+                        <th>毕业</th>
+                        <th>退学中</th>
+                        <th>退学</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        var total0 = 0;
+                        var total1 = 1;
+                        var total2 = 2;
+                        var total3 = 3;
+                        var total4 = 4;
+                        var total5 = 5;
+                        var total6 = 6;
+                        var total7 = 7;
+                        var total8 = 8;
+                        var total9 = 9;
+                        var list = Model.ToList();
+                        foreach (var item in list)
+                        {
+                            var item0 = item.Value.ContainsKey(StudentCode.DontMakeCard) ? item.Value[StudentCode.DontMakeCard] : 0;
+                            var item1 = item.Value.ContainsKey(StudentCode.ThemeOne) ? item.Value[StudentCode.ThemeOne] : 0;
+                            var item2 = item.Value.ContainsKey(StudentCode.ThemeTwo) ? item.Value[StudentCode.ThemeTwo] : 0;
+                            var item3 = item.Value.ContainsKey(StudentCode.ThemeThree) ? item.Value[StudentCode.ThemeThree] : 0;
+                            var item4 = item.Value.ContainsKey(StudentCode.ThemeFour) ? item.Value[StudentCode.ThemeFour] : 0;
+                            var item6 = item1+item2+item3+item4;
+                            var item7 = item.Value.ContainsKey(StudentCode.Graduate) ? item.Value[StudentCode.Graduate] : 0;
+                            var item8 = item.Value.ContainsKey(StudentCode.WantDropOut) ? item.Value[StudentCode.WantDropOut] : 0;
+                            var item9 = item.Value.ContainsKey(StudentCode.HadDropOut) ? item.Value[StudentCode.HadDropOut] : 0;
+                            total0 += item0;
+                            total1 += item1;
+                            total2 += item2;
+                            total3 += item3;
+                            total4 += item4;
+                            total6 += item6;
+                            total7 += item7;
+                            total8 += item8;
+                            total9 += item9;
+                            <tr>
+
+                                <td>@stateStr</td>
+                                <th>@item.Key</th>
+                                <th>@(item0)</th>
+                                <th>@(item1)</th>
+                                <th>@(item2)</th>
+                                <th>@(item3)</th>
+                                <th>@(item4)</th>
+                                @*<th>1</th>
+                                <th>2</th>*@
+                                <th>@(item6)</th>
+                                <th>@(item7)</th>
+                                <th>@(item8)</th>
+                                <th>@(item9)</th>
+            
+                            </tr>
+                        }
+                        <tr>
+                            <td>总计</td>
+                            <th></th>
+                            <th>@total0</th>
+                            <th>@total1</th>
+                            <th>@total2</th>
+                            <th>@total3</th>
+                            <th>@total4</th>
+                            @*<th>1</th>
+                            <th>2</th>*@
+                            <th>@total6</th>
+                            <th>@total7</th>
+                            <th>@total8</th>
+                            <th>@total9</th>
+                        </tr>
+                    }
+            </tbody>
+
+        </table>
+
+
+    </div>
+</div>
+
+</div>
+@section scripts
+{
+    <script>
+
+        $('[name=startTime]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name=endTime]').datepicker({ format: 'yyyy-mm-dd' });
+        $('[name="state"]').find('option').eq(@(searchState.GetInt()-1)).attr('selected', true);
+
+        function ClearFilter() {
+            $("#searchDomain input").val("");
+        }
+        function Search() {
+            window.location.href = "/Student/State?startTime=" + $("[name='startTime']").val() + "&endTime=" + $("[name='endTime']").val() + "&state=" + $("[name='state']").val();
+        }
+
+    </script>
+}

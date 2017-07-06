@@ -324,7 +324,7 @@ namespace DOL.Service
             if (dataDic.Keys.Contains(group))
             {
                 var dic = dataDic[group];
-                var itemList = dic.Values.Where(x=> isShowOil?(1==1):x.ID!= "df84ff2a25ff462aac24543976e56d62");
+                var itemList = dic.Values.Where(x=> x.ID!= "df84ff2a25ff462aac24543976e56d62");
                 if(predicate != null)
                 {
                    itemList.Where(x=>predicate(x)).OrderByDescending(x=>x.Sort).ToList().ForEach(x =>

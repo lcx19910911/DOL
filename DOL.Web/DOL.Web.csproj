@@ -338,6 +338,7 @@
     <Content Include="Views\Waste\Report.cshtml" />
     <Content Include="Views\Coach\Info.cshtml" />
     <Content Include="Views\Coach\MyCash.cshtml" />
+    <Content Include="Views\Student\State.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
