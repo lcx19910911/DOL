@@ -2057,7 +2057,7 @@ namespace DOL.Service
                         //科三过 科目一、科三过，科目二未通过
                         scooDic.Add(StudentCode.ThemeThreePass, studentList.Where(y => y.State == StudentCode.ThemeTwo && y.ThemeThreePass == YesOrNoCode.Yes && y.ThemeOnePass == YesOrNoCode.Yes && !string.IsNullOrEmpty(y.MakeDriverShopID) && y.MakeDriverShopID == x.ID).Count());
                         //科目三 科目一、科二过，科目三未通过
-                        scooDic.Add(StudentCode.ThemeThree, studentList.Where(y => y.State == StudentCode.ThemeTwo && y.ThemeTwoPass == YesOrNoCode.Yes && y.ThemeOnePass == YesOrNoCode.Yes && !string.IsNullOrEmpty(y.MakeDriverShopID) && y.MakeDriverShopID == x.ID).Count());
+                        scooDic.Add(StudentCode.ThemeThree, studentList.Where(y => y.State == StudentCode.ThemeThree && y.ThemeTwoPass == YesOrNoCode.Yes && y.ThemeOnePass == YesOrNoCode.Yes && !string.IsNullOrEmpty(y.MakeDriverShopID) && y.MakeDriverShopID == x.ID).Count());
                         schoolDic.Add(i+"."+x.Name, scooDic);
                         i++;
                     });
