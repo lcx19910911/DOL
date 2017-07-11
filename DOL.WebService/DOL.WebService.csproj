@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="WebService.DataDictionary.cs" />
     <Compile Include="WebService.Car.cs" />
+    <Compile Include="WebService.Expend.cs" />
     <Compile Include="WebService.Waste.cs" />
     <Compile Include="WebService.Recharge.cs" />
     <Compile Include="WebService.OilCard.cs" />

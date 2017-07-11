@@ -3,19 +3,25 @@
     ViewBag.Title = "在库统计";
     var stateStr = "";
     var searchState = Request["state"];
+    var isShowDontMakeCard = true;
+    var isShowThemeThreeNoPass = true;
     switch (searchState)
     {
         case "1":
             stateStr = "驾校";
+            isShowThemeThreeNoPass = false;
             break;
         case "2":
             stateStr = "教练";
+            isShowDontMakeCard = false;
             break;
         case "3":
             stateStr = "报名点";
+            isShowThemeThreeNoPass = false;
             break;
         case "4":
             stateStr = "推荐人";
+            isShowThemeThreeNoPass = false;
             break;
         case null:
             stateStr = "驾校";
@@ -66,10 +72,18 @@
                     <tr>
                         <th>组别</th>
                         <th>责任人</th>
+                        @if (isShowDontMakeCard)
+                        {
                         <th>未制卡</th>
+                        }
                         <th>科目一</th>
                         <th>科目二</th>
                         <th>科目三</th>
+                        <th>科三过</th>
+                        @if (isShowThemeThreeNoPass)
+                        {
+                            <th>科三未</th>
+                        }
                         <th>科目四</th>
                         @*<th>科二学时满</th>
                         <th>科三学时满</th>*@
@@ -84,15 +98,16 @@
                     @if (Model != null && Model.Count > 0)
                     {
                         var total0 = 0;
-                        var total1 = 1;
-                        var total2 = 2;
-                        var total3 = 3;
-                        var total4 = 4;
+                        var total1 = 0;
+                        var total2 = 0;
+                        var total3 = 0;
+                        var total4 = 0;
                         var total5 = 5;
-                        var total6 = 6;
-                        var total7 = 7;
-                        var total8 = 8;
-                        var total9 = 9;
+                        var total6 = 0;
+                        var total7 = 0;
+                        var total8 = 0;
+                        var total9 = 0;
+                        var total10 = 0;
                         var list = Model.ToList();
                         foreach (var item in list)
                         {
@@ -100,8 +115,10 @@
                             var item1 = item.Value.ContainsKey(StudentCode.ThemeOne) ? item.Value[StudentCode.ThemeOne] : 0;
                             var item2 = item.Value.ContainsKey(StudentCode.ThemeTwo) ? item.Value[StudentCode.ThemeTwo] : 0;
                             var item3 = item.Value.ContainsKey(StudentCode.ThemeThree) ? item.Value[StudentCode.ThemeThree] : 0;
-                            var item4 = item.Value.ContainsKey(StudentCode.ThemeFour) ? item.Value[StudentCode.ThemeFour] : 0;
-                            var item6 = item1+item2+item3+item4;
+                            var item4 = item.Value.ContainsKey(StudentCode.ThemeThreePass) ? item.Value[StudentCode.ThemeThreePass] : 0;
+                            var item5 = item.Value.ContainsKey(StudentCode.ThemeFour) ? item.Value[StudentCode.ThemeFour] : 0;
+                            var item10 = item.Value.ContainsKey(StudentCode.ThemeThreeNoPass) ? item.Value[StudentCode.ThemeThreeNoPass] : 0;
+                            var item6 = item1+item2+item3+item4+item5;
                             var item7 = item.Value.ContainsKey(StudentCode.Graduate) ? item.Value[StudentCode.Graduate] : 0;
                             var item8 = item.Value.ContainsKey(StudentCode.WantDropOut) ? item.Value[StudentCode.WantDropOut] : 0;
                             var item9 = item.Value.ContainsKey(StudentCode.HadDropOut) ? item.Value[StudentCode.HadDropOut] : 0;
@@ -110,19 +127,29 @@
                             total2 += item2;
                             total3 += item3;
                             total4 += item4;
+                            total5 += item5;
                             total6 += item6;
                             total7 += item7;
                             total8 += item8;
                             total9 += item9;
+                            total10 += item10;
                             <tr>
 
                                 <td>@stateStr</td>
                                 <th>@item.Key</th>
-                                <th>@(item0)</th>
+                                @if (isShowDontMakeCard)
+                                {
+                                    <th>@(item0)</th>
+                                }
                                 <th>@(item1)</th>
                                 <th>@(item2)</th>
                                 <th>@(item3)</th>
                                 <th>@(item4)</th>
+                                @if (isShowThemeThreeNoPass)
+                                {
+                                    <th>@(item10)</th>
+                                }
+                                <th>@(item5)</th>
                                 @*<th>1</th>
                                 <th>2</th>*@
                                 <th>@(item6)</th>
@@ -135,11 +162,19 @@
                         <tr>
                             <td>总计</td>
                             <th></th>
-                            <th>@total0</th>
+                            @if (isShowDontMakeCard)
+                            {
+                                <th>@(total0)</th>
+                            }
                             <th>@total1</th>
                             <th>@total2</th>
                             <th>@total3</th>
                             <th>@total4</th>
+                            @if (isShowThemeThreeNoPass)
+                            {
+                                <th>@(total10)</th>
+                            }
+                            <th>@total5</th>
                             @*<th>1</th>
                             <th>2</th>*@
                             <th>@total6</th>

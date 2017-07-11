@@ -54,6 +54,7 @@
     <Compile Include="Dto\StudentStateModel.cs" />
     <Compile Include="Enum\WasteCode.cs" />
     <Compile Include="Car.cs" />
+    <Compile Include="Expend.cs" />
     <Compile Include="Waste.cs" />
     <Compile Include="OilCard.cs" />
     <Compile Include="DataDictionary.cs" />

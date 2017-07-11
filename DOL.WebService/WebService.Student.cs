@@ -815,6 +815,7 @@ namespace DOL.Service
             string driverShopID,
             string themeTwoCoachID,
             string themeThreeCoachID,
+            string enteredPointID,
             int orderBy,
             ThemeTimeCode themeTwoTimeCode,
             ThemeTimeCode themeThreeTimeCode,
@@ -840,7 +841,10 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.ReferenceID.Equals(referenceID));
                 }
-
+                if (enteredPointID.IsNotNullOrEmpty() && enteredPointID != "-1")
+                {
+                    query = query.Where(x => x.EnteredPointID.Equals(enteredPointID));
+                }            
                 if (driverShopID.IsNotNullOrEmpty() && driverShopID != "-1")
                 {
                     query = query.Where(x => x.MakeDriverShopID.Equals(driverShopID));
@@ -2044,7 +2048,17 @@ namespace DOL.Service
                 {
                     schoolList.ForEach(x =>
                     {
-                        schoolDic.Add(i+"."+x.Name, studentList.Where(y=> !string.IsNullOrEmpty(y.MakeDriverShopID) && y.MakeDriverShopID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count()));
+                        // 不包含科目2和科目3和未制卡
+                        var scooDic = studentList.Where(y => y.State != StudentCode.DontMakeCard&& y.State != StudentCode.ThemeTwo&& y.State != StudentCode.ThemeThree && !string.IsNullOrEmpty(y.MakeDriverShopID) && y.MakeDriverShopID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count());
+                        //未制卡为意向驾校
+                        scooDic.Add(StudentCode.DontMakeCard, studentList.Where(y => y.State == StudentCode.DontMakeCard && !string.IsNullOrEmpty(y.WantDriverShopID) && y.WantDriverShopID == x.ID).Count());
+                        //科目二 科目一过，科目三未通过
+                        scooDic.Add(StudentCode.ThemeTwo, studentList.Where(y => y.State == StudentCode.ThemeTwo&&y.ThemeThreePass== YesOrNoCode.No && y.ThemeOnePass == YesOrNoCode.Yes && !string.IsNullOrEmpty(y.MakeDriverShopID) && y.MakeDriverShopID == x.ID).Count());
+                        //科三过 科目一、科三过，科目二未通过
+                        scooDic.Add(StudentCode.ThemeThreePass, studentList.Where(y => y.State == StudentCode.ThemeTwo && y.ThemeThreePass == YesOrNoCode.Yes && y.ThemeOnePass == YesOrNoCode.Yes && !string.IsNullOrEmpty(y.MakeDriverShopID) && y.MakeDriverShopID == x.ID).Count());
+                        //科目三 科目一、科二过，科目三未通过
+                        scooDic.Add(StudentCode.ThemeThree, studentList.Where(y => y.State == StudentCode.ThemeTwo && y.ThemeTwoPass == YesOrNoCode.Yes && y.ThemeOnePass == YesOrNoCode.Yes && !string.IsNullOrEmpty(y.MakeDriverShopID) && y.MakeDriverShopID == x.ID).Count());
+                        schoolDic.Add(i+"."+x.Name, scooDic);
                         i++;
                     });
                 }
@@ -2062,7 +2076,16 @@ namespace DOL.Service
                 {
                     coachList.ForEach(x =>
                     {
-                        coachDic.Add(i + "." + x.Name, studentList.Where(y => (!string.IsNullOrEmpty(y.ThemeTwoCoachID) && y.ThemeTwoCoachID == x.ID) || (!string.IsNullOrEmpty(y.ThemeThreeCoachID) && y.ThemeThreeCoachID == x.ID)).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count()));
+                        //不包含科目三 科三过
+                        var stateDic=studentList.Where(y => !string.IsNullOrEmpty(y.ThemeTwoCoachID) && y.ThemeTwoCoachID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count());
+
+                        //科目三 （科目三为该教练。科目一、二通过科目三未过的）
+                        stateDic[StudentCode.ThemeThree]=studentList.Where(y => y.State == StudentCode.ThemeThree && y.ThemeTwoPass == YesOrNoCode.Yes && y.ThemeOnePass == YesOrNoCode.Yes && !string.IsNullOrEmpty(y.ThemeThreeCoachID) && y.ThemeThreeCoachID == x.ID).Count();
+                        //科三过 （科目二为该教练，科目一、三通过科目二未过的）
+                        stateDic.Add(StudentCode.ThemeThreePass, studentList.Where(y => (y.State == StudentCode.ThemeTwo && y.ThemeThreePass == YesOrNoCode.Yes && y.ThemeOnePass == YesOrNoCode.Yes && !string.IsNullOrEmpty(y.ThemeTwoCoachID) && y.ThemeTwoCoachID == x.ID)).Count());
+                        //科三未 科目二为该教练，科目一、二通过科目三未过的
+                        stateDic.Add(StudentCode.ThemeThreeNoPass, studentList.Where(y => (y.State == StudentCode.ThemeThree && y.ThemeOnePass == YesOrNoCode.Yes && y.ThemeTwoPass == YesOrNoCode.Yes && !string.IsNullOrEmpty(y.ThemeTwoCoachID) && y.ThemeTwoCoachID == x.ID)).Count());
+                        coachDic.Add(i + "." + x.Name, stateDic);
                         i++;
                     });
                 }
@@ -2080,7 +2103,11 @@ namespace DOL.Service
                 {
                     enpointList.ForEach(x =>
                     {
-                        enPointDic.Add(i + "." + x.Name, studentList.Where(y => y.EnteredPointID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count()));
+                        var enpoDic = studentList.Where(y => y.EnteredPointID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count());
+                        //科三过 科目一、科三过，科目二未通过
+                        enpoDic.Add(StudentCode.ThemeThreePass, studentList.Where(y => y.State == StudentCode.ThemeTwo && y.ThemeThreePass == YesOrNoCode.Yes && y.ThemeOnePass == YesOrNoCode.Yes && y.EnteredPointID == x.ID).Count());
+
+                        enPointDic.Add(i + "." + x.Name, enpoDic);
                         i++;
                     });
                 }
@@ -2094,11 +2121,15 @@ namespace DOL.Service
             {
                 var referenceDic = new Dictionary<string, Dictionary<StudentCode, int>>();
                 var referenceList = Cache_Get_ReferenceList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
+                var refeDic = new Dictionary<StudentCode, int>();
                 if (referenceList != null && referenceList.Count > 0)
                 {
                     referenceList.ForEach(x =>
                     {
-                        referenceDic.Add(i + "." + x.Name, studentList.Where(y =>!string.IsNullOrEmpty(y.ReferenceID)&&y.ReferenceID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count()));
+                        var referDic = studentList.Where(y => !string.IsNullOrEmpty(y.ReferenceID) && y.ReferenceID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count());
+                        //科三过 科目一、科三过，科目二未通过
+                        referDic.Add(StudentCode.ThemeThreePass, studentList.Where(y => y.State == StudentCode.ThemeTwo && y.ThemeThreePass == YesOrNoCode.Yes && y.ThemeOnePass == YesOrNoCode.Yes && y.ReferenceID == x.ID).Count());
+                        referenceDic.Add(i + "." + x.Name, referDic);
                         i++;
                     });
                 }

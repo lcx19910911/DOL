@@ -137,6 +137,7 @@
     <Content Include="HtmlTemplates\EnteredPoint\Update.html" />
     <Content Include="HtmlTemplates\Exam\Index.html" />
     <Content Include="HtmlTemplates\Exam\Update.html" />
+    <Content Include="HtmlTemplates\Expend\Update.html" />
     <Content Include="HtmlTemplates\Menu\Update.html" />
     <Content Include="HtmlTemplates\OIlCard\AddOil.html" />
     <Content Include="HtmlTemplates\OIlCard\Update.html" />
@@ -164,6 +165,7 @@
     <Content Include="HtmlTemplates\User\SelectMenu.html" />
     <Content Include="HtmlTemplates\User\SelectOperate.html" />
     <Content Include="HtmlTemplates\User\Update.html" />
+    <Content Include="HtmlTemplates\Expend\Add.html" />
     <Content Include="HtmlTemplates\Waste\Add.html" />
     <Content Include="Images\404Pic.png" />
     <Content Include="Images\loading.jpg" />
@@ -260,6 +262,7 @@
     <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\OilCardController.cs" />
     <Compile Include="Controllers\RechargeController.cs" />
+    <Compile Include="Controllers\ExpendController.cs" />
     <Compile Include="Controllers\WasteController.cs" />
     <Compile Include="Controllers\SchoolController.cs" />
     <Compile Include="Controllers\DataDictionaryController.cs" />
@@ -339,6 +342,8 @@
     <Content Include="Views\Coach\Info.cshtml" />
     <Content Include="Views\Coach\MyCash.cshtml" />
     <Content Include="Views\Student\State.cshtml" />
+    <Content Include="Views\Expend\Index.cshtml" />
+    <Content Include="Views\Expend\Report.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

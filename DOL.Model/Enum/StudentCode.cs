@@ -40,6 +40,13 @@ namespace DOL.Model
         WantDropOut = 6,
 
         [Description("已退学")]
-        HadDropOut = 7,     
+        HadDropOut = 7,
+
+
+        [Description("科目三通过科目二没过")]
+        ThemeThreePass = 11,
+
+        [Description("科目二为该教练，科目一、二通过科目三未过的")]
+        ThemeThreeNoPass = 12,
     }
 }

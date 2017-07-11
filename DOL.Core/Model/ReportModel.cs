@@ -13,6 +13,9 @@ namespace DOL.Core
 
         public List<Series> repairSeries { get; set; }
 
+
+        public List<Series> expendSeries { get; set; }
+
     }
     
 

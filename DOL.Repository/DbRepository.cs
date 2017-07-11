@@ -129,6 +129,8 @@ namespace DOL.Repository
         public DbSet<Waste> Waste { get; set; }
 
         public DbSet<Car> Car { get; set; }
+
+        public DbSet<Expend> Expend { get; set; }
     }
 
 }
