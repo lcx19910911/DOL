@@ -1,5 +1,6 @@
 ﻿@model DOL.Web.Models.CoacheInfoModel
 @{
+    Layout = null;
     var examThemeTwoList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
     var examThemeThreeList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
     var themeTwoSalary = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
@@ -18,7 +19,7 @@
     }
     ViewBag.Title = "教学查询";
 }
-<div class="am-cf am-padding">
+@*<div class="am-cf am-padding">
     <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>教学信息</small></div>
 </div>
 <div id="searchDomain">
@@ -54,7 +55,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>*@
 
 <div class="grid_container">
     @if (Model != null && Model.CoachReportModel != null && Model.CoachReportModel.isShowList == false)
@@ -303,7 +304,7 @@
                             <th>考试次数</th>
                             <th>人数通过率</th>
                             <th>考试人数</th>
-                            <th>仁慈通过率</th>
+                            <th>人次通过率</th>
                             <td>总考试人次</td>
                             <td>总通过人次</td>
                             <td>总人次通过率</td>
@@ -316,7 +317,7 @@
                             <th>考试次数</th>
                             <th>人数通过率</th>
                             <th>考试人数</th>
-                            <th>仁慈通过率</th>
+                            <th>人次通过率</th>
                             <td>总考试人次</td>
                             <td>总通过人次</td>
                             <td>总人次通过率</td>

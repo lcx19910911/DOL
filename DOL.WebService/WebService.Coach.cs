@@ -572,7 +572,7 @@ namespace DOL.Service
                       });
                       if (studentNameList != null)
                       {
-                          var nameStr =string.Format("<p class=\"am-text-success\">{0}</p><p class=\"am-text-danger\">{1}</p>", string.Join(",", studentNameList), string.Join(",", failedList));
+                          var nameStr =string.Format("<p class=\"am-text-success am-margin-top-lg\">{0}</p><p class=\"am-text-danger\">{1}</p>", string.Join(",", studentNameList), string.Join(",", failedList));
 
                           //添加到集合
                           model.ExamModel.List.Add(new Tuple<ThemeCode, DateTime, string, int, int, int>(ThemeCode.Two, x.Key, nameStr, examCount, passCount, passCount != 0 ? (passCount * 100 / examCount) : 0));
@@ -651,7 +651,7 @@ namespace DOL.Service
                     });
                     if (studentNameList != null)
                     {
-                        var nameStr = string.Format("<p class=\"am-text-success\">{0}</p><p class=\"am-text-danger\">{1}</p>", string.Join(",", studentNameList), string.Join(",", failedList));
+                        var nameStr = string.Format("<p class=\"am-text-success am-margin-top-lg\">{0}</p><p class=\"am-text-danger\">{1}</p>", string.Join(",", studentNameList), string.Join(",", failedList));
                         model.ExamModel.List.Add(new Tuple<ThemeCode, DateTime, string, int, int, int>(ThemeCode.Three, x.Key, nameStr, examCount, passCount, passCount != 0 ? (passCount * 100 / examCount) : 0));
                     }
                 }

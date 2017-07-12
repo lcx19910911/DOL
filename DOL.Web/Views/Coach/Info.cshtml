@@ -43,7 +43,7 @@
 <div class="grid_container">
     @if (Model != null && Model.isShowList == false)
     {
-        <div class="am-g">
+        @*<div class="am-g">
 
             <div class="am-u-lg-12">
                 <div class="am-g am-margin-top-lg ">
@@ -131,7 +131,7 @@
                 </table>
             </div>
 
-        </div>
+        </div>*@
     }
     else if (Model != null && Model.isShowList == true)
     {
@@ -155,7 +155,9 @@
                         <tr><th>科目</th><th colspan="@(themeTwoThCount*2+1)" class="am-text-center">科二</th><th colspan="@(themeThreeThCount*2+1)" class="am-text-center">科三</th><th colspan="2"></th></tr>
                         <tr>
                             <th>教练员</th>
-                         
+
+                            <th>底薪</th>
+                            <th>总计</th>
                             @foreach (var item in Model.CoachList.SalaryList)
                             {
                                 var className = "am-text-success";
@@ -187,8 +189,6 @@
                                     </th>
                                 }
                             }
-                            <th>底薪</th>
-                            <th>总计</th>
                         </tr>
                         
                     </thead>
@@ -198,7 +198,8 @@
                         {
                             <tr>
                                 <td>@item.Value.CoachName</td>
-
+                                <td>@item.Value.BasicSalary</td>
+                                <td>@item.Value.TotalMoeny</td>
                                 @foreach (var salary in Model.CoachList.SalaryList)
                                 {
                                     var className = "am-text-success";
@@ -242,8 +243,6 @@
                                                 </td>
                                                }
                                           }
-                                <td>@item.Value.BasicSalary</td>
-                                <td>@item.Value.TotalMoeny</td>
                             </tr>
                             }
                     </tbody>
@@ -252,7 +251,9 @@
             </div>
 
         </div>
-                                                        }
+       
+     }
+     <div id="infoDiv"></div>
 </div>
 @section scripts
 {
@@ -278,6 +279,15 @@
                 }
             });
         });
+
+        $.ajax({
+            url: "/Coach/Train",
+            data: { searchTime: '@(Model?.StartTime.ToString("yyyy-MM"))', coachId: coachID },
+            success: function (html) {
+                $("#infoDiv").append(html);
+            }
+        })
+
 
         function Search() {
             window.location.href = "/Coach/Info?searchTime=" + $("[name='searchTime']").val() + "&CoachID=" + $("[name='CoachID']").val();
