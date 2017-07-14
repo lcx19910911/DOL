@@ -76,7 +76,7 @@ namespace DOL.Service
                 {
                     query = query.Where(x => x.OilID.Equals(oilId));
                 }
-                if (thingId.IsNotNullOrEmpty())
+                if (thingId.IsNotNullOrEmpty()&&thingId!="-1")
                 {
                     query = query.Where(x => x.ThingID.Equals(thingId));
                 }
