@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "油卡";
+    ViewBag.Title = "耗损记录";
 }
 
 <div class="am-cf am-padding">
@@ -65,6 +65,36 @@
             $("#searchDomain input").val("");
         }
 
+        function UpdateWaste(item) {
+            if (item.Code == 2) {
+                $.Nuoya.action("/Waste/GetRepairSelectItem", {}, function (json) {
+                    $(json.Item1).each(function () {
+                        $("#form select[name='CarID']").append("<option  value='" + this.Value + "' " + (item.CarID == this.Value ? "selected" : "") + ">" + this.Text + "</option>");
+                    });
+                    $(json.Item2).each(function () {
+                        $("#form select[name='ThingID']").append("<option  value='" + this.Value + "'" + (item.ThingID == this.Value ? "selected" : "") + ">" + this.Text + "</option>");
+                    });
+                    $(json.Item3).each(function () {
+                        $("#form select[name='TargetID']").append("<option  value='" + this.Value + "'" + (item.TargetID == this.Value ? "selected" : "") + ">" + this.Text + "</option>");
+                    });
+                });
+            }
+            else {
+                $("#form select[name='ThingID']").append("<option  value='" + this.Value + "'selected>加油</option>");
+                $.Nuoya.action("/Waste/GetOilSelectItem", {}, function (json) {
+                    $(json.Item1).each(function () {
+                        $("#form select[name='TargetID']").append("<option  value='" + this.Value + "' " + (item.TargetID == this.Value ? "selected" : "") + ">" + this.Text + "</option>");
+                    });
+                    $(json.Item2).each(function () {
+                        $("#form select[name='CarID']").append("<option  value='" + this.Value + "' " + (item.CarID == this.Value ? "selected" : "") + ">" + this.Text + "</option>");
+                    });
+                    $(json.Item3).each(function () {
+                        $("#form select[name='OilID']").append("<option  value='" + this.Value + "' " + (item.OilID == this.Value ? "selected" : "") + ">" + this.Text + "</option>");
+                    });
+                });
+            }
+        }
+
         var grid = $.Nuoya.grid({
             tableId: "dataTable",
             //表格id
@@ -75,6 +105,103 @@
             ajaxUrl: "/Waste/GetPageList",
             //数据请求地址
             events: [
+                    {
+                        className: "am-text-secondary",
+                        icon: "icon-pencil-square-o",
+                        name: "编辑",
+                        click: function (item) {
+                            $.Nuoya.ajaxDialog({
+                                closeViaDimmer: false,
+                                ajaxUrl: "/HtmlTemplates/Waste/Update.html",
+                                title: "编辑耗损记录",
+                                width: "1000px",
+                                height: "440px",
+                                callback: function (e) {
+                                    $.Nuoya.action("/Waste/Find", { id: item.ID }, function (model) {
+                                        //载入数据
+                                        $.Nuoya.form("form").dataLoad({
+                                            data: model
+                                        });
+                                        UpdateWaste(item);//表单初始化
+                                        if (item.Code == 1) {
+                                            $("#targetDiv").html("加油点");
+                                            $("#thingDiv").hide();
+                                        }
+                                        else {
+                                            $("#targetDiv").html("维修点");
+                                            $("#oilDiv").hide();
+                                        }
+                                    });
+                                },
+                                buttons: [{
+                                    label: "保存",
+                                    callback: function (e) {
+                                        var msg = "";
+                                        if (item.Code == 1) {
+                                            var AddDate = $("#form [name='AddDate']").val();
+                                            if (AddDate == "") {
+                                                msg = "请选择加油时间";
+                                            }
+                                            var CarID = $("#form [name='CarID']").val();
+                                            if (CarID == "" || CarID == "-1") {
+                                                msg = "请选择车辆";
+                                            }
+                                            var TargetID = $("#form [name='TargetID']").val();
+                                            if (TargetID == "" || TargetID == "-1") {
+                                                msg = "请选择加油点";
+                                            }
+                                            var Money = $("#form [name='Money']").val();
+                                            if (Money == "") {
+                                                msg = "请填写金额";
+                                            }
+                                        }
+                                        else {
+                                            var AddDate = $("#form [name='AddDate']").val();
+                                            if (AddDate == "") {
+                                                msg = "请选择维修时间";
+                                            }
+                                            var CarID = $("#form [name='CarID']").val();
+                                            if (CarID == "" || CarID == "-1") {
+                                                msg = "请选择车辆";
+                                            }
+                                            var ThingID = $("#form [name='ThingID']").val();
+                                            if (ThingID == "" || ThingID == "-1") {
+                                                msg = "请选择项目";
+                                            }
+                                            var TargetID = $("#form [name='TargetID']").val();
+                                            if (TargetID == "" || TargetID == "-1") {
+                                                msg = "请选择维修点";
+                                            }
+                                            var Money = $("#form [name='Money']").val();
+                                            if (Money == "") {
+                                                msg = "请填写金额";
+                                            }
+                                        }
+
+                                        if (msg != "") {
+                                            $.Nuoya.alert(msg);
+                                            return false;
+                                        }
+
+                                        $.Nuoya.form("form").ajaxSubmit({
+                                            ajaxUrl: "/Waste/Update",
+                                            params: {
+                                                ID: item.ID
+                                            },
+                                            callback: function (data) {
+                                                if (!data.ErrorDesc) {
+                                                    e.hide();
+                                                    grid.reload();
+                                                }
+                                                else
+                                                    $.Nuoya.alert(data.ErrorDesc);
+                                            }
+                                        });
+                                    }
+                                }]
+                            })
+                        }
+                    },
             ]
         });
         $.Nuoya.action("/Student/GetSelectItemList", {}, function (json) {
@@ -85,7 +212,7 @@
 
         $.Nuoya.action("/Waste/GetItemSelectItem", {}, function (json) {
             $(json).each(function () {
-                $("#searchDomain select[name='ThingID']").append("<option  value='" + this.ID + "' >" + this.Name + "</option>");
+                $("#searchDomain select[name='ThingID']").append("<option  value='" + this.Value + "' >" + this.Text + "</option>");
             });
         });
 

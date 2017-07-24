@@ -2025,11 +2025,11 @@ namespace DOL.Service
             var query = Cache_Get_StudentList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0);
             if (startTime != null)
             {
-                query = query.Where(x => x.CreatedTime > startTime);
+                query = query.Where(x => x.EnteredDate > startTime);
             }
             if (endTime != null)
             {
-                query = query.Where(x => x.CreatedTime < endTime);
+                query = query.Where(x => x.EnteredDate < endTime);
             }
             var studentList = query.ToList();
             var dic =new  Dictionary<SteteReportEnum, Dictionary<string, Dictionary<StudentCode, int>>>();

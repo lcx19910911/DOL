@@ -87,6 +87,28 @@ namespace DOL.Web.Controllers
         }
 
         /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public JsonResult Update(Waste entity)
+        {
+            ModelState.Remove("UpdaterID");
+            ModelState.Remove("UpdatedTime");
+            ModelState.Remove("CreatedTime");
+            ModelState.Remove("CreatedUserID");
+            if (ModelState.IsValid)
+            {
+                var result = WebService.Update_Waste(entity);
+                return JResult(result);
+            }
+            else
+            {
+                return ParamsErrorJResult(ModelState);
+            }
+        }
+        
+        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="ids"></param>
@@ -94,6 +116,16 @@ namespace DOL.Web.Controllers
         public ActionResult GetOilSelectItem()
         {
             return JResult(WebService.GetOilSelectItem());
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult Find(string ID)
+        {
+            return JResult(WebService.Find_Waste(ID));
         }
 
 

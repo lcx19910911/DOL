@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "Test";
+    Layout = null;
+}
+
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="苏式炖品" />
+    <link href="/Styles/css/amazeui.css" rel="stylesheet" />
+</head>
+
+<body style="width:100%">
+    <div class="am-cf admin-main am-text-left">
+        <div class="admin-content" style="width:400px;margin:0 auto;">
+            <div>
+                <div id='div4'>
+                    <span style="width:150px;font-size:x-large">**苏式炖品**</span><br />
+                    <span style="float:left;">订单号：201707210112</span><br />
+                    <span style="float:right;">时间：2017/07/21 14:12:11</span><br />
+                    <hr />
+                    <table>
+                        <thead><tr><th width="120">名称</th><th width="30">数量</th><th width="30">单价</th><th width="30">总价</th></tr></thead>
+                        <tbody>
+                            <tr><td height="20">鸡腿饭</td><td>1</td><td>24</td><td>45</td></tr>
+                            <tr><td height="20">鸡腿饭</td><td>1</td><td>24</td><td>45</td></tr>
+                            <tr><td height="40">总计</td><td>3</td><td></td><td>90</td></tr>
+                        </tbody>
+                    </table>
+                    <hr />
+                </div>
+                <a href="javascript:printme()" rel="external nofollow" target="_self">打印</a>
+                <script language="javascript">
+
+                    function printme() {
+                        document.body.innerHTML = document.getElementById('div4').innerHTML;
+                        window.print();
+                    }
+                </script>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

@@ -79,7 +79,7 @@ namespace DOL.Service
                 }
 
                 var count = query.Count();
-                var list = query.OrderByDescending(x => x.AddDate).ThenBy(x=>x.CreatedTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                var list = query.OrderByDescending(x => x.NO).ThenBy(x=>x.AddDate).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 var thingDic = new Dictionary<string, DataDictionary>();
                 if (Cache_Get_DataDictionary().ContainsKey(GroupCode.ExpendThing))
                 {

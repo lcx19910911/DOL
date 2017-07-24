@@ -290,6 +290,18 @@ namespace DOL.Service
         }
 
         /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Waste Find_Waste(string id)
+        {
+            if (!id.IsNotNullOrEmpty())
+                return null;
+            return Cache_Get_WasteList().AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+        }
+
+        /// <summary>
         /// 删除分类
         /// </summary>
         /// <param name="ids"></param>
@@ -347,11 +359,12 @@ namespace DOL.Service
         /// 获取油卡参数
         /// </summary>
         /// <returns></returns>
-        public Tuple<List<SelectItem>, List<SelectItem>> GetOilSelectItem()
+        public Tuple<List<SelectItem>, List<SelectItem>, List<SelectItem>> GetOilSelectItem()
         {
             var refuelingPointList = Get_DataDictorySelectItem(GroupCode.RefuelingPoint);
             var carList = Get_CarSelectItem("");
-            return new Tuple<List<SelectItem>, List<SelectItem>>(refuelingPointList, carList);
+            var oilList = Get_OilCardSelectItem("");
+            return new Tuple<List<SelectItem>, List<SelectItem>, List<SelectItem>>(refuelingPointList, carList, oilList);
         }
 
 
@@ -368,18 +381,52 @@ namespace DOL.Service
         }
 
         /// <summary>
-        /// 查找实体
+        /// 修改
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        public Waste Find_Waste(string id)
+        public WebResult<bool> Update_Waste(Waste model)
         {
-            if (!id.IsNotNullOrEmpty())
-                return null;
             using (DbRepository entities = new DbRepository())
             {
-                return entities.Waste.AsQueryable().AsNoTracking().FirstOrDefault(x => x.ID.Equals(id));
+
+                var oldEntity = entities.Waste.Find(model.ID);
+                if (oldEntity != null)
+                {
+                    oldEntity.ThingID = model.ThingID;
+                    oldEntity.Money = model.Money;
+                    oldEntity.AddDate = model.AddDate;
+                    oldEntity.Remark = model.Remark;
+                    oldEntity.CarID = model.CarID;
+                    oldEntity.OilID = model.OilID;
+                    oldEntity.License = model.License;
+                    oldEntity.TargetID = model.TargetID;
+                    oldEntity.UpdatedTime = DateTime.Now;
+                    oldEntity.UpdaterID = Client.LoginUser.ID;
+                }
+                else
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_WasteList();
+                    var index = list.FindIndex(x => x.ID.Equals(model.ID));
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
             }
+
         }
 
 

@@ -167,6 +167,7 @@
     <Content Include="HtmlTemplates\User\Update.html" />
     <Content Include="HtmlTemplates\Expend\Add.html" />
     <Content Include="HtmlTemplates\Waste\Add.html" />
+    <Content Include="HtmlTemplates\Waste\Update.html" />
     <Content Include="Images\404Pic.png" />
     <Content Include="Images\loading.jpg" />
     <Content Include="Images\login-sprite.png" />
@@ -344,6 +345,7 @@
     <Content Include="Views\Student\State.cshtml" />
     <Content Include="Views\Expend\Index.cshtml" />
     <Content Include="Views\Expend\Report.cshtml" />
+    <Content Include="Views\Home\Test.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

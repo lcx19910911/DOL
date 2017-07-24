@@ -19,7 +19,11 @@ namespace DOL.Web.Controllers
         {
             return View();
         }
-
+        // GET: 
+        public ActionResult Test()
+        {
+            return View();
+        }
         public void LoadCache()
         {
             WebService.Cache_Get_CoachList();
