@@ -1287,7 +1287,7 @@ namespace DOL.Service
                 enteredPointList = enteredPointList.Where(x => !Client.LoginUser.IsAdmin ? (Client.LoginUser.EnteredPointIDStr.IsNotNullOrEmpty() && Client.LoginUser.EnteredPointIDStr.Contains(x.ID)) : 1 == 1).ToList();
             }
             enteredPointList = enteredPointList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0).ToList();
-            var coachList = Cache_Get_CoachList().ToList();
+            var coachList = Cache_Get_CoachList().Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0||!x.IsQuit).ToList();
 
             //if (dsid.IsNotNullOrEmpty())
             //    coachList = coachList.Where(x => (x.Flag & (long)GlobalFlag.Removed) == 0 && x.DriverShopID.Equals(dsid)).ToList();

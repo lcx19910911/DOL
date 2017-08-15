@@ -167,5 +167,16 @@ namespace DOL.Model
         /// </summary>
         [NotMapped]
         public string DriverShopName { get; set; }
+
+        /// <summary>
+        /// 离职时间
+        /// </summary>
+        [Display(Name = "离职时间")]
+        public System.DateTime QuitTime { get; set; }
+        /// <summary>
+        /// 是否离职
+        /// </summary>
+        [Display(Name = "是否离职")]
+        public bool IsQuit { get; set; } = false;
     }
 }

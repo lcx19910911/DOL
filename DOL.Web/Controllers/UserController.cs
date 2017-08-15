@@ -150,6 +150,17 @@ namespace DOL.Web.Controllers
         }
 
         /// <summary>
+        /// 启用
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Quit(string id,DateTime quitTime)
+        {
+            return JResult(WebService.User_Quit(id, quitTime));
+        }
+
+        
+
+        /// <summary>
         /// 禁用
         /// </summary>
         /// <returns></returns>

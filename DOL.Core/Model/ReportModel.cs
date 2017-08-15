@@ -9,10 +9,8 @@ namespace DOL.Core
     {
         public List<string> x { get; set; }
 
-        public List<Series> oilSeries { get; set; }
-
-        public List<Series> repairSeries { get; set; }
-
+        public List<Series> series { get; set; }
+        
 
         public List<Series> expendSeries { get; set; }
 

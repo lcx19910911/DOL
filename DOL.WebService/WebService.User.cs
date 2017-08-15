@@ -443,6 +443,72 @@ namespace DOL.Service
         }
 
 
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public WebResult<bool> User_Quit(string id, DateTime quitTime)
+        {
+            using (DbRepository entities = new DbRepository())
+            {
+                var oldEntity = entities.User.Find(id);
+                var coach = new Coach();
+                if (oldEntity != null)
+                {
+                    oldEntity.QuitTime = quitTime;
+                    oldEntity.Flag = (long)GlobalFlag.Qiut;
+                    if (oldEntity.CoachID.IsNotNullOrEmpty())
+                    {
+                        coach = entities.Coach.Find(oldEntity.CoachID);
+                        if (coach == null)
+                        {
+                            return Result(false, ErrorCode.sys_param_format_error);
+                        }
+                        else
+                        {
+                            if(coach.IsQuit)
+                                return Result(false, ErrorCode.sys_param_format_error);
+                            coach.IsQuit = true;
+                            coach.QuitTime = quitTime;
+                        }
+                    }
+                }
+                else
+                    return Result(false, ErrorCode.sys_param_format_error);
+
+                if (entities.SaveChanges() > 0)
+                {
+                    var list = Cache_Get_UserList();
+                    var coachList = Cache_Get_CoachList();
+                    var index = list.FindIndex(x => x.ID.Equals(id));
+                    var coachIndex = -1;
+                    if (coach != null)
+                    {
+                         coachIndex = coachList.FindIndex(x => x.ID.Equals(coach.ID));
+                    }
+                    if (index > -1)
+                    {
+                        list[index] = oldEntity;
+                        if(coachIndex>-1)
+                            coachList[coachIndex] = coach;
+                    }
+                    else
+                    {
+                        list.Add(oldEntity);
+                        coachList.Add(coach);
+                    }
+                    return Result(true);
+                }
+                else
+                {
+                    return Result(false, ErrorCode.sys_fail);
+                }
+            }
+
+        }
+
+
 
         /// <summary>
         /// 删除分类

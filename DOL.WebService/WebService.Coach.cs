@@ -349,14 +349,21 @@ namespace DOL.Service
         /// </summary>
         /// <param name="">门店id</param>
         /// <returns></returns>
-        public List<SelectItem> Get_CoachSelectItem(string driverShopId)
+        public List<SelectItem> Get_CoachSelectItem(string driverShopId,bool isContianQuit=false)
         {
             using (DbRepository entities = new DbRepository())
             {
                 List<SelectItem> list = new List<SelectItem>();
 
                 var query = Cache_Get_CoachList().Where(x => x.Flag == 0).AsQueryable().AsNoTracking();
-
+                if (!isContianQuit)
+                {
+                    query = query.Where(x => !x.IsQuit);
+                }
+                else 
+                {
+                    query = query.Where(x => !x.IsQuit);
+                }
                 if (string.IsNullOrEmpty(driverShopId))
                 {
                     query.OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
@@ -483,7 +490,7 @@ namespace DOL.Service
 
             //本月结束时间
             var endTime = DateTime.Parse(time.Value.AddMonths(1).ToString("yyyy-MM")).AddDays(-1);// && x.Code == ThemeCode.Two
-            var coachItem = Cache_Get_CoachList().Where(x => x.ID.Equals(id)).FirstOrDefault();
+            var coachItem = Cache_Get_CoachList().Where(x => x.ID.Equals(id)&&(!x.IsQuit||(x.IsQuit&&x.QuitTime>=time&&x.QuitTime<endTime))).FirstOrDefault();
             if (coachItem == null)
                 return null;
 
@@ -866,7 +873,8 @@ namespace DOL.Service
                 time = DateTime.Parse(DateTime.Now.ToString("yyyy-MM"));
             //本月结束时间
             var endTime = DateTime.Parse(time.Value.AddMonths(1).ToString("yyyy-MM")).AddDays(-1);// && x.Code == ThemeCode.Two
-            var coachList = Cache_Get_CoachList().Where(x => x.Flag == 0).ToList();
+            
+            var coachList = Cache_Get_CoachList().Where(x => x.Flag == 0 && ((x.IsQuit && x.QuitTime >= time && x.QuitTime < endTime)||!x.IsQuit)).ToList();
 
             var returnModel = new CoachReportModel();
             returnModel.isShowList = true;

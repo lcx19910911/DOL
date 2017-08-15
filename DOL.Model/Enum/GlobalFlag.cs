@@ -30,6 +30,11 @@ namespace DOL.Model
         /// </summary>
         [Description("已禁用")]
         Unabled =2,
+        /// <summary>
+        /// 已离职
+        /// </summary>
+        [Description("已离职")]
+        Qiut =4
 
     }
 }

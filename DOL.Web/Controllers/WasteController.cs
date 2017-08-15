@@ -18,7 +18,7 @@ namespace DOL.Web.Controllers
         }
         public ViewResult Report()
         {
-            return View(WebService.Get_CoachSelectItem(""));
+            return View(WebService.Get_CoachSelectItem("",true));
         }
 
         public JsonResult GetReport(string coachId, string carId, DateTime? searchTime)

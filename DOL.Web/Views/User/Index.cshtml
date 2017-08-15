@@ -68,6 +68,7 @@
                 <th render="ShowIsStoreAdmin">是否门店管理员</th>
                 <th dataname="State">状态</th>           
                 <th dataname="CreatedTime" datatype="jsondate">创建时间</th>
+                <th dataname="QuitTime" datatype="jsondate">离职时间</th>
                 <th type="eventlist"></th>
             </tr>
         </thead>
@@ -439,7 +440,49 @@
                             grid.reload();
                         });
                     }
-                }
+                },
+                {
+                    className: "am-text-danger",
+                    icon: "icon-close",
+                    name: "离职",
+                    formula: function (item) {
+                        if (item.Flag != 4) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    click: function (item) {
+                        $.Nuoya.ajaxDialog({
+                            closeViaDimmer: false,
+                            width: "500px",
+                            height: "500px",
+                            ajaxUrl: "/HtmlTemplates/User/SelectTime.html",
+                            title: "离职时间",
+                            buttons: [{
+                                label: "保存",
+                                callback: function (e) {
+
+                                    $.Nuoya.form("form").ajaxSubmit({
+                                        ajaxUrl: "/User/Quit",
+                                        params: {
+                                            ID: item.ID
+                                        },
+                                        callback: function (data) {
+                                            if (!data.ErrorDesc) {
+                                                e.hide();
+                                                grid.reload();
+                                            }
+                                            else
+                                                $.Nuoya.alert(data.ErrorDesc);
+                                        }
+                                    });
+                                }
+                            }]
+                        })
+                    }
+                },
             ]
         });
 

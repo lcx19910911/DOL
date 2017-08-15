@@ -158,6 +158,7 @@
     <Content Include="HtmlTemplates\Student\SelectTimeCode.html" />
     <Content Include="HtmlTemplates\Student\WantDrop.html" />
     <Content Include="HtmlTemplates\ThemeSalary\Update.html" />
+    <Content Include="HtmlTemplates\User\SelectTime.html" />
     <Content Include="HtmlTemplates\User\ChangePassword.html" />
     <Content Include="HtmlTemplates\User\ExamList.html" />
     <Content Include="HtmlTemplates\User\Pay.html" />
@@ -252,6 +253,7 @@
     <Content Include="Views\DataDictionary\Index.cshtml" />
     <Content Include="Views\EnteredPoint\Index.cshtml" />
     <Content Include="Web.config" />
+    <Content Include="叮咚,您有新订单，请及时处理.mp3" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />

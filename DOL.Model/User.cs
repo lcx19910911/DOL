@@ -150,5 +150,7 @@ namespace DOL.Model
         /// </summary>
         [NotMapped]
         public bool IsNotShowMoney { get; set; }
+
+        public DateTime QuitTime { get; set; }
     }
 }

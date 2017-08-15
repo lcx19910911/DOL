@@ -445,8 +445,7 @@ namespace DOL.Service
             //表单model
             var model = new ReportModel();
             model.x = new List<string>();
-            model.oilSeries = new List<Series>();
-            model.repairSeries = new List<Series>();
+            model.series = new List<Series>();
 
             //本月结束时间
             var endTime = DateTime.Parse(searchTime.Value.AddMonths(1).ToString("yyyy-MM")).AddDays(-1);// && x.Code == ThemeCode.Two
@@ -498,8 +497,8 @@ namespace DOL.Service
 
                 });
 
-                model.oilSeries.Add(oilSeries);
-                model.repairSeries.Add(repairSeries);
+                model.series.Add(oilSeries);
+                model.series.Add(repairSeries);
             }
             //显示某个教练的车损油耗
             else if (coachId.IsNotNullOrEmpty() && carId.IsNullOrEmpty())
@@ -541,8 +540,8 @@ namespace DOL.Service
                                 oilSeries.data.Add(0);
                             }
                         }
-                        model.oilSeries.Add(oilSeries);
-                        model.repairSeries.Add(repairSeries);
+                        model.series.Add(oilSeries);
+                        model.series.Add(repairSeries);
                     });
                 }
             }
@@ -581,8 +580,8 @@ namespace DOL.Service
                             oilSeries.data.Add(0);
                         }
                     }
-                    model.oilSeries.Add(oilSeries);
-                    model.repairSeries.Add(repairSeries);
+                    model.series.Add(oilSeries);
+                    model.series.Add(repairSeries);
                 }
             }
             return Result(model);

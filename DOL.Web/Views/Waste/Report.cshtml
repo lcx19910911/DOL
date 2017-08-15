@@ -46,7 +46,6 @@
         <div id="reportOil" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 
-        <div id="reportRepair" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
     </div>
 </div>
@@ -73,11 +72,12 @@
             $.Nuoya.action("/Waste/GetReport", { searchTime: searchTime, coachId: coachId, carId: carId }, function (data) {
                 var categories = data.x; //时间 ["2016-09-08"]
                 //var series = data.series;// {"series":[{"name":"金额","data":[10933]}
+                //var series = JSON.stringify(data.oilSeries).replace("]") + ",{" + JSON.stringify(data.repairSeries).replace("[{");
                 if(coachId==""&&carId=="")
                 {
                     $('#reportOil').highcharts({
                         title: {
-                            text: '平均油耗情况',
+                            text: '消耗数据',
                             x: -20 //center
                         },
                         subtitle: {
@@ -106,41 +106,7 @@
                             verticalAlign: 'middle',
                             borderWidth: 0
                         },
-                        series: data.oilSeries
-                    });
-
-                    $('#reportRepair').highcharts({
-                        title: {
-                            text: '平均车损情况',
-                            x: -20 //center
-                        },
-                        subtitle: {
-                            text: '如图',
-                            x: -20
-                        },
-                        xAxis: {
-                            categories: categories
-                        },
-                        yAxis: {
-                            title: {
-                                text: '费用（元）'
-                            },
-                            plotLines: [{
-                                value: 0,
-                                width: 1,
-                                color: 'green'
-                            }]
-                        },
-                        tooltip: {
-                            valueSuffix: '元'
-                        },
-                        legend: {
-                            layout: 'vertical',
-                            align: 'right',
-                            verticalAlign: 'middle',
-                            borderWidth: 0
-                        },
-                        series: data.oilSeries
+                        series: data.series
                     });
                 }
                 else  
@@ -148,7 +114,7 @@
 
                     $('#reportOil').highcharts({
                         title: {
-                            text: '油耗情况',
+                            text: '消耗数据',
                             x: -20 //center
                         },
                         subtitle: {
@@ -177,42 +143,9 @@
                             verticalAlign: 'middle',
                             borderWidth: 0
                         },
-                        series: data.oilSeries
+                        series: data.series
                     });
 
-                    $('#reportRepair').highcharts({
-                        title: {
-                            text: '车损情况',
-                            x: -20 //center
-                        },
-                        subtitle: {
-                            text: '如图',
-                            x: -20
-                        },
-                        xAxis: {
-                            categories: categories
-                        },
-                        yAxis: {
-                            title: {
-                                text: '费用（元）'
-                            },
-                            plotLines: [{
-                                value: 0,
-                                width: 1,
-                                color: 'green'
-                            }]
-                        },
-                        tooltip: {
-                            valueSuffix: '元'
-                        },
-                        legend: {
-                            layout: 'vertical',
-                            align: 'right',
-                            verticalAlign: 'middle',
-                            borderWidth: 0
-                        },
-                        series: data.repairSeries
-                    });
                 }
             });
 
