@@ -2126,6 +2126,10 @@ namespace DOL.Service
                 {
                     referenceList.ForEach(x =>
                     {
+                        if (x.ID == "5cff6d4e43004032a2f79ec8ff046d8b")
+                        {
+                            var s= 11;
+                        }
                         var referDic = studentList.Where(y => !string.IsNullOrEmpty(y.ReferenceID) && y.ReferenceID == x.ID).GroupBy(y => y.State).ToDictionary(y => y.Key, y => y.Count());
                         //科三过 科目一、科三过，科目二未通过
                         referDic.Add(StudentCode.ThemeThreePass, studentList.Where(y => y.State == StudentCode.ThemeTwo && y.ThemeThreePass == YesOrNoCode.Yes && y.ThemeOnePass == YesOrNoCode.Yes && y.ReferenceID == x.ID).Count());

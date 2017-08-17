@@ -227,6 +227,14 @@ namespace DOL.Service
                             x.IDCard = student.IDCard;
                             x.Remark = student.Remark;
                             x.State = student.State;
+                            x.ThemeOneDate = student.ThemeOneDate;
+                            x.ThemeOnePass = student.ThemeOnePass;
+                            x.ThemeTwoDate = student.ThemeTwoDate;
+                            x.ThemeTwoPass = student.ThemeTwoPass;
+                            x.ThemeThreeDate = student.ThemeThreeDate;
+                            x.ThemeThreePass = student.ThemeThreePass;
+                            x.ThemeFourDate = student.ThemeFourDate;
+                            x.ThemeFourPass = student.ThemeFourPass;
                             //推荐人
                             if (!string.IsNullOrEmpty(student.ReferenceID) && referenceDic.ContainsKey(student.ReferenceID))
                                 x.ReferenceName = referenceDic[student.ReferenceID]?.Name;

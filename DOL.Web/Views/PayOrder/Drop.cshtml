@@ -35,6 +35,7 @@
         <thead>
             <tr>
                 <th dataname="ID" type="checkbox"></th>
+                <th type="more"></th>
                 <th dataname="EnteredDate" datatype="jsondate">报名日期</th>
                 <th dataname="Name">姓名</th>
                 <th dataname="IDCard">身份证</th>
@@ -50,6 +51,18 @@
                 }
                 <th dataname="WantDropDate" datatype="jsondate">申请日期</th>
                 <th render="ShowState">学员状态</th>
+
+                <th dataname="ThemeOneDate" datatype="jsondate" isHide="1" style="display:none;">科一时间</th>
+                <th render="ShowThemeOnePass" isHide="1" style="display:none;">通过</th>
+                <th dataname="ThemeTwoCoachName" isHide="1" style="display:none;">科二教练</th>
+                <th dataname="ThemeTwoDate" datatype="jsondate" isHide="1" style="display:none;">科二时间</th>
+                <th render="ShowThemeTwoPass" isHide="1" style="display:none;">通过</th>
+                <th dataname="ThemeThreeCoachName" isHide="1" style="display:none;">科三教练</th>
+                <th dataname="ThemeThreeDate" datatype="jsondate" isHide="1" style="display:none;">科三时间</th>
+                <th render="ShowThemeThreePass" isHide="1" style="display:none;">通过</th>
+                <th dataname="ThemeFourDate" datatype="jsondate" isHide="1" style="display:none;">科四时间</th>
+                <th render="ShowThemeFourPass" isHide="1" style="display:none;">通过</th>
+
                 <th dataname="CreaterName">登记人</th>
                 <th dataname="ConfirmUserName">办理人</th>
                 <th render="ShowConfirm">确认情况</th>
@@ -166,6 +179,7 @@
 
         var grid = $.Nuoya.grid({
             tableId: "dataTable",
+            isHide: true,
             //表格id
             search: {
                 domainId: "searchDomain",

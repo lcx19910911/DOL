@@ -206,5 +206,65 @@ namespace DOL.Model
 
         [NotMapped]
         public long StudentFlag { get; set; }
+
+
+        #region 科目情况
+
+
+
+        /// <summary>
+        /// 科目一时间
+        /// </summary>
+        [NotMapped]
+        public Nullable<DateTime> ThemeOneDate { get; set; }
+
+        /// <summary>
+        /// 科目一是否通过
+        /// </summary>
+        [NotMapped]
+        public YesOrNoCode ThemeOnePass { get; set; }
+
+
+        /// <summary>
+        /// 科目二时间
+        /// </summary>
+        [NotMapped]
+        public Nullable<DateTime> ThemeTwoDate { get; set; }
+
+
+        /// <summary>
+        /// 科目二是否通过
+        /// </summary>
+        [NotMapped]
+        public YesOrNoCode ThemeTwoPass { get; set; }
+
+
+
+        /// <summary>
+        /// 科目三时间
+        /// </summary>
+        [NotMapped]
+        public Nullable<DateTime> ThemeThreeDate { get; set; }
+
+        /// <summary>
+        /// 科目三是否通过
+        /// </summary>
+        [NotMapped]
+        public YesOrNoCode ThemeThreePass { get; set; }
+
+        /// <summary>
+        /// 科目四时间
+        /// </summary>
+        [NotMapped]
+        public Nullable<DateTime> ThemeFourDate { get; set; }
+
+        /// <summary>
+        /// 科目四是否通过
+        /// </summary>
+        [NotMapped]
+        public YesOrNoCode ThemeFourPass { get; set; }
+
+
+        #endregion
     }
 }
