@@ -96,7 +96,7 @@
 
 
                 <span class="am-input-group-label  am-margin-left-sm">制卡驾校：</span>
-                <select name="driverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"><option value="-1">不限</option></select>
+                <select name="MakeDriverShopID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}"><option value="-1">不限</option></select>
             </div>
         </div>
     </div>
@@ -258,8 +258,8 @@
                 });            
             });
         }
-        Inti()
-
+        Inti();
+        LoadDriverShop();
         function ClearFilter() {
             $("#searchDomain input").val("");
             $('#searchDomain select').each(function () {
