@@ -231,6 +231,11 @@ namespace DOL.Model
         /// </summary>
         [Description("账号已过期")]
         user_expire = 106,
+        /// <summary>
+        /// 已离职
+        /// </summary>
+        [Description("已离职")]
+        user_quit = 107,
 
         /// <summary>
         /// 账号已被禁用

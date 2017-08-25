@@ -201,8 +201,10 @@ namespace DOL.Model
         /// </summary>
         [NotMapped]
         public string Remark { get; set; }
+
         [NotMapped]
-        public StudentCode State { get; set; }
+        public string MakeCard { get; set; }
+
 
         [NotMapped]
         public long StudentFlag { get; set; }
@@ -210,6 +212,8 @@ namespace DOL.Model
 
         #region 科目情况
 
+        [NotMapped]
+        public StudentCode State { get; set; }
 
 
         /// <summary>
@@ -264,6 +268,8 @@ namespace DOL.Model
         [NotMapped]
         public YesOrNoCode ThemeFourPass { get; set; }
 
+        [NotMapped]
+        public string NowThemeStr { get; set; }
 
         #endregion
     }

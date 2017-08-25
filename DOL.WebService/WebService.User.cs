@@ -87,6 +87,10 @@ namespace DOL.Service
                     {
                         return Result(false, ErrorCode.user_not_exit);
                     }
+                    else if ((user.Flag & (long)GlobalFlag.Qiut) != 0)
+                    {
+                        return Result(false, ErrorCode.user_quit);
+                    }
 
                     else
                     {

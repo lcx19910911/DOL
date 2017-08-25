@@ -26,7 +26,6 @@ namespace DOL.UTest
             //string sss = ht.ToJson();
             using (DbRepository entities = new DbRepository())
             {
-
                 var list = entities.DataDictionary.Where(x => x.GroupCode == GroupCode.Area).GroupBy(x => x.Key).ToList();
 
                 list.ForEach(x =>

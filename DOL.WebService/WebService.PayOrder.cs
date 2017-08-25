@@ -211,6 +211,7 @@ namespace DOL.Service
                 var enteredDic = Cache_Get_EnteredPoint_Dic();
                 var cerDic = Cache_Get_DataDictionary()[GroupCode.Certificate];
                 var userDic = Cache_Get_UserDic();
+                var driverDic = Cache_Get_DriverShopList_Dic();
                 list.ForEach(x =>
                 {
                     if (!string.IsNullOrEmpty(x.StudentID))
@@ -227,6 +228,7 @@ namespace DOL.Service
                             x.IDCard = student.IDCard;
                             x.Remark = student.Remark;
                             x.State = student.State;
+                            x.NowThemeStr = student.NowTheme.GetDescription();
                             x.ThemeOneDate = student.ThemeOneDate;
                             x.ThemeOnePass = student.ThemeOnePass;
                             x.ThemeTwoDate = student.ThemeTwoDate;
@@ -245,6 +247,9 @@ namespace DOL.Service
                             //报名点
                             if (!string.IsNullOrEmpty(student.EnteredPointID) && enteredDic.ContainsKey(student.EnteredPointID))
                                 x.EnteredPointName = enteredDic[student.EnteredPointID]?.Name;
+                            //制卡驾校 
+                            if (!string.IsNullOrEmpty(student.MakeDriverShopID) && driverDic.ContainsKey(student.MakeDriverShopID))
+                                x.MakeDriverShopName = driverDic[student.MakeDriverShopID]?.Name;
                         }
                     }
                     //登记人
