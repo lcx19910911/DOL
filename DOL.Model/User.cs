@@ -151,6 +151,6 @@ namespace DOL.Model
         [NotMapped]
         public bool IsNotShowMoney { get; set; }
 
-        public DateTime QuitTime { get; set; }
+        public DateTime? QuitTime { get; set; }
     }
 }
