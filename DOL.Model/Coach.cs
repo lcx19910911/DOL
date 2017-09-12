@@ -172,7 +172,7 @@ namespace DOL.Model
         /// 离职时间
         /// </summary>
         [Display(Name = "离职时间")]
-        public System.DateTime QuitTime { get; set; }
+        public System.DateTime? QuitTime { get; set; }
         /// <summary>
         /// 是否离职
         /// </summary>

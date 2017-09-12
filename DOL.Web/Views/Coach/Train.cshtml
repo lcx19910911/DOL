@@ -1,5 +1,6 @@
 ﻿@model DOL.Web.Models.CoacheInfoModel
 @{
+    Layout = null;
     var examThemeTwoList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
     var examThemeThreeList = new List<Tuple<ThemeCode, DateTime, string, int, int, int>>();
     var themeTwoSalary = new List<Tuple<ThemeCode, int, string, int, decimal, decimal>>();
@@ -18,43 +19,6 @@
     }
     ViewBag.Title = "教学查询";
 }
-@*<div class="am-cf am-padding">
-    <div class="am-fl am-cf"><a href="/"><strong class="am-text-primary am-text-lg">首页</strong></a> /<small>教学信息</small></div>
-</div>
-<div id="searchDomain">
-
-    <div class="am-g">
-        <div class="am-u-lg-8">
-            <div class="am-input-group am-input-group-sm">
-                <span class="am-input-group-label am-margin-left-sm">时间</span>
-                <input type="text" class="am-form-field" placeholder="请选择日期" value="@(Model.CoachReportModel!=null?(Model.CoachReportModel.StartTime.ToString("yyyy-MM")):"")" name="searchTime" readonly style="width:100px;">
-
-                @if (Model.CoachList != null && Model.CoachList.Count > 0)
-                {
-                    <span class="am-input-group-label  am-margin-left-sm">教练</span>
-                    <select name="CoachID" data-am-selected="{ btnWidth: '120px',btnSize: 'sm'}" style="width:120px;">
-                        <option value="-1" selected>请选择</option>
-                        @foreach (var item in Model.CoachList)
-                        {
-                            if (item.Value.Equals(CoachID))
-                            {
-                                <option value="@(item.Value)" selected>@item.Text</option>
-                            }
-                            else
-                            {
-                                <option value="@(item.Value)">@item.Text</option>
-                            }
-                        }
-                    </select>
-                }
-                <span class="am-input-group-btn am-margin-left-sm">
-                    <button class="am-btn am-btn-default" onclick="Search()" type="button">搜索</button>
-                    <button class="am-btn am-btn-default" onclick="ClearFilter()" type="button">清除</button>
-                </span>
-            </div>
-        </div>
-    </div>
-</div>*@
 
 <div class="grid_container">
     @if (Model != null && Model.CoachReportModel != null && Model.CoachReportModel.isShowList == false)
@@ -415,14 +379,13 @@
 {
     <script>
 
-        $('[name=searchTime]').datepicker({ format: 'yyyy-mm', viewMode: 'years', minViewMode: 'months' });
+        $(".admin-sidebar:eq(1)").hide();
+        //$('[name=searchTime]').datepicker({ format: 'yyyy-mm', viewMode: 'years', minViewMode: 'months' });
 
-        function ClearFilter() {
-            $("#searchDomain input").val("");
-        }
-        function Search() {
-            window.location.href = "/Coach/Train?searchTime=" + $("[name='searchTime']").val() + "&CoachID=" + $("[name='CoachID']").val();
-        }
+       
+        //function Search() {
+        //    window.location.href = "/Coach/Train?searchTime=" + $("[name='searchTime']").val() + "&CoachID=" + $("[name='CoachID']").val();
+        //}
 
     </script>
 }
