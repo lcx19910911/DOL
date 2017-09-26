@@ -178,7 +178,7 @@ namespace DOL.Service
                 }
                 else
                 {
-                    query.Where(x=>x.EnteredPointIDStr.Contains(enteredPointId)&& (x.Flag & (long)GlobalFlag.Removed) == 0).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
+                    query.Where(x=> x.EnteredPointIDStr.IsNotNullOrEmpty()&&x.EnteredPointIDStr.Contains(enteredPointId)&& (x.Flag & (long)GlobalFlag.Removed) == 0).OrderBy(x => x.CreatedTime).ToList().ForEach(x =>
                     {
                         list.Add(new SelectItem()
                         {
