@@ -96,14 +96,22 @@ namespace DOL.Service
                     {
                         if (user.OperateFlag.HasValue)
                             user.OperateList = Get_UserOperateList(user.OperateFlag.Value);
-                        if (user.RoleID.IsNotNullOrEmpty() && user.RoleID.Trim() != "1")
+                        if (user.RoleID.IsNotNullOrEmpty())
                         {
-                            var role = db.Role.Find(user.RoleID);
-                            if (role == null)
+                            if (user.RoleID.Trim() == "1")
                             {
-                                return Result(false, ErrorCode.sys_param_format_error);
+                                
+                                user.IsNotShowMoney = false;
                             }
-                            user.IsNotShowMoney = role.IsNotShowMoney==YesOrNoCode.Yes;
+                            else
+                            {
+                                var role = db.Role.Find(user.RoleID);
+                                if (role == null)
+                                {
+                                    return Result(false, ErrorCode.sys_param_format_error);
+                                }
+                                user.IsNotShowMoney = role.IsNotShowMoney == YesOrNoCode.Yes;
+                            }
                         }
                         Client.Session[Params.UserCookieName] = CryptoHelper.AES_Encrypt(user.ToJson(), Params.SecretKey);
                         return Result(true);

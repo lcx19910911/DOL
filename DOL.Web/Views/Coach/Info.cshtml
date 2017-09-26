@@ -43,7 +43,7 @@
 <div class="grid_container">
     @if (Model != null && Model.isShowList == false)
     {
-        @*<div class="am-g">
+        <div class="am-g">
 
             <div class="am-u-lg-12">
                 <div class="am-g am-margin-top-lg ">
@@ -131,7 +131,7 @@
                 </table>
             </div>
 
-        </div>*@
+        </div>
     }
     else if (Model != null && Model.isShowList == true)
     {
@@ -253,7 +253,9 @@
         </div>
        
      }
-     <div id="infoDiv"></div>
+                                                        
+     <div id="infoDiv">
+     </div>
 </div>
 @section scripts
 {
@@ -285,6 +287,7 @@
             data: { searchTime: '@(Model?.StartTime.ToString("yyyy-MM"))', coachId: coachID },
             success: function (html) {
                 $("#infoDiv").append(html);
+                
             }
         })
 
