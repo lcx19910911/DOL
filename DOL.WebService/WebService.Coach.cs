@@ -184,7 +184,7 @@ namespace DOL.Service
                     query = query.Where(x => !string.IsNullOrEmpty(x.ThemeThreeCoachID) && x.ThemeThreeCoachID.Equals(Client.LoginUser.CoachID));
                     if (code != null && (int)code != -1)
                     {
-                        query = query.Where(x => x.ThemeTwoPass.Equals(code));
+                        query = query.Where(x => x.ThemeThreePass.Equals(code));
                     }
                 }
                 // var newList = new List<Student>();

@@ -217,8 +217,8 @@
                             height: "500px",
                             pageUrl: "/Exam/Add",
                             callback: function (e) {
-                                $("#payForm [name='Code']").find('option').eq(item.NowTheme-1).attr('selected', true);
-                                $("#payForm [name='Count']").val(item.ExamCount);
+                                $("#payForm [name='Code']").attr("disabled", false).find('option').eq(item.NowTheme - 1).attr('selected', true);
+                                $("#payForm [name='Count']").attr("readonly", false).val(item.ExamCount);
                             },
                             buttons: [{
                                 label: "保存",
